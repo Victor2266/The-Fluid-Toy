@@ -50,5 +50,6 @@ public class FadeText : MonoBehaviour
 
         // Ensure it's fully invisible
         tmpText.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
+        Destroy(gameObject);
     }
 }
