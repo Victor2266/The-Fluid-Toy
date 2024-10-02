@@ -18,7 +18,8 @@ public class ParticleDisplay2D : MonoBehaviour
 
 	public void Init(Simulation2D sim)
 	{
-		material = new Material(shader);
+        needsUpdate = true;
+        material = new Material(shader);
 		material.SetBuffer("Positions2D", sim.positionBuffer);
 		material.SetBuffer("Velocities", sim.velocityBuffer);
 		material.SetBuffer("DensityData", sim.densityBuffer);
