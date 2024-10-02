@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//Randomizes the position of gameobject of start of scene
 public class RandomizePosition : MonoBehaviour
 {
     // Define the range for randomization

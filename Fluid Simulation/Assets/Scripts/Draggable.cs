@@ -1,7 +1,8 @@
 using UnityEngine;
 
+//Makes GameObject draggable
 public class Draggable : MonoBehaviour
-{
+{   
     private bool isDragging = false;
     private Vector3 offset;
 
