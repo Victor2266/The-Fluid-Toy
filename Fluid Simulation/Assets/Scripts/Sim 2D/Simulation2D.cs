@@ -30,13 +30,15 @@ public class Simulation2D : MonoBehaviour
     public ParticleSpawner spawner;
     public ParticleDisplay2D display;
 
+    [Header("Box Colliders")]
     public BoxCollider2D[] boxColliders;
-    public enum BrushState
+    public enum BrushType
     {
         DRAW,
         GRAVITY
     }
-    public BrushState brushState = BrushState.GRAVITY;
+    [Header("Brush Type")]
+    public BrushType brushState = BrushType.GRAVITY;
 
     // Buffers
     public ComputeBuffer positionBuffer { get; private set; }
@@ -183,7 +185,7 @@ public class Simulation2D : MonoBehaviour
         float currInteractStrength = 0;
         if (isPushInteraction || isPullInteraction)
         {
-            if(brushState == BrushState.GRAVITY)
+            if(brushState == BrushType.GRAVITY)
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
         }
 
