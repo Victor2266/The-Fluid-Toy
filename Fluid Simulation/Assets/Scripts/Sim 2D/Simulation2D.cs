@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Mathematics;
+using System;
 
 public class Simulation2D : MonoBehaviour
 {
@@ -28,6 +29,14 @@ public class Simulation2D : MonoBehaviour
     public ComputeShader compute;
     public ParticleSpawner spawner;
     public ParticleDisplay2D display;
+
+    public BoxCollider2D[] boxColliders;
+    public enum BrushState
+    {
+        DRAW,
+        GRAVITY
+    }
+    public BrushState brushState = BrushState.GRAVITY;
 
     // Buffers
     public ComputeBuffer positionBuffer { get; private set; }
@@ -174,7 +183,8 @@ public class Simulation2D : MonoBehaviour
         float currInteractStrength = 0;
         if (isPushInteraction || isPullInteraction)
         {
-            currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
+            if(brushState == BrushState.GRAVITY)
+                currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
         }
 
         compute.SetVector("interactionInputPoint", mousePos);
