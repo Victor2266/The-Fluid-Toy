@@ -283,7 +283,7 @@ MonoBehaviour:
   pressureMultiplier: 500
   nearPressureMultiplier: 18
   viscosityStrength: 0.06
-  boundsSize: {x: 34.2, y: 18.6}
+  boundsSize: {x: 342, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   interactionRadius: 3
@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleCount: 7000
+  particleCount: 70000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 3.35, y: 0.51}
   spawnSize: {x: 7, y: 7}
@@ -326,7 +326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 6613296395336604194cd54500f570f3, type: 3}
+  shader: {fileID: 4800000, guid: 441b7193936682446b30d2140d15792a, type: 3}
   scale: 0.2
   colourMap:
     serializedVersion: 2
@@ -627,9 +627,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<b>7000 Particles</b>
+  m_text: '<b>70,000 Particles</b>
 
-    2D Scene
+    Horizontal 2D Scene
 
 
     <b>CPU + GPU USAGE</b>'
