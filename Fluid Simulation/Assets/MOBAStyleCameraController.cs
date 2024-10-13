@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class MOBAStyleCameraController : MonoBehaviour
 {
-    public float moveSpeed = 10f; // Camera movement speed
-    public float edgeThreshold = 20f; // Threshold distance from the screen edges in pixels
+    [Header("Camera Settings")]
+    public float minMoveSpeed = 2f; // Minimum speed when movement starts
+    public float maxMoveSpeed = 100f; // Max movement speed
+    public float speedRampUpTime = 2f; // Time in seconds to reach full speed
+    public float mouseEdgeThreshold = 20f; // Threshold distance from the screen edges in pixels
     public bool lockHorizontal = false; // Lock movement to horizontal axis
     public bool lockVertical = false;   // Lock movement to vertical axis
     public float smoothTime = 0.2f; // Smoothing factor for the camera movement
-
-    // Boundaries for camera movement
+    
+    [Header("Camera Movement Boundaries")]
     public float minX = -50f;
     public float maxX = 50f;
     public float minZ = -50f;
@@ -16,11 +19,13 @@ public class MOBAStyleCameraController : MonoBehaviour
 
     private Vector3 targetPosition; // The target position the camera is moving towards
     private Vector3 velocity = Vector3.zero; // Required for smooth dampening
-
+    private float currentSpeed; // Current ramping speed
+    private float speedRamp; // The calculated ramp based on time near edge
     void Start()
     {
-        // Initialize targetPosition to the current camera position
+        // Initialize targetPosition and currentSpeed
         targetPosition = transform.position;
+        currentSpeed = minMoveSpeed; // Start at minimum speed
     }
 
     void Update()
@@ -34,35 +39,53 @@ public class MOBAStyleCameraController : MonoBehaviour
     {
         Vector3 moveDirection = Vector3.zero; // Reset movement direction each frame
         Vector2 mousePos = Input.mousePosition;
+        bool isMoving = false; // Track if the camera should be moving
 
         // Check horizontal screen edges
         if (!lockVertical)
         {
-            if (mousePos.x <= edgeThreshold) // Left edge
+            if (mousePos.x <= mouseEdgeThreshold) // Left edge
             {
                 moveDirection.x = -1;
+                isMoving = true;
             }
-            else if (mousePos.x >= Screen.width - edgeThreshold) // Right edge
+            else if (mousePos.x >= Screen.width - mouseEdgeThreshold) // Right edge
             {
                 moveDirection.x = 1;
+                isMoving = true;
             }
         }
 
         // Check vertical screen edges
         if (!lockHorizontal)
         {
-            if (mousePos.y <= edgeThreshold) // Bottom edge
+            if (mousePos.y <= mouseEdgeThreshold) // Bottom edge
             {
                 moveDirection.z = -1;
+                isMoving = true;
             }
-            else if (mousePos.y >= Screen.height - edgeThreshold) // Top edge
+            else if (mousePos.y >= Screen.height - mouseEdgeThreshold) // Top edge
             {
                 moveDirection.z = 1;
+                isMoving = true;
             }
         }
 
-        // Calculate the new target position based on movement direction and speed
-        targetPosition += moveDirection * moveSpeed * Time.deltaTime;
+        // If moving, ramp up the speed over time
+        if (isMoving)
+        {
+            speedRamp += Time.deltaTime / speedRampUpTime; // Ramp speed over time
+            currentSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, speedRamp); // Interpolate speed
+        }
+        else
+        {
+            // Reset speed and ramp when not moving
+            currentSpeed = minMoveSpeed;
+            speedRamp = 0f;
+        }
+
+        // Calculate the new target position based on ramped-up speed
+        targetPosition += moveDirection * currentSpeed * Time.deltaTime;
 
         // Clamp the target position to stay within defined boundaries
         targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);

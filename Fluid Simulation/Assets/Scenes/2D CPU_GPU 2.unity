@@ -10296,8 +10296,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78cf39ff91ba18949b7cbafddf8aac5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 50
-  edgeThreshold: 40
+  minMoveSpeed: 10
+  maxMoveSpeed: 100
+  speedRampUpTime: 3
+  mouseEdgeThreshold: 60
   lockHorizontal: 1
   lockVertical: 0
   smoothTime: 0.2
@@ -10305,6 +10307,7 @@ MonoBehaviour:
   maxX: 150
   minZ: -50
   maxZ: 50
+  currentSpeed: 0
 --- !u!1 &977626196
 GameObject:
   m_ObjectHideFlags: 0
