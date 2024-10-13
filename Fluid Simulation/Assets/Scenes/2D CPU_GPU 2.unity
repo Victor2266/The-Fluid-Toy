@@ -548,9 +548,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftArrow: {fileID: 1944932319}
   rightArrow: {fileID: 1376994576}
+  leftArrowCanvasGroup: {fileID: 1944932322}
+  rightArrowCanvasGroup: {fileID: 1376994579}
   edgeThreshold: 60
   slideSpeed: 5
-  arrowHideOffset: 50
+  fadeSpeed: 20
+  arrowHideOffset: 32
   arrowShowOffset: 32
 --- !u!1 &545764868
 GameObject:
@@ -19999,6 +20002,7 @@ GameObject:
   - component: {fileID: 1376994576}
   - component: {fileID: 1376994578}
   - component: {fileID: 1376994577}
+  - component: {fileID: 1376994579}
   m_Layer: 5
   m_Name: Right Arrow Indicator
   m_TagString: Untagged
@@ -20039,7 +20043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -20063,6 +20067,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376994575}
   m_CullTransparentMesh: 1
+--- !u!225 &1376994579
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376994575}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &1610855506
 GameObject:
   m_ObjectHideFlags: 0
@@ -20313,6 +20329,7 @@ GameObject:
   - component: {fileID: 1944932319}
   - component: {fileID: 1944932321}
   - component: {fileID: 1944932320}
+  - component: {fileID: 1944932322}
   m_Layer: 5
   m_Name: Left Arrow Indicator
   m_TagString: Untagged
@@ -20353,7 +20370,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -20377,6 +20394,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1944932318}
   m_CullTransparentMesh: 1
+--- !u!225 &1944932322
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944932318}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &2063899889
 GameObject:
   m_ObjectHideFlags: 0
