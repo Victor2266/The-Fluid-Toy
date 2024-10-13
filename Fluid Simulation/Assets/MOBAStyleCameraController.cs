@@ -5,8 +5,8 @@ public class MOBAStyleCameraController : MonoBehaviour
     [Header("Camera Settings")]
     public float minMoveSpeed = 2f; // Minimum speed when movement starts
     public float maxMoveSpeed = 100f; // Max movement speed
-    public float speedRampUpTime = 2f; // Time in seconds to reach full speed
-    public float mouseEdgeThreshold = 20f; // Threshold distance from the screen edges in pixels
+    public float speedRampUpTime = 3f; // Time in seconds to reach full speed
+    public float mouseEdgeThreshold = 60f; // Threshold distance from the screen edges in pixels
     public bool lockHorizontal = false; // Lock movement to horizontal axis
     public bool lockVertical = false;   // Lock movement to vertical axis
     public float smoothTime = 0.2f; // Smoothing factor for the camera movement
