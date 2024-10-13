@@ -14,8 +14,8 @@ public class MOBAStyleCameraController : MonoBehaviour
     [Header("Camera Movement Boundaries")]
     public float minX = -50f;
     public float maxX = 50f;
-    public float minZ = -50f;
-    public float maxZ = 50f;
+    public float minY = -50f;
+    public float maxY = 50f;
 
     private Vector3 targetPosition; // The target position the camera is moving towards
     private Vector3 velocity = Vector3.zero; // Required for smooth dampening
@@ -61,12 +61,12 @@ public class MOBAStyleCameraController : MonoBehaviour
         {
             if (mousePos.y <= mouseEdgeThreshold) // Bottom edge
             {
-                moveDirection.z = -1;
+                moveDirection.y = -1;
                 isMoving = true;
             }
             else if (mousePos.y >= Screen.height - mouseEdgeThreshold) // Top edge
             {
-                moveDirection.z = 1;
+                moveDirection.y = 1;
                 isMoving = true;
             }
         }
@@ -89,7 +89,7 @@ public class MOBAStyleCameraController : MonoBehaviour
 
         // Clamp the target position to stay within defined boundaries
         targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
-        targetPosition.z = Mathf.Clamp(targetPosition.z, minZ, maxZ);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
     }
 
     // Smoothly move the camera to the target position
