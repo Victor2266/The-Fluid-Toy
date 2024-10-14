@@ -3652,7 +3652,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &260457267
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3925,6 +3925,8 @@ MonoBehaviour:
   boxColliders:
   - {fileID: 2063899890}
   - {fileID: 260457267}
+  tempColliders:
+  - {fileID: 260457265}
   brushState: 1
 --- !u!114 &271053320
 MonoBehaviour:
@@ -6532,7 +6534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!61 &496598157
 BoxCollider2D:
   m_ObjectHideFlags: 0

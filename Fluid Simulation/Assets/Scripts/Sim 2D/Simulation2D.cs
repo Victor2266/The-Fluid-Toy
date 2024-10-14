@@ -32,6 +32,7 @@ public class Simulation2D : MonoBehaviour
 
     [Header("Box Colliders")]
     public BoxCollider2D[] boxColliders;
+    public GameObject[] tempColliders;
     public enum BrushType
     {
         DRAW,
@@ -127,6 +128,8 @@ public class Simulation2D : MonoBehaviour
             pauseNextFrame = false;
         }
 
+        obstacleCentre = tempColliders[0].transform.position;
+        obstacleSize = tempColliders[0].transform.localScale;
         HandleInput();
     }
 
