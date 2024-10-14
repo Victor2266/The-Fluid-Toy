@@ -30,8 +30,10 @@ public class Simulation2D : MonoBehaviour
     public ParticleSpawner spawner;
     public ParticleDisplay2D display;
 
-    [Header("Box Colliders")]
+    [Header("Obstacle Colliders")]
     public Transform[] boxColliders;
+    public Transform[] circleColliders;
+
     public enum BrushType
     {
         DRAW,
@@ -39,7 +41,6 @@ public class Simulation2D : MonoBehaviour
     }
     [Header("Brush Type")]
     public BrushType brushState = BrushType.GRAVITY;
-
     // Buffers
     public ComputeBuffer positionBuffer { get; private set; }
     public ComputeBuffer velocityBuffer { get; private set; }
