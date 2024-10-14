@@ -31,8 +31,7 @@ public class Simulation2D : MonoBehaviour
     public ParticleDisplay2D display;
 
     [Header("Box Colliders")]
-    public BoxCollider2D[] boxColliders;
-    public GameObject[] tempColliders;
+    public Transform[] boxColliders;
     public enum BrushType
     {
         DRAW,
@@ -128,8 +127,8 @@ public class Simulation2D : MonoBehaviour
             pauseNextFrame = false;
         }
 
-        obstacleCentre = tempColliders[0].transform.position;
-        obstacleSize = tempColliders[0].transform.localScale;
+        obstacleCentre = boxColliders[0].position;
+        obstacleSize = boxColliders[0].localScale;
         HandleInput();
     }
 
