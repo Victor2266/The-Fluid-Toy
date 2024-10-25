@@ -1,6 +1,36 @@
 using UnityEngine;
 using Unity.Mathematics;
+using System.Runtime.InteropServices;
 using System;
+
+//Defining Structs
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 32)]
+public struct Particle //32 bytes total
+{
+    public float2 density; //8 bytes, density and near density
+    public Vector2 velocity; //8 bytes
+    public Vector2 predictedPosition;
+    public Vector2 position;
+}
+
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 12)]
+public struct Circle //12 bytes total
+{
+    public Vector2 pos; //8 bytes
+    public float radius; //4 bytes
+}
+
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 24)]
+public struct OrientedBox //24 bytes total
+{
+    public Vector2 pos; //8 bytes
+    public Vector2 size;
+    public Vector2 zLocal;
+};
+
 
 public class Simulation2D : MonoBehaviour
 {
