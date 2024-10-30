@@ -72,7 +72,7 @@ public class Simulation2D : MonoBehaviour
     [Header("Brush Type")]
     public BrushType brushState = BrushType.GRAVITY;
     // Buffers
-    public ComputeBuffer positionBuffer { get; private set; }
+    public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
     public ComputeBuffer velocityBuffer { get; private set; }
     public ComputeBuffer densityBuffer { get; private set; }
     ComputeBuffer predictedPositionBuffer;
@@ -107,10 +107,13 @@ public class Simulation2D : MonoBehaviour
         numParticles = spawnData.positions.Length;
 
         // Create buffers
-        positionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
+        positionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);            //These are replaced by struct buffers
         predictedPositionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         velocityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
+        
+        
+        
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
