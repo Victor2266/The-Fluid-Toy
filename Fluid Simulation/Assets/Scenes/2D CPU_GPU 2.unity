@@ -28447,6 +28447,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3807144038943426652, guid: 8ac13bfb8e807c849af768d104db72a8, type: 3}
   m_PrefabInstance: {fileID: 1246090755}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1254786224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1254786226}
+  - component: {fileID: 1254786225}
+  m_Layer: 0
+  m_Name: Vsync and Target FPS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1254786225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254786224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d32b831880c20941bbc82a5157c5b52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vsyncCount: 0
+  targetFrameRate: 144
+--- !u!4 &1254786226
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254786224}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1269601657
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41294,3 +41340,4 @@ SceneRoots:
   - {fileID: 847099745}
   - {fileID: 496598159}
   - {fileID: 664337698}
+  - {fileID: 1254786226}

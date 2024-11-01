@@ -46,6 +46,10 @@ public class FrameTimeBenchmark : MonoBehaviour
         {
             StartBenchmark();
         }
+        if (Input.touchCount == 1 && Input.GetTouch(0).tapCount == 2 && !isBenchmarking)
+        {
+            StartBenchmark();
+        }
 
         if (!isBenchmarking) return;
 
