@@ -161,8 +161,10 @@ public class Simulation2D : MonoBehaviour
             pauseNextFrame = false;
         }
 
-        obstacleCentre = boxColliders[0].position;
-        obstacleSize = boxColliders[0].localScale;
+        if(boxColliders.Length > 0){
+            obstacleCentre = boxColliders[0].position;
+            obstacleSize = boxColliders[0].localScale;
+        }
         HandleInput();
     }
 
