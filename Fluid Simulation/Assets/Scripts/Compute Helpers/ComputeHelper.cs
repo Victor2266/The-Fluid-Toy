@@ -7,6 +7,9 @@ using UnityEngine.Experimental.Rendering;
 
 public enum DepthMode { None = 0, Depth16 = 16, Depth24 = 24 }
 
+/// <summary>
+/// This class contains some helper functions to make life a little easier working with compute shaders
+/// </summary>
 public static class ComputeHelper
 {
 
