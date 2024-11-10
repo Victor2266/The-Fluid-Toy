@@ -7,6 +7,9 @@ using UnityEngine.Experimental.Rendering;
 
 public enum DepthMode { None = 0, Depth16 = 16, Depth24 = 24 }
 
+/// <summary>
+/// This class contains some helper functions to make life a little easier working with compute shaders
+/// </summary>
 public static class ComputeHelper
 {
 
@@ -21,8 +24,10 @@ public static class ComputeHelper
     static ComputeShader copy3DCompute;
     static Shader bicubicUpscale;
 
+    /// <summary>
     /// Convenience method for dispatching a compute shader.
     /// It calculates the number of thread groups based on the number of iterations needed.
+    /// </summary>
     public static void Dispatch(ComputeShader cs, int numIterationsX, int numIterationsY = 1, int numIterationsZ = 1, int kernelIndex = 0)
     {
         Vector3Int threadGroupSizes = GetThreadGroupSizes(cs, kernelIndex);
