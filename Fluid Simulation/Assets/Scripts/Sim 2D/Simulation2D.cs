@@ -243,7 +243,7 @@ public class Simulation2D : MonoBehaviour
         float currInteractStrength = 0;
         if (isPushInteraction || isPullInteraction)
         {
-            if(brushState == BrushType.GRAVITY)
+            if(brushState.brushType == BrushType.GRAVITY)
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
         }
 
