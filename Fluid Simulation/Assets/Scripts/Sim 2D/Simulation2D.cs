@@ -6,12 +6,21 @@ using System;
 //Defining Structs
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 32)]
+
+// Fluid Type Enumerator
+public enum FluidType
+{
+    Water
+}
+
 public struct Particle //32 bytes total
 {
     public float2 density; //8 bytes, density and near density
     public Vector2 velocity; //8 bytes
     public Vector2 predictedPosition;
     public Vector2 position;
+    public float2 temperature;
+    public FluidType type;
 }
 
 [System.Serializable]
@@ -64,13 +73,23 @@ public class Simulation2D : MonoBehaviour
     public Transform[] boxColliders;
     public Transform[] circleColliders;
 
+    // Brush Settings + Enum type
     public enum BrushType
     {
         DRAW,
         GRAVITY
     }
+    public struct BrushSettings
+    {
+        public BrushType brushType;
+        public FluidType fluidType;
+    }
     [Header("Brush Type")]
-    public BrushType brushState = BrushType.GRAVITY;
+    public BrushSettings brushState = new BrushSettings
+    { 
+        brushType=BrushType.GRAVITY,
+        fluidType=FluidType.Water 
+    };
     // Buffers
     public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
     public ComputeBuffer velocityBuffer { get; private set; }
