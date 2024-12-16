@@ -70,13 +70,14 @@ public class Fluid
 // Maps enum type to the actual fluid class instance
 public class FluidMapper
 {
+    // Init fluids in this dictionary
     private static readonly Dictionary<FluidType, Fluid> fluidMap = new Dictionary<FluidType, Fluid>
     {
         //Name, Gravity, CollisionDamping, SmoothingRadius, TargetDensity, PressureMult, NearPressureMult, ViscStrength
         { FluidType.Water, new Fluid("Water", 9.8f, 0.95f, 2.0f, 1000f, 1.0f, 0.1f, 0.1f) },
     };
 
-    // Tries to get a fluid instance (instantiated above) based on enum type
+    // Tries to get a fluid instance (instantiated above) based on enum type, or returns null
     public static Fluid GetFluid(FluidType type)
     {
         return fluidMap.TryGetValue(type, out var fluid) ? fluid : null;
