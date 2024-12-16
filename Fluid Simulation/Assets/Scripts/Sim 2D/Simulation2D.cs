@@ -73,6 +73,7 @@ public class FluidMapper
     // Init fluids in this dictionary
     private static readonly Dictionary<FluidType, Fluid> fluidMap = new Dictionary<FluidType, Fluid>
     {
+        // FIXME Please adjust values (or remove if class members removed)
         //Name, Gravity, CollisionDamping, SmoothingRadius, TargetDensity, PressureMult, NearPressureMult, ViscStrength
         { FluidType.Water, new Fluid("Water", 9.8f, 0.95f, 2.0f, 1000f, 1.0f, 0.1f, 0.1f) },
     };
