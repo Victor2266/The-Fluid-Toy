@@ -2,17 +2,11 @@ using UnityEngine;
 using Unity.Mathematics;
 using System.Runtime.InteropServices;
 using System;
+using System.Collections.Generic; // For List<T>
 
 //Defining Structs
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 32)]
-
-// Fluid Type Enumerator
-public enum FluidType
-{
-    Water
-}
-
 public struct Particle //32 bytes total
 {
     public float2 density; //8 bytes, density and near density
@@ -40,6 +34,54 @@ public struct OrientedBox //24 bytes total
     public Vector2 zLocal;
 };
 
+// Fluid enum
+public enum FluidType
+{
+    Water,
+}
+
+// Fluid Type Class
+public class Fluid
+{
+    // FIXME Please adjust required class members, I just added whatever was used in sim
+    public string Name;
+    public float Gravity;
+    public float CollisionDamping;
+    public float SmoothingRadius;
+    public float TargetDensity;
+    public float PressureMultiplier;
+    public float NearPressureMultiplier;
+    public float ViscosityStrength;
+
+    public Fluid(string name, float gravity, float collisionDamping, float smoothingRadius,
+                 float targetDensity, float pressureMultiplier, float nearPressureMultiplier, float viscosityStrength)
+    {
+        Name = name;
+        Gravity = gravity;
+        CollisionDamping = collisionDamping;
+        SmoothingRadius = smoothingRadius;
+        TargetDensity = targetDensity;
+        PressureMultiplier = pressureMultiplier;
+        NearPressureMultiplier = nearPressureMultiplier;
+        ViscosityStrength = viscosityStrength;
+    }
+}
+
+// Maps enum type to the actual fluid class instance
+public class FluidMapper
+{
+    private static readonly Dictionary<FluidType, Fluid> fluidMap = new Dictionary<FluidType, Fluid>
+    {
+        //Name, Gravity, CollisionDamping, SmoothingRadius, TargetDensity, PressureMult, NearPressureMult, ViscStrength
+        { FluidType.Water, new Fluid("Water", 9.8f, 0.95f, 2.0f, 1000f, 1.0f, 0.1f, 0.1f) },
+    };
+
+    // Tries to get a fluid instance (instantiated above) based on enum type
+    public static Fluid GetFluid(FluidType type)
+    {
+        return fluidMap.TryGetValue(type, out var fluid) ? fluid : null;
+    }
+}
 
 public class Simulation2D : MonoBehaviour
 {
@@ -88,8 +130,9 @@ public class Simulation2D : MonoBehaviour
     public BrushSettings brushState = new BrushSettings
     { 
         brushType=BrushType.GRAVITY,
-        fluidType=FluidType.Water 
+        fluidType=FluidType.Water
     };
+
     // Buffers
     public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
     public ComputeBuffer velocityBuffer { get; private set; }
