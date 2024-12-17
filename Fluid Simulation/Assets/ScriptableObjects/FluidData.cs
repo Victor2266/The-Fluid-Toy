@@ -39,6 +39,15 @@ public class FluidData : ScriptableObject
     [Range(0f, 1f)]
     public float viscosityStrength = 0.5f;
 
+
+    [Header("Shader Properties")]
+    [Tooltip("What Type of Shader to use")]
+    public Shader shader;
+    public float scale;
+	public Gradient colourMap;
+	public int gradientResolution;
+	public float velocityDisplayMax;
+
     // Validation method to ensure values stay within reasonable bounds
     private void OnValidate()
     {
