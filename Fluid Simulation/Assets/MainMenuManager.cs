@@ -50,6 +50,9 @@ public class MainMenuManager : MonoBehaviour
             // Check if level is unlocked
             bool isUnlocked = PlayerPrefs.GetInt($"Level_{levelNumber}_Unlocked", levelNumber == 1 ? 1 : 0) == 1;
             levelButton.interactable = isUnlocked;
+
+            if (!isUnlocked)
+                buttonText.text = $"LOCKED";
         }
     }
     
