@@ -9,7 +9,7 @@ public class TitleAnimation : MonoBehaviour
     [SerializeField] private TMP_Text[] titleTexts;
     
     [Header("Animation Settings")]
-    [SerializeField] private float startOffsetY = -100f;  // How far below starting position
+    [SerializeField] private float startOffsetY = -100f;
     [SerializeField] private float animationDuration = 1.5f;
     [SerializeField] private float delayBetweenTexts = 0.2f;
     [SerializeField] private Ease easeType = Ease.OutBack;
@@ -23,22 +23,33 @@ public class TitleAnimation : MonoBehaviour
         for (int i = 0; i < titleTexts.Length; i++)
         {
             originalPositions[i] = titleTexts[i].transform.position;
-            
-            // Set initial state
+        }
+    }
+    
+    private void OnEnable()
+    {
+        // Reset and start animation whenever the object is enabled
+        ResetPositions();
+        StartCoroutine(AnimateTitleSequence());
+    }
+    
+    private void ResetPositions()
+    {
+        // Kill any existing animations
+        DOTween.Kill(gameObject);
+        
+        for (int i = 0; i < titleTexts.Length; i++)
+        {
+            // Reset alpha
             Color textColor = titleTexts[i].color;
             textColor.a = 0f;
             titleTexts[i].color = textColor;
             
-            // Move below screen
+            // Reset position
             Vector3 startPos = originalPositions[i];
             startPos.y += startOffsetY;
             titleTexts[i].transform.position = startPos;
         }
-    }
-    
-    private void Start()
-    {
-        StartCoroutine(AnimateTitleSequence());
     }
     
     private IEnumerator AnimateTitleSequence()

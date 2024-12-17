@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
-
+using TMPro;
 public class MainMenuManager : MonoBehaviour
 {
     [Header("Menu Panels")]
@@ -40,7 +40,7 @@ public class MainMenuManager : MonoBehaviour
             Button levelButton = Instantiate(levelButtonPrefab, levelButtonContainer);
             
             // Set button text
-            Text buttonText = levelButton.GetComponentInChildren<Text>();
+            TextMeshProUGUI buttonText = levelButton.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
                 buttonText.text = $"Level {levelNumber}";
             
