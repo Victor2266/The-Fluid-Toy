@@ -28,6 +28,8 @@ public class MainMenuManager : MonoBehaviour
         // Generate level select buttons
         GenerateLevelButtons();
         
+        levelButtonContainer.GetComponent<LevelSelectButtonAnimator>().InitializeButtons();
+
         // Load and apply saved settings
         LoadSettings();
     }
