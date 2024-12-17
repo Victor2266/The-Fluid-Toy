@@ -4,9 +4,13 @@ using UnityEngine.Audio;
 using TMPro;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 public class SettingsManager : MonoBehaviour
 {
+    //[Header("Level Management")]
+    public static int NumberOfLevels { get; private set; } = 15; //This is where you edit the total number of levels
+
     [Header("Resolution Settings")]
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private Toggle fullscreenToggle;
@@ -175,5 +179,27 @@ public class SettingsManager : MonoBehaviour
         // Convert slider value (0 to 1) to decibels (-80dB to 0dB)
         // Using -80dB as minimum since it's essentially silence
         return normalizedValue > 0.0001f ? Mathf.Log10(normalizedValue) * 20 : -80f;
+    }
+
+    public void UnlockAllLevels()
+    {
+        Debug.Log("Unlocking all levels...");
+        for (int i = 2; i <= NumberOfLevels; i++) // Start from 2 since level 1 is always unlocked
+        {
+            PlayerPrefs.SetInt($"Level_{i}_Unlocked", 1);
+        }
+        PlayerPrefs.Save();
+    }
+
+    public void LockAllLevels()
+    {
+        Debug.Log("Locking all levels...");
+        for (int i = 2; i <= NumberOfLevels; i++) // Start from 2 since level 1 should remain unlocked
+        {
+            PlayerPrefs.SetInt($"Level_{i}_Unlocked", 0);
+        }
+        // Ensure level 1 stays unlocked
+        PlayerPrefs.SetInt("Level_1_Unlocked", 1);
+        PlayerPrefs.Save();
     }
 }

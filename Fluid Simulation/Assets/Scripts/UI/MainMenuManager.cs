@@ -14,7 +14,8 @@ public class MainMenuManager : MonoBehaviour
     [Header("Level Select")]
     [SerializeField] private Transform levelButtonContainer;
     [SerializeField] private Button levelButtonPrefab;
-    [SerializeField] private int numberOfLevels = 10;
+    private int numberOfLevels;
+
     
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -22,6 +23,8 @@ public class MainMenuManager : MonoBehaviour
     
     private void Start()
     {
+        numberOfLevels = SettingsManager.NumberOfLevels;
+
         // Initialize the menu state
         ShowMainMenu();
         
@@ -33,31 +36,50 @@ public class MainMenuManager : MonoBehaviour
         // Load and apply saved settings
         LoadSettings();
     }
-    
+
+    private List<Button> levelButtons = new List<Button>(); // Add this field to store references to buttons
+
     private void GenerateLevelButtons()
     {
         for (int i = 1; i <= numberOfLevels; i++)
         {
-            int levelNumber = i; // Capture the level number for the button callback
+            int levelNumber = i;
             Button levelButton = Instantiate(levelButtonPrefab, levelButtonContainer);
-            
-            // Set button text
+            levelButtons.Add(levelButton); // Store reference to button
+
             TextMeshProUGUI buttonText = levelButton.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
                 buttonText.text = $"Level {levelNumber}";
-            
-            // Add click listener
-            levelButton.onClick.AddListener(() => LoadLevel(levelNumber));
-            
-            // Check if level is unlocked
-            bool isUnlocked = PlayerPrefs.GetInt($"Level_{levelNumber}_Unlocked", levelNumber == 1 ? 1 : 0) == 1;
-            levelButton.interactable = isUnlocked;
 
-            if (!isUnlocked)
-                buttonText.text = $"LOCKED";
+            levelButton.onClick.AddListener(() => LoadLevel(levelNumber));
+
+            UpdateButtonLockStatus(levelButton, buttonText, levelNumber);
         }
     }
-    
+
+    private void UpdateButtonLockStatus(Button button, TextMeshProUGUI buttonText, int levelNumber)
+    {
+        bool isUnlocked = PlayerPrefs.GetInt($"Level_{levelNumber}_Unlocked", levelNumber == 1 ? 1 : 0) == 1;
+        button.interactable = isUnlocked;
+
+        if (!isUnlocked)
+            buttonText.text = "LOCKED";
+        else
+            buttonText.text = $"Level {levelNumber}";
+    }
+
+    private void RefreshLevelButtons()
+    {
+        for (int i = 0; i < levelButtons.Count; i++)
+        {
+            if (levelButtons[i] != null)
+            {
+                TextMeshProUGUI buttonText = levelButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+                UpdateButtonLockStatus(levelButtons[i], buttonText, i + 1);
+            }
+        }
+    }
+
     public void ShowMainMenu()
     {
         mainMenuPanel.SetActive(true);
@@ -71,6 +93,7 @@ public class MainMenuManager : MonoBehaviour
         mainMenuPanel.SetActive(false);
         levelSelectPanel.SetActive(true);
         settingsPanel.SetActive(false);
+        RefreshLevelButtons(); // Refresh level buttons lock status
         PlayButtonSound();
     }
     
