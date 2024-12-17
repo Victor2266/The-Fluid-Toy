@@ -14,15 +14,15 @@ public class TitleAnimation : MonoBehaviour
     [SerializeField] private float delayBetweenTexts = 0.2f;
     [SerializeField] private Ease easeType = Ease.OutBack;
     
-    private Vector3[] originalPositions;
+    private Vector3[] originalLocalPositions;
     
     private void Awake()
     {
-        // Store original positions
-        originalPositions = new Vector3[titleTexts.Length];
+        // Store original local positions
+        originalLocalPositions = new Vector3[titleTexts.Length];
         for (int i = 0; i < titleTexts.Length; i++)
         {
-            originalPositions[i] = titleTexts[i].transform.position;
+            originalLocalPositions[i] = titleTexts[i].transform.localPosition;
         }
     }
     
@@ -45,10 +45,10 @@ public class TitleAnimation : MonoBehaviour
             textColor.a = 0f;
             titleTexts[i].color = textColor;
             
-            // Reset position
-            Vector3 startPos = originalPositions[i];
+            // Reset local position
+            Vector3 startPos = originalLocalPositions[i];
             startPos.y += startOffsetY;
-            titleTexts[i].transform.position = startPos;
+            titleTexts[i].transform.localPosition = startPos;
         }
     }
     
@@ -57,17 +57,17 @@ public class TitleAnimation : MonoBehaviour
         for (int i = 0; i < titleTexts.Length; i++)
         {
             // Start animation for current text
-            AnimateText(titleTexts[i], originalPositions[i], i);
+            AnimateText(titleTexts[i], originalLocalPositions[i], i);
             
             // Wait before starting next text animation
             yield return new WaitForSeconds(delayBetweenTexts);
         }
     }
     
-    private void AnimateText(TMP_Text text, Vector3 targetPosition, int index)
+    private void AnimateText(TMP_Text text, Vector3 targetLocalPosition, int index)
     {
-        // Animate position
-        text.transform.DOMove(targetPosition, animationDuration)
+        // Animate local position
+        text.transform.DOLocalMove(targetLocalPosition, animationDuration)
             .SetEase(easeType);
         
         // Animate opacity
