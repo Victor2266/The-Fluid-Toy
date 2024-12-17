@@ -11,6 +11,19 @@
 
 static const int NumThreads = 64;
 
+struct Circle //12 bytes total
+{
+    float2 pos; //8 bytes
+    float radius; //4 bytes
+};
+
+struct OrientedBox //24 bytes total
+{
+    float2 pos; //8 bytes
+    float2 size;
+    float2 zLocal;
+};
+
 // Buffers
 RWStructuredBuffer<float2> Positions;
 RWStructuredBuffer<float2> PredictedPositions;
@@ -18,6 +31,8 @@ RWStructuredBuffer<float2> Velocities;
 RWStructuredBuffer<float2> Densities; // Density, Near Density
 RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
+RWStructuredBuffer<OrientedBox> BoxColliders;
+RWStructuredBuffer<Circle> CircleColliders;
 
 // Settings
 const uint numParticles;
@@ -34,8 +49,8 @@ const float2 interactionInputPoint;
 const float interactionInputStrength;
 const float interactionInputRadius;
 
-const float2 obstacleSize;
-const float2 obstacleCentre;
+int numBoxColliders;
+int numCircleColliders;
 
 float DensityKernel(float dst, float radius)
 {
@@ -139,6 +154,30 @@ float2 ExternalForces(float2 pos, float2 velocity)
 	return gravityAccel;
 }
 
+void HandleBoxCollision(inout float2 pos, inout float2 vel, OrientedBox box)
+{
+    // Calculate distance to box edges
+    float2 boxHalfSize = box.size * 0.5;
+    float2 edgeDst = boxHalfSize - abs(pos - box.pos);
+
+    // Check if point is inside box
+    if (edgeDst.x >= 0 && edgeDst.y >= 0)
+    {
+        // Resolve collision along shortest axis
+        if (edgeDst.x < edgeDst.y) 
+        {
+            // Collision along x-axis
+            pos.x = box.pos.x + boxHalfSize.x * sign(pos.x - box.pos.x);
+            vel.x *= -1 * collisionDamping;
+        }
+        else 
+        {
+            // Collision along y-axis
+            pos.y = box.pos.y + boxHalfSize.y * sign(pos.y - box.pos.y);
+            vel.y *= -1 * collisionDamping;
+        }
+    }
+}
 
 void HandleCollisions(uint particleIndex)
 {
@@ -160,21 +199,11 @@ void HandleCollisions(uint particleIndex)
 		vel.y *= -1 * collisionDamping;
 	}
 
-	// Collide particle against the test obstacle
-	const float2 obstacleHalfSize = obstacleSize * 0.5;
-	float2 obstacleEdgeDst = obstacleHalfSize - abs(pos - obstacleCentre);
-
-	if (obstacleEdgeDst.x >= 0 && obstacleEdgeDst.y >= 0)
-	{
-		if (obstacleEdgeDst.x < obstacleEdgeDst.y) {
-			pos.x = obstacleHalfSize.x * sign(pos.x - obstacleCentre.x) + obstacleCentre.x;
-			vel.x *= -1 * collisionDamping;
-		}
-		else {
-			pos.y = obstacleHalfSize.y * sign(pos.y - obstacleCentre.y) + obstacleCentre.y;
-			vel.y *= -1 * collisionDamping;
-		}
-	}
+    // Handle box collisions
+    for (int i = 0; i < numBoxColliders; i++)
+    {
+        HandleBoxCollision(pos, vel, BoxColliders[i]);
+    }
 
 	// Update position and velocity
 	Positions[particleIndex] = pos;
