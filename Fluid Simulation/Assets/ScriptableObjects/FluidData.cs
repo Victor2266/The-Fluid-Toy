@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum FluidType
 {
+    Disabled,
     Water,
     Steam
 }
