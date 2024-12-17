@@ -83,6 +83,12 @@ public class Simulation2D : MonoBehaviour
     public Transform[] boxColliders;
     public Transform[] circleColliders;
 
+    private ComputeBuffer boxCollidersBuffer;
+    private ComputeBuffer circleCollidersBuffer;
+    private OrientedBox[] boxColliderData;
+    private Circle[] circleColliderData;
+    private const int MAX_COLLIDERS = 64; // Set a reasonable maximum number of colliders
+
     // Buffers
     public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
     public ComputeBuffer velocityBuffer { get; private set; }
@@ -124,7 +130,11 @@ public class Simulation2D : MonoBehaviour
         velocityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         
-        
+        boxColliderData = new OrientedBox[MAX_COLLIDERS];
+        circleColliderData = new Circle[MAX_COLLIDERS];
+
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(MAX_COLLIDERS);
+        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(MAX_COLLIDERS);
         
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
@@ -139,7 +149,11 @@ public class Simulation2D : MonoBehaviour
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, densityBuffer, "Densities", densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, velocityBuffer, "Velocities", externalForcesKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
 
+        compute.SetInt("numBoxColliders", boxColliders.Length);
+        compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
 
         gpuSort = new();
@@ -173,10 +187,7 @@ public class Simulation2D : MonoBehaviour
             pauseNextFrame = false;
         }
 
-        if(boxColliders.Length > 0){
-            obstacleCentre = boxColliders[0].position;
-            obstacleSize = boxColliders[0].localScale;
-        }
+        UpdateColliderData();
         HandleInput();
     }
 
@@ -209,6 +220,36 @@ public class Simulation2D : MonoBehaviour
 
     }
 
+    void UpdateColliderData()
+    {
+        // Update box colliders
+        for (int i = 0; i < boxColliders.Length && i < MAX_COLLIDERS; i++)
+        {
+            Transform collider = boxColliders[i];
+            boxColliderData[i] = new OrientedBox
+            {
+                pos = collider.position,
+                size = collider.localScale,
+                zLocal = (Vector2)(collider.right) // Use right vector for orientation
+            };
+        }
+
+        // Update circle colliders
+        for (int i = 0; i < circleColliders.Length && i < MAX_COLLIDERS; i++)
+        {
+            Transform collider = circleColliders[i];
+            circleColliderData[i] = new Circle
+            {
+                pos = collider.position,
+                radius = collider.localScale.x * 0.5f // Assuming uniform scale
+            };
+        }
+
+        // Update buffers
+        boxCollidersBuffer.SetData(boxColliderData);
+        circleCollidersBuffer.SetData(circleColliderData);
+    }
+
     void UpdateSettings(float deltaTime)
     {
         compute.SetFloat("deltaTime", deltaTime);
@@ -220,8 +261,8 @@ public class Simulation2D : MonoBehaviour
         compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
         compute.SetFloat("viscosityStrength", viscosityStrength);
         compute.SetVector("boundsSize", boundsSize);
-        compute.SetVector("obstacleSize", obstacleSize);
-        compute.SetVector("obstacleCentre", obstacleCentre);
+        compute.SetInt("numBoxColliders", boxColliders.Length);
+        compute.SetInt("numCircleColliders", circleColliders.Length);
 
         compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(smoothingRadius, 8)));
         compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(smoothingRadius, 5)));
@@ -280,7 +321,16 @@ public class Simulation2D : MonoBehaviour
 
     void OnDestroy()
     {
-        ComputeHelper.Release(positionBuffer, predictedPositionBuffer, velocityBuffer, densityBuffer, spatialIndices, spatialOffsets);
+        ComputeHelper.Release(
+            positionBuffer, 
+            predictedPositionBuffer, 
+            velocityBuffer, 
+            densityBuffer, 
+            spatialIndices, 
+            spatialOffsets,
+            boxCollidersBuffer,
+            circleCollidersBuffer
+        );
     }
 
 
@@ -288,7 +338,30 @@ public class Simulation2D : MonoBehaviour
     {
         Gizmos.color = new Color(0, 1, 0, 0.4f);
         Gizmos.DrawWireCube(Vector2.zero, boundsSize);
-        Gizmos.DrawWireCube(obstacleCentre, obstacleSize);
+        
+        // Draw all box colliders
+        if (boxColliders != null)
+        {
+            foreach (Transform boxCollider in boxColliders)
+            {
+                if (boxCollider != null)
+                {
+                    Gizmos.DrawWireCube(boxCollider.position, boxCollider.localScale);
+                }
+            }
+        }
+
+        // Draw all circle colliders
+        if (circleColliders != null)
+        {
+            foreach (Transform circleCollider in circleColliders)
+            {
+                if (circleCollider != null)
+                {
+                    Gizmos.DrawWireSphere(circleCollider.position, circleCollider.localScale.x * 0.5f);
+                }
+            }
+        }
 
         if (Application.isPlaying)
         {
