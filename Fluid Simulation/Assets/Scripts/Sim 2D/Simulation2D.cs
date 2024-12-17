@@ -34,56 +34,6 @@ public struct OrientedBox //24 bytes total
     public Vector2 zLocal;
 };
 
-// Fluid enum
-public enum FluidType
-{
-    Water,
-}
-
-// Fluid Type Class
-public class Fluid
-{
-    // FIXME Please adjust required class members, I just added whatever was used in sim
-    public string Name;
-    public float Gravity;
-    public float CollisionDamping;
-    public float SmoothingRadius;
-    public float TargetDensity;
-    public float PressureMultiplier;
-    public float NearPressureMultiplier;
-    public float ViscosityStrength;
-
-    public Fluid(string name, float gravity, float collisionDamping, float smoothingRadius,
-                 float targetDensity, float pressureMultiplier, float nearPressureMultiplier, float viscosityStrength)
-    {
-        Name = name;
-        Gravity = gravity;
-        CollisionDamping = collisionDamping;
-        SmoothingRadius = smoothingRadius;
-        TargetDensity = targetDensity;
-        PressureMultiplier = pressureMultiplier;
-        NearPressureMultiplier = nearPressureMultiplier;
-        ViscosityStrength = viscosityStrength;
-    }
-}
-
-// Maps enum type to the actual fluid class instance
-public class FluidMapper
-{
-    // Init fluids in this dictionary
-    private static readonly Dictionary<FluidType, Fluid> fluidMap = new Dictionary<FluidType, Fluid>
-    {
-        // FIXME Please adjust values (or remove if class members removed)
-        //Name, Gravity, CollisionDamping, SmoothingRadius, TargetDensity, PressureMult, NearPressureMult, ViscStrength
-        { FluidType.Water, new Fluid("Water", 9.8f, 0.95f, 2.0f, 1000f, 1.0f, 0.1f, 0.1f) },
-    };
-
-    // Tries to get a fluid instance (instantiated above) based on enum type, or returns null
-    public static Fluid GetFluid(FluidType type)
-    {
-        return fluidMap.TryGetValue(type, out var fluid) ? fluid : null;
-    }
-}
 
 public class Simulation2D : MonoBehaviour
 {
@@ -93,6 +43,12 @@ public class Simulation2D : MonoBehaviour
     public float timeScale = 1;
     public bool fixedTimeStep;
     public int iterationsPerFrame;
+
+    public Vector2 boundsSize;
+    public Vector2 obstacleSize;
+    public Vector2 obstacleCentre;
+
+    [Header("Fluid Settings")]
     public float gravity;
     [Range(0, 1)] public float collisionDamping = 0.95f;
     public float smoothingRadius = 2;
@@ -100,13 +56,23 @@ public class Simulation2D : MonoBehaviour
     public float pressureMultiplier;
     public float nearPressureMultiplier;
     public float viscosityStrength;
-    public Vector2 boundsSize;
-    public Vector2 obstacleSize;
-    public Vector2 obstacleCentre;
 
     [Header("Interaction Settings")]
     public float interactionRadius;
     public float interactionStrength;
+
+    // Brush Settings + Enum type
+    public enum BrushType
+    {
+        DRAW,
+        GRAVITY
+    }
+    [Header("Brush Type")]
+
+    [SerializeField] private BrushType brushState = BrushType.GRAVITY;
+
+    [Header("Current Fluid Type")]
+    [SerializeField] private FluidData currentFluid;
 
     [Header("References")]
     public ComputeShader compute;
@@ -116,24 +82,6 @@ public class Simulation2D : MonoBehaviour
     [Header("Obstacle Colliders")]
     public Transform[] boxColliders;
     public Transform[] circleColliders;
-
-    // Brush Settings + Enum type
-    public enum BrushType
-    {
-        DRAW,
-        GRAVITY
-    }
-    public struct BrushSettings
-    {
-        public BrushType brushType;
-        public FluidType fluidType;
-    }
-    [Header("Brush Type")]
-    public BrushSettings brushState = new BrushSettings
-    { 
-        brushType=BrushType.GRAVITY,
-        fluidType=FluidType.Water
-    };
 
     // Buffers
     public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
@@ -288,7 +236,7 @@ public class Simulation2D : MonoBehaviour
         float currInteractStrength = 0;
         if (isPushInteraction || isPullInteraction)
         {
-            if(brushState.brushType == BrushType.GRAVITY)
+            if(brushState == BrushType.GRAVITY)
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
         }
 
@@ -355,5 +303,30 @@ public class Simulation2D : MonoBehaviour
             }
         }
 
+    }
+
+    public void SetFluidProperties(FluidData fluidData)
+    {
+        if (fluidData == null)
+        {
+            Debug.LogError("Attempted to set null FluidData");
+            return;
+        }
+
+        currentFluid = fluidData;
+
+        // Update simulation parameters with the new fluid's properties
+        gravity = fluidData.gravity;
+        collisionDamping = fluidData.collisionDamping;
+        smoothingRadius = fluidData.smoothingRadius;
+        targetDensity = fluidData.targetDensity;
+        pressureMultiplier = fluidData.pressureMultiplier;
+        nearPressureMultiplier = fluidData.nearPressureMultiplier;
+        viscosityStrength = fluidData.viscosityStrength;
+    }
+
+    public void SetBrushType(int brushTypeIndex)
+    {
+        brushState = (BrushType)brushTypeIndex;
     }
 }
