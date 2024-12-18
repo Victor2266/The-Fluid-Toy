@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class PauseMenuManager : MonoBehaviour
 {
+    [SerializeField] private GameObject defaultSelectedButton; // Assign this in inspector
+
     [Header("Menu Panels")]
     [SerializeField] private GameObject pauseMenuPanel;
     [SerializeField] private GameObject settingsPanel;
@@ -47,6 +50,9 @@ public class PauseMenuManager : MonoBehaviour
         Time.timeScale = 0f; // Freeze the game
         isPaused = true;
         PlayButtonSound();
+
+         // Select the default button when pause menu opens
+        EventSystem.current.SetSelectedGameObject(defaultSelectedButton);
     }
 
     public void ResumeGame()
@@ -56,6 +62,9 @@ public class PauseMenuManager : MonoBehaviour
         Time.timeScale = 1f; // Unfreeze the game
         isPaused = false;
         PlayButtonSound();
+
+        // Deselect all UI elements
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     public void ShowSettings()
