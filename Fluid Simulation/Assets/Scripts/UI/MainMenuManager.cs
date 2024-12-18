@@ -63,9 +63,26 @@ public class MainMenuManager : MonoBehaviour
         button.interactable = isUnlocked;
 
         if (!isUnlocked)
+        {
             buttonText.text = "LOCKED";
+            RectTransform rectTransform = buttonText.GetComponent<RectTransform>();
+            float currentLeft = rectTransform.offsetMin.x;
+            float currentRight = rectTransform.offsetMax.x;
+            rectTransform.offsetMin = new Vector2(currentLeft, -10);
+            rectTransform.offsetMax = new Vector2(currentRight, -10);
+        }
         else
+        {
             buttonText.text = $"Level {levelNumber}";
+            RectTransform rectTransform = buttonText.GetComponent<RectTransform>();
+            float currentLeft = rectTransform.offsetMin.x;
+            float currentRight = rectTransform.offsetMax.x;
+            rectTransform.offsetMin = new Vector2(currentLeft, 0);
+            rectTransform.offsetMax = new Vector2(currentRight, 0);
+        }
+        Transform lockIcon = button.transform.Find("Lock Icon");
+        if (lockIcon != null)
+            lockIcon.gameObject.SetActive(!isUnlocked);
     }
 
     private void RefreshLevelButtons()
