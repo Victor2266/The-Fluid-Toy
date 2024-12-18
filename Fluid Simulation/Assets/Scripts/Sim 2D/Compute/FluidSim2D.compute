@@ -156,26 +156,54 @@ float2 ExternalForces(float2 pos, float2 velocity)
 
 void HandleBoxCollision(inout float2 pos, inout float2 vel, OrientedBox box)
 {
-    // Calculate distance to box edges
-    float2 boxHalfSize = box.size * 0.5;
-    float2 edgeDst = boxHalfSize - abs(pos - box.pos);
+    // Transform position to box's local space
+    float2 localPos = pos - box.pos;
 
-    // Check if point is inside box
-    if (edgeDst.x >= 0 && edgeDst.y >= 0)
+    // Create rotation matrix for local space transformation
+    float2 right = box.zLocal;
+    float2 up = float2(-box.zLocal.y, box.zLocal.x);
+
+    // Transform to box's local space
+    float2 rotatedPos = float2(
+        dot(localPos, right),
+        dot(localPos, up)
+    );
+
+    // Calculate distance to box edges in local space
+    float2 boxHalfSize = box.size * 0.5;
+    float2 distanceFromCenter = abs(rotatedPos);
+    float2 penetration = distanceFromCenter - boxHalfSize;
+
+    // Only process collision if we're actually inside the box
+    if (penetration.x < 0 && penetration.y < 0)
     {
-        // Resolve collision along shortest axis
-        if (edgeDst.x < edgeDst.y) 
+        // Transform velocity to local space
+        float2 localVel = float2(
+            dot(vel, right),
+            dot(vel, up)
+        );
+
+        // Determine which axis has less penetration
+        if (penetration.x > penetration.y)
         {
-            // Collision along x-axis
-            pos.x = box.pos.x + boxHalfSize.x * sign(pos.x - box.pos.x);
-            vel.x *= -1 * collisionDamping;
+            // X axis collision
+            float sign = rotatedPos.x > 0 ? 1 : -1;
+            rotatedPos.x = boxHalfSize.x * sign;
+            localVel.x *= -1 * collisionDamping;
         }
-        else 
+        else
         {
-            // Collision along y-axis
-            pos.y = box.pos.y + boxHalfSize.y * sign(pos.y - box.pos.y);
-            vel.y *= -1 * collisionDamping;
+            // Y axis collision
+            float sign = rotatedPos.y > 0 ? 1 : -1;
+            rotatedPos.y = boxHalfSize.y * sign;
+            localVel.y *= -1 * collisionDamping;
         }
+
+        // Transform position back to world space
+        pos = box.pos + right * rotatedPos.x + up * rotatedPos.y;
+
+        // Transform velocity back to world space
+        vel = right * localVel.x + up * localVel.y;
     }
 }
 
