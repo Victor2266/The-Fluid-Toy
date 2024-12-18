@@ -56,11 +56,15 @@ public class SettingsHeaderAnimation : MonoBehaviour
         
         // Animate position
         headerText.transform.DOLocalMove(originalPosition, animationDuration)
-            .SetEase(easeType);
+            .SetEase(easeType)
+            .SetUpdate(true);  // Make it time scale independent
+
         
         // Animate opacity
         headerText.DOFade(1f, animationDuration * 0.8f)
-            .SetEase(Ease.OutQuad);
+            .SetEase(Ease.OutQuad)
+            .SetUpdate(true);  // Make it time scale independent
+
         
         hasAnimated = true;
     }
