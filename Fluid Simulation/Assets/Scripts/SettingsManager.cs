@@ -46,8 +46,8 @@ public class SettingsManager : MonoBehaviour
         resolutions = Screen.resolutions
             .Select(resolution => new Resolution { 
                 width = resolution.width, 
-                height = resolution.height, 
-                refreshRate = resolution.refreshRate 
+                height = resolution.height,
+                refreshRateRatio = resolution.refreshRateRatio 
             })
             .Distinct()
             .OrderByDescending(r => r.width)
@@ -58,7 +58,8 @@ public class SettingsManager : MonoBehaviour
         List<string> options = new List<string>();
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string option = $"{resolutions[i].width}x{resolutions[i].height} @{resolutions[i].refreshRate}Hz";
+            float refreshRate = (float)resolutions[i].refreshRateRatio.value;  // Explicit cast to float
+            string option = $"{resolutions[i].width}x{resolutions[i].height} @{refreshRate:F0}Hz";
             options.Add(option);
 
             if (resolutions[i].width == Screen.currentResolution.width &&
