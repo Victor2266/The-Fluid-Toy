@@ -130,6 +130,15 @@ public class MainMenuManager : MonoBehaviour
         // Load the level scene
         SceneManager.LoadScene($"Level_{levelNumber}");
     }
+
+    public void LoadSandbox()
+    {
+        PlayButtonSound();
+        // Save current game state if needed
+        PlayerPrefs.Save();
+        // Load the level scene
+        SceneManager.LoadScene($"Sandbox");
+    }
     
     public void QuitGame()
     {
