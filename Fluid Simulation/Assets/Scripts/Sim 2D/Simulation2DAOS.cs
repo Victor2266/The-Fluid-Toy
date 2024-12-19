@@ -308,7 +308,7 @@ public class Simulation2DAOS : MonoBehaviour
         //float2[] allPoints = new float2[spawnData.positions.Length];
         Particle[] allPoints = new Particle[spawnData.positions.Length];
 
-        System.Array.Copy(spawnData.positions, allPoints, spawnData.positions.Length);
+        //System.Array.Copy(spawnData.positions, allPoints, spawnData.positions.Length);
 
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
