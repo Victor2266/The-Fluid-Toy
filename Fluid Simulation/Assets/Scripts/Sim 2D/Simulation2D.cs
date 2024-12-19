@@ -402,6 +402,10 @@ public class Simulation2D : MonoBehaviour
     {
         isPaused = !isPaused;
     }
+    public bool getPaused()
+    {
+        return isPaused;
+    }
     public void stepSimulation()
     {
         isPaused = false;
