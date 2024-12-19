@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using System.Runtime.InteropServices;
 using System;
+using UnityEngine.UIElements;
 
 //Defining Structs
 [System.Serializable]
@@ -14,18 +15,6 @@ public struct Particle // 40 bytes total
     public Vector2 position; // 8
     public float temperature; // 4
     public FluidType type; // 4 (enum is int by default)
-
-    // FIXME Currently mimicks original spawner behaviour
-    //       Also using placeholder values for several inits
-    public Particle (float2 pos, float2 vel)
-    {
-        position = pos;
-        predictedPosition = pos;
-        velocity = vel;
-        density = 1;
-        temperature = 25;
-        type = 0;
-    }
 }
 
 [System.Serializable]
@@ -46,7 +35,7 @@ public struct OrientedBox //24 bytes total
 };
 
 
-public class Simulation2D : MonoBehaviour
+public class Simulation2DAoS : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
@@ -159,13 +148,13 @@ public class Simulation2D : MonoBehaviour
         SetInitialBufferData(spawnData);
 
         // Init compute
+        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         //ComputeHelper.SetBuffer(compute, positionBuffer, "Positions", externalForcesKernel, updatePositionKernel);
         //ComputeHelper.SetBuffer(compute, predictedPositionBuffer, "PredictedPositions", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         //ComputeHelper.SetBuffer(compute, densityBuffer, "Densities", densityKernel, pressureKernel, viscosityKernel);
         //ComputeHelper.SetBuffer(compute, velocityBuffer, "Velocities", externalForcesKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, updatePositionKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
 
@@ -178,7 +167,7 @@ public class Simulation2D : MonoBehaviour
 
 
         // Init display
-        display.Init(this);
+        display.InitAoS(this);
     }
 
     void FixedUpdate()
@@ -313,7 +302,14 @@ public class Simulation2D : MonoBehaviour
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
-            Particle p = new Particle(spawnData.positions[i], spawnData.velocities[i]);
+            Particle p = new Particle {
+                position = spawnData.positions[i], 
+                predictedPosition = spawnData.positions[i], 
+                velocity = spawnData.velocities[i],
+                density = new float2(0, 0),
+                temperature = 0,
+                type = FluidType.Water // Or whatever default type you want};
+            };
             allPoints[i] = p;
         }
 

@@ -16,7 +16,7 @@ public class ParticleDisplay2D : MonoBehaviour
 	bool needsUpdate;
 
 
-	public void Init(Simulation2D sim)
+	public void InitAoS(Simulation2DAoS sim)
 	{
         needsUpdate = true;
         material = new Material(shader);
