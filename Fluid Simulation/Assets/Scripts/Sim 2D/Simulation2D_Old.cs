@@ -4,29 +4,17 @@ using System.Runtime.InteropServices;
 using System;
 
 //Defining Structs
-[System.Serializable]
+/*[System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 44)]
-public struct Particle // 40 bytes total
+public struct Particle // 44 bytes total
 {
     public float2 density; //8 bytes, density and near density
     public Vector2 velocity; //8 bytes
     public Vector2 predictedPosition; // 8
     public Vector2 position; // 8
-    public float temperature; // 4
-    public FluidType type; // 4 (enum is int by default)
-
-    // FIXME Currently mimicks original spawner behaviour
-    //       Also using placeholder values for several inits
-    public Particle (float2 pos, float2 vel)
-    {
-        position = pos;
-        predictedPosition = pos;
-        velocity = vel;
-        density = 1;
-        temperature = 25;
-        type = 0;
-    }
-}
+    public float2 temperature; // 8
+    public FluidType type; // 4
+}*/
 /*
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 12)]
@@ -46,7 +34,7 @@ public struct OrientedBox //24 bytes total
 };
 */
 
-public class Simulation2DAOS : MonoBehaviour
+public class Simulation2D_Old : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
@@ -100,14 +88,11 @@ public class Simulation2DAOS : MonoBehaviour
     private Circle[] circleColliderData;
     private const int MAX_COLLIDERS = 64; // Set a reasonable maximum number of colliders
 
-    [Header("Particle Data")]
     // Buffers
-    /*public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
+    public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
     public ComputeBuffer velocityBuffer { get; private set; }
     public ComputeBuffer densityBuffer { get; private set; }
-    ComputeBuffer predictedPositionBuffer; */
-    public Particle[] particleData;
-    public ComputeBuffer particleBuffer { get; private set; }
+    ComputeBuffer predictedPositionBuffer;
     ComputeBuffer spatialIndices;
     ComputeBuffer spatialOffsets;
     GPUSort gpuSort;
@@ -139,12 +124,10 @@ public class Simulation2DAOS : MonoBehaviour
         numParticles = spawnData.positions.Length;
 
         // Create buffers
-        /*positionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);            //These are replaced by struct buffers
+        positionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);            //These are replaced by struct buffers
         predictedPositionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         velocityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
-        densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);*/
-        particleData = new Particle[numParticles];
-        particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
+        densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         
         boxColliderData = new OrientedBox[MAX_COLLIDERS];
         circleColliderData = new Circle[MAX_COLLIDERS];
@@ -159,13 +142,12 @@ public class Simulation2DAOS : MonoBehaviour
         SetInitialBufferData(spawnData);
 
         // Init compute
-        //ComputeHelper.SetBuffer(compute, positionBuffer, "Positions", externalForcesKernel, updatePositionKernel);
-        //ComputeHelper.SetBuffer(compute, predictedPositionBuffer, "PredictedPositions", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
+        ComputeHelper.SetBuffer(compute, positionBuffer, "Positions", externalForcesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, predictedPositionBuffer, "PredictedPositions", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        //ComputeHelper.SetBuffer(compute, densityBuffer, "Densities", densityKernel, pressureKernel, viscosityKernel);
-        //ComputeHelper.SetBuffer(compute, velocityBuffer, "Velocities", externalForcesKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, updatePositionKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
+        ComputeHelper.SetBuffer(compute, densityBuffer, "Densities", densityKernel, pressureKernel, viscosityKernel);
+        ComputeHelper.SetBuffer(compute, velocityBuffer, "Velocities", externalForcesKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
 
@@ -178,7 +160,7 @@ public class Simulation2DAOS : MonoBehaviour
 
 
         // Init display
-        display.InitAOS(this);
+        display.Init_Old(this);
     }
 
     void FixedUpdate()
@@ -305,22 +287,12 @@ public class Simulation2DAOS : MonoBehaviour
 
     void SetInitialBufferData(ParticleSpawner.ParticleSpawnData spawnData)
     {
-        //float2[] allPoints = new float2[spawnData.positions.Length];
-        Particle[] allPoints = new Particle[spawnData.positions.Length];
+        float2[] allPoints = new float2[spawnData.positions.Length];
+        System.Array.Copy(spawnData.positions, allPoints, spawnData.positions.Length);
 
-        //System.Array.Copy(spawnData.positions, allPoints, spawnData.positions.Length);
-
-        // FIXME defaulting some values
-        for (int i = 0; i < spawnData.positions.Length; i++)
-        {
-            Particle p = new Particle(spawnData.positions[i], spawnData.velocities[i]);
-            allPoints[i] = p;
-        }
-
-        //positionBuffer.SetData(allPoints);
-        //predictedPositionBuffer.SetData(allPoints);
-        //velocityBuffer.SetData(spawnData.velocities);
-        particleBuffer.SetData(allPoints);
+        positionBuffer.SetData(allPoints);
+        predictedPositionBuffer.SetData(allPoints);
+        velocityBuffer.SetData(spawnData.velocities);
     }
 
     void HandleInput()
@@ -349,11 +321,10 @@ public class Simulation2DAOS : MonoBehaviour
     void OnDestroy()
     {
         ComputeHelper.Release(
-            //positionBuffer, 
-            //predictedPositionBuffer, 
-            //velocityBuffer, 
-            //densityBuffer, 
-            particleBuffer,
+            positionBuffer, 
+            predictedPositionBuffer, 
+            velocityBuffer, 
+            densityBuffer, 
             spatialIndices, 
             spatialOffsets,
             boxCollidersBuffer,
