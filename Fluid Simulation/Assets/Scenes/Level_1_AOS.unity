@@ -4114,6 +4114,176 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 867554219}
   m_CullTransparentMesh: 1
+--- !u!1 &882471147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 882471152}
+  - component: {fileID: 882471151}
+  - component: {fileID: 882471150}
+  - component: {fileID: 882471149}
+  - component: {fileID: 882471148}
+  m_Layer: 0
+  m_Name: Simulation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &882471148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882471147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b090cee05a6cd0e4291a0e02381231c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  shader: {fileID: 4800000, guid: 2bbf926de3a6aa449a7803e9b686de14, type: 3}
+  scale: 0.2
+  colourMap:
+    serializedVersion: 2
+    key0: {r: 0.13363299, g: 0.34235913, b: 0.7264151, a: 1}
+    key1: {r: 0, g: 0.7901604, b: 1, a: 1}
+    key2: {r: 0.48584908, g: 0.96951246, b: 1, a: 0}
+    key3: {r: 1, g: 1, b: 1, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 4064
+    ctime1: 33191
+    ctime2: 46738
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 2
+    m_ColorSpace: -1
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 2
+  gradientResolution: 64
+  velocityDisplayMax: 6.5
+--- !u!114 &882471149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882471147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particleCount: 10000
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 3.35, y: 0.51}
+  spawnSize: {x: 7, y: 7}
+  jitterStr: 0.025
+  showSpawnBoundsGizmos: 1
+--- !u!114 &882471150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882471147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e93bd3ee5cf24cb44934a2ddefef4901, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeScale: 1
+  fixedTimeStep: 1
+  iterationsPerFrame: 3
+  boundsSize: {x: 34.2, y: 18.6}
+  obstacleSize: {x: 0, y: 0}
+  obstacleCentre: {x: 0, y: 0}
+  gravity: -12
+  collisionDamping: 0.95
+  smoothingRadius: 0.35
+  targetDensity: 55
+  pressureMultiplier: 500
+  nearPressureMultiplier: 18
+  viscosityStrength: 0.06
+  interactionRadius: 3
+  interactionStrength: 360
+  brushState: 1
+  currentFluid: {fileID: 0}
+  compute: {fileID: 7200000, guid: c4e04fbd8b42e9e49be8bbd01966b4da, type: 3}
+  spawner: {fileID: 882471149}
+  display: {fileID: 882471148}
+  boxColliders:
+  - {fileID: 1163845349}
+  circleColliders: []
+  particleData: []
+--- !u!114 &882471151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882471147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf901970f9cf132479a879d7a4acde3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeScale: 1
+  fixedTimeStep: 0
+  iterationsPerFrame: 0
+  boundsSize: {x: 0, y: 0}
+  obstacleSize: {x: 0, y: 0}
+  obstacleCentre: {x: 0, y: 0}
+  gravity: 0
+  collisionDamping: 0.95
+  smoothingRadius: 2
+  targetDensity: 0
+  pressureMultiplier: 0
+  nearPressureMultiplier: 0
+  viscosityStrength: 0
+  interactionRadius: 0
+  interactionStrength: 0
+  brushState: 1
+  currentFluid: {fileID: 0}
+  compute: {fileID: 0}
+  spawner: {fileID: 0}
+  display: {fileID: 0}
+  boxColliders: []
+  circleColliders: []
+--- !u!4 &882471152
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882471147}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &960991364
 GameObject:
   m_ObjectHideFlags: 0
@@ -11464,6 +11634,7 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 352399662}
   - {fileID: 271053318}
+  - {fileID: 882471152}
   - {fileID: 738685445}
   - {fileID: 2107056133}
   - {fileID: 638810972}
