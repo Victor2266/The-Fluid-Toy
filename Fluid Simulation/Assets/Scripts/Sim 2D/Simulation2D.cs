@@ -342,6 +342,7 @@ public class Simulation2D : MonoBehaviour
         Gizmos.color = new Color(0, 1, 0, 0.4f);
         Gizmos.DrawWireCube(Vector2.zero, boundsSize);
         
+        /*
         // Draw all box colliders
         if (boxColliders != null)
         {
@@ -365,7 +366,8 @@ public class Simulation2D : MonoBehaviour
                 }
             }
         }
-
+        */
+        
         if (Application.isPlaying)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
