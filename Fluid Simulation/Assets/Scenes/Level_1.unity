@@ -1427,7 +1427,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: '
 
-    Fill the Cup with Water!'
+    Get the man a drink!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
   m_sharedMaterial: {fileID: 4419277419123658369, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
@@ -1838,22 +1838,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   shader: {fileID: 4800000, guid: 441b7193936682446b30d2140d15792a, type: 3}
-  scale: 0.2
+  scale: 0.23
   colourMap:
     serializedVersion: 2
-    key0: {r: 0.13363299, g: 0.34235913, b: 0.7264151, a: 1}
-    key1: {r: 0, g: 0.7901604, b: 1, a: 1}
-    key2: {r: 0.48584908, g: 0.96951246, b: 1, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
+    key0: {r: 1, g: 0.8217412, b: 0, a: 1}
+    key1: {r: 1.0002804, g: 0.93725497, b: 0.73333335, a: 1}
+    key2: {r: 1, g: 0.7600515, b: 0, a: 0}
+    key3: {r: 1, g: 0.8845242, b: 0.48627448, a: 0}
+    key4: {r: 1, g: 1, b: 1, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 4064
-    ctime1: 33191
-    ctime2: 46738
-    ctime3: 65535
-    ctime4: 0
+    ctime0: 4048
+    ctime1: 18890
+    ctime2: 33191
+    ctime3: 46738
+    ctime4: 53083
     ctime5: 0
     ctime6: 0
     ctime7: 0
@@ -1867,7 +1867,7 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 2
     m_ColorSpace: -1
-    m_NumColorKeys: 4
+    m_NumColorKeys: 5
     m_NumAlphaKeys: 2
   gradientResolution: 64
   velocityDisplayMax: 6.5
@@ -5704,7 +5704,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -9.6, y: 5.4}
+  m_AnchoredPosition: {x: -9.5, y: 5.4}
   m_SizeDelta: {x: 12, y: 8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &924578347
@@ -11063,7 +11063,7 @@ MonoBehaviour:
 
     Use the left and right mouse buttons
 
-    to move the water
+    to move the fluid
     around
 
 
@@ -14046,6 +14046,134 @@ MonoBehaviour:
   PlayPauseSidebarBG: {fileID: 0}
   PauseIconImage: {fileID: 21300000, guid: 46670ff3bc6dac94eaeabfe2a316ebdc, type: 3}
   PlayIconImage: {fileID: 21300000, guid: fc75ddf59e12390409d7c04547b531ae, type: 3}
+--- !u!1 &2035263639
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2035263641}
+  - component: {fileID: 2035263640}
+  m_Layer: 0
+  m_Name: BGM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &2035263640
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035263639}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
+  m_audioClip: {fileID: 8300000, guid: cdee234277dda1448ad0125f968ceba9, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &2035263641
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035263639}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2043283876
 GameObject:
   m_ObjectHideFlags: 0
@@ -14179,7 +14307,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: WATER!!!
+  m_text: BEER!!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
   m_sharedMaterial: {fileID: 4621470211802787547, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
@@ -15248,3 +15376,4 @@ SceneRoots:
   - {fileID: 638810972}
   - {fileID: 2003172739}
   - {fileID: 914899443}
+  - {fileID: 2035263641}
