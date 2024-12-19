@@ -304,17 +304,12 @@ public class Simulation2D : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            isPaused = false;
-            pauseNextFrame = true;
+            stepSimulation();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            isPaused = true;
-            // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
-            SetInitialBufferData(spawnData);
-            RunSimulationStep();
-            SetInitialBufferData(spawnData);
+            resetSimulation();
         }
     }
 
@@ -406,5 +401,18 @@ public class Simulation2D : MonoBehaviour
     public void togglePause()
     {
         isPaused = !isPaused;
+    }
+    public void stepSimulation()
+    {
+        isPaused = false;
+        pauseNextFrame = true;
+    }
+    public void resetSimulation()
+    {
+        isPaused = true;
+        // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
+        SetInitialBufferData(spawnData);
+        RunSimulationStep();
+        SetInitialBufferData(spawnData);
     }
 }
