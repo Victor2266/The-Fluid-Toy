@@ -16,10 +16,24 @@ public class ParticleDisplay2D : MonoBehaviour
 	bool needsUpdate;
 
 
-	public void Init(Simulation2D sim)
+	public void InitAoS(Simulation2DAoS sim)
 	{
         needsUpdate = true;
         material = new Material(shader);
+		//material.SetBuffer("Positions2D", sim.positionBuffer);
+		//material.SetBuffer("Velocities", sim.velocityBuffer);
+		//material.SetBuffer("DensityData", sim.densityBuffer);
+		material.SetBuffer("Particles", sim.particleBuffer);
+
+		//argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.positionBuffer.count);
+		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
+		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
+	}
+
+	public void Init(Simulation2D sim)
+	{
+		needsUpdate = true;
+		material = new Material(shader);
 		material.SetBuffer("Positions2D", sim.positionBuffer);
 		material.SetBuffer("Velocities", sim.velocityBuffer);
 		material.SetBuffer("DensityData", sim.densityBuffer);
