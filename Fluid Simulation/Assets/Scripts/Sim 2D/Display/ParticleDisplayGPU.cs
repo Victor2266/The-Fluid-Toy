@@ -28,6 +28,16 @@ public class ParticleDisplay2D : MonoBehaviour
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
+	public void InitAOS(Simulation2DAOS sim)
+	{
+		needsUpdate = true;
+		material = new Material(shader);
+		material.SetBuffer("Particles", sim.particleBuffer);
+
+		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
+		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
+	}
+
 	void LateUpdate()
 	{
 		if (shader != null)

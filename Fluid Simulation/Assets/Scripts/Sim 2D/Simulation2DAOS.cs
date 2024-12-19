@@ -22,12 +22,12 @@ public struct Particle // 40 bytes total
         position = pos;
         predictedPosition = pos;
         velocity = vel;
-        density = 0;
+        density = 1;
         temperature = 25;
         type = 0;
     }
 }
-
+/*
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 12)]
 public struct Circle //12 bytes total
@@ -44,9 +44,9 @@ public struct OrientedBox //24 bytes total
     public Vector2 size;
     public Vector2 zLocal;
 };
+*/
 
-
-public class Simulation2D : MonoBehaviour
+public class Simulation2DAOS : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
@@ -144,7 +144,7 @@ public class Simulation2D : MonoBehaviour
         velocityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);*/
         particleData = new Particle[numParticles];
-        particleBuffer = ComputerHelper.CreateStructuredBuffer<Particle>(numParticles);
+        particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         
         boxColliderData = new OrientedBox[MAX_COLLIDERS];
         circleColliderData = new Circle[MAX_COLLIDERS];
@@ -178,7 +178,7 @@ public class Simulation2D : MonoBehaviour
 
 
         // Init display
-        display.Init(this);
+        display.InitAOS(this);
     }
 
     void FixedUpdate()
