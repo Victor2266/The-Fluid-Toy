@@ -12,15 +12,19 @@ public struct Particle // 40 bytes total
     public Vector2 velocity; //8 bytes
     public Vector2 predictedPosition; // 8
     public Vector2 position; // 8
-    public float1 temperature; // 4
+    public float temperature; // 4
     public FluidType type; // 4 (enum is int by default)
 
     // FIXME Currently mimicks original spawner behaviour
+    //       Also using placeholder values for several inits
     public Particle (float2 pos, float2 vel)
     {
         position = pos;
         predictedPosition = pos;
         velocity = vel;
+        density = 0;
+        temperature = 25;
+        type = 0;
     }
 }
 

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System;
 
 //Defining Structs
-[System.Serializable]
+/*[System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 44)]
 public struct Particle // 44 bytes total
 {
@@ -14,7 +14,7 @@ public struct Particle // 44 bytes total
     public Vector2 position; // 8
     public float2 temperature; // 8
     public FluidType type; // 4
-}
+}*/
 
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 12)]
