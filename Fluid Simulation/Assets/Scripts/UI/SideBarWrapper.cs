@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SideBarWrapper : MonoBehaviour
 {
@@ -59,5 +60,9 @@ public class SideBarWrapper : MonoBehaviour
             PlayPauseSidebarIcon.sprite = PauseIconImage;
             PlayPauseSidebarBG.color = new Color(0, 0, 0, 255);
         }
+    }
+
+    public void ReloadScene(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
