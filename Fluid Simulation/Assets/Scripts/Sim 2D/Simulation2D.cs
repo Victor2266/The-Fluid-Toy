@@ -34,7 +34,7 @@ public struct OrientedBox //24 bytes total
 };
 */
 
-public class Simulation2D_Old : MonoBehaviour
+public class Simulation2D : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
@@ -160,7 +160,7 @@ public class Simulation2D_Old : MonoBehaviour
 
 
         // Init display
-        display.Init_Old(this);
+        display.Init(this);
     }
 
     void FixedUpdate()
