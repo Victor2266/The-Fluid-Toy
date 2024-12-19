@@ -300,7 +300,7 @@ public class Simulation2D : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            isPaused = !isPaused;
+            togglePause();
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
@@ -401,5 +401,10 @@ public class Simulation2D : MonoBehaviour
     public void SetBrushType(int brushTypeIndex)
     {
         brushState = (BrushType)brushTypeIndex;
+    }
+
+    public void togglePause()
+    {
+        isPaused = !isPaused;
     }
 }

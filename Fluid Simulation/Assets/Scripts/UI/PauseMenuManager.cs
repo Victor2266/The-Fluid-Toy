@@ -44,7 +44,7 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
-    private void PauseGame()
+    public void PauseGame()
     {
         pauseMenuPanel.SetActive(true);
         Time.timeScale = 0f; // Freeze the game
