@@ -305,19 +305,22 @@ public class Simulation2DAOS : MonoBehaviour
 
     void SetInitialBufferData(ParticleSpawner.ParticleSpawnData spawnData)
     {
-        float2[] allPoints = new float2[spawnData.positions.Length];
+        //float2[] allPoints = new float2[spawnData.positions.Length];
+        Particle[] allPoints = new Particle[spawnData.positions.Length];
+
         System.Array.Copy(spawnData.positions, allPoints, spawnData.positions.Length);
 
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
-            particleData[i] = new Particle(allPoints[i], spawnData.velocities[i]);
+            Particle p = new Particle(spawnData.positions[i], spawnData.velocities[i]);
+            allPoints[i] = p;
         }
 
         //positionBuffer.SetData(allPoints);
         //predictedPositionBuffer.SetData(allPoints);
         //velocityBuffer.SetData(spawnData.velocities);
-        particleBuffer.SetData(particleData);
+        particleBuffer.SetData(allPoints);
     }
 
     void HandleInput()
