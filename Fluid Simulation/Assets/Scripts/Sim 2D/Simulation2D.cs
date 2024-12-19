@@ -301,6 +301,15 @@ public class Simulation2D : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             togglePause();
+            GameObject sidebar = GameObject.FindGameObjectWithTag("Sidebar");
+            if (sidebar != null)
+            {
+                SideBarWrapper sideBarWrapper = sidebar.GetComponent<SideBarWrapper>();
+                if (sideBarWrapper != null)
+                {
+                    sideBarWrapper.UpdatePauseIcon();
+                }
+            }
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {

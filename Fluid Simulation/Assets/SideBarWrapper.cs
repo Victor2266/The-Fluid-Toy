@@ -51,7 +51,7 @@ public class SideBarWrapper : MonoBehaviour
         audioSource.Play();
     }
 
-    private void UpdatePauseIcon(){
+    public void UpdatePauseIcon(){
         if(simulation2DScript.getPaused()){
             PlayPauseSidebarIcon.sprite = PlayIconImage;
             PlayPauseSidebarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
