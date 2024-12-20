@@ -6000,7 +6000,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -9.5, y: 5.4}
+  m_AnchoredPosition: {x: -9.5, y: 5.2}
   m_SizeDelta: {x: 12, y: 8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &914899444
@@ -6037,9 +6037,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf79507e3e962142b77e1201bafb8f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPos: {x: 0, y: 5.4, z: 0}
+  startPos: {x: 0, y: 5.2, z: 0}
   hoverSpeed: 4
-  hoverHeightAmp: 0.1
+  hoverHeightAmp: 0.2
   isChild: 0
 --- !u!114 &914899446
 MonoBehaviour:
@@ -6054,7 +6054,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startRot: 0
-  Speed: 4
+  Speed: 6
   HeightAmp: 1.5
   isChild: 0
 --- !u!1 &924578347

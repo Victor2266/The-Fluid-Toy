@@ -174,7 +174,7 @@ public class LevelManager : MonoBehaviour
         if (isHolding)
         {
             float remainingTime = requiredHoldTime - holdTimer;
-            string timerText = $"Hold Time: {remainingTime:F1}s";
+            string timerText = $"Wait for: {remainingTime:F1}s";
             GUI.Label(new Rect(Screen.width / 2 - 50, 20, 100, 20), timerText);
         }
     }
