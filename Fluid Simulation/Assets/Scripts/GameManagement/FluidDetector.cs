@@ -17,7 +17,7 @@ public class FluidDetector : MonoBehaviour
     public bool showDensityValue = true;
     [SerializeField] private Vector2 densityDisplayOffset = new Vector2(0, 30f);
     public bool isFluidPresent { get; private set; }
-    private float currentDensity;
+    public float currentDensity { get; private set; }
     
     private Simulation2D fluidSimulation;
     private float nextCheckTime;
