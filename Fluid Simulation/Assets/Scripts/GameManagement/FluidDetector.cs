@@ -14,6 +14,7 @@ public class FluidDetector : MonoBehaviour
 
     [Header("Debug")]
     public bool showDebugGizmos = true;
+    public bool showDebugLogs = true;
     public bool showDensityValue = true;
     [SerializeField] private Vector2 densityDisplayOffset = new Vector2(0, 30f);
     public bool isFluidPresent { get; private set; }
@@ -86,7 +87,8 @@ public class FluidDetector : MonoBehaviour
     void OnFluidPresenceChanged()
     {
         // You can add custom events or UnityEvents here to notify other scripts
-        Debug.Log($"Fluid presence changed to: {isFluidPresent} at {gameObject.name}");
+        if (showDebugLogs)
+            Debug.Log($"Fluid presence changed to: {isFluidPresent} at {gameObject.name}");
     }
 
     void OnDrawGizmos()
