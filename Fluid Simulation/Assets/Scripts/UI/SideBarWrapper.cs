@@ -23,9 +23,21 @@ public class SideBarWrapper : MonoBehaviour
 
     private IFluidSimulation simulation2DScript;
 
-    void Start()
+    void Awake()
     {
-        simulation2DScript = simulation2DGameObject.GetComponent<IFluidSimulation>();
+        // Get the interface implementation from the simulation object
+        if (simulation2DGameObject != null)
+        {
+            simulation2DScript = simulation2DGameObject.GetComponent<IFluidSimulation>();
+            if (simulation2DScript == null)
+            {
+                Debug.LogError("No IFluidSimulation implementation found on the simulation object!");
+            }
+        }
+        else
+        {
+            Debug.LogError("Simulation object reference is missing!");
+        }
     }
 
     public void PauseGame()

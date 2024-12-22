@@ -434,4 +434,20 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         RunSimulationStep();
         SetInitialBufferData(spawnData);
     }
+
+    // These functions are for the fluid detector
+    public bool IsPositionBufferValid()
+    {
+        return positionBuffer != null;
+    }
+    public Vector2[] GetParticlePositions()
+    {
+        Vector2[] positions = new Vector2[numParticles];
+        positionBuffer.GetData(positions);
+        return positions;
+    }
+    public int GetParticleCount()
+    {
+        return numParticles;
+    }
 }

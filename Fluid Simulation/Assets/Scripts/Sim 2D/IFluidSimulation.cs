@@ -34,4 +34,9 @@ public interface IFluidSimulation
     /// Resets the simulation to its initial state.
     /// </summary>
     void resetSimulation();
+
+    // Methods for fluid detection
+    bool IsPositionBufferValid(); // Check if position buffer exists and is valid
+    Vector2[] GetParticlePositions(); // Get current particle positions
+    int GetParticleCount(); // Get total number of particles
 }

@@ -21,13 +21,15 @@ public class FluidDetector : MonoBehaviour
     [SerializeField] private Vector2 densityDisplayOffset = new Vector2(0, 30f);
     public bool isFluidPresent { get; private set; }
     public float currentDensity { get; private set; }
-    private Simulation2D fluidSimulation;
+
+    public GameObject simulationGameobject;
+    private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
 
     void Start()
     {
         // Find the fluid simulation in the scene
-        fluidSimulation = FindObjectOfType<Simulation2D>();
+        fluidSimulation = simulationGameobject.GetComponent<IFluidSimulation>();
         if (fluidSimulation == null)
         {
             Debug.LogError("No Simulation2D found in the scene!");
@@ -47,15 +49,14 @@ public class FluidDetector : MonoBehaviour
 
     void CheckFluidDensity()
     {
-        if (fluidSimulation == null || fluidSimulation.positionBuffer == null)
+        if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid())
             return;
 
         Vector2 checkPosition = transform.position;
         float totalDensity = 0f;
         
         // Create temporary array to get particle positions
-        Vector2[] positions = new Vector2[fluidSimulation.numParticles];
-        fluidSimulation.positionBuffer.GetData(positions);
+        Vector2[] positions = fluidSimulation.GetParticlePositions();
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
