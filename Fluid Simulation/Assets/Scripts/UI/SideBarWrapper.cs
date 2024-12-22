@@ -11,7 +11,7 @@ public class SideBarWrapper : MonoBehaviour
 
     [SerializeField] PauseMenuManager pauseMenuManager;
     [SerializeField] GameObject simSettingsPanel;
-    [SerializeField] Simulation2D simulation2DScript;
+    [SerializeField] GameObject simulation2DGameObject;
     [SerializeField] GameObject informationPanel;
 
     [SerializeField] AudioSource audioSource;
@@ -20,6 +20,13 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] UnityEngine.UI.Image PlayPauseSidebarBG;
     [SerializeField] Sprite PauseIconImage;
     [SerializeField] Sprite PlayIconImage;
+
+    private IFluidSimulation simulation2DScript;
+
+    void Start()
+    {
+        simulation2DScript = simulation2DGameObject.GetComponent<IFluidSimulation>();
+    }
 
     public void PauseGame()
     {

@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class FluidDetector : MonoBehaviour
+public class FluidDetector : MonoBehaviour 
+// This only works for the regular simulation and not the AoS version right now because it accesses the buffers like positionBuffer,
+// which we replaced with the particle struct buffer
 {
     [Header("Detection Settings")]
     [Tooltip("The density threshold above which fluid is considered present")]
@@ -19,7 +21,6 @@ public class FluidDetector : MonoBehaviour
     [SerializeField] private Vector2 densityDisplayOffset = new Vector2(0, 30f);
     public bool isFluidPresent { get; private set; }
     public float currentDensity { get; private set; }
-    
     private Simulation2D fluidSimulation;
     private float nextCheckTime;
 
