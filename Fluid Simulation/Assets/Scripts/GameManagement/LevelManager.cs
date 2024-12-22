@@ -27,6 +27,9 @@ public class LevelManager : MonoBehaviour
     private bool hasWon = false;
     private float lastMouseInputTime;
 
+    public LevelCompleteAnimation levelCompleteAnim;
+
+
     void Start()
     {
         // Store initial background music volume
@@ -150,7 +153,7 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"Level {currentLevel} Complete!");
 
         // Play Win Animation
-
+        levelCompleteAnim.PlayLevelCompleteAnimation();
         
         // Wait for sound to finish if there is one
         if (winSound != null)
