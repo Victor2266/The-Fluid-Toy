@@ -1912,6 +1912,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 1
+  enableHotkeys: 0
   iterationsPerFrame: 3
   boundsSize: {x: 34.2, y: 22}
   obstacleSize: {x: 0, y: 0}
@@ -2738,7 +2739,7 @@ GameObject:
   - component: {fileID: 367842094}
   - component: {fileID: 367842095}
   m_Layer: 0
-  m_Name: FluidDetector
+  m_Name: Fluid Detector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
