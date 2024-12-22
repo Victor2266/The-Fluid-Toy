@@ -383,7 +383,7 @@ public class Simulation2D : MonoBehaviour
 
     }
 
-    public void SetFluidProperties(FluidData fluidData)
+    public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
     {
         if (fluidData == null)
         {

@@ -4,7 +4,8 @@ public enum FluidType
 {
     Disabled,
     Water,
-    Steam
+    Steam,
+    Honey
 }
 
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]

@@ -10,32 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
-  m_Name: Steam
+  m_Name: Honey
   m_EditorClassIdentifier: 
-  fluidType: 1
+  fluidType: 3
   gravity: 9.81
   collisionDamping: 0.5
-  smoothingRadius: 0.35
-  targetDensity: 15
-  pressureMultiplier: 500
-  nearPressureMultiplier: 18
+  smoothingRadius: 1
+  targetDensity: 1000
+  pressureMultiplier: 1
+  nearPressureMultiplier: 1
   viscosityStrength: 0.5
-  shader: {fileID: 4800000, guid: 6613296395336604194cd54500f570f3, type: 3}
-  scale: 0.3
+  shader: {fileID: 0}
+  scale: 0
   colourMap:
     serializedVersion: 2
-    key0: {r: 0.4537647, g: 0.6223109, b: 0.9339623, a: 1}
-    key1: {r: 0.759434, g: 0.94876844, b: 1, a: 1}
-    key2: {r: 0.7164471, g: 0.85867393, b: 0.8679245, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 4064
-    ctime1: 33191
-    ctime2: 46738
-    ctime3: 65535
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
     ctime4: 0
     ctime5: 0
     ctime6: 0
@@ -48,9 +48,9 @@ MonoBehaviour:
     atime5: 0
     atime6: 0
     atime7: 0
-    m_Mode: 2
+    m_Mode: 0
     m_ColorSpace: -1
-    m_NumColorKeys: 4
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  gradientResolution: 64
-  velocityDisplayMax: 6.5
+  gradientResolution: 0
+  velocityDisplayMax: 0
