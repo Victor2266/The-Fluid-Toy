@@ -27,7 +27,10 @@ public class LevelCompleteAnimation : MonoBehaviour
         checkmarkImage.color = new Color(1f, 1f, 1f, 0f);
         checkmarkTransform.localScale = Vector3.zero;
         if (completionText != null)
+        {
             completionText.alpha = 0f; // Use alpha property for TextMeshPro
+            completionText.transform.localPosition = new Vector3(0f, -410f, 0f);
+        }
     }
     
     public void PlayLevelCompleteAnimation()
@@ -55,6 +58,7 @@ public class LevelCompleteAnimation : MonoBehaviour
         if (completionText != null)
         {
             completeSequence.Append(completionText.DOFade(1f, textFadeDuration));
+            completeSequence.Join(completionText.transform.DOLocalMoveY(-320f, textFadeDuration)).SetEase(Ease.OutQuint);
         }
         
         // Play the sequence
@@ -70,7 +74,9 @@ public class LevelCompleteAnimation : MonoBehaviour
         checkmarkImage.color = new Color(1f, 1f, 1f, 0f);
         checkmarkTransform.localScale = Vector3.zero;
         checkmarkTransform.rotation = Quaternion.identity;
-        if (completionText != null)
+        if (completionText != null){
             completionText.alpha = 0f; // Reset TextMeshPro alpha
+            completionText.transform.localPosition = new Vector3(0f, -410f, 0f);
+        }
     }
 }
