@@ -42,6 +42,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     [Header("Simulation Settings")]
     public float timeScale = 1;
     public bool fixedTimeStep;
+    public bool enableHotkeys = false;
     public int iterationsPerFrame;
 
     public Vector2 boundsSize;
@@ -194,7 +195,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         }
 
         UpdateColliderData();
-        HandleInput();
+        if (enableHotkeys)
+            HandleInput();
     }
 
     void RunSimulationFrame(float frameTime)

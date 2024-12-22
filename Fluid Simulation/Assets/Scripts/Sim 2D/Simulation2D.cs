@@ -41,6 +41,7 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     [Header("Simulation Settings")]
     public float timeScale = 1;
     public bool fixedTimeStep;
+    public bool enableHotkeys = false;
     public int iterationsPerFrame;
 
     public Vector2 boundsSize;
@@ -115,7 +116,7 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
 
     void Start()
     {
-        Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
+        Debug.Log("If hotkeys are enabled, Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
         float deltaTime = 1 / 60f;
         Time.fixedDeltaTime = deltaTime;
@@ -187,7 +188,9 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         }
 
         UpdateColliderData();
-        HandleInput();
+    
+        if (enableHotkeys)
+            HandleInput();
     }
 
     void RunSimulationFrame(float frameTime)

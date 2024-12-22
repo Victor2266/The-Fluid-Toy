@@ -42,7 +42,7 @@ public interface IFluidSimulation
     /// Checks if the position buffer exists and is valid.
     /// </summary>
     bool IsPositionBufferValid();
-    
+
     /// <summary>
     /// Get current particle positions
     /// </summary>
