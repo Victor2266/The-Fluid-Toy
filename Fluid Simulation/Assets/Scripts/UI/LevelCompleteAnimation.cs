@@ -10,7 +10,7 @@ public class LevelCompleteAnimation : MonoBehaviour
     private CanvasGroup overlayCanvasGroup;
     [SerializeField] private RectTransform checkmarkTransform;
     [SerializeField] private Image checkmarkImage;
-    [SerializeField] private TextMeshProUGUI completionText;
+    [SerializeField] private CanvasGroup completionText;
     
     [Header("Animation Settings")]
     [SerializeField] private float overlayFadeDuration = 0.5f;
@@ -37,6 +37,7 @@ public class LevelCompleteAnimation : MonoBehaviour
     {
         // Create animation sequence
         Sequence completeSequence = DOTween.Sequence();
+        DOTween.Kill(completeSequence);
         
         // Fade in overlay background
         completeSequence.Append(overlayCanvasGroup.DOFade(1f, overlayFadeDuration));
@@ -58,7 +59,7 @@ public class LevelCompleteAnimation : MonoBehaviour
         if (completionText != null)
         {
             completeSequence.Append(completionText.DOFade(1f, textFadeDuration));
-            completeSequence.Join(completionText.transform.DOLocalMoveY(-320f, textFadeDuration)).SetEase(Ease.OutQuint);
+            completeSequence.Join(completionText.transform.DOLocalMoveY(-300f, textFadeDuration)).SetEase(Ease.OutQuint);
         }
         
         // Play the sequence
