@@ -34,7 +34,7 @@ public struct OrientedBox //24 bytes total
 };
 */
 
-public class Simulation2D : MonoBehaviour
+public class Simulation2D : MonoBehaviour, IFluidSimulation
 {
     public event System.Action SimulationStepCompleted;
 
@@ -382,6 +382,11 @@ public class Simulation2D : MonoBehaviour
         }
 
     }
+
+
+    // These are the Interface Functions for outside game scripts:
+    //
+    //
 
     public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
     {

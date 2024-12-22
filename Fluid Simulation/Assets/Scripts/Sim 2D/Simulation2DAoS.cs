@@ -35,7 +35,7 @@ public struct OrientedBox //24 bytes total
 };
 
 
-public class Simulation2DAoS : MonoBehaviour
+public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 {
     public event System.Action SimulationStepCompleted;
 
@@ -402,7 +402,11 @@ public class Simulation2DAoS : MonoBehaviour
 
     }
 
-    public void SetFluidProperties(FluidData fluidData)
+    // These are the Interface Functions for outside game scripts:
+    //
+    //
+
+    public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
     {
         if (fluidData == null)
         {
@@ -425,5 +429,27 @@ public class Simulation2DAoS : MonoBehaviour
     public void SetBrushType(int brushTypeIndex)
     {
         brushState = (BrushType)brushTypeIndex;
+    }
+
+    public void togglePause()
+    {
+        isPaused = !isPaused;
+    }
+    public bool getPaused()
+    {
+        return isPaused;
+    }
+    public void stepSimulation()
+    {
+        isPaused = false;
+        pauseNextFrame = true;
+    }
+    public void resetSimulation()
+    {
+        isPaused = true;
+        // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
+        SetInitialBufferData(spawnData);
+        RunSimulationStep();
+        SetInitialBufferData(spawnData);
     }
 }
