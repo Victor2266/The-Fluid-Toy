@@ -29,6 +29,10 @@ public class LevelManager : MonoBehaviour
 
     public LevelCompleteAnimation levelCompleteAnim;
 
+    [SerializeField] private float timer = 0;
+    [SerializeField] private float threshhold1 = 0;
+    [SerializeField] private float threshhold2 = 0;
+    [SerializeField] private float threshhold3 = 0;
 
     void Start()
     {
@@ -65,6 +69,7 @@ public class LevelManager : MonoBehaviour
     void Update()
     {
         if (hasWon) return;
+        timer += Time.deltaTime;
 
         // Check for any mouse input
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
@@ -133,9 +138,23 @@ public class LevelManager : MonoBehaviour
         if (hasWon) return;
         
         hasWon = true;
-        
+
         // Save level completion
-        PlayerPrefs.SetInt($"Level_{currentLevel+1}_Unlocked", 1);
+        PlayerPrefs.SetInt($"Level_{currentLevel + 1}_Unlocked", 1);
+
+        if (timer < threshhold1)
+        {
+            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 3);
+        }
+        else if (timer < threshhold2)
+        {
+            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 2);
+        }
+        else if (timer < threshhold3)
+        {
+            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 1);
+        }
+
         PlayerPrefs.Save();
 
         // Play win sound
