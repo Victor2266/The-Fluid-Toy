@@ -142,16 +142,22 @@ public class LevelManager : MonoBehaviour
         // Save level completion
         PlayerPrefs.SetInt($"Level_{currentLevel + 1}_Unlocked", 1);
 
+        // Save level score
+        int currentScore = PlayerPrefs.GetInt($"Level_{currentLevel}_Score", 0);
+
         if (timer < threeStarTime)
         {
+            int setScore = Mathf.Max(currentScore, 3);
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 3);
         }
         else if (timer < twoStarTime)
         {
+            int setScore = Mathf.Max(currentScore, 2);
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 2);
         }
         else if (timer < oneStarTime)
         {
+            int setScore = Mathf.Max(currentScore, 1);
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 1);
         }
 
