@@ -32,7 +32,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private float timer = 0;
     [SerializeField] private float threeStarTime = 0;
     [SerializeField] private float twoStarTime = 0;
-    [SerializeField] private float oneStarTime = 0;
 
     void Start()
     {
@@ -155,7 +154,7 @@ public class LevelManager : MonoBehaviour
             int setScore = Mathf.Max(currentScore, 2);
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 2);
         }
-        else if (timer < oneStarTime)
+        else
         {
             int setScore = Mathf.Max(currentScore, 1);
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 1);
