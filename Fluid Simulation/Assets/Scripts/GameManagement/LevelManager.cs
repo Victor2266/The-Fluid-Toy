@@ -30,9 +30,9 @@ public class LevelManager : MonoBehaviour
     public LevelCompleteAnimation levelCompleteAnim;
 
     [SerializeField] private float timer = 0;
-    [SerializeField] private float threshhold1 = 0;
-    [SerializeField] private float threshhold2 = 0;
-    [SerializeField] private float threshhold3 = 0;
+    [SerializeField] private float threeStarTime = 0;
+    [SerializeField] private float twoStarTime = 0;
+    [SerializeField] private float oneStarTime = 0;
 
     void Start()
     {
@@ -142,15 +142,15 @@ public class LevelManager : MonoBehaviour
         // Save level completion
         PlayerPrefs.SetInt($"Level_{currentLevel + 1}_Unlocked", 1);
 
-        if (timer < threshhold1)
+        if (timer < threeStarTime)
         {
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 3);
         }
-        else if (timer < threshhold2)
+        else if (timer < twoStarTime)
         {
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 2);
         }
-        else if (timer < threshhold3)
+        else if (timer < oneStarTime)
         {
             PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 1);
         }
