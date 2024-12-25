@@ -11,6 +11,8 @@ public class LevelCompleteAnimation : MonoBehaviour
     [SerializeField] private RectTransform checkmarkTransform;
     [SerializeField] private Image checkmarkImage;
     [SerializeField] private CanvasGroup completionText;
+
+    [SerializeField] private int currentLevel;
     
     [Header("Animation Settings")]
     [SerializeField] private float overlayFadeDuration = 0.5f;
@@ -18,6 +20,10 @@ public class LevelCompleteAnimation : MonoBehaviour
     [SerializeField] private float checkmarkRotationDuration = 0.5f;
     [SerializeField] private float textFadeDuration = 0.5f;
     [SerializeField] private float bounceStrength = 1.2f;
+
+    [SerializeField] private Image FirstStarImage;    
+    [SerializeField] private Image SecondStarImage;    
+    [SerializeField] private Image ThirdStarImage;
     
     private void Start()
     {
@@ -35,6 +41,8 @@ public class LevelCompleteAnimation : MonoBehaviour
     
     public void PlayLevelCompleteAnimation()
     {
+        int currentLevelScore = PlayerPrefs.GetInt($"Level_{currentLevel}_Score", 0);
+
         // Create animation sequence
         Sequence completeSequence = DOTween.Sequence();
         DOTween.Kill(completeSequence);
@@ -55,11 +63,32 @@ public class LevelCompleteAnimation : MonoBehaviour
         completeSequence.Append(checkmarkTransform.DOScale(Vector3.one, checkmarkScaleDuration/2f)
             .SetEase(Ease.OutBack));
         
-        // Fade in completion text if available
+        // Fade in completion score if available
         if (completionText != null)
         {
             completeSequence.Append(completionText.DOFade(1f, textFadeDuration));
             completeSequence.Join(completionText.transform.DOLocalMoveY(-300f, textFadeDuration)).SetEase(Ease.OutQuint);
+
+            // Fade in each star image based on score
+            if (currentLevelScore >= 3)
+            {
+                completeSequence.Append(FirstStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                completeSequence.Append(SecondStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                completeSequence.Append(ThirdStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+            }
+            else if (currentLevelScore == 2)
+            {
+                completeSequence.Append(FirstStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                completeSequence.Append(SecondStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                completeSequence.Append(ThirdStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
+            }
+            else if (currentLevelScore == 1)
+            {
+                completeSequence.Append(FirstStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
+                completeSequence.Append(SecondStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
+                completeSequence.Append(ThirdStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
+            }
+
         }
         
         // Play the sequence
