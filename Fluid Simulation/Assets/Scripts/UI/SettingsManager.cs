@@ -195,9 +195,10 @@ public class SettingsManager : MonoBehaviour
     public void LockAllLevels()
     {
         Debug.Log("Locking all levels...");
-        for (int i = 2; i <= NumberOfLevels; i++) // Start from 2 since level 1 should remain unlocked
+        for (int i = 1; i <= NumberOfLevels; i++) // Level 1 should remain unlocked
         {
             PlayerPrefs.SetInt($"Level_{i}_Unlocked", 0);
+            PlayerPrefs.SetInt($"Level_{i}_Score", 0);
         }
         // Ensure level 1 stays unlocked
         PlayerPrefs.SetInt("Level_1_Unlocked", 1);

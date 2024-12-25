@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using System;
 public class MainMenuManager : MonoBehaviour
 {
     [Header("Menu Panels")]
@@ -62,6 +63,11 @@ public class MainMenuManager : MonoBehaviour
         bool isUnlocked = PlayerPrefs.GetInt($"Level_{levelNumber}_Unlocked", levelNumber == 1 ? 1 : 0) == 1;
         button.interactable = isUnlocked;
 
+        int currentLevelScore = PlayerPrefs.GetInt($"Level_{levelNumber}_Score", 0);
+        Transform starPanel = button.transform.Find("Star Panel");
+            if (starPanel != null)
+                starPanel.gameObject.SetActive(false);
+
         if (!isUnlocked)
         {
             buttonText.text = "LOCKED";
@@ -79,6 +85,15 @@ public class MainMenuManager : MonoBehaviour
             float currentRight = rectTransform.offsetMax.x;
             rectTransform.offsetMin = new Vector2(currentLeft, 0);
             rectTransform.offsetMax = new Vector2(currentRight, 0);
+
+            if (currentLevelScore > 0){
+                rectTransform.offsetMin = new Vector2(currentLeft, 16);
+                rectTransform.offsetMax = new Vector2(currentRight, 16);
+                starPanel.gameObject.SetActive(true);
+            }
+            for (int i = 0; i < currentLevelScore; i++) {
+                starPanel.GetChild(i).gameObject.SetActive(true);
+            }
         }
         Transform lockIcon = button.transform.Find("Lock Icon");
         if (lockIcon != null)
