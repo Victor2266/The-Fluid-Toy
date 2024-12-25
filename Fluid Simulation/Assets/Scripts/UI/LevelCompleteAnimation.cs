@@ -84,7 +84,7 @@ public class LevelCompleteAnimation : MonoBehaviour
             }
             else if (currentLevelScore == 1)
             {
-                completeSequence.Append(FirstStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
+                completeSequence.Append(FirstStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
                 completeSequence.Append(SecondStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
                 completeSequence.Append(ThirdStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
             }
