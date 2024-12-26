@@ -80,6 +80,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data")]
     [SerializeField] public FluidData[] fluidDataArray;
+
     public FluidParam[] fluidParamArr; // Compute-friendly data type
     public ComputeBuffer fluidDataBuffer { get; private set; }
 

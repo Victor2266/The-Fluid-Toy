@@ -59,14 +59,7 @@ RWStructuredBuffer<Circle> CircleColliders;
 
 // Settings
 const uint numParticles;
-//const float gravity;
 const float deltaTime;
-//const float collisionDamping;
-//const float smoothingRadius;
-//const float targetDensity;
-//const float pressureMultiplier;
-//const float nearPressureMultiplier;
-//const float viscosityStrength;
 const float2 boundsSize;
 const float2 interactionInputPoint;
 const float interactionInputStrength;
@@ -466,6 +459,9 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 			uint neighbourIndex = indexData[0];
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
+			Particle neighbourParticle = Particles[neighbourIndex];
+			FluidData neighbourData = FluidDataSet[neighbourParticle.type];
+			if (neighbourData.fluidType == 0) continue; // Skip disabled
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -476,7 +472,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 			float dst = sqrt(sqrDstToNeighbour);
 			float2 neighbourVelocity = Particles[neighbourIndex].velocity;
-			viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius);
+			viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius); // FIXME using perspective particle's smoothing radius
 		}
 
 	}
