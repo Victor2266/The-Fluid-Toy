@@ -6,7 +6,7 @@ public interface IFluidSimulation
     /// Sets the fluid properties for the simulation using the provided FluidData.
     /// </summary>
     /// <param name="fluidData">The fluid data containing properties to be applied to the simulation.</param>
-    void SetFluidProperties(FluidData fluidData);
+    //void SetFluidProperties(FluidData fluidData);
 
     /// <summary>
     /// Sets the brush type for particle interaction.

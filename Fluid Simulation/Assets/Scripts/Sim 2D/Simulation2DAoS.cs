@@ -73,13 +73,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [SerializeField] private BrushType brushState = BrushType.GRAVITY;
 
-    // Assuming the context for this is in reference to *brush* type instead of *fluid type for entire level*
-    [Header("Current Fluid Type")]
-    [SerializeField] private FluidType currentFluid;
+    // Obsolete
+    /*[Header("Current Fluid Type")]
+    [SerializeField] private FluidData currentFluid;*/
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data")]
     [SerializeField] public FluidData[] fluidDataArray;
+    public FluidParam[] fluidParamArr; // Compute-friendly data type
     public ComputeBuffer fluidDataBuffer { get; private set; }
 
     [Header("References")]
@@ -134,6 +135,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         // Create buffers
         int numFluids = Enum.GetValues(typeof(FluidType)).Cast<int>().Max() + 1;
         fluidDataArray = new FluidData[numFluids];
+        // FIXME need to initilize fluidDataArray and populate it somehow
+
+        // Convert to compute-friendly array
+        for(int i=0; i<numFluids; i++) { fluidParamArr[i] = fluidDataArray[i].getFluidParams(); }
         fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(numFluids);
 
         particleData = new Particle[numParticles];
@@ -149,10 +154,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
         // Set buffer data
+        fluidDataBuffer.SetData(fluidParamArr);
         SetInitialBufferData(spawnData);
 
         // Init compute
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidData", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
@@ -261,13 +267,13 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void UpdateSettings(float deltaTime)
     {
         compute.SetFloat("deltaTime", deltaTime);
-        compute.SetFloat("gravity", gravity);
-        compute.SetFloat("collisionDamping", collisionDamping);
-        compute.SetFloat("smoothingRadius", smoothingRadius);
-        compute.SetFloat("targetDensity", targetDensity);
-        compute.SetFloat("pressureMultiplier", pressureMultiplier);
-        compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
-        compute.SetFloat("viscosityStrength", viscosityStrength);
+        //compute.SetFloat("gravity", gravity);
+        //compute.SetFloat("collisionDamping", collisionDamping);
+        //compute.SetFloat("smoothingRadius", smoothingRadius);
+        //compute.SetFloat("targetDensity", targetDensity);
+        //compute.SetFloat("pressureMultiplier", pressureMultiplier);
+        //compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
+        //compute.SetFloat("viscosityStrength", viscosityStrength);
         compute.SetVector("boundsSize", boundsSize);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
@@ -296,17 +302,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     void SetInitialBufferData(ParticleSpawner.ParticleSpawnData spawnData)
     {
-        //float2[] allPoints = new float2[spawnData.positions.Length];
         Particle[] allPoints = new Particle[spawnData.positions.Length];
-
-        //System.Array.Copy(spawnData.positions, allPoints, spawnData.positions.Length);
 
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
             Particle p = new Particle {
-                position = spawnData.positions[i], 
-                predictedPosition = spawnData.positions[i], 
+                position = spawnData.positions[i],
+                predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
                 density = new float2(0, 0),
                 temperature = 0,
@@ -315,9 +318,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             allPoints[i] = p;
         }
 
-        //positionBuffer.SetData(allPoints);
-        //predictedPositionBuffer.SetData(allPoints);
-        //velocityBuffer.SetData(spawnData.velocities);
         particleBuffer.SetData(allPoints);
     }
 
@@ -347,10 +347,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void OnDestroy()
     {
         ComputeHelper.Release(
-            //positionBuffer, 
-            //predictedPositionBuffer, 
-            //velocityBuffer, 
-            //densityBuffer, 
+            fluidDataBuffer,
             particleBuffer,
             spatialIndices, 
             spatialOffsets,
@@ -416,16 +413,16 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             return;
         }
 
-        currentFluid = fluidData;
+        //currentFluid = fluidData;
 
         // Update simulation parameters with the new fluid's properties
-        gravity = fluidData.gravity;
-        collisionDamping = fluidData.collisionDamping;
-        smoothingRadius = fluidData.smoothingRadius;
-        targetDensity = fluidData.targetDensity;
-        pressureMultiplier = fluidData.pressureMultiplier;
-        nearPressureMultiplier = fluidData.nearPressureMultiplier;
-        viscosityStrength = fluidData.viscosityStrength;
+        //gravity = fluidData.gravity;
+        //collisionDamping = fluidData.collisionDamping;
+        //smoothingRadius = fluidData.smoothingRadius;
+        //targetDensity = fluidData.targetDensity;
+        //pressureMultiplier = fluidData.pressureMultiplier;
+        //nearPressureMultiplier = fluidData.nearPressureMultiplier;
+        //viscosityStrength = fluidData.viscosityStrength;
     }*/
 
     public void SetBrushType(int brushTypeIndex)
