@@ -132,17 +132,17 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         numParticles = spawnData.positions.Length;
 
         // Create buffers
-        int numFluids = Enum.GetValues(typeof(FluidType)).Cast<int>().Max() + 1;
+        int numFluids = Enum.GetValues(typeof(FluidType)).Cast<int>().Max() + 1; // Hack to get number of enum entries
         fluidDataArray = new FluidData[numFluids];
         // FIXME need to initilize fluidDataArray and populate it somehow
         // BELOW IS TEMP
         for (int i = 0; i < numFluids; i++) {
             fluidDataArray[i] = ScriptableObject.CreateInstance<FluidData>();
-            Debug.Log(fluidDataArray[i].gravity);
         }
         // Convert to compute-friendly array
         fluidParamArr = new FluidParam[numFluids];
         for (int i=0; i<numFluids; i++) {fluidParamArr[i] = fluidDataArray[i].getFluidParams(); }
+        // init buffer
         fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(numFluids);
 
         particleData = new Particle[numParticles];
