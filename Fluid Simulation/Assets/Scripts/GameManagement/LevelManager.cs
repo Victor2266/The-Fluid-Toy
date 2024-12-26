@@ -143,6 +143,7 @@ public class LevelManager : MonoBehaviour
 
         // Save level score
         int currentScore = PlayerPrefs.GetInt($"Level_{currentLevel}_Score", 0);
+        levelCompleteAnim.setCurrentScore(currentScore);
 
         if (timer < threeStarTime)
         {

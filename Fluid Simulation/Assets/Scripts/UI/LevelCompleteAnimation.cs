@@ -24,6 +24,8 @@ public class LevelCompleteAnimation : MonoBehaviour
     [SerializeField] private Image FirstStarImage;    
     [SerializeField] private Image SecondStarImage;    
     [SerializeField] private Image ThirdStarImage;
+
+    private int currentLevelScore = 0;
     
     private void Start()
     {
@@ -41,8 +43,6 @@ public class LevelCompleteAnimation : MonoBehaviour
     
     public void PlayLevelCompleteAnimation()
     {
-        int currentLevelScore = PlayerPrefs.GetInt($"Level_{currentLevel}_Score", 0);
-
         // Create animation sequence
         Sequence completeSequence = DOTween.Sequence();
         DOTween.Kill(completeSequence);
@@ -108,5 +108,10 @@ public class LevelCompleteAnimation : MonoBehaviour
             completionText.alpha = 0f; // Reset TextMeshPro alpha
             completionText.transform.localPosition = new Vector3(0f, -410f, 0f);
         }
+    }
+
+    public void setCurrentScore(int score)
+    {
+        currentLevelScore = score;
     }
 }
