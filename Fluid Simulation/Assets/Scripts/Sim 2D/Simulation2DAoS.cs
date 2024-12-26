@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using System.Runtime.InteropServices;
 using System;
 using UnityEngine.UIElements;
+using System.Linq;
 
 //Defining Structs
 [System.Serializable]
@@ -72,8 +73,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [SerializeField] private BrushType brushState = BrushType.GRAVITY;
 
+    // Assuming the context for this is in reference to *brush* type instead of *fluid type for entire level*
     [Header("Current Fluid Type")]
-    [SerializeField] private FluidData currentFluid;
+    [SerializeField] private FluidType currentFluid;
+
+    // Fluid data array and buffer (to serialize then pass to GPU)
+    [Header("Fluid Data")]
+    [SerializeField] public FluidData[] fluidDataArray;
+    public ComputeBuffer fluidDataBuffer { get; private set; }
 
     [Header("References")]
     public ComputeShader compute;
@@ -92,10 +99,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [Header("Particle Data")]
     // Buffers
-    /*public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
-    public ComputeBuffer velocityBuffer { get; private set; }
-    public ComputeBuffer densityBuffer { get; private set; }
-    ComputeBuffer predictedPositionBuffer; */
     public Particle[] particleData;
     public ComputeBuffer particleBuffer { get; private set; }
     ComputeBuffer spatialIndices;
@@ -129,10 +132,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         numParticles = spawnData.positions.Length;
 
         // Create buffers
-        /*positionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);            //These are replaced by struct buffers
-        predictedPositionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
-        velocityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
-        densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);*/
+        int numFluids = Enum.GetValues(typeof(FluidType)).Cast<int>().Max() + 1;
+        fluidDataArray = new FluidData[numFluids];
+        fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(numFluids);
+
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         
@@ -149,13 +152,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         SetInitialBufferData(spawnData);
 
         // Init compute
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidData", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        //ComputeHelper.SetBuffer(compute, positionBuffer, "Positions", externalForcesKernel, updatePositionKernel);
-        //ComputeHelper.SetBuffer(compute, predictedPositionBuffer, "PredictedPositions", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        //ComputeHelper.SetBuffer(compute, densityBuffer, "Densities", densityKernel, pressureKernel, viscosityKernel);
-        //ComputeHelper.SetBuffer(compute, velocityBuffer, "Velocities", externalForcesKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
 
@@ -408,7 +408,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     //
     //
 
-    public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
+    /*public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
     {
         if (fluidData == null)
         {
@@ -426,7 +426,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         pressureMultiplier = fluidData.pressureMultiplier;
         nearPressureMultiplier = fluidData.nearPressureMultiplier;
         viscosityStrength = fluidData.viscosityStrength;
-    }
+    }*/
 
     public void SetBrushType(int brushTypeIndex)
     {

@@ -8,6 +8,19 @@ public enum FluidType
     Honey
 }
 
+// Struct for passing to compute shader
+public struct FluidParam
+{
+    public FluidType fluidType;
+    public float gravity;
+    public float collisionDamping;
+    public float smoothingRadius;
+    public float targetDensity;
+    public float pressureMultiplier;
+    public float nearPressureMultiplier;
+    public float viscosityStrength;
+}
+
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]
 public class FluidData : ScriptableObject
 {
@@ -57,5 +70,19 @@ public class FluidData : ScriptableObject
         targetDensity = Mathf.Max(0.001f, targetDensity);
         pressureMultiplier = Mathf.Max(0f, pressureMultiplier);
         nearPressureMultiplier = Mathf.Max(0f, nearPressureMultiplier);
+    }
+
+    // Returns a compressed, compute-friendly copy of this instance as a FluidParam struct
+    public FluidParam getFluidParams()
+    {
+        FluidParam fluidParams = new FluidParam();
+        fluidParams.gravity = this.gravity;
+        fluidParams.collisionDamping = this.collisionDamping;
+        fluidParams.smoothingRadius = this.smoothingRadius;
+        fluidParams.targetDensity = this.targetDensity;
+        fluidParams.pressureMultiplier = this.pressureMultiplier;
+        fluidParams.nearPressureMultiplier = this.nearPressureMultiplier;
+        fluidParams.viscosityStrength = this.viscosityStrength;
+        return fluidParams;
     }
 }

@@ -11,14 +11,29 @@
 
 static const int NumThreads = 64;
 
+// Analogous to "Particle" in Simulation2D.cs
 struct Particle
 {
-	float2 density; //8 bytes, density and near density
-	float2 velocity; //8 bytes
+	float2 density;		//8 bytes, density and near density
+	float2 velocity;	//8-byte (4-byte scalar x2; 2D vector)
 	float2 predictedPosition; // 8
-	float2 position; // 8
-	float1 temperature; // 4
-	int type; // 4 (fluid type enum)
+	float2 position;	// 8
+	float1 temperature; // 4-byte scalar
+	int type;			// 4 (fluid type enum)
+};
+
+// Condensed version of FluidData ScriptableObject (without shader details as those are not needed)
+struct FluidData
+{
+	// Fluid properties
+	int fluidType; // fluid type enum
+	float1 gravity;
+	float1 collisionDamping;
+	float1 smoothingRadius;
+	float1 targetDensity;
+	float1 pressureMultiplier;
+	float1 nearPressureMultiplier;
+	float1 viscosityStrength;
 };
 
 struct Circle //12 bytes total
@@ -35,10 +50,7 @@ struct OrientedBox //24 bytes total
 };
 
 // Buffers
-/*RWStructuredBuffer<float2> Positions;
-RWStructuredBuffer<float2> PredictedPositions;
-RWStructuredBuffer<float2> Velocities;
-RWStructuredBuffer<float2> Densities; // Density, Near Density*/
+RWStructuredBuffer<FluidData> FluidData;
 RWStructuredBuffer<Particle> Particles;
 RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
