@@ -19,14 +19,14 @@ public struct FluidParam
     public float pressureMultiplier;
     public float nearPressureMultiplier;
     public float viscosityStrength;
-}
+};
 
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]
 public class FluidData : ScriptableObject
 {
     [Header("Basic Properties")]
     [Tooltip("Type of fluid")]
-    public FluidType fluidType;
+    public FluidType fluidType = FluidType.Water;
 
     [Tooltip("Gravity force applied to the fluid")]
     public float gravity = 9.81f;
@@ -75,14 +75,17 @@ public class FluidData : ScriptableObject
     // Returns a compressed, compute-friendly copy of this instance as a FluidParam struct
     public FluidParam getFluidParams()
     {
-        FluidParam fluidParams = new FluidParam();
-        fluidParams.gravity = this.gravity;
-        fluidParams.collisionDamping = this.collisionDamping;
-        fluidParams.smoothingRadius = this.smoothingRadius;
-        fluidParams.targetDensity = this.targetDensity;
-        fluidParams.pressureMultiplier = this.pressureMultiplier;
-        fluidParams.nearPressureMultiplier = this.nearPressureMultiplier;
-        fluidParams.viscosityStrength = this.viscosityStrength;
+        FluidParam fluidParams = new FluidParam
+        {
+            fluidType = fluidType,
+            gravity = gravity,
+            collisionDamping = collisionDamping,
+            smoothingRadius = smoothingRadius,
+            targetDensity = targetDensity,
+            pressureMultiplier = pressureMultiplier,
+            nearPressureMultiplier = nearPressureMultiplier,
+            viscosityStrength = viscosityStrength
+        };
         return fluidParams;
     }
-}
+};
