@@ -147,17 +147,17 @@ public class LevelManager : MonoBehaviour
         if (timer < threeStarTime)
         {
             int setScore = Mathf.Max(currentScore, 3);
-            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 3);
+            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", setScore);
         }
         else if (timer < twoStarTime)
         {
             int setScore = Mathf.Max(currentScore, 2);
-            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 2);
+            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", setScore);
         }
         else
         {
             int setScore = Mathf.Max(currentScore, 1);
-            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", 1);
+            PlayerPrefs.SetInt($"Level_{currentLevel}_Score", setScore);
         }
 
         PlayerPrefs.Save();
