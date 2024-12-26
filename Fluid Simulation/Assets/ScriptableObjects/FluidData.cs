@@ -29,30 +29,30 @@ public class FluidData : ScriptableObject
     public FluidType fluidType = FluidType.Water;
 
     [Tooltip("Gravity force applied to the fluid")]
-    public float gravity = 9.81f;
+    public float gravity = -9.81f;
 
     [Tooltip("Damping applied when fluid collides with surfaces")]
     [Range(0f, 1f)]
-    public float collisionDamping = 0.5f;
+    public float collisionDamping = 0.95f;
 
     [Header("Particle Properties")]
     [Tooltip("Radius within which particles interact")]
-    public float smoothingRadius = 1f;
+    public float smoothingRadius = 0.35f;
 
     [Tooltip("Target density for the fluid")]
-    public float targetDensity = 1000f;
+    public float targetDensity = 55f;
 
     [Header("Pressure Settings")]
     [Tooltip("Multiplier for pressure calculation")]
-    public float pressureMultiplier = 1f;
+    public float pressureMultiplier = 500f;
 
     [Tooltip("Multiplier for near-field pressure calculation")]
-    public float nearPressureMultiplier = 1f;
+    public float nearPressureMultiplier = 18f;
 
     [Header("Viscosity")]
     [Tooltip("Strength of the fluid's viscosity")]
     [Range(0f, 1f)]
-    public float viscosityStrength = 0.5f;
+    public float viscosityStrength = 0.06f;
 
 
     [Header("Shader Properties")]
