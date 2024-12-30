@@ -220,7 +220,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         UpdateColliderData();
         if (enableHotkeys)
-            HandleInput();
+            HandleHotkeysInput();
     }
 
     void RunSimulationFrame(float frameTime)
@@ -307,11 +307,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         bool isPullInteraction = Input.GetMouseButton(0);
         bool isPushInteraction = Input.GetMouseButton(1);
         float currInteractStrength = 0;
-        if (isPushInteraction || isPullInteraction)
-        {
-            if(brushState == BrushType.GRAVITY)
+        if(brushState == BrushType.GRAVITY){
+            if (isPushInteraction || isPullInteraction)
+            {
+            
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
+            }
         }
+        
 
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
@@ -339,7 +342,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         particleBuffer.SetData(allPoints);
     }
 
-    void HandleInput()
+    void HandleHotkeysInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
