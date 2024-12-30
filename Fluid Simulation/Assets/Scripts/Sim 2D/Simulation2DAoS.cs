@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using System.Runtime.InteropServices;
 using System;
 using UnityEngine.UIElements;
+using System.Linq;
 
 //Defining Structs
 [System.Serializable]
@@ -34,7 +35,6 @@ public struct OrientedBox //24 bytes total
     public Vector2 zLocal;
 };
 
-
 public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 {
     public event System.Action SimulationStepCompleted;
@@ -49,18 +49,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleSize;
     public Vector2 obstacleCentre;
 
-    [Header("Fluid Settings")]
-    public float gravity;
-    [Range(0, 1)] public float collisionDamping = 0.95f;
-    public float smoothingRadius = 2;
-    public float targetDensity;
-    public float pressureMultiplier;
-    public float nearPressureMultiplier;
-    public float viscosityStrength;
-
-    [Header("Interaction Settings")]
-    public float interactionRadius;
-    public float interactionStrength;
+    [Header("Selected Fluid Type")] // This is used for the draw brush
+    [SerializeField] private int selectedFluid;
 
     // Brush Settings + Enum type
     public enum BrushType
@@ -72,8 +62,22 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [SerializeField] private BrushType brushState = BrushType.GRAVITY;
 
-    [Header("Current Fluid Type")]
-    [SerializeField] private FluidData currentFluid;
+    [Header("Interaction Settings")]
+    public float interactionRadius;
+    public float interactionStrength;
+
+    // Fluid data array and buffer (to serialize then pass to GPU)
+    [Header("Fluid Data Types")]
+    // For the spatial subdivision to work we use the largest smoothing radius for the grid
+    // By manually selecting the fluid types you can finetune the grid size
+    [SerializeField] private bool manuallySelectFluidTypes; 
+    private float maxSmoothingRadius = 0f;
+    [SerializeField] public FluidData[] fluidDataArray;
+    private FluidParam[] fluidParamArr; // Compute-friendly data type
+    public ComputeBuffer fluidDataBuffer { get; private set; }
+
+    private ScalingFactors[] scalingFactorsArr;
+    private ComputeBuffer ScalingFactorsBuffer;
 
     [Header("References")]
     public ComputeShader compute;
@@ -92,11 +96,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [Header("Particle Data")]
     // Buffers
-    /*public ComputeBuffer positionBuffer { get; private set; }   //These are replaced by struct buffers
-    public ComputeBuffer velocityBuffer { get; private set; }
-    public ComputeBuffer densityBuffer { get; private set; }
-    ComputeBuffer predictedPositionBuffer; */
-    public Particle[] particleData;
+    private Particle[] particleData;
     public ComputeBuffer particleBuffer { get; private set; }
     ComputeBuffer spatialIndices;
     ComputeBuffer spatialOffsets;
@@ -117,7 +117,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     public int numParticles { get; private set; }
 
-
     void Start()
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
@@ -127,12 +126,59 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
+        
+        if (!manuallySelectFluidTypes){
+            // Get the number of fluid types (excluding Disabled)
+            int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
+            // Initialize arrays
+            fluidDataArray = new FluidData[numFluidTypes];
+            fluidParamArr = new FluidParam[numFluidTypes];
+            scalingFactorsArr = new ScalingFactors[numFluidTypes];
+
+            // Load each fluid type in order
+            for (int i = 1; i < numFluidTypes + 1; i++)
+            {
+                string fluidName = Enum.GetName(typeof(FluidType), i);
+                FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
+                fluidData.fluidType = (FluidType) i;
+                
+                if (fluidData == null)
+                {
+                    Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
+                    continue;
+                }
+
+                // Assign to array at index-1 (since we skip Disabled which is 0)
+                fluidDataArray[i-1] = fluidData;
+                fluidParamArr[i-1] = fluidData.getFluidParams();
+                scalingFactorsArr[i-1] = fluidData.getScalingFactors();
+            }
+        }
+        else{
+            fluidParamArr = new FluidParam[fluidDataArray.Length];
+            scalingFactorsArr = new ScalingFactors[fluidDataArray.Length];
+            for (int i = 0; i < fluidDataArray.Length; i++)
+            {
+                fluidParamArr[i] = fluidDataArray[i].getFluidParams();
+                fluidParamArr[i].fluidType = (FluidType) i + 1;
+                scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
+            }
+        }
+
+        maxSmoothingRadius = 0f;
+        for (int i = 0; i < fluidDataArray.Length; i++)
+        {
+            if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
+            {
+                maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
+            }
+        }
 
         // Create buffers
-        /*positionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);            //These are replaced by struct buffers
-        predictedPositionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
-        velocityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
-        densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);*/
+        // init buffer
+        fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(fluidDataArray.Length);
+        ScalingFactorsBuffer = ComputeHelper.CreateStructuredBuffer<ScalingFactors>(fluidDataArray.Length); //why does it say this leaks?
+
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         
@@ -142,26 +188,30 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(MAX_COLLIDERS);
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(MAX_COLLIDERS);
         
+        
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
         // Set buffer data
+        fluidDataBuffer.SetData(fluidParamArr);
+        ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnData);
 
         // Init compute
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        //ComputeHelper.SetBuffer(compute, positionBuffer, "Positions", externalForcesKernel, updatePositionKernel);
-        //ComputeHelper.SetBuffer(compute, predictedPositionBuffer, "PredictedPositions", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        //ComputeHelper.SetBuffer(compute, densityBuffer, "Densities", densityKernel, pressureKernel, viscosityKernel);
-        //ComputeHelper.SetBuffer(compute, velocityBuffer, "Velocities", externalForcesKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
+
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
+        compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
+
 
         gpuSort = new();
         gpuSort.SetBuffers(spatialIndices, spatialOffsets);
@@ -196,7 +246,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         UpdateColliderData();
         if (enableHotkeys)
-            HandleInput();
+            HandleHotkeysInput();
     }
 
     void RunSimulationFrame(float frameTime)
@@ -261,34 +311,56 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void UpdateSettings(float deltaTime)
     {
         compute.SetFloat("deltaTime", deltaTime);
-        compute.SetFloat("gravity", gravity);
-        compute.SetFloat("collisionDamping", collisionDamping);
-        compute.SetFloat("smoothingRadius", smoothingRadius);
-        compute.SetFloat("targetDensity", targetDensity);
-        compute.SetFloat("pressureMultiplier", pressureMultiplier);
-        compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
-        compute.SetFloat("viscosityStrength", viscosityStrength);
+        //compute.SetFloat("gravity", gravity);
+        //compute.SetFloat("collisionDamping", collisionDamping);
+        //compute.SetFloat("smoothingRadius", smoothingRadius);
+        //compute.SetFloat("targetDensity", targetDensity);
+        //compute.SetFloat("pressureMultiplier", pressureMultiplier);
+        //compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
+        //compute.SetFloat("viscosityStrength", viscosityStrength);
         compute.SetVector("boundsSize", boundsSize);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
+        compute.SetInt("selectedFluidType", selectedFluid);
 
-        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(smoothingRadius, 8)));
-        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(smoothingRadius, 5)));
-        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(smoothingRadius, 4)));
-        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(smoothingRadius, 5) * Mathf.PI));
-        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(smoothingRadius, 4) * Mathf.PI));
+        //These are now computed once at the start
+        /*
+        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
+        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 5)));
+        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 4)));
+        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(currentFluid.smoothingRadius, 5) * Mathf.PI));
+        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
+        */
+        // Mouse interaction settings:
+        HandleMouseInput();
 
+    }
+
+    void HandleMouseInput()
+    {
         // Mouse interaction settings:
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         bool isPullInteraction = Input.GetMouseButton(0);
         bool isPushInteraction = Input.GetMouseButton(1);
         float currInteractStrength = 0;
-        if (isPushInteraction || isPullInteraction)
-        {
-            if(brushState == BrushType.GRAVITY)
-                currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
-        }
 
+        if(brushState == BrushType.GRAVITY){
+            if (isPushInteraction || isPullInteraction)
+            {
+                currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
+            }
+        } else if(brushState == BrushType.DRAW){
+            if (isPullInteraction)
+            {
+                currInteractStrength = 1f;
+            }
+            else if (isPushInteraction)
+            {
+                currInteractStrength = -1f;
+            }
+        }
+        
+        compute.SetInt("brushType", (int) brushState);
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
         compute.SetFloat("interactionInputRadius", interactionRadius);
@@ -296,17 +368,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     void SetInitialBufferData(ParticleSpawner.ParticleSpawnData spawnData)
     {
-        //float2[] allPoints = new float2[spawnData.positions.Length];
         Particle[] allPoints = new Particle[spawnData.positions.Length];
-
-        //System.Array.Copy(spawnData.positions, allPoints, spawnData.positions.Length);
 
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
             Particle p = new Particle {
-                position = spawnData.positions[i], 
-                predictedPosition = spawnData.positions[i], 
+                position = spawnData.positions[i],
+                predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
                 density = new float2(0, 0),
                 temperature = 0,
@@ -315,13 +384,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             allPoints[i] = p;
         }
 
-        //positionBuffer.SetData(allPoints);
-        //predictedPositionBuffer.SetData(allPoints);
-        //velocityBuffer.SetData(spawnData.velocities);
         particleBuffer.SetData(allPoints);
     }
 
-    void HandleInput()
+    void HandleHotkeysInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -347,10 +413,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void OnDestroy()
     {
         ComputeHelper.Release(
-            //positionBuffer, 
-            //predictedPositionBuffer, 
-            //velocityBuffer, 
-            //densityBuffer, 
+            fluidDataBuffer,
+            ScalingFactorsBuffer,
             particleBuffer,
             spatialIndices, 
             spatialOffsets,
@@ -408,24 +472,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     //
     //
 
-    public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
-    {
-        if (fluidData == null)
-        {
-            Debug.LogError("Attempted to set null FluidData");
-            return;
-        }
-
-        currentFluid = fluidData;
-
-        // Update simulation parameters with the new fluid's properties
-        gravity = fluidData.gravity;
-        collisionDamping = fluidData.collisionDamping;
-        smoothingRadius = fluidData.smoothingRadius;
-        targetDensity = fluidData.targetDensity;
-        pressureMultiplier = fluidData.pressureMultiplier;
-        nearPressureMultiplier = fluidData.nearPressureMultiplier;
-        viscosityStrength = fluidData.viscosityStrength;
+    public void setSelectedFluid(int fluidTypeIndex){
+        selectedFluid = fluidTypeIndex;
     }
 
     public void SetBrushType(int brushTypeIndex)
@@ -462,13 +510,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     }
     public Vector2[] GetParticlePositions()
     {
-        Particle[] allPoints = new Particle[numParticles];
         Vector2[] positions = new Vector2[numParticles];
-        particleBuffer.GetData(allPoints);
+        particleBuffer.GetData(particleData);
 
         for (int i = 0; i < numParticles; i++)
         {
-            positions[i] = allPoints[i].position;
+            positions[i] = particleData[i].position;
         }
         return positions;
     }

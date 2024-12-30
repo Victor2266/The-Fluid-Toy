@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Honey
   m_EditorClassIdentifier: 
   fluidType: 3
-  gravity: 9.81
+  gravity: -12
   collisionDamping: 0.5
-  smoothingRadius: 1
-  targetDensity: 1000
-  pressureMultiplier: 1
-  nearPressureMultiplier: 1
-  viscosityStrength: 0.5
+  smoothingRadius: 0.45
+  targetDensity: 88
+  pressureMultiplier: 1000
+  nearPressureMultiplier: 750
+  viscosityStrength: 2
   shader: {fileID: 0}
-  scale: 0
+  scale: 0.2
   colourMap:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -52,5 +52,5 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  gradientResolution: 0
-  velocityDisplayMax: 0
+  gradientResolution: 64
+  velocityDisplayMax: 6.5
