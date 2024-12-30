@@ -463,7 +463,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5;
 
 			// FIXME possible issues with Newton's 2nd law in the event that smoothing radius is different for 2 particles
-			// Currently using smoothing radius of viewpoint particle rather than viewpoint particle
+			// Currently using smoothing radius of viewpoint particle rather than neighbour particle
 			// If one is smaller than the other, physics will get weird.
 			pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius, particle.type) * sharedPressure / neighbourDensity;
 			pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius, particle.type) * sharedNearPressure / neighbourDensity;
