@@ -35,7 +35,6 @@ public struct OrientedBox //24 bytes total
     public Vector2 zLocal;
 };
 
-
 public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 {
     public event System.Action SimulationStepCompleted;
@@ -74,9 +73,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
     [SerializeField] public FluidData[] fluidDataArray;
-
-    public FluidParam[] fluidParamArr; // Compute-friendly data type
+    private FluidParam[] fluidParamArr; // Compute-friendly data type
     public ComputeBuffer fluidDataBuffer { get; private set; }
+
+    private ScalingFactors[] scalingFactorsArr;
+    private ComputeBuffer ScalingFactorsBuffer;
 
     [Header("References")]
     public ComputeShader compute;
@@ -131,6 +132,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         // Initialize arrays
         fluidDataArray = new FluidData[numFluidTypes];
         fluidParamArr = new FluidParam[numFluidTypes];
+        scalingFactorsArr = new ScalingFactors[numFluidTypes];
 
         // Load each fluid type in order
         for (int i = 1; i < numFluidTypes + 1; i++)
@@ -147,11 +149,13 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             // Assign to array at index-1 (since we skip Disabled which is 0)
             fluidDataArray[i-1] = fluidData;
             fluidParamArr[i-1] = fluidData.getFluidParams();
+            scalingFactorsArr[i-1] = fluidData.getScalingFactors();
         }
 
         // Create buffers
         // init buffer
         fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(fluidDataArray.Length);
+        ScalingFactorsBuffer = ComputeHelper.CreateStructuredBuffer<ScalingFactors>(numFluidTypes); //why does it say this leaks?
 
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
@@ -162,30 +166,29 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(MAX_COLLIDERS);
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(MAX_COLLIDERS);
         
+        
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
         // Set buffer data
         fluidDataBuffer.SetData(fluidParamArr);
+        ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnData);
 
         // Init compute
         ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
 
+
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
 
-        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
-        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 5)));
-        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 4)));
-        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(currentFluid.smoothingRadius, 5) * Mathf.PI));
-        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
 
         gpuSort = new();
         gpuSort.SetBuffers(spatialIndices, spatialOffsets);
@@ -387,6 +390,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         ComputeHelper.Release(
             fluidDataBuffer,
+            ScalingFactorsBuffer,
             particleBuffer,
             spatialIndices, 
             spatialOffsets,

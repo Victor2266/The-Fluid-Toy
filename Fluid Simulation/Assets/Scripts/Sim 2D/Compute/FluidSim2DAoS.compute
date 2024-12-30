@@ -6,7 +6,7 @@
 #pragma kernel UpdatePositions
 
 // Includes
-#include "./FluidMaths2D.hlsl"
+#include "./FluidMaths2DAoS.hlsl"
 #include "./SpatialHash.hlsl"
 
 static const int NumThreads = 64;
@@ -49,8 +49,18 @@ struct OrientedBox //24 bytes total
     float2 zLocal;
 };
 
+struct ScalingFactors
+{
+	float Poly6;
+	float SpikyPow3;
+	float SpikyPow2;
+	float SpikyPow3Derivative;
+	float SpikyPow2Derivative;
+};
+
 // Buffers
 RWStructuredBuffer<FluidData> FluidDataSet;
+RWStructuredBuffer<ScalingFactors> ScalingFactorsBuffer;
 RWStructuredBuffer<Particle> Particles;
 RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
@@ -69,32 +79,32 @@ int numBoxColliders;
 int numCircleColliders;
 int brushType;
 
-float DensityKernel(float dst, float radius)
+float DensityKernel(float dst, float radius, int type)
 {
-	return SpikyKernelPow2(dst, radius);
+	return SpikyKernelPow2(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow2);
 }
 
-float NearDensityKernel(float dst, float radius)
+float NearDensityKernel(float dst, float radius, int type)
 {
-	return SpikyKernelPow3(dst, radius);
+	return SpikyKernelPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3);
 }
 
-float DensityDerivative(float dst, float radius)
+float DensityDerivative(float dst, float radius, int type)
 {
-	return DerivativeSpikyPow2(dst, radius);
+	return DerivativeSpikyPow2(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow2Derivative);
 }
 
-float NearDensityDerivative(float dst, float radius)
+float NearDensityDerivative(float dst, float radius, int type)
 {
-	return DerivativeSpikyPow3(dst, radius);
+	return DerivativeSpikyPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3Derivative);
 }
 
-float ViscosityKernel(float dst, float radius)
+float ViscosityKernel(float dst, float radius, int type)
 {
-	return SmoothingKernelPoly6(dst, radius);
+	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6);
 }
 
-float2 CalculateDensity(float2 pos, float smoothingRadius)
+float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 {
 	int2 originCell = GetCell2D(pos, smoothingRadius);
 	float sqrRadius = smoothingRadius * smoothingRadius;
@@ -118,9 +128,13 @@ float2 CalculateDensity(float2 pos, float smoothingRadius)
 			if (indexData[1] != hash) continue;
 
 			uint neighbourIndex = indexData[0];
-			if (Particles[neighbourIndex].type == 0) continue; // Skip disabled particles
+			Particle neighbourParticle = Particles[neighbourIndex];
+			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
 
-			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
+			if (neighbourParticle.type == 0) continue; // Skip disabled particles
+			
+
+			float2 neighbourPos = neighbourParticle.predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
 			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
 
@@ -129,8 +143,8 @@ float2 CalculateDensity(float2 pos, float smoothingRadius)
 
 			// Calculate density and near density
 			float dst = sqrt(sqrDstToNeighbour);
-			density += DensityKernel(dst, smoothingRadius);
-			nearDensity += NearDensityKernel(dst, smoothingRadius);
+			density += DensityKernel(dst, smoothingRadius, type); // NEW Kernel that uses type
+			nearDensity += NearDensityKernel(dst, smoothingRadius, type);
 		}
 	}
 
@@ -314,7 +328,7 @@ void HandleMouseInput(inout Particle particle){
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
 		{
-			particle.type = 0; // Remove the particle
+			particle.type = 2; // Remove the particle
 		}
 	}
 }
@@ -365,7 +379,7 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 	if (particle.type == 0) return; // Skip disabled
 
 	FluidData fluidData = FluidDataSet[particle.type - 1];
-    particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius); // This needs the fluidData
+    particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius, particle.type); // This needs the fluidData
 	particle.density.x = max(particle.density.x, 0.1); // Clamp density
     particle.density.y = max(particle.density.y, 0.1);
     Particles[id.x] = particle;
@@ -434,10 +448,10 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5;
 
 			// FIXME possible issues with Newton's 2nd law in the event that smoothing radius is different for 2 particles
-			// Currently using smoothing radius of viewpoint particle rather than neighbour particle
+			// Currently using smoothing radius of viewpoint particle rather than viewpoint particle
 			// If one is smaller than the other, physics will get weird.
-			pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius) * sharedPressure / neighbourDensity;
-			pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius) * sharedNearPressure / neighbourNearDensity;
+			pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius, particle.type) * sharedPressure / neighbourDensity;
+			pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius, particle.type) * sharedNearPressure / neighbourDensity;
 		}
 	}
 
@@ -495,7 +509,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 			float dst = sqrt(sqrDstToNeighbour);
 			float2 neighbourVelocity = Particles[neighbourIndex].velocity;
-			viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius); // FIXME using perspective particle's smoothing radius
+			viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, particle.type); // FIXME using viewpoint particle's smoothing radius
 		}
 
 	}

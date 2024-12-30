@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public enum FluidType
@@ -8,7 +9,9 @@ public enum FluidType
     Honey
 }
 
-// Struct for passing to compute shader
+// Struct for passing to compute shader.
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 32)]
 public struct FluidParam
 {
     public FluidType fluidType;
@@ -19,6 +22,17 @@ public struct FluidParam
     public float pressureMultiplier;
     public float nearPressureMultiplier;
     public float viscosityStrength;
+};
+
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 20)]
+public struct ScalingFactors
+{
+	public float Poly6;
+	public float SpikyPow3;
+	public float SpikyPow2;
+	public float SpikyPow3Derivative;
+	public float SpikyPow2Derivative;
 };
 
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]
@@ -51,7 +65,7 @@ public class FluidData : ScriptableObject
 
     [Header("Viscosity")]
     [Tooltip("Strength of the fluid's viscosity")]
-    [Range(0f, 1f)]
+    [Range(0f, 3f)]
     public float viscosityStrength = 0.06f;
 
 
@@ -87,5 +101,17 @@ public class FluidData : ScriptableObject
             viscosityStrength = viscosityStrength
         };
         return fluidParams;
+    }
+    public ScalingFactors getScalingFactors()
+    {
+        ScalingFactors scalingFactors = new ScalingFactors
+        {
+            Poly6 = 4 / (Mathf.PI * Mathf.Pow(smoothingRadius, 8)),
+            SpikyPow3 = 10 / (Mathf.PI * Mathf.Pow(smoothingRadius, 5)),
+            SpikyPow2 = 6 / (Mathf.PI * Mathf.Pow(smoothingRadius, 4)),
+            SpikyPow3Derivative = 30 / (Mathf.Pow(smoothingRadius, 5) * Mathf.PI),
+            SpikyPow2Derivative = 12 / (Mathf.Pow(smoothingRadius, 4) * Mathf.PI)
+        };
+        return scalingFactors;
     }
 };
