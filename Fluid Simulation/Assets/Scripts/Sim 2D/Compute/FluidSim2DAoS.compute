@@ -373,8 +373,8 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
-	Particle particle = Particles[id.x];
-	if (particle.type == 0) return; // Skip disabled
+	//Particle particle = Particles[id.x];
+	//if (particle.type == 0) return; // Skip disabled
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
