@@ -72,6 +72,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
+    // For the spatial subdivision to work we use the largest smoothing radius for the grid
+    // By manually selecting the fluid types you can finetune the grid size
+    [SerializeField] private bool manuallySelectFluidTypes; 
+    private float maxSmoothingRadius = 0f;
     [SerializeField] public FluidData[] fluidDataArray;
     private FluidParam[] fluidParamArr; // Compute-friendly data type
     public ComputeBuffer fluidDataBuffer { get; private set; }
@@ -127,35 +131,56 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
         
-        // Get the number of fluid types (excluding Disabled)
-        int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
-        // Initialize arrays
-        fluidDataArray = new FluidData[numFluidTypes];
-        fluidParamArr = new FluidParam[numFluidTypes];
-        scalingFactorsArr = new ScalingFactors[numFluidTypes];
+        if (!manuallySelectFluidTypes){
+            // Get the number of fluid types (excluding Disabled)
+            int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
+            // Initialize arrays
+            fluidDataArray = new FluidData[numFluidTypes];
+            fluidParamArr = new FluidParam[numFluidTypes];
+            scalingFactorsArr = new ScalingFactors[numFluidTypes];
 
-        // Load each fluid type in order
-        for (int i = 1; i < numFluidTypes + 1; i++)
-        {
-            string fluidName = Enum.GetName(typeof(FluidType), i);
-            FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
-            
-            if (fluidData == null)
+            // Load each fluid type in order
+            for (int i = 1; i < numFluidTypes + 1; i++)
             {
-                Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
-                continue;
-            }
+                string fluidName = Enum.GetName(typeof(FluidType), i);
+                FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
+                fluidData.fluidType = (FluidType) i;
+                
+                if (fluidData == null)
+                {
+                    Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
+                    continue;
+                }
 
-            // Assign to array at index-1 (since we skip Disabled which is 0)
-            fluidDataArray[i-1] = fluidData;
-            fluidParamArr[i-1] = fluidData.getFluidParams();
-            scalingFactorsArr[i-1] = fluidData.getScalingFactors();
+                // Assign to array at index-1 (since we skip Disabled which is 0)
+                fluidDataArray[i-1] = fluidData;
+                fluidParamArr[i-1] = fluidData.getFluidParams();
+                scalingFactorsArr[i-1] = fluidData.getScalingFactors();
+            }
+        }
+        else{
+            fluidParamArr = new FluidParam[fluidDataArray.Length];
+            scalingFactorsArr = new ScalingFactors[fluidDataArray.Length];
+            for (int i = 0; i < fluidDataArray.Length; i++)
+            {
+                fluidParamArr[i] = fluidDataArray[i].getFluidParams();
+                scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
+            }
+        }
+
+        maxSmoothingRadius = 0f;
+        for (int i = 0; i < fluidDataArray.Length; i++)
+        {
+            if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
+            {
+                maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
+            }
         }
 
         // Create buffers
         // init buffer
         fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(fluidDataArray.Length);
-        ScalingFactorsBuffer = ComputeHelper.CreateStructuredBuffer<ScalingFactors>(numFluidTypes); //why does it say this leaks?
+        ScalingFactorsBuffer = ComputeHelper.CreateStructuredBuffer<ScalingFactors>(fluidDataArray.Length); //why does it say this leaks?
 
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
@@ -176,7 +201,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         SetInitialBufferData(spawnData);
 
         // Init compute
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
@@ -188,6 +213,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
+        compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
 
 
         gpuSort = new();

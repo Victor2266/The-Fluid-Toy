@@ -62,7 +62,7 @@ struct ScalingFactors
 RWStructuredBuffer<FluidData> FluidDataSet;
 RWStructuredBuffer<ScalingFactors> ScalingFactorsBuffer;
 RWStructuredBuffer<Particle> Particles;
-RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing
+RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, hash, key
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
@@ -74,6 +74,7 @@ const float2 boundsSize;
 const float2 interactionInputPoint;
 const float interactionInputStrength;
 const float interactionInputRadius;
+const float maxSmoothingRadius;
 
 int numBoxColliders;
 int numCircleColliders;
@@ -104,9 +105,15 @@ float ViscosityKernel(float dst, float radius, int type)
 	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6);
 }
 
+//get the maximum smoothing radius between two fluid types
+float GetMaxSmoothingRadius(int typeA, int typeB)
+{
+    return max(FluidDataSet[typeA - 1].smoothingRadius, FluidDataSet[typeB - 1].smoothingRadius);
+}
+
 float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 {
-	int2 originCell = GetCell2D(pos, smoothingRadius);
+	int2 originCell = GetCell2D(pos, maxSmoothingRadius); //Use the largest radius of any fluid type for spatial hashing
 	float sqrRadius = smoothingRadius * smoothingRadius;
 	float density = 0;
 	float nearDensity = 0;
@@ -137,6 +144,10 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 			float2 neighbourPos = neighbourParticle.predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
 			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
+
+			// Use max smoothing radius between the two particle types
+            float interactionRadius = GetMaxSmoothingRadius(type, neighbourParticle.type);
+            float sqrRadius = interactionRadius * interactionRadius;
 
 			// Skip if not within radius
 			if (sqrDstToNeighbour > sqrRadius) continue;
@@ -328,7 +339,7 @@ void HandleMouseInput(inout Particle particle){
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
 		{
-			particle.type = 2; // Remove the particle
+			particle.type = 0; // Remove the particle
 		}
 	}
 }
@@ -358,14 +369,12 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	if (id.x >= numParticles) return;
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
-	FluidData fluidData = FluidDataSet[particle.type - 1];
-	
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
 	// Update index buffer
 	uint index = id.x;
-	int2 cell = GetCell2D(Particles[index].predictedPosition, fluidData.smoothingRadius);
+	int2 cell = GetCell2D(Particles[index].predictedPosition, maxSmoothingRadius);
 	uint hash = HashCell2D(cell);
 	uint key = KeyFromHash(hash, numParticles);
 	SpatialIndices[id.x] = uint3(index, hash, key);
@@ -401,7 +410,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	float2 pressureForce = 0;
 	
 	float2 pos = Particles[id.x].predictedPosition;
-	int2 originCell = GetCell2D(pos, fluidData.smoothingRadius);
+	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
 
 	// Neighbour search
@@ -415,7 +424,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 		{
 			uint3 indexData = SpatialIndices[currIndex];
 			currIndex ++;
-			// Exit if no longer looking at correct bin
+			// Exit if no longer looking at correct bin (index, hash, key)
 			if (indexData[2] != key) break;
 			// Skip if hash does not match
 			if (indexData[1] != hash) continue;
@@ -471,7 +480,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 	FluidData fluidData = FluidDataSet[particle.type - 1];
 		
 	float2 pos = Particles[id.x].predictedPosition;
-	int2 originCell = GetCell2D(pos, fluidData.smoothingRadius);
+	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
 
 	float2 viscosityForce = 0;

@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 59864030}
   - component: {fileID: 59864029}
   m_Layer: 5
-  m_Name: Nothing
+  m_Name: Erase (For Testing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2221,7 +2221,10 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   brushState: 1
-  fluidDataArray: []
+  manuallySelectFluidTypes: 1
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
+  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
   compute: {fileID: 7200000, guid: c4e04fbd8b42e9e49be8bbd01966b4da, type: 3}
   spawner: {fileID: 271053320}
   display: {fileID: 271053323}
