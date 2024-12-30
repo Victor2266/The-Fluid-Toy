@@ -119,6 +119,10 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 	float density = 0;
 	float nearDensity = 0;
 
+	// Add self-density contribution
+	density += DensityKernel(0, smoothingRadius, type);
+	nearDensity += NearDensityKernel(0, smoothingRadius, type);
+
 	// Neighbour search
 	for (int i = 0; i < 9; i++)
 	{
@@ -140,7 +144,6 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
 
 			if (neighbourParticle.type == 0) continue; // Skip disabled particles
-			
 
 			float2 neighbourPos = neighbourParticle.predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -357,6 +360,8 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
     // External forces (gravity and input interaction)
     particle.velocity += ExternalForces(particle.position, particle.velocity, fluidData.gravity) * deltaTime;
 
+	HandleMouseInput(particle);
+
     // Predict
     const float predictionFactor = 1 / 120.0;
     particle.predictedPosition = particle.position + particle.velocity * predictionFactor;
@@ -532,7 +537,6 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
-	HandleMouseInput(particle);
     particle.position += particle.velocity * deltaTime;
     HandleCollisions(particle); // This needs the FluidDataSet
     Particles[id.x] = particle;
