@@ -78,7 +78,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     [SerializeField] private FluidData currentFluid;*/
 
     // Fluid data array and buffer (to serialize then pass to GPU)
-    [Header("Fluid Data")]
+    [Header("Fluid Data Types")]
     [SerializeField] public FluidData[] fluidDataArray;
 
     public FluidParam[] fluidParamArr; // Compute-friendly data type
@@ -101,7 +101,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [Header("Particle Data")]
     // Buffers
-    public Particle[] particleData;
+    private Particle[] particleData;
     public ComputeBuffer particleBuffer { get; private set; }
     ComputeBuffer spatialIndices;
     ComputeBuffer spatialOffsets;
@@ -131,20 +131,33 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
+        
+        // Get the number of fluid types (excluding Disabled)
+        int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length;
+        // Initialize arrays
+        fluidDataArray = new FluidData[numFluidTypes];
+        fluidParamArr = new FluidParam[numFluidTypes];
+
+        // Load each fluid type in order
+        for (int i = 1; i < Enum.GetValues(typeof(FluidType)).Length; i++)
+        {
+            string fluidName = Enum.GetName(typeof(FluidType), i);
+            FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
+            
+            if (fluidData == null)
+            {
+                Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
+                continue;
+            }
+
+            // Assign to array at index-1 (since we skip Disabled which is 0)
+            fluidDataArray[i] = fluidData;
+            fluidParamArr[i] = fluidData.getFluidParams();
+        }
 
         // Create buffers
-        int numFluids = Enum.GetValues(typeof(FluidType)).Cast<int>().Max() + 1; // Hack to get number of enum entries
-        fluidDataArray = new FluidData[numFluids];
-        // FIXME need to initilize fluidDataArray and populate it somehow
-        // BELOW IS TEMP
-        for (int i = 0; i < numFluids; i++) {
-            fluidDataArray[i] = ScriptableObject.CreateInstance<FluidData>();
-        }
-        // Convert to compute-friendly array
-        fluidParamArr = new FluidParam[numFluids];
-        for (int i=0; i<numFluids; i++) {fluidParamArr[i] = fluidDataArray[i].getFluidParams(); }
         // init buffer
-        fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(numFluids);
+        fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(fluidDataArray.Length);
 
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
@@ -464,13 +477,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     }
     public Vector2[] GetParticlePositions()
     {
-        Particle[] allPoints = new Particle[numParticles];
         Vector2[] positions = new Vector2[numParticles];
-        particleBuffer.GetData(allPoints);
+        particleBuffer.GetData(particleData);
 
         for (int i = 0; i < numParticles; i++)
         {
-            positions[i] = allPoints[i].position;
+            positions[i] = particleData[i].position;
         }
         return positions;
     }
