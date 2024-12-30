@@ -335,15 +335,27 @@ void HandleCollisions(inout Particle particle)
     particle.position = pos;
     particle.velocity = vel;
 }
+void HandleLeftMouseInput(inout Particle particle){
+	// Input interactions to add particles
+	if (brushType == 0 && interactionInputStrength == 1) {
+		float2 inputPointOffset = interactionInputPoint - particle.position;
+		float sqrDst = dot(inputPointOffset, inputPointOffset);
 
-void HandleMouseInput(inout Particle particle){
+		if(particle.type == 0){
+			particle.position = interactionInputPoint - inputPointOffset * (interactionInputRadius / sqrt(sqrDst));
+			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
+		}
+
+	}
+}
+void HandleRightMouseInput(inout Particle particle){
 	// Input interactions to remove particles
 	if (brushType == 0 && interactionInputStrength == -1) {
 		float2 inputPointOffset = interactionInputPoint - particle.position;
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
 		{
-			particle.type = selectedFluidType; // Remove the particle by setting to 0 which is disabled. (currently sets the particle to selectedFluidType for testing)
+			particle.type = 0; // Remove the particle by setting to 0 which is disabled.
 		}
 	}
 }
@@ -353,6 +365,7 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
+	HandleLeftMouseInput(particle);
 	if (particle.type == 0) return; // Skip disabled
 
 	FluidData fluidData = FluidDataSet[particle.type - 1];
@@ -360,7 +373,7 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
     // External forces (gravity and input interaction)
     particle.velocity += ExternalForces(particle.position, particle.velocity, fluidData.gravity) * deltaTime;
 
-	HandleMouseInput(particle);
+	HandleRightMouseInput(particle);
 
     // Predict
     const float predictionFactor = 1 / 120.0;
