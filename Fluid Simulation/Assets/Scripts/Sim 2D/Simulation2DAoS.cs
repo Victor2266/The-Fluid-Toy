@@ -303,19 +303,35 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(smoothingRadius, 4) * Mathf.PI));
 
         // Mouse interaction settings:
+        HandleMouseInput();
+
+    }
+
+    void HandleMouseInput()
+    {
+        // Mouse interaction settings:
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         bool isPullInteraction = Input.GetMouseButton(0);
         bool isPushInteraction = Input.GetMouseButton(1);
         float currInteractStrength = 0;
+
         if(brushState == BrushType.GRAVITY){
             if (isPushInteraction || isPullInteraction)
             {
-            
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
+            }
+        } else if(brushState == BrushType.DRAW){
+            if (isPullInteraction)
+            {
+                currInteractStrength = 1f;
+            }
+            else if (isPushInteraction)
+            {
+                currInteractStrength = -1f;
             }
         }
         
-
+        compute.SetInt("brushType", (int) brushState);
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
         compute.SetFloat("interactionInputRadius", interactionRadius);

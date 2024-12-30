@@ -67,6 +67,7 @@ const float interactionInputRadius;
 
 int numBoxColliders;
 int numCircleColliders;
+int brushType;
 
 float DensityKernel(float dst, float radius)
 {
@@ -304,6 +305,18 @@ void HandleCollisions(inout Particle particle)
     particle.velocity = vel;
 }
 
+void HandleMouseInput(inout Particle particle){
+	// Input interactions to remove particles
+	if (brushType == 0 && interactionInputStrength == -1) {
+		float2 inputPointOffset = interactionInputPoint - particle.position;
+		float sqrDst = dot(inputPointOffset, inputPointOffset);
+		if (sqrDst < interactionInputRadius * interactionInputRadius)
+		{
+			particle.type = 0; // Remove the particle
+		}
+	}
+}
+
 [numthreads(NumThreads,1,1)]
 void ExternalForces(uint3 id : SV_DispatchThreadID)
 {
@@ -485,6 +498,7 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
+	HandleMouseInput(particle);
     particle.position += particle.velocity * deltaTime;
     HandleCollisions(particle); // This needs the FluidDataSet
     Particles[id.x] = particle;
