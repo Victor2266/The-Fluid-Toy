@@ -343,7 +343,7 @@ void HandleMouseInput(inout Particle particle){
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
 		{
-			particle.type = selectedFluidType; // Remove the particle
+			particle.type = selectedFluidType; // Remove the particle (currently sets the particle for testing)
 		}
 	}
 }
