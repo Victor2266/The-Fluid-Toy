@@ -11,17 +11,6 @@
 
 static const int NumThreads = 64;
 
-// Analogous to "ParticleSoA" in Simulation2DSoA.cs
-struct ParticleSoA
-{
-	float2[] density;		//8 bytes, density and near density
-	float2[] velocity;	//8-byte (4-byte scalar x2; 2D vector)
-	float2[] predictedPosition; // 8
-	float2[] position;	// 8
-	float1[] temperature; // 4-byte scalar
-	int[] type;			// 4 (fluid type enum); currently used to key FluidDataSet array
-};
-
 // Condensed version of FluidData ScriptableObject (without shader details as those are not needed)
 struct FluidData
 {
@@ -61,7 +50,12 @@ struct ScalingFactors
 // Buffers
 RWStructuredBuffer<FluidData> FluidDataSet;
 RWStructuredBuffer<ScalingFactors> ScalingFactorsBuffer;
-RWStructuredBuffer<ParticleSoA> Particles;
+RWStructuredBuffer<float2> Densities;
+RWStructuredBuffer<float2> Velocities;
+RWStructuredBuffer<float2> PredictedPositions;
+RWStructuredBuffer<float2> Positions;
+RWStructuredBuffer<float1> Temperatures;
+RWStructuredBuffer<int> Types;
 RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, hash, key
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<OrientedBox> BoxColliders;
@@ -140,10 +134,9 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 			if (indexData[1] != hash) continue;
 
 			uint neighbourIndex = indexData[0];
-			//Particle neighbourParticle = Particles[neighbourIndex];
-			FluidData neighbourData = FluidDataSet[Particles.type[neighbourIndex] - 1];
+			FluidData neighbourData = FluidDataSet[Types[neighbourIndex] - 1];
 
-			if (Particles.type[neighbourIndex] == 0) continue; // Skip disabled particles
+			if (Types[neighbourIndex] == 0) continue; // Skip disabled particles
 
 			float2 neighbourPos = Particles.predictedPosition[neighbourIndex];
 			float2 offsetToNeighbour = neighbourPos - pos;

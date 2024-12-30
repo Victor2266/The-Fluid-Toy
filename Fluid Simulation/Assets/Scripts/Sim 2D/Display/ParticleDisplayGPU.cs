@@ -19,9 +19,14 @@ public class ParticleDisplay2D : MonoBehaviour
 	{
 		needsUpdate = true;
 		material = new Material(shader);
-		material.SetBuffer("Particles", sim.particleBuffer);
+		material.SetBuffer("PredictedPositions", sim.predictedPositionBuffer);
+		material.SetBuffer("Positions", sim.positionBuffer);
+		material.SetBuffer("Velocities", sim.velocityBuffer);
+		material.SetBuffer("Densities", sim.densityBuffer);
+		material.SetBuffer("Temperatures", sim.temperatureBuffer);
+		material.SetBuffer("Types", sim.typeBuffer);
 
-		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
+		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.positionBuffer.count);
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
