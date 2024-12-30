@@ -79,6 +79,7 @@ const float maxSmoothingRadius;
 int numBoxColliders;
 int numCircleColliders;
 int brushType;
+int selectedFluidType;
 
 float DensityKernel(float dst, float radius, int type)
 {
@@ -339,7 +340,7 @@ void HandleMouseInput(inout Particle particle){
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
 		{
-			particle.type = 0; // Remove the particle
+			particle.type = selectedFluidType; // Remove the particle
 		}
 	}
 }

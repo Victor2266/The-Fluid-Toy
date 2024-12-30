@@ -543,6 +543,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 271053324}
+        m_TargetAssemblyTypeName: Simulation2DAoS, Assembly-CSharp
+        m_MethodName: setSelectedFluid
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &59864031
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2217,11 +2229,11 @@ MonoBehaviour:
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
-  currentFluid: {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
+  selectedFluid: 0
+  brushState: 1
   interactionRadius: 3
   interactionStrength: 360
-  brushState: 1
-  manuallySelectFluidTypes: 1
+  manuallySelectFluidTypes: 0
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
@@ -2942,6 +2954,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
           m_ObjectArgumentAssemblyTypeName: FluidData, Assembly-CSharp
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 271053324}
+        m_TargetAssemblyTypeName: Simulation2DAoS, Assembly-CSharp
+        m_MethodName: setSelectedFluid
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8816,6 +8840,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
           m_ObjectArgumentAssemblyTypeName: FluidData, Assembly-CSharp
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 271053324}
+        m_TargetAssemblyTypeName: Simulation2DAoS, Assembly-CSharp
+        m_MethodName: setSelectedFluid
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

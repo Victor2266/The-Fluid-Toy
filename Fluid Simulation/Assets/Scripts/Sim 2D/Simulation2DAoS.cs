@@ -49,12 +49,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleSize;
     public Vector2 obstacleCentre;
 
-    [Header("Current Fluid Type")] // This is used for the draw brush
-    [SerializeField] private FluidData currentFluid;
-
-    [Header("Interaction Settings")]
-    public float interactionRadius;
-    public float interactionStrength;
+    [Header("Selected Fluid Type")] // This is used for the draw brush
+    [SerializeField] private int selectedFluid;
 
     // Brush Settings + Enum type
     public enum BrushType
@@ -66,9 +62,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [SerializeField] private BrushType brushState = BrushType.GRAVITY;
 
-    // Obsolete
-    /*[Header("Current Fluid Type")]
-    [SerializeField] private FluidData currentFluid;*/
+    [Header("Interaction Settings")]
+    public float interactionRadius;
+    public float interactionStrength;
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
@@ -325,6 +321,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetVector("boundsSize", boundsSize);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
+        compute.SetInt("selectedFluidType", selectedFluid);
 
         //These are now computed once at the start
         /*
@@ -475,25 +472,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     //
     //
 
-    /*public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
-    {
-        if (fluidData == null)
-        {
-            Debug.LogError("Attempted to set null FluidData");
-            return;
-        }
-
-        //currentFluid = fluidData;
-
-        // Update simulation parameters with the new fluid's properties
-        //gravity = fluidData.gravity;
-        //collisionDamping = fluidData.collisionDamping;
-        //smoothingRadius = fluidData.smoothingRadius;
-        //targetDensity = fluidData.targetDensity;
-        //pressureMultiplier = fluidData.pressureMultiplier;
-        //nearPressureMultiplier = fluidData.nearPressureMultiplier;
-        //viscosityStrength = fluidData.viscosityStrength;
-    }*/
+    public void setSelectedFluid(int fluidTypeIndex){
+        selectedFluid = fluidTypeIndex;
+    }
 
     public void SetBrushType(int brushTypeIndex)
     {
