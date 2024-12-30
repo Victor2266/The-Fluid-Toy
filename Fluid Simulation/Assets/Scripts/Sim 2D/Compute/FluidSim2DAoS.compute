@@ -395,8 +395,8 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 
 	FluidData fluidData = FluidDataSet[particle.type - 1];
     particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius, particle.type); // This needs the fluidData
-	particle.density.x = max(particle.density.x, 0.1); // Clamp density
-    particle.density.y = max(particle.density.y, 0.1);
+	//particle.density.x = max(particle.density.x, 0.1); // Clamp density
+    //particle.density.y = max(particle.density.y, 0.1);
     Particles[id.x] = particle;
 }
 
