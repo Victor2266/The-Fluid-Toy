@@ -164,6 +164,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             for (int i = 0; i < fluidDataArray.Length; i++)
             {
                 fluidParamArr[i] = fluidDataArray[i].getFluidParams();
+                fluidParamArr[i].fluidType = (FluidType) i + 1;
                 scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
             }
         }
