@@ -50,14 +50,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleSize;
     public Vector2 obstacleCentre;
 
-    [Header("Fluid Settings")]
-    public float gravity;
-    [Range(0, 1)] public float collisionDamping = 0.95f;
-    public float smoothingRadius = 2;
-    public float targetDensity;
-    public float pressureMultiplier;
-    public float nearPressureMultiplier;
-    public float viscosityStrength;
+    [Header("Current Fluid Type")] // This is used for the draw brush
+    [SerializeField] private FluidData currentFluid;
 
     [Header("Interaction Settings")]
     public float interactionRadius;
@@ -296,11 +290,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
 
-        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(smoothingRadius, 8)));
-        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(smoothingRadius, 5)));
-        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(smoothingRadius, 4)));
-        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(smoothingRadius, 5) * Mathf.PI));
-        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(smoothingRadius, 4) * Mathf.PI));
+        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
+        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 5)));
+        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 4)));
+        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(currentFluid.smoothingRadius, 5) * Mathf.PI));
+        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
 
         // Mouse interaction settings:
         HandleMouseInput();
