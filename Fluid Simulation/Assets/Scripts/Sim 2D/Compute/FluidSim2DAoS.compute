@@ -374,7 +374,7 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
 	//Particle particle = Particles[id.x];
-	//if (particle.type == 0) return; // Skip disabled
+	//if (particle.type == 0) return; // Skip disabled, shouldn't skip here because the spatial hash needs to get updated even for disabled particles
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
