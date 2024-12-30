@@ -120,8 +120,8 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 	float nearDensity = 0;
 
 	// Add self-density contribution
-	density += DensityKernel(0, smoothingRadius, type);
-	nearDensity += NearDensityKernel(0, smoothingRadius, type);
+	//density += DensityKernel(0, smoothingRadius, type);
+	//nearDensity += NearDensityKernel(0, smoothingRadius, type);
 
 	// Neighbour search
 	for (int i = 0; i < 9; i++)
