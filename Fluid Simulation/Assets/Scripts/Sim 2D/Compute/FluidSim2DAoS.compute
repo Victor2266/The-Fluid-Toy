@@ -118,6 +118,8 @@ float2 CalculateDensity(float2 pos, float smoothingRadius)
 			if (indexData[1] != hash) continue;
 
 			uint neighbourIndex = indexData[0];
+			if (Particles[neighbourIndex].type == 0) continue; // Skip disabled particles
+
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
 			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
@@ -275,9 +277,9 @@ void HandleCollisions(inout Particle particle)
 {
     float2 pos = particle.position;
     float2 vel = particle.velocity;
-	FluidData fluidData = FluidDataSet[particle.type];
+	FluidData fluidData = FluidDataSet[particle.type - 1];
 
-	if (fluidData.fluidType == 0) return; // Skip disabled
+	if (particle.type == 0) return; // Skip disabled
 
     // Keep particle inside bounds
     const float2 halfSize = boundsSize * 0.5;
@@ -322,9 +324,10 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
-	FluidData fluidData = FluidDataSet[particle.type];
-	if (fluidData.fluidType == 0) return; // Skip disabled
-    
+	if (particle.type == 0) return; // Skip disabled
+
+	FluidData fluidData = FluidDataSet[particle.type - 1];
+	
     // External forces (gravity and input interaction)
     particle.velocity += ExternalForces(particle.position, particle.velocity, fluidData.gravity) * deltaTime;
 
@@ -340,8 +343,9 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
 	Particle particle = Particles[id.x];
-	FluidData fluidData = FluidDataSet[particle.type];
-	if (fluidData.fluidType == 0) return; // Skip disabled
+	if (particle.type == 0) return; // Skip disabled
+	FluidData fluidData = FluidDataSet[particle.type - 1];
+	
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
@@ -358,10 +362,12 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
-	FluidData fluidData = FluidDataSet[particle.type];
-	if (fluidData.fluidType == 0) return; // Skip disabled
+	if (particle.type == 0) return; // Skip disabled
 
-    particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius);
+	FluidData fluidData = FluidDataSet[particle.type - 1];
+    particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius); // This needs the fluidData
+	particle.density.x = max(particle.density.x, 0.1); // Clamp density
+    particle.density.y = max(particle.density.y, 0.1);
     Particles[id.x] = particle;
 }
 
@@ -370,8 +376,9 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
 	Particle particle = Particles[id.x];
-	FluidData fluidData = FluidDataSet[particle.type];
-	if (fluidData.fluidType == 0) return; // Skip disabled
+	if (particle.type == 0) return; // Skip disabled
+
+	FluidData fluidData = FluidDataSet[particle.type - 1];
 
 	float density = Particles[id.x].density[0];
 	float densityNear = Particles[id.x].density[1];
@@ -403,8 +410,9 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
-			FluidData neighbourData = FluidDataSet[neighbourParticle.type];
-			if (neighbourData.fluidType == 0) continue; // Skip disabled
+			if (neighbourParticle.type == 0) continue; // Skip disabled
+			
+			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -444,8 +452,9 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
 	Particle particle = Particles[id.x];
-	FluidData fluidData = FluidDataSet[particle.type];
-	if (fluidData.fluidType == 0) return; // Skip disabled
+	if (particle.type == 0) return; // Skip disabled
+
+	FluidData fluidData = FluidDataSet[particle.type - 1];
 		
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, fluidData.smoothingRadius);
@@ -473,8 +482,9 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
-			FluidData neighbourData = FluidDataSet[neighbourParticle.type];
-			if (neighbourData.fluidType == 0) continue; // Skip disabled
+			if (neighbourParticle.type == 0) continue; // Skip disabled
+
+			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;

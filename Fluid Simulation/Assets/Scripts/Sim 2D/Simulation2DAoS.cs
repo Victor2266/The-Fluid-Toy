@@ -126,14 +126,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
         
-        // Get the number of fluid types (including Disabled)
-        int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length;
+        // Get the number of fluid types (excluding Disabled)
+        int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
         // Initialize arrays
         fluidDataArray = new FluidData[numFluidTypes];
         fluidParamArr = new FluidParam[numFluidTypes];
 
         // Load each fluid type in order
-        for (int i = 1; i < Enum.GetValues(typeof(FluidType)).Length; i++)
+        for (int i = 1; i < numFluidTypes + 1; i++)
         {
             string fluidName = Enum.GetName(typeof(FluidType), i);
             FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
@@ -145,8 +145,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             }
 
             // Assign to array at index-1 (since we skip Disabled which is 0)
-            fluidDataArray[i] = fluidData;
-            fluidParamArr[i] = fluidData.getFluidParams();
+            fluidDataArray[i-1] = fluidData;
+            fluidParamArr[i-1] = fluidData.getFluidParams();
         }
 
         // Create buffers
