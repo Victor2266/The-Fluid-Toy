@@ -132,7 +132,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
         
-        // Get the number of fluid types (excluding Disabled)
+        // Get the number of fluid types (including Disabled)
         int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length;
         // Initialize arrays
         fluidDataArray = new FluidData[numFluidTypes];
