@@ -536,7 +536,9 @@ public class Simulation2DSoA : MonoBehaviour, IFluidSimulation
     {
         // FIXME replce with multiple buffers
         Vector2[] positions = new Vector2[numParticles];
+        Debug.Log($"Before: {particleData.position[0]}");
         positionBuffer.GetData(particleData.position);
+        Debug.Log($"After: {particleData.position[0]}");
 
         for (int i = 0; i < numParticles; i++)
         {

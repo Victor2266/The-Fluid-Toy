@@ -297,8 +297,6 @@ void HandleBoxCollision2(inout float2 pos, inout float2 vel, OrientedBox box, fl
 
 void HandleCollisions(inout int pIdx)
 {
-	// if (FluidTypes[id.x] == 0) return; // Skip disabled, this already gets checked in UpdatePositions()
-
     float2 pos = Positions[pIdx];
     float2 vel = Velocities[pIdx];
 	FluidData fluidData = FluidDataSet[FluidTypes[pIdx] - 1];
