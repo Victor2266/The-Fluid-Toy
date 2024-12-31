@@ -21,11 +21,11 @@ Shader "Instanced/Particle2D SoA"
             #pragma target 4.5
 
             #include "UnityCG.cginc"
-            
-            StructuredBuffer<float2> Densities;
-            StructuredBuffer<float2> Velocities;
+
             StructuredBuffer<float2> PredictedPositions;
             StructuredBuffer<float2> Positions;
+            StructuredBuffer<float2> Velocities;
+            StructuredBuffer<float2> Densities;
             StructuredBuffer<float> Temperatures;
             StructuredBuffer<int> FluidTypes;
             float scale;

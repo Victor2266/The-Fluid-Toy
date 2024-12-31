@@ -195,9 +195,9 @@ public class Simulation2DSoA : MonoBehaviour, IFluidSimulation
             type = new int[numParticles]
         };
         densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
-        velocityBuffer = ComputeHelper.CreateStructuredBuffer<Vector2>(numParticles);
-        predictedPositionBuffer = ComputeHelper.CreateStructuredBuffer<Vector2>(numParticles);
-        positionBuffer = ComputeHelper.CreateStructuredBuffer<Vector2>(numParticles);
+        velocityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
+        predictedPositionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
+        positionBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         temperatureBuffer = ComputeHelper.CreateStructuredBuffer<float>(numParticles);
         typeBuffer = ComputeHelper.CreateStructuredBuffer<int>(numParticles);
 
