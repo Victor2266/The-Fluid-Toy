@@ -15,7 +15,7 @@ public struct ParticleSoA // n*40 bytes total
     public Vector2[] predictedPosition; // 8
     public Vector2[] position; // 8
     public float[] temperature; // 4
-    public FluidType[] type; // 4 (enum is int by default)
+    public int[] type; // 4 (enum is int by default)
 }
 
 /* //Redundantly defined
@@ -192,14 +192,14 @@ public class Simulation2DSoA : MonoBehaviour, IFluidSimulation
             predictedPosition = new Vector2[numParticles],
             position = new Vector2[numParticles],
             temperature = new float[numParticles],
-            type = new FluidType[numParticles]
+            type = new int[numParticles]
         };
         densityBuffer = ComputeHelper.CreateStructuredBuffer<float2>(numParticles);
         velocityBuffer = ComputeHelper.CreateStructuredBuffer<Vector2>(numParticles);
         predictedPositionBuffer = ComputeHelper.CreateStructuredBuffer<Vector2>(numParticles);
         positionBuffer = ComputeHelper.CreateStructuredBuffer<Vector2>(numParticles);
         temperatureBuffer = ComputeHelper.CreateStructuredBuffer<float>(numParticles);
-        typeBuffer = ComputeHelper.CreateStructuredBuffer<FluidType>(numParticles);
+        typeBuffer = ComputeHelper.CreateStructuredBuffer<int>(numParticles);
 
         boxColliderData = new OrientedBox[MAX_COLLIDERS];
         circleColliderData = new Circle[MAX_COLLIDERS];
@@ -224,7 +224,7 @@ public class Simulation2DSoA : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, positionBuffer, "Positions", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, predictedPositionBuffer, "PredictedPositions", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, temperatureBuffer, "Temperatures", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, typeBuffer, "Types", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, typeBuffer, "FluidTypes", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
@@ -384,7 +384,7 @@ public class Simulation2DSoA : MonoBehaviour, IFluidSimulation
             predictedPosition = new Vector2[spawnData.positions.Length],
             position = new Vector2[spawnData.positions.Length],
             temperature = new float[spawnData.positions.Length],
-            type = new FluidType[spawnData.positions.Length]
+            type = new int[spawnData.positions.Length]
         };
 
         // FIXME defaulting some values
@@ -395,9 +395,9 @@ public class Simulation2DSoA : MonoBehaviour, IFluidSimulation
             allPoints.velocity[i] = spawnData.velocities[i];
             allPoints.density[i] = new float2(0, 0);
             allPoints.temperature[i] = 0;
-            allPoints.type[i] = FluidType.Water; // Or whatever default type you want};
+            allPoints.type[i] = (int) FluidType.Water; // Or whatever default type you want};
         }
-
+        particleData = allPoints;
         densityBuffer.SetData(allPoints.density);
         velocityBuffer.SetData(allPoints.velocity);
         predictedPositionBuffer.SetData(allPoints.predictedPosition);

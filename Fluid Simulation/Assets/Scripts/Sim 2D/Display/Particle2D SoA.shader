@@ -27,7 +27,7 @@ Shader "Instanced/Particle2D SoA"
             StructuredBuffer<float2> PredictedPositions;
             StructuredBuffer<float2> Positions;
             StructuredBuffer<float> Temperatures;
-            StructuredBuffer<int> Types;
+            StructuredBuffer<int> FluidTypes;
             float scale;
             float4 colA;
             Texture2D<float4> ColourMap;
@@ -53,7 +53,7 @@ Shader "Instanced/Particle2D SoA"
                 float2 pPredictedPosition = PredictedPositions[instanceID];
                 float2 pPosition = Positions[instanceID];
                 float ptemp = Temperatures[instanceID];
-                int pType = Types[instanceID];
+                int pType = FluidTypes[instanceID];
 
                 // Check if particle should be rendered
                 o.valid = pType != 0;

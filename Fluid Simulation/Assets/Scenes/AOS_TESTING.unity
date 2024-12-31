@@ -5996,7 +5996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: bee36e49eb8b08e4cac361a67a0f528b, type: 3}
+  shader: {fileID: 4800000, guid: 441b7193936682446b30d2140d15792a, type: 3}
   scale: 0.2
   colourMap:
     serializedVersion: 2
@@ -6087,9 +6087,7 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   manuallySelectFluidTypes: 0
-  fluidDataArray:
-  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
+  fluidDataArray: []
   compute: {fileID: 7200000, guid: ee448ada211503f43b0fb3931630658d, type: 3}
   spawner: {fileID: 798104861}
   display: {fileID: 798104860}

@@ -24,7 +24,7 @@ public class ParticleDisplay2D : MonoBehaviour
 		material.SetBuffer("Velocities", sim.velocityBuffer);
 		material.SetBuffer("Densities", sim.densityBuffer);
 		material.SetBuffer("Temperatures", sim.temperatureBuffer);
-		material.SetBuffer("Types", sim.typeBuffer);
+		material.SetBuffer("FluidTypes", sim.typeBuffer);
 
 		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.positionBuffer.count);
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);

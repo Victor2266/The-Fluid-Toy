@@ -55,7 +55,7 @@ RWStructuredBuffer<float2> Velocities;
 RWStructuredBuffer<float2> PredictedPositions;
 RWStructuredBuffer<float2> Positions;
 RWStructuredBuffer<float1> Temperatures;
-RWStructuredBuffer<int> Types;
+RWStructuredBuffer<int> FluidTypes;
 RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, hash, key
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<OrientedBox> BoxColliders;
@@ -134,16 +134,16 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 			if (indexData[1] != hash) continue;
 
 			uint neighbourIndex = indexData[0];
-			FluidData neighbourData = FluidDataSet[Types[neighbourIndex] - 1];
+			FluidData neighbourData = FluidDataSet[FluidTypes[neighbourIndex] - 1];
 
-			if (Types[neighbourIndex] == 0) continue; // Skip disabled particles
+			if (FluidTypes[neighbourIndex] == 0) continue; // Skip disabled particles
 
 			float2 neighbourPos = PredictedPositions[neighbourIndex];
 			float2 offsetToNeighbour = neighbourPos - pos;
 			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
 
 			// Use max smoothing radius between the two particle types
-            float interactionRadius = GetMaxSmoothingRadius(type, Types[neighbourIndex]);
+            float interactionRadius = GetMaxSmoothingRadius(type, FluidTypes[neighbourIndex]);
             float sqrRadius = interactionRadius * interactionRadius;
 
 			// Skip if not within radius
@@ -297,11 +297,11 @@ void HandleBoxCollision2(inout float2 pos, inout float2 vel, OrientedBox box, fl
 
 void HandleCollisions(inout int pIdx)
 {
-	// if (Types[id.x] == 0) return; // Skip disabled, this already gets checked in UpdatePositions()
+	// if (FluidTypes[id.x] == 0) return; // Skip disabled, this already gets checked in UpdatePositions()
 
     float2 pos = Positions[pIdx];
     float2 vel = Velocities[pIdx];
-	FluidData fluidData = FluidDataSet[Types[pIdx] - 1];
+	FluidData fluidData = FluidDataSet[FluidTypes[pIdx] - 1];
 
     // Keep particle inside bounds
     const float2 halfSize = boundsSize * 0.5;
@@ -334,9 +334,9 @@ void HandleLeftMouseInput(inout int pIdx){
 		float2 inputPointOffset = interactionInputPoint - Positions[pIdx];
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 
-		if(Types[pIdx] == 0){
+		if(FluidTypes[pIdx] == 0){
 			Positions[pIdx] = interactionInputPoint - inputPointOffset * (interactionInputRadius / sqrt(sqrDst));
-			Types[pIdx] = selectedFluidType; // Reactivate the particle by setting it to non 0
+			FluidTypes[pIdx] = selectedFluidType; // Reactivate the particle by setting it to non 0
 		}
 
 	}
@@ -348,7 +348,7 @@ void HandleRightMouseInput(inout int pIdx){
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
 		{
-			Types[pIdx] = 0; // Remove the particle by setting to 0 which is disabled.
+			FluidTypes[pIdx] = 0; // Remove the particle by setting to 0 which is disabled.
 		}
 	}
 }
@@ -358,9 +358,9 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
 	HandleLeftMouseInput(id.x);
-	if (Types[id.x] == 0) return; // Skip disabled
+	if (FluidTypes[id.x] == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[Types[id.x] - 1];
+	FluidData fluidData = FluidDataSet[FluidTypes[id.x] - 1];
 	
     // External forces (gravity and input interaction)
     Velocities[id.x] += ExternalForces(Positions[id.x], Velocities[id.x], fluidData.gravity) * deltaTime;
@@ -391,10 +391,10 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 void CalculateDensities(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
-	if (Types[id.x] == 0) return; // Skip disabled
+	if (FluidTypes[id.x] == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[Types[id.x] - 1];
-    Densities[id.x] = CalculateDensity(PredictedPositions[id.x], fluidData.smoothingRadius, Types[id.x]); // This needs the fluidData
+	FluidData fluidData = FluidDataSet[FluidTypes[id.x] - 1];
+    Densities[id.x] = CalculateDensity(PredictedPositions[id.x], fluidData.smoothingRadius, FluidTypes[id.x]); // This needs the fluidData
 	//particle.density.x = max(particle.density.x, 0.1); // Clamp density
     //particle.density.y = max(particle.density.y, 0.1);
 }
@@ -403,9 +403,9 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
-	if (Types[id.x] == 0) return; // Skip disabled
+	if (FluidTypes[id.x] == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[Types[id.x] - 1];
+	FluidData fluidData = FluidDataSet[FluidTypes[id.x] - 1];
 
 	float density = Densities[id.x][0];
 	float densityNear = Densities[id.x][1];
@@ -436,9 +436,9 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			uint neighbourIndex = indexData[0];
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
-			if (Types[neighbourIndex] == 0) continue; // Skip disabled
+			if (FluidTypes[neighbourIndex] == 0) continue; // Skip disabled
 			
-			FluidData neighbourData = FluidDataSet[Types[neighbourIndex] - 1];
+			FluidData neighbourData = FluidDataSet[FluidTypes[neighbourIndex] - 1];
 
 			float2 neighbourPos = PredictedPositions[neighbourIndex];
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -459,8 +459,8 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			float sharedPressure = (pressure + neighbourPressure) * 0.5;
 			float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5;
 
-			pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius, Types[id.x]) * sharedPressure / neighbourDensity;
-			pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius, Types[id.x]) * sharedNearPressure / neighbourDensity;
+			pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius, FluidTypes[id.x]) * sharedPressure / neighbourDensity;
+			pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius, FluidTypes[id.x]) * sharedNearPressure / neighbourDensity;
 		}
 	}
 
@@ -474,9 +474,9 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
-	if (Types[id.x] == 0) return; // Skip disabled
+	if (FluidTypes[id.x] == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[Types[id.x] - 1];
+	FluidData fluidData = FluidDataSet[FluidTypes[id.x] - 1];
 		
 	float2 pos = PredictedPositions[id.x];
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
@@ -503,9 +503,9 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 			uint neighbourIndex = indexData[0];
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
-			if (Types[neighbourIndex] == 0) continue; // Skip disabled
+			if (FluidTypes[neighbourIndex] == 0) continue; // Skip disabled
 
-			FluidData neighbourData = FluidDataSet[Types[neighbourIndex] - 1];
+			FluidData neighbourData = FluidDataSet[FluidTypes[neighbourIndex] - 1];
 
 			float2 neighbourPos = PredictedPositions[neighbourIndex];
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -516,7 +516,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 			float dst = sqrt(sqrDstToNeighbour);
 			float2 neighbourVelocity = Velocities[neighbourIndex];
-			viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, Types[id.x]);
+			viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, FluidTypes[id.x]);
 		}
 
 	}
@@ -528,7 +528,7 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
     //Particle particle = Particles[id.x];
-	if (Types[id.x] == 0) return; // Skip disabled
+	if (FluidTypes[id.x] == 0) return; // Skip disabled
     Positions[id.x] += Velocities[id.x] * deltaTime;
     HandleCollisions(id.x); // This needs the FluidDataSet
 }
