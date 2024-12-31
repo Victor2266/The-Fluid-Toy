@@ -341,12 +341,12 @@ void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more c
 		float2 inputPointOffset = interactionInputPoint - particle.position;
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 
-		float2 inputPointDensity = CalculateDensity(interactionInputPoint, interactionInputRadius, selectedFluidType);
-		if(inputPointDensity.x < FluidDataSet[selectedFluidType - 1].targetDensity*0.01){
+		//float2 inputPointDensity = CalculateDensity(interactionInputPoint, interactionInputRadius, selectedFluidType);
+		//if(inputPointDensity.x < FluidDataSet[selectedFluidType - 1].targetDensity*0.01){ //This checks if the density is below the target before spawning particles but they all spawn in at once (also needs FluidDataSet and ScalingFactors buffer)
 			// Move particle to edge of input radius when it's inside the brush circle
 			particle.position = interactionInputPoint - inputPointOffset * (interactionInputRadius / sqrt(sqrDst));
 			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
-		}
+		//}
 			
 		
 
@@ -371,8 +371,6 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
     Particle particle = Particles[id.x];
 	
 	if (particle.type == 0){ // Skip disabled
-		HandleLeftMouseInput(particle);
-		Particles[id.x] = particle;
 		return;
 	}
 
@@ -380,8 +378,6 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 	
     // External forces (gravity and input interaction)
     particle.velocity += ExternalForces(particle.position, particle.velocity, fluidData.gravity) * deltaTime;
-
-	HandleRightMouseInput(particle);
 
     // Predict
     const float predictionFactor = 1 / 120.0;
@@ -396,6 +392,12 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	if (id.x >= numParticles) return;
 
 	// Skip shouldn't skip disabled particles here because the spatial hash needs to get updated even for disabled particles
+	Particle particle = Particles[id.x];
+	if (particle.type == 0){
+		HandleLeftMouseInput(particle);
+	}
+	HandleRightMouseInput(particle);
+	Particles[id.x] = particle;
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
@@ -416,7 +418,6 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 	if (particle.type == 0){ // Skip disabled
 		return;
 	}
-	
 
 	FluidData fluidData = FluidDataSet[particle.type - 1];
     particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius, particle.type); // This needs the fluidData
