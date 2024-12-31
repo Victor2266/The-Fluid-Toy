@@ -199,10 +199,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         // Init compute
         ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
+        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", externalForcesKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
+        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
+        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
 

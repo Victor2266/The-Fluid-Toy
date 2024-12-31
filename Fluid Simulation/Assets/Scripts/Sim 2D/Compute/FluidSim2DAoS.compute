@@ -335,20 +335,24 @@ void HandleCollisions(inout Particle particle)
     particle.position = pos;
     particle.velocity = vel;
 }
-void HandleLeftMouseInput(inout Particle particle){
+void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more controlled way to add particles
 	// Input interactions to add particles
 	if (brushType == 0 && interactionInputStrength == 1) {
 		float2 inputPointOffset = interactionInputPoint - particle.position;
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 
-		if(particle.type == 0){
+		float2 inputPointDensity = CalculateDensity(interactionInputPoint, interactionInputRadius, selectedFluidType);
+		if(inputPointDensity.x < FluidDataSet[selectedFluidType - 1].targetDensity*0.01){
+			// Move particle to edge of input radius when it's inside the brush circle
 			particle.position = interactionInputPoint - inputPointOffset * (interactionInputRadius / sqrt(sqrDst));
 			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
 		}
+			
+		
 
 	}
 }
-void HandleRightMouseInput(inout Particle particle){
+void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
 	// Input interactions to remove particles
 	if (brushType == 0 && interactionInputStrength == -1) {
 		float2 inputPointOffset = interactionInputPoint - particle.position;
@@ -365,8 +369,12 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
-	HandleLeftMouseInput(particle);
-	if (particle.type == 0) return; // Skip disabled
+	
+	if (particle.type == 0){ // Skip disabled
+		HandleLeftMouseInput(particle);
+		Particles[id.x] = particle;
+		return;
+	}
 
 	FluidData fluidData = FluidDataSet[particle.type - 1];
 	
@@ -386,8 +394,8 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
-	//Particle particle = Particles[id.x];
-	//if (particle.type == 0) return; // Skip disabled, shouldn't skip here because the spatial hash needs to get updated even for disabled particles
+
+	// Skip shouldn't skip disabled particles here because the spatial hash needs to get updated even for disabled particles
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
@@ -404,10 +412,15 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
-	if (particle.type == 0) return; // Skip disabled
+	
+	if (particle.type == 0){ // Skip disabled
+		return;
+	}
+	
 
 	FluidData fluidData = FluidDataSet[particle.type - 1];
     particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius, particle.type); // This needs the fluidData
+	
 	//particle.density.x = max(particle.density.x, 0.1); // Clamp density
     //particle.density.y = max(particle.density.y, 0.1);
     Particles[id.x] = particle;
