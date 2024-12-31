@@ -22,17 +22,12 @@ Shader "Instanced/Particle2D SoA"
 
             #include "UnityCG.cginc"
             
-            struct ParticleSoA
-            {
-                float2[] density;           // density and near density
-                float2[] velocity;          // velocity
-                float2[] predictedPosition; // predicted position
-                float2[] position;          // current position
-                float[] temperature;        // temperature
-                int[] type;                 // fluid type
-            };
-            
-            StructuredBuffer<Particle> Particles;
+            StructuredBuffer<float2> Densities;
+            StructuredBuffer<float2> Velocities;
+            StructuredBuffer<float2> PredictedPositions;
+            StructuredBuffer<float2> Positions;
+            StructuredBuffer<float> Temperatures;
+            StructuredBuffer<int> Types;
             float scale;
             float4 colA;
             Texture2D<float4> ColourMap;
@@ -53,12 +48,12 @@ Shader "Instanced/Particle2D SoA"
 
                 // Get particle data
                 //Particle particle = Particles[instanceID];
-                float2 pDensity = Particles.density[instanceID];
-                float2 pVelocity = Particles.velocity[instanceID];
-                float2 pPredictedPosition = Particles.predictedPosition[instanceID];
-                float2 pPosition = Particles.position[instanceID];
-                float ptemp = Particles.temperature[instanceID];
-                int pType = Particles.type[instanceID];
+                float2 pDensity = Densities[instanceID];
+                float2 pVelocity = Velocities[instanceID];
+                float2 pPredictedPosition = PredictedPositions[instanceID];
+                float2 pPosition = Positions[instanceID];
+                float ptemp = Temperatures[instanceID];
+                int pType = Types[instanceID];
 
                 // Check if particle should be rendered
                 o.valid = pType != 0;
