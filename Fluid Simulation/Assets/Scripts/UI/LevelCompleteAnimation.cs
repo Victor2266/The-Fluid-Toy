@@ -25,6 +25,9 @@ public class LevelCompleteAnimation : MonoBehaviour
     [SerializeField] private Image SecondStarImage;    
     [SerializeField] private Image ThirdStarImage;
 
+    public AudioClip starSound;
+    public AudioSource audioSource;
+
     private int currentLevelScore = 0;
     
     private void Start()
@@ -72,20 +75,38 @@ public class LevelCompleteAnimation : MonoBehaviour
             // Fade in each star image based on score
             if (currentLevelScore >= 3)
             {
+                completeSequence.AppendCallback(() => audioSource.pitch = 0.8f);
+                completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(FirstStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+
+                completeSequence.AppendCallback(() => audioSource.pitch = 0.9f);
+                completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(SecondStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+
+                completeSequence.AppendCallback(() => audioSource.pitch = 1f);
+                completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(ThirdStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
             }
             else if (currentLevelScore == 2)
             {
+                completeSequence.AppendCallback(() => audioSource.pitch = 0.8f);
+                completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(FirstStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+
+                completeSequence.AppendCallback(() => audioSource.pitch = 0.9f);
+                completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(SecondStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                
                 completeSequence.Append(ThirdStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
             }
             else if (currentLevelScore == 1)
             {
+                completeSequence.AppendCallback(() => audioSource.pitch = 0.8f);
+                completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(FirstStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+
                 completeSequence.Append(SecondStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
+
                 completeSequence.Append(ThirdStarImage.DOFade(0.1f, textFadeDuration).SetEase(Ease.OutBounce));
             }
 
