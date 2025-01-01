@@ -49,6 +49,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleSize;
     public Vector2 obstacleCentre;
 
+    public enum EdgeType
+    {
+        Solid,
+        Loop,
+        Void
+    }
+    [SerializeField] private EdgeType edgeType = EdgeType.Solid;
+
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
 
@@ -56,8 +64,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public enum BrushType
     {
         DRAW,
-        GRAVITY
+        GRAVITY,
+        NOTHING
     }
+
     [Header("Brush Type")]
 
     [SerializeField] private BrushType brushState = BrushType.GRAVITY;
