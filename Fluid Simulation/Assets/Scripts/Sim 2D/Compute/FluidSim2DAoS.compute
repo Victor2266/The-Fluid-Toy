@@ -325,16 +325,21 @@ void HandleCollisions(inout Particle particle)
         
         // Apply position and velocity corrections in a single operation
         pos = pos * (1 - outOfBounds) + sign(pos) * halfSize * outOfBounds;
-        vel = vel * (1 - outOfBounds) + vel * -fluidData.collisionDamping * outOfBounds;
+        //vel = vel * (1 - outOfBounds) + vel * -fluidData.collisionDamping * outOfBounds;
+		vel = vel * (1 - outOfBounds * (1 + fluidData.collisionDamping));
+
     }
     else if (edgeType == 1) // Void edge
     {
         // Check if particle is out of bounds on either axis
-        if (edgeDst.x <= 0 || edgeDst.y <= 0)
-        {
-            particle.type = 0;
-            particleDisabled = true;
-        }
+        particleDisabled = any(edgeDst <= 0);
+        particle.type = particleDisabled ? 0 : particle.type;
+    }
+	else if (edgeType == 2) // Loop edge
+    {
+        // Optimize wrapping using fmod and ternary operations
+        // Add boundsSize before fmod to handle negative positions correctly
+        pos = fmod(pos + boundsSize + halfSize, boundsSize) - halfSize;
     }
 
 	// Only process box collisions if particle hasn't been disabled
