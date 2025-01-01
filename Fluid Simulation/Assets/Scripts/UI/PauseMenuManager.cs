@@ -6,12 +6,10 @@ public class PauseMenuManager : MonoBehaviour
 {
     [SerializeField] private GameObject defaultSelectedButton; // Assign this in inspector
 
-    [Header("Intialize Scripts")]
-    [SerializeField] private SettingsManager settingsManager;
-
     [Header("Menu Panels")]
     [SerializeField] private GameObject pauseMenuPanel;
     [SerializeField] private GameObject settingsPanel;
+    private SettingsManager settingsManager;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -24,6 +22,7 @@ public class PauseMenuManager : MonoBehaviour
         // Ensure menus are closed at start
         pauseMenuPanel.SetActive(false);
         settingsPanel.SetActive(false);
+        settingsManager = settingsPanel.GetComponent<SettingsManager>();
 
         settingsManager.Initialize();
     }
