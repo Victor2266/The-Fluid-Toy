@@ -35,6 +35,10 @@ public class SettingsManager : MonoBehaviour
 
     private void Start()
     {
+        Initialize();
+    }
+
+    public void Initialize(){
         InitializeResolutionDropdown();
         InitializeFullscreenToggle();
         InitializeVolumeSliders();

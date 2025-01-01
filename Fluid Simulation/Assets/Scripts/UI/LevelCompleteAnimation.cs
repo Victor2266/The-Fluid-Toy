@@ -78,14 +78,26 @@ public class LevelCompleteAnimation : MonoBehaviour
                 completeSequence.AppendCallback(() => audioSource.pitch = 0.8f);
                 completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(FirstStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                // completeSequence.Join(checkmarkTransform.DOScale(Vector3.one * 0.8f, textFadeDuration/3f)
+                //     .SetEase(Ease.OutExpo));
+                // completeSequence.Append(checkmarkTransform.DOScale(Vector3.one, textFadeDuration/3f)
+                //     .SetEase(Ease.OutBack));
 
                 completeSequence.AppendCallback(() => audioSource.pitch = 0.9f);
                 completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(SecondStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                // completeSequence.Join(checkmarkTransform.DOScale(Vector3.one * 0.8f, textFadeDuration/3f)
+                //     .SetEase(Ease.OutExpo));
+                // completeSequence.Append(checkmarkTransform.DOScale(Vector3.one, textFadeDuration/3f)
+                //     .SetEase(Ease.OutBack));
 
                 completeSequence.AppendCallback(() => audioSource.pitch = 1f);
                 completeSequence.AppendCallback(() => audioSource.PlayOneShot(starSound));
                 completeSequence.Append(ThirdStarImage.DOFade(1f, textFadeDuration).SetEase(Ease.OutBounce));
+                // completeSequence.Join(checkmarkTransform.DOScale(Vector3.one * 0.8f, textFadeDuration/3f)
+                //     .SetEase(Ease.OutExpo));
+                // completeSequence.Append(checkmarkTransform.DOScale(Vector3.one, textFadeDuration/3f)
+                //     .SetEase(Ease.OutBack));
             }
             else if (currentLevelScore == 2)
             {
