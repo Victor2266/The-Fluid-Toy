@@ -52,8 +52,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public enum EdgeType
     {
         Solid,
-        Loop,
-        Void
+        Void,
+        Loop
     }
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
 
@@ -332,6 +332,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("selectedFluidType", selectedFluid);
+
+        compute.SetInt("edgeType", (int) edgeType);
 
         //These are now computed once at the start
         /*

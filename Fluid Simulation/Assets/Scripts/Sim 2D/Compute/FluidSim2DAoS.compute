@@ -80,6 +80,7 @@ int numBoxColliders;
 int numCircleColliders;
 int brushType;
 int selectedFluidType;
+int edgeType;
 
 float DensityKernel(float dst, float radius, int type)
 {
@@ -309,31 +310,46 @@ void HandleCollisions(inout Particle particle)
     float2 pos = particle.position;
     float2 vel = particle.velocity;
 	FluidData fluidData = FluidDataSet[particle.type - 1];
+	bool particleDisabled = false;
 
     // Keep particle inside bounds
     const float2 halfSize = boundsSize * 0.5;
-    float2 edgeDst = halfSize - abs(pos);
+	float2 absPos = abs(pos);
+    float2 edgeDst = halfSize - absPos;
 
-    if (edgeDst.x <= 0)
+    // Combine edge handling into vectorized operations
+    if (edgeType == 0) // Solid edge
     {
-        pos.x = halfSize.x * sign(pos.x);
-        vel.x *= -1 * fluidData.collisionDamping;
+        // Use step function to create a mask for out-of-bounds coordinates
+        float2 outOfBounds = step(halfSize, absPos);
+        
+        // Apply position and velocity corrections in a single operation
+        pos = pos * (1 - outOfBounds) + sign(pos) * halfSize * outOfBounds;
+        vel = vel * (1 - outOfBounds) + vel * -fluidData.collisionDamping * outOfBounds;
     }
-    if (edgeDst.y <= 0)
+    else if (edgeType == 1) // Void edge
     {
-        pos.y = halfSize.y * sign(pos.y);
-        vel.y *= -1 * fluidData.collisionDamping;
+        // Check if particle is out of bounds on either axis
+        if (edgeDst.x <= 0 || edgeDst.y <= 0)
+        {
+            particle.type = 0;
+            particleDisabled = true;
+        }
     }
 
-    // Handle box collisions
-    for (int i = 0; i < numBoxColliders; i++)
+	// Only process box collisions if particle hasn't been disabled
+    if (!particleDisabled)
     {
-        HandleBoxCollision(pos, vel, BoxColliders[i], fluidData.collisionDamping);
-    }
+		// Handle box collisions
+		for (int i = 0; i < numBoxColliders; i++)
+		{
+			HandleBoxCollision(pos, vel, BoxColliders[i], fluidData.collisionDamping);
+		}
 
-    // Update position and velocity in the particle struct
-    particle.position = pos;
-    particle.velocity = vel;
+		// Update position and velocity in the particle struct only if particle is still active
+		particle.position = pos;
+		particle.velocity = vel;
+	}
 }
 void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more controlled way to add particles
 	// Input interactions to add particles
