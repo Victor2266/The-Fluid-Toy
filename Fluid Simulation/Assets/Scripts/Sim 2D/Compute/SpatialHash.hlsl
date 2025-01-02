@@ -22,8 +22,3 @@ uint HashCell2D(int2 cell)
 {
 	return (cell.x << 16) | (cell.y + (2 << 15 - 1));
 }
-
-uint KeyFromHash(uint hash, uint tableSize)
-{
-	return hash % tableSize;
-}
