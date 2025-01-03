@@ -6,7 +6,8 @@ public enum FluidType
     Disabled,
     Water,
     Steam,
-    Honey
+    Honey,
+    Lava
 }
 
 // Struct for passing to compute shader.

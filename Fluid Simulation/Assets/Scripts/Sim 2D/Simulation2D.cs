@@ -162,6 +162,9 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
 
         // Init display
         display.Init(this);
+
+        // For Testing:
+        SetFluidProperties(currentFluid);
     }
 
     void FixedUpdate()

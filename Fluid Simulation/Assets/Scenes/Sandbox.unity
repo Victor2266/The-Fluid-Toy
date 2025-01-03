@@ -347,7 +347,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &271053318
 Transform:
   m_ObjectHideFlags: 0
@@ -392,7 +392,7 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   brushState: 1
-  currentFluid: {fileID: 0}
+  currentFluid: {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   compute: {fileID: 7200000, guid: 1c77ce8de78fddb419ed2d15cae41af0, type: 3}
   spawner: {fileID: 271053320}
   display: {fileID: 271053323}
@@ -1363,7 +1363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1080519535
 MonoBehaviour:
   m_ObjectHideFlags: 0
