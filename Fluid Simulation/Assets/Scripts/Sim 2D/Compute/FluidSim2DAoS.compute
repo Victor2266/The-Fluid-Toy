@@ -83,6 +83,7 @@ int numCircleColliders;
 int brushType;
 int selectedFluidType;
 int edgeType;
+uint spawnRate;
 
 float DensityKernel(float dst, float radius, int type)
 {
@@ -385,7 +386,7 @@ void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more c
 
 			atomicIncrementCounter();
 
-			if (atomicCounter[0] < (100)){ //This happens every frame (so that means 100 particles created each frame
+			if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means 100 particles created each frame
 
 				uint randomState = atomicCounter[0] * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
                 float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)

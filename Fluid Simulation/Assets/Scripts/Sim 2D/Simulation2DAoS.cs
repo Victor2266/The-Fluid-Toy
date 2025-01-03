@@ -76,6 +76,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public float interactionRadius;
     public float interactionStrength;
 
+    public uint spawnRate = 100; // How many particles to spawn per frame
+
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
     // For the spatial subdivision to work we use the largest smoothing radius for the grid
@@ -228,6 +230,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
+        compute.SetInt("spawnRate", (int) spawnRate);
 
 
         gpuSort = new();
@@ -341,6 +344,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetInt("selectedFluidType", selectedFluid);
 
         compute.SetInt("edgeType", (int) edgeType);
+
+        compute.SetInt("spawnRate", (int) spawnRate);
 
         //These are now computed once at the start
         /*
