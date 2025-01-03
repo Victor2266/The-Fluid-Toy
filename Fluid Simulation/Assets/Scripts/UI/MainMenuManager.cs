@@ -11,6 +11,8 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject levelSelectPanel;
     [SerializeField] private GameObject settingsPanel;
+
+    private SettingsManager settingsManager;
     
     [Header("Level Select")]
     [SerializeField] private Transform levelButtonContainer;
@@ -25,6 +27,10 @@ public class MainMenuManager : MonoBehaviour
     private void Start()
     {
         numberOfLevels = SettingsManager.NumberOfLevels;
+
+        settingsManager = settingsPanel.GetComponent<SettingsManager>();
+
+        settingsManager.Initialize();
 
         // Initialize the menu state
         ShowMainMenu();

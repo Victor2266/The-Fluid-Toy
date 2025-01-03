@@ -35,7 +35,7 @@ public class SettingsManager : MonoBehaviour
 
     private void Start()
     {
-        Initialize();
+        //Initialize();
     }
 
     public void Initialize(){
@@ -122,6 +122,7 @@ public class SettingsManager : MonoBehaviour
 
     private void OnResolutionChanged(int index)
     {
+        Debug.Log($"Resolution changed to {resolutions[index].width}x{resolutions[index].height} @ {resolutions[index].refreshRate}Hz");
         Resolution resolution = resolutions[index];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
@@ -130,6 +131,8 @@ public class SettingsManager : MonoBehaviour
 
     private void OnFullscreenChanged(bool isFullscreen)
     {
+        Debug.Log($"Fullscreen status changed to: {(isFullscreen ? "Enabled" : "Disabled")}");
+
         Screen.fullScreen = isFullscreen;
         PlayerPrefs.SetInt(FULLSCREEN_KEY, isFullscreen ? 1 : 0);
         PlayerPrefs.Save();
