@@ -397,6 +397,12 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         Debug.Log("Not implemented in Simulation2D.cs setEdgeType: " + edgeTypeIndex);
     }
 
+    public void setSelectedFluid(int fluidTypeIndex)
+    {
+        // NOT IMPLEMENTED
+        Debug.Log("Not implemented in Simulation2D.cs setSelectedFluid: " + fluidTypeIndex);
+    }
+
     public void SetFluidProperties(FluidData fluidData) //Temporary, eventually we will set individual particle control
     {
         if (fluidData == null)

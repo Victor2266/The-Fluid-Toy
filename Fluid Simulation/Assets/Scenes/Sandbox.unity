@@ -2289,7 +2289,7 @@ GameObject:
   - component: {fileID: 271053323}
   m_Layer: 0
   m_Name: Simulation
-  m_TagString: Untagged
+  m_TagString: Simulation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3469,14 +3469,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 271053319}
-        m_TargetAssemblyTypeName: Simulation2D, Assembly-CSharp
+      - m_Target: {fileID: 409534727}
+        m_TargetAssemblyTypeName: BottomBarWrapper, Assembly-CSharp
         m_MethodName: SetBrushType
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3868,6 +3868,7 @@ GameObject:
   - component: {fileID: 409534726}
   - component: {fileID: 409534725}
   - component: {fileID: 409534724}
+  - component: {fileID: 409534727}
   m_Layer: 5
   m_Name: Bottom Items Scroll View
   m_TagString: Untagged
@@ -3964,6 +3965,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 409534722}
   m_CullTransparentMesh: 1
+--- !u!114 &409534727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409534722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a19bbe8994ec604c935b32910de3ba6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulation2DGameObject: {fileID: 0}
 --- !u!1 &412788360
 GameObject:
   m_ObjectHideFlags: 0
@@ -7790,14 +7804,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 271053319}
-        m_TargetAssemblyTypeName: Simulation2D, Assembly-CSharp
-        m_MethodName: SetFluidProperties
-        m_Mode: 2
+      - m_Target: {fileID: 409534727}
+        m_TargetAssemblyTypeName: BottomBarWrapper, Assembly-CSharp
+        m_MethodName: setSelectedFluid
+        m_Mode: 3
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-          m_ObjectArgumentAssemblyTypeName: FluidData, Assembly-CSharp
-          m_IntArgument: 0
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8998,7 +9012,7 @@ GameObject:
   - component: {fileID: 1080519535}
   m_Layer: 0
   m_Name: SimulationAoS
-  m_TagString: Untagged
+  m_TagString: Simulation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15368,7 +15382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8b9500fcd009aa488d2281d4ec049b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulation2DGameObject: {fileID: 1080519534}
+  simulation2DGameObject: {fileID: 0}
   edgeTypeDropdown: {fileID: 1999288896}
 --- !u!1 &1822585522
 GameObject:
@@ -17417,8 +17431,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 271053319}
-        m_TargetAssemblyTypeName: Simulation2D, Assembly-CSharp
+      - m_Target: {fileID: 409534727}
+        m_TargetAssemblyTypeName: BottomBarWrapper, Assembly-CSharp
         m_MethodName: SetBrushType
         m_Mode: 3
         m_Arguments:
@@ -17774,7 +17788,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseMenuManager: {fileID: 352399664}
   simSettingsPanel: {fileID: 1813095067}
-  simulation2DGameObject: {fileID: 271053315}
+  simulation2DGameObject: {fileID: 0}
   informationPanel: {fileID: 987931156}
   audioSource: {fileID: 352399663}
   PlayPauseSidebarIcon: {fileID: 705496426}
@@ -18862,14 +18876,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 271053319}
-        m_TargetAssemblyTypeName: Simulation2D, Assembly-CSharp
-        m_MethodName: SetFluidProperties
-        m_Mode: 2
+      - m_Target: {fileID: 409534727}
+        m_TargetAssemblyTypeName: BottomBarWrapper, Assembly-CSharp
+        m_MethodName: setSelectedFluid
+        m_Mode: 3
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
-          m_ObjectArgumentAssemblyTypeName: FluidData, Assembly-CSharp
-          m_IntArgument: 0
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
