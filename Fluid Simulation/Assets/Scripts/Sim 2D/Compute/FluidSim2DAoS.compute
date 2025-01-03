@@ -207,7 +207,7 @@ float2 ExternalForces(float2 pos, float2 velocity, float gravity)
 	float2 gravityAccel = float2(0, gravity);
 	
 	// Input interactions modify gravity
-	if (interactionInputStrength != 0) {
+	if (brushType == 1 && interactionInputStrength != 0) {
 		float2 inputPointOffset = interactionInputPoint - pos;
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
@@ -388,7 +388,7 @@ void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more c
 
 			if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means 100 particles created each frame
 
-				uint randomState = atomicCounter[0] * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+				uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
                 float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
                 float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
 
