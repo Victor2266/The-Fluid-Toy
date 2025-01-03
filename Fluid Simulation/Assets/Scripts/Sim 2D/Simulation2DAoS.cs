@@ -136,7 +136,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
-        float deltaTime = 1 / 60f;
+        float deltaTime = 1 / 120f; // Default was 1 / 60f, this sets the fixed update interval to 120 updates per second
         Time.fixedDeltaTime = deltaTime;
 
         spawnData = spawner.GetSpawnData();
@@ -245,8 +245,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         if (fixedTimeStep)
         {
-            RunSimulationFrame(Time.fixedDeltaTime);
+            RunSimulationFrame(Time.deltaTime);
+            //Debug.Log($"FPS: {1 / Time.deltaTime}");
         }
+        
     }
 
     void Update()
@@ -256,6 +258,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         if (!fixedTimeStep && Time.frameCount > 10)
         {
             RunSimulationFrame(Time.deltaTime);
+            //Debug.Log($"FPS: {1 / Time.deltaTime}");
         }
 
         if (pauseNextFrame)
