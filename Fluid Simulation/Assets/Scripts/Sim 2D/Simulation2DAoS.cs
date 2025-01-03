@@ -390,7 +390,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
                 density = new float2(0, 0),
-                temperature = 0,
+                temperature = 22.0f,
                 type = FluidType.Water // Or whatever default type you want};
             };
             allPoints[i] = p;
