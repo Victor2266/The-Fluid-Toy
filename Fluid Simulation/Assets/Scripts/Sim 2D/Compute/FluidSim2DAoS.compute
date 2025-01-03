@@ -34,6 +34,7 @@ struct FluidData
 	float1 pressureMultiplier;
 	float1 nearPressureMultiplier;
 	float1 viscosityStrength;
+	float1 startTemperature;
 };
 
 struct Circle //12 bytes total
@@ -66,7 +67,7 @@ RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, has
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
-RWStructuredBuffer<uint> randomState; 
+RWStructuredBuffer<uint> atomicCounter; 
 
 // Settings
 const uint numParticles;
@@ -117,9 +118,24 @@ float GetMaxSmoothingRadius(int typeA, int typeB)
 }
 
 
-void atomicIncrementNextRandom() {
+void atomicIncrementCounter() {
     uint increment = 1u;
-    InterlockedAdd(randomState[0], increment, randomState[0]);
+    InterlockedAdd(atomicCounter[0], increment, atomicCounter[0]);
+}
+
+// PCG (permuted congruential generator). Thanks to:
+// www.pcg-random.org and www.shadertoy.com/view/XlGcRh
+uint NextRandom(inout uint state)
+{
+    state = state * 747796405 + 2891336453;
+    uint result = ((state >> ((state >> 28) + 4)) ^ state) * 277803737;
+    result = (result >> 22) ^ result;
+    return result;
+}
+
+float RandomValue(inout uint state) // Returns a random range from  [0.0, 1.0)
+{
+    return NextRandom(state) / 4294967295.0; // 2^32 - 1
 }
 
 float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
@@ -368,25 +384,27 @@ void HandleCollisions(inout Particle particle)
 void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more controlled way to add particles
 	// Input interactions to add particles
 	if (brushType == 0 && interactionInputStrength == 1) {
-		float2 inputPointOffset = interactionInputPoint - particle.position;
-		float sqrDst = dot(inputPointOffset, inputPointOffset);
 
-		//float2 inputPointDensity = CalculateDensity(interactionInputPoint, interactionInputRadius, selectedFluidType);
-		//if(inputPointDensity.x < FluidDataSet[selectedFluidType - 1].targetDensity*0.01){ //This checks if the density is below the target before spawning particles but they all spawn in at once (also needs FluidDataSet and ScalingFactors buffer)
-			// Move particle to edge of input radius when it's inside the brush circle
+			atomicIncrementCounter();
 
-			atomicIncrementNextRandom();
-			if (randomState[0] < (100)){
-				particle.position = interactionInputPoint - inputPointOffset * (interactionInputRadius / sqrt(sqrDst));
+			if (atomicCounter[0] < (100)){ //This happens every frame (so that means 100 particles created each frame
+
+				uint randomState = atomicCounter[0] * 139;  // Seed based on counter # and a prime number.
+                float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
+                float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
+
+                // Calculate offset from interactionInputPoint
+                float2 offset = float2(cos(angle), sin(angle)) * radius;
+
+				particle.velocity = float2(0, 0);
+				particle.predictedPosition = interactionInputPoint + offset;
+				particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
+
+				particle.position = interactionInputPoint + offset;
 				particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
 				
 			}
-
-			
 		//}
-			
-		
-
 	}
 }
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient

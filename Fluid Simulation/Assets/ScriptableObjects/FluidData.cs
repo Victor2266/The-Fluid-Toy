@@ -23,6 +23,7 @@ public struct FluidParam
     public float pressureMultiplier;
     public float nearPressureMultiplier;
     public float viscosityStrength;
+    public float startTemperature;
 };
 
 [System.Serializable]
@@ -69,6 +70,10 @@ public class FluidData : ScriptableObject
     [Range(0f, 3f)]
     public float viscosityStrength = 0.06f;
 
+    [Header("Thermal Properties")]
+    [Tooltip("Starting temperature of the fluid")]
+    public float startTemperature = 22f;
+
 
     [Header("Shader Properties")]
     [Tooltip("What Type of Shader to use")]
@@ -99,7 +104,8 @@ public class FluidData : ScriptableObject
             targetDensity = targetDensity,
             pressureMultiplier = pressureMultiplier,
             nearPressureMultiplier = nearPressureMultiplier,
-            viscosityStrength = viscosityStrength
+            viscosityStrength = viscosityStrength,
+            startTemperature = startTemperature
         };
         return fluidParams;
     }

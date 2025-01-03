@@ -101,7 +101,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     private ComputeBuffer boxCollidersBuffer;
     private ComputeBuffer circleCollidersBuffer;
 
-    private ComputeBuffer randomStateBuffer;
+    private ComputeBuffer atomicCounterBuffer;
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
     private const int MAX_COLLIDERS = 64; // Set a reasonable maximum number of colliders
@@ -199,7 +199,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(MAX_COLLIDERS);
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(MAX_COLLIDERS);
-        randomStateBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(1);
+        atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(1);
 
         
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
@@ -209,19 +209,19 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnData);
-        uint[] randomState = {0};
-        randomStateBuffer.SetData(randomState);
+        uint[] atomicCounter = {0};
+        atomicCounterBuffer.SetData(atomicCounter);
         
 
         // Init compute
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, randomStateBuffer, "randomState", spatialHashKernel);
+        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", spatialHashKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
@@ -371,8 +371,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                uint[] randomState = {0};
-                randomStateBuffer.SetData(randomState);
+                uint[] atomicCounter = {0};
+                atomicCounterBuffer.SetData(atomicCounter);
             }
             else if (isPushInteraction)
             {
@@ -444,7 +444,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             spatialOffsets,
             boxCollidersBuffer,
             circleCollidersBuffer,
-            randomStateBuffer
+            atomicCounterBuffer
         );
     }
 
