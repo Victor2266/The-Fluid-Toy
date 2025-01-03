@@ -384,26 +384,26 @@ void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate
 	// Input interactions to add particles
 	if (brushType == 0 && interactionInputStrength == 1) {
 
-			atomicIncrementCounter();
+		atomicIncrementCounter();
 
-			if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means 100 particles created each frame
+		if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means 100 particles created each frame
 
-				uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
-                float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-                float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
+			uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+			float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
+			float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
 
-                // Calculate offset from interactionInputPoint
-                float2 offset = float2(cos(angle), sin(angle)) * radius;
+			// Calculate offset from interactionInputPoint
+			float2 offset = float2(cos(angle), sin(angle)) * radius;
 
-				particle.velocity = float2(0, 0);
-				particle.predictedPosition = interactionInputPoint + offset;
-				particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
+			particle.velocity = float2(0, 0);
+			particle.predictedPosition = interactionInputPoint + offset;
+			particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
 
-				particle.position = interactionInputPoint + offset;
-				particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
-				
-			}
-		s
+			particle.position = interactionInputPoint + offset;
+			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
+			
+		}
+		
 	}
 }
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
