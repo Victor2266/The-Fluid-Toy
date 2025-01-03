@@ -102,6 +102,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     private ComputeBuffer circleCollidersBuffer;
 
     private ComputeBuffer atomicCounterBuffer;
+    private uint uintCounter;
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
     private const int MAX_COLLIDERS = 64; // Set a reasonable maximum number of colliders
@@ -199,7 +200,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(MAX_COLLIDERS);
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(MAX_COLLIDERS);
-        atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(1);
+        atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(2);
 
         
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
@@ -209,7 +210,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnData);
-        uint[] atomicCounter = {0};
+        uint[] atomicCounter = { 0, uintCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
         
 
@@ -371,7 +372,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                uint[] atomicCounter = {0};
+                uint[] atomicCounter = {0, uintCounter++};
                 atomicCounterBuffer.SetData(atomicCounter);
             }
             else if (isPushInteraction)
