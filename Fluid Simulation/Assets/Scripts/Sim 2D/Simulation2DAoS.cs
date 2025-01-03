@@ -484,6 +484,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     //
     //
 
+    public void setEdgeType(int edgeTypeIndex){
+        edgeType = (EdgeType)edgeTypeIndex;
+    }
+
     public void setSelectedFluid(int fluidTypeIndex){
         selectedFluid = fluidTypeIndex;
     }

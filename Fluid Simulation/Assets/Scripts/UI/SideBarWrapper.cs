@@ -25,6 +25,11 @@ public class SideBarWrapper : MonoBehaviour
 
     void Awake()
     {
+        // if the simulation object reference is not set, try to get it by tag
+        if (simulation2DGameObject == null)
+        {
+            simulation2DGameObject = GameObject.FindGameObjectWithTag("Simulation");
+        }
         // Get the interface implementation from the simulation object
         if (simulation2DGameObject != null)
         {

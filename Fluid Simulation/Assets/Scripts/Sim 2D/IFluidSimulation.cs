@@ -8,6 +8,8 @@ public interface IFluidSimulation
     /// <param name="fluidData">The fluid data containing properties to be applied to the simulation.</param>
     //void SetFluidProperties(FluidData fluidData);
 
+    public void setEdgeType(int edgeTypeIndex);
+
     /// <summary>
     /// Sets the brush type for particle interaction.
     /// </summary>
