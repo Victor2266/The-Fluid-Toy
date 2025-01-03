@@ -380,7 +380,7 @@ void HandleCollisions(inout Particle particle)
 		particle.velocity = vel;
 	}
 }
-void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more controlled way to add particles
+void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate number of particles per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
 	// Input interactions to add particles
 	if (brushType == 0 && interactionInputStrength == 1) {
 
@@ -403,7 +403,7 @@ void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more c
 				particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
 				
 			}
-		//}
+		s
 	}
 }
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
