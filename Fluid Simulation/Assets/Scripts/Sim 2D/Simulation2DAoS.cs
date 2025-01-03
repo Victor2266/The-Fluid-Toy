@@ -403,21 +403,25 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            isPaused = !isPaused;
+            togglePause();
+            GameObject sidebar = GameObject.FindGameObjectWithTag("Sidebar");
+            if (sidebar != null)
+            {
+                SideBarWrapper sideBarWrapper = sidebar.GetComponent<SideBarWrapper>();
+                if (sideBarWrapper != null)
+                {
+                    sideBarWrapper.UpdatePauseIcon();
+                }
+            }
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            isPaused = false;
-            pauseNextFrame = true;
+            stepSimulation();
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            isPaused = true;
-            // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
-            SetInitialBufferData(spawnData);
-            RunSimulationStep();
-            SetInitialBufferData(spawnData);
+            resetSimulation();
         }
     }
 
