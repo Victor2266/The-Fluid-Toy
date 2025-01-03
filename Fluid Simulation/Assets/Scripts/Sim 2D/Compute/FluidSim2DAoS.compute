@@ -66,6 +66,7 @@ RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, has
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
+RWStructuredBuffer<uint> randomState; 
 
 // Settings
 const uint numParticles;
@@ -81,6 +82,8 @@ int numCircleColliders;
 int brushType;
 int selectedFluidType;
 int edgeType;
+
+
 
 float DensityKernel(float dst, float radius, int type)
 {
@@ -111,6 +114,12 @@ float ViscosityKernel(float dst, float radius, int type)
 float GetMaxSmoothingRadius(int typeA, int typeB)
 {
     return max(FluidDataSet[typeA - 1].smoothingRadius, FluidDataSet[typeB - 1].smoothingRadius);
+}
+
+
+void atomicIncrementNextRandom() {
+    uint increment = 1u;
+    InterlockedAdd(randomState[0], increment, randomState[0]);
 }
 
 float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
@@ -365,8 +374,15 @@ void HandleLeftMouseInput(inout Particle particle){ //TODO: Make a better more c
 		//float2 inputPointDensity = CalculateDensity(interactionInputPoint, interactionInputRadius, selectedFluidType);
 		//if(inputPointDensity.x < FluidDataSet[selectedFluidType - 1].targetDensity*0.01){ //This checks if the density is below the target before spawning particles but they all spawn in at once (also needs FluidDataSet and ScalingFactors buffer)
 			// Move particle to edge of input radius when it's inside the brush circle
-			particle.position = interactionInputPoint - inputPointOffset * (interactionInputRadius / sqrt(sqrDst));
-			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
+
+			atomicIncrementNextRandom();
+			if (randomState[0] < (100)){
+				particle.position = interactionInputPoint - inputPointOffset * (interactionInputRadius / sqrt(sqrDst));
+				particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
+				
+			}
+
+			
 		//}
 			
 		
