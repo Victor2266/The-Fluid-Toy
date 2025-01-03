@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fluidType: 1
   gravity: -12
-  collisionDamping: 0.95
+  collisionDamping: 0.8
   smoothingRadius: 0.35
   targetDensity: 55
   pressureMultiplier: 500
   nearPressureMultiplier: 18
   viscosityStrength: 0.06
+  startTemperature: 22
   shader: {fileID: 4800000, guid: 441b7193936682446b30d2140d15792a, type: 3}
   scale: 0.2
   colourMap:
