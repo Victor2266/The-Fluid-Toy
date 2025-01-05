@@ -122,7 +122,7 @@ public class SettingsManager : MonoBehaviour
 
     private void OnResolutionChanged(int index)
     {
-        Debug.Log($"Resolution changed to {resolutions[index].width}x{resolutions[index].height} @ {resolutions[index].refreshRate}Hz");
+        Debug.Log($"Resolution changed to {resolutions[index].width}x{resolutions[index].height} @ {resolutions[index].refreshRateRatio.value}Hz");
         Resolution resolution = resolutions[index];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
