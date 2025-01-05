@@ -103,8 +103,16 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     private ComputeBuffer boxCollidersBuffer;
     private ComputeBuffer circleCollidersBuffer;
 
+    [Header("Source and Drain Objects")]
+
+    public Transform[] sourceObjects;
+    public Transform[] drainObjects;
+
+    // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
     private uint uintCounter;
+
+    // Private Variables 
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
     private const int MAX_COLLIDERS = 64; // Set a reasonable maximum number of colliders

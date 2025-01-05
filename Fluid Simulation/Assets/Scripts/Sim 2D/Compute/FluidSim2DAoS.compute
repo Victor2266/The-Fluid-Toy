@@ -386,7 +386,7 @@ void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate
 
 		atomicIncrementCounter();
 
-		if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means 100 particles created each frame
+		if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means [spawnRate] particles created each frame
 
 			uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
 			float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
