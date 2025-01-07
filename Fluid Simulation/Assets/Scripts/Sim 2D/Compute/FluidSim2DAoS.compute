@@ -67,6 +67,8 @@ RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, has
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
+RWStructuredBuffer<Circle> SourceObjs;
+RWStructuredBuffer<OrientedBox> DrainObjs;
 RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
 
 // Settings
@@ -329,6 +331,30 @@ void HandleBoxCollision2(inout float2 pos, inout float2 vel, OrientedBox box, fl
     vel = right * localVel.x + up * localVel.y;
 }
 
+void HandleDrainCollision(inout Particle particle, OrientedBox drain)
+{
+    // Transform position to drain's local space
+    float2 right = drain.zLocal;
+    float2 up = float2(-drain.zLocal.y, drain.zLocal.x);
+    
+    float2 localPos = particle.position - drain.pos;
+    float2 rotatedPos = float2(
+        dot(localPos, right),
+        dot(localPos, up)
+    );
+
+    // Check if particle is inside drain
+    float2 boxHalfSize = drain.size * 0.5;
+    float2 distanceFromCenter = abs(rotatedPos);
+    float2 penetration = distanceFromCenter - boxHalfSize;
+    
+    // If particle is inside drain, disable it
+    if (penetration.x < 0 && penetration.y < 0)
+    {
+        particle.type = 0; // Disable particle
+    }
+}
+
 void HandleCollisions(inout Particle particle)
 {
 	// if (particle.type == 0) return; // Skip disabled, this already gets checked in UpdatePositions()
@@ -371,6 +397,14 @@ void HandleCollisions(inout Particle particle)
 	// Only process box collisions if particle hasn't been disabled
     if (!particleDisabled)
     {
+		// Handle drain collisions
+		for (int i = 0; i < numDrainObjs; i++)
+		{
+			HandleDrainCollision(particle, DrainObjs[i]);
+			// If particle was disabled by drain, exit early
+			if (particle.type == 0) return;
+		}
+
 		// Handle box collisions
 		for (int i = 0; i < numBoxColliders; i++)
 		{

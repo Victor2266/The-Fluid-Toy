@@ -213,10 +213,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         sourceObjectData = new Circle[sourceObjects.Length];
         drainObjectData = new OrientedBox[drainObjects.Length];
 
-        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(boxColliders.Length);
-        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(circleColliders.Length);
-        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(sourceObjects.Length);
-        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(drainObjects.Length);
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
+        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(sourceObjects.Length, 1));
+        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
 
         atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(2);
 
@@ -240,6 +240,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", externalForcesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", spatialHashKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
