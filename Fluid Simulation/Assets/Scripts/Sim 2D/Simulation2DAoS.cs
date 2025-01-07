@@ -238,10 +238,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", externalForcesKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", externalForcesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", spatialHashKernel);
+        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", spatialHashKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
@@ -397,6 +397,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         compute.SetInt("spawnRate", (int) spawnRate);
 
+        if  (sourceObjects.Length > 0){
+            uint[] atomicCounter = {0, uintCounter++};
+            atomicCounterBuffer.SetData(atomicCounter);
+        }
+
         //These are now computed once at the start
         /*
         compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
@@ -418,16 +423,19 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         bool isPushInteraction = Input.GetMouseButton(1);
         float currInteractStrength = 0;
 
-        if(brushState == BrushType.GRAVITY){
+        if (brushState == BrushType.GRAVITY)
+        {
             if (isPushInteraction || isPullInteraction)
             {
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
             }
-        } else if(brushState == BrushType.DRAW){
+        }
+        else if (brushState == BrushType.DRAW)
+        {
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                uint[] atomicCounter = {0, uintCounter++};
+                uint[] atomicCounter = { 0, uintCounter++ };
                 atomicCounterBuffer.SetData(atomicCounter);
             }
             else if (isPushInteraction)
@@ -435,7 +443,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
                 currInteractStrength = -1f;
             }
         }
-        
+
         compute.SetInt("brushType", (int) brushState);
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
@@ -500,6 +508,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             spatialOffsets,
             boxCollidersBuffer,
             circleCollidersBuffer,
+            sourceObjectBuffer,
+            drainObjectBuffer,
             atomicCounterBuffer
         );
     }

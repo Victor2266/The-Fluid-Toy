@@ -43,6 +43,13 @@ struct Circle //12 bytes total
     float radius; //4 bytes
 };
 
+struct SourceCircle //16 bytes total
+{
+    float2 pos; //8 bytes
+    float radius; //4 bytes
+	int fluidType; // fluid type enum
+};
+
 struct OrientedBox //24 bytes total
 {
     float2 pos; //8 bytes
@@ -398,9 +405,9 @@ void HandleCollisions(inout Particle particle)
     if (!particleDisabled)
     {
 		// Handle drain collisions
-		for (int i = 0; i < numDrainObjs; i++)
+		for (int a = 0; a < numDrainObjs; a++)
 		{
-			HandleDrainCollision(particle, DrainObjs[i]);
+			HandleDrainCollision(particle, DrainObjs[a]);
 			// If particle was disabled by drain, exit early
 			if (particle.type == 0) return;
 		}
@@ -442,6 +449,37 @@ void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate
 		
 	}
 }
+
+void HandleSourceObject(inout Particle particle){
+	
+	atomicIncrementCounter();
+	
+	// Only spawn if we haven't reached the spawn rate for this frame
+    if (atomicCounter[0] >= spawnRate) return;
+
+	// Create random state for this spawn attempt
+    uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;
+    
+	// Select a random source object
+	uint sourceIndex = NextRandom(randomState) % numSourceObjs;
+	Circle source = SourceObjs[sourceIndex];
+	
+	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
+	float radius = RandomValue(randomState) * source.radius; // Random distance from center
+	
+	// Calculate random position within source circle
+	float2 offset = float2(cos(angle), sin(angle)) * radius;
+	float2 spawnPos = source.pos + offset;
+	
+	// Initialize the particle
+	particle.velocity = float2(0, 0);
+	particle.predictedPosition = spawnPos;
+	particle.position = spawnPos;
+	particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
+	particle.type = selectedFluidType;
+    
+}
+
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
 	// Input interactions to remove particles
 	if (brushType == 0 && interactionInputStrength == -1) {
@@ -485,6 +523,10 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0){
 		HandleLeftMouseInput(particle);
+		
+		// Only proceed if we have source objects
+		if (numSourceObjs > 0)
+			HandleSourceObject(particle);
 	}
 	HandleRightMouseInput(particle);
 	Particles[id.x] = particle;
