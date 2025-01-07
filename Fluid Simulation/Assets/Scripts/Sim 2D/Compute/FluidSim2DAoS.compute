@@ -43,7 +43,7 @@ struct Circle //12 bytes total
     float radius; //4 bytes
 };
 
-struct SourceCircle //16 bytes total
+struct SourceObj //16 bytes total
 {
     float2 pos; //8 bytes
     float radius; //4 bytes
@@ -475,8 +475,8 @@ void HandleSourceObject(inout Particle particle){
 	particle.velocity = float2(0, 0);
 	particle.predictedPosition = spawnPos;
 	particle.position = spawnPos;
-	particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
-	particle.type = selectedFluidType;
+	particle.temperature = FluidDataSet[0].startTemperature; // TODO: replace this with the source object's type
+	particle.type = 1;
     
 }
 

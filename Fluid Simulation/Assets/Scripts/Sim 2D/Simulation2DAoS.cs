@@ -27,6 +27,15 @@ public struct Circle //12 bytes total
 }
 
 [System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 16)]
+public struct SourceObject //16 bytes total
+{
+    public Vector2 pos; //8 bytes
+    public float radius; //4 bytes
+    public int fluidType; //4 bytes
+}
+
+[System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 24)]
 public struct OrientedBox //24 bytes total
 {
