@@ -219,7 +219,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(2);
 
         
-        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
+        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
@@ -310,7 +310,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: externalForcesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
         gpuSort.Run();
-        spatialOffsetsCalc.Run(true);
+        spatialOffsetsCalc.Run(false);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
         //gpuSort.SortAndCalculateOffsets(); // Old
