@@ -121,6 +121,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     // Buffers
     private Particle[] particleData;
     public ComputeBuffer particleBuffer { get; private set; }
+    public ComputeBuffer sortedParticleBuffer { get; private set; }
     public ComputeBuffer sortedIndices { get; private set; }
     ComputeBuffer spatialIndices;
     ComputeBuffer spatialOffsets;
@@ -130,10 +131,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     // Kernel IDs
     const int externalForcesKernel = 0;
     const int spatialHashKernel = 1;
-    const int densityKernel = 2;
-    const int pressureKernel = 3;
-    const int viscosityKernel = 4;
-    const int updatePositionKernel = 5;
+    const int reorderKernel = 2;
+    const int reorderCopybackKernel = 3;
+    const int densityKernel = 4;
+    const int pressureKernel = 5;
+    const int viscosityKernel = 6;
+    const int updatePositionKernel = 7;
 
     // State
     bool isPaused;
@@ -206,7 +209,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
-        
+        sortedParticleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
+
         boxColliderData = new OrientedBox[MAX_COLLIDERS];
         circleColliderData = new Circle[MAX_COLLIDERS];
 
@@ -225,15 +229,15 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         SetInitialBufferData(spawnData);
         uint[] atomicCounter = { 0, uintCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
-        
 
         // Init compute
         ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel); // reorderKernel, reorderCopybackKernel
+        ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
+        ComputeHelper.SetBuffer(compute, sortedParticleBuffer, "SortedParticles", reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", spatialHashKernel);
@@ -247,8 +251,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         // Old
         //gpuSort = new();
         //gpuSort.SetBuffers(spatialIndices, spatialOffsets);
-        //gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1) );
-        gpuSort = new GPUCountSort(spatialIndices, spatialIndices, (uint)(spatialIndices.count - 1));
+        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1) );
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
@@ -308,13 +311,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
         gpuSort.Run();
         spatialOffsetsCalc.Run(true);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
         //gpuSort.SortAndCalculateOffsets(); // Old
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
         //compute the pressure and viscosity on CPU
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
-
     }
 
     void UpdateColliderData()
@@ -465,8 +469,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             fluidDataBuffer,
             ScalingFactorsBuffer,
             particleBuffer,
+            sortedParticleBuffer,
             spatialIndices, 
             spatialOffsets,
+            sortedIndices,
             boxCollidersBuffer,
             circleCollidersBuffer,
             atomicCounterBuffer
