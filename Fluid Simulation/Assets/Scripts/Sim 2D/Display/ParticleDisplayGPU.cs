@@ -15,6 +15,15 @@ public class ParticleDisplay2D : MonoBehaviour
 	Texture2D gradientTexture;
 	bool needsUpdate;
 
+	public void InitAoSCounting(Simulation2DAoSCounting sim)
+	{
+		needsUpdate = true;
+		material = new Material(shader);
+		material.SetBuffer("Particles", sim.particleBuffer);
+
+		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
+		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
+	}
 
 	public void InitAoS(Simulation2DAoS sim)
 	{

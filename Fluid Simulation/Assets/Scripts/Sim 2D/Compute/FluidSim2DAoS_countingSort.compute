@@ -1,5 +1,7 @@
 #pragma kernel ExternalForces
 #pragma kernel UpdateSpatialHash
+#pragma kernel ReorderArray
+#pragma kernel CopybackArray
 #pragma kernel CalculateDensities
 #pragma kernel CalculatePressureForce
 #pragma kernel CalculateViscosity
@@ -70,8 +72,10 @@ struct ScalingFactors
 RWStructuredBuffer<FluidData> FluidDataSet;
 RWStructuredBuffer<ScalingFactors> ScalingFactorsBuffer;
 RWStructuredBuffer<Particle> Particles;
-RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, hash, key
+RWStructuredBuffer<Particle> SortedParticles; // Sorted array
+RWStructuredBuffer<uint> SpatialIndices; // used for spatial hashing index, hash, key
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
+RWStructuredBuffer<uint> SortedIndices;  // Post-sort indices
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
 RWStructuredBuffer<Circle> SourceObjs;
@@ -168,14 +172,14 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint indexData = SpatialIndices[currIndex];
 			currIndex++;
 			// Exit if no longer looking at correct bin
-			if (indexData[2] != key) break;
+			if (indexData != key) break;
 			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			//if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = indexData[0];
+			uint neighbourIndex = currIndex;
 			Particle neighbourParticle = Particles[neighbourIndex];
 			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
 
@@ -538,7 +542,26 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	int2 cell = GetCell2D(Particles[index].predictedPosition, maxSmoothingRadius);
 	uint hash = HashCell2D(cell);
 	uint key = KeyFromHash(hash, numParticles);
-	SpatialIndices[id.x] = uint3(index, hash, key);
+	//SpatialIndices[id.x] = uint3(index, hash, key);
+	SpatialIndices[id.x] = key;
+	SortedIndices[id.x] = id.x;
+}
+
+[numthreads(NumThreads, 1, 1)]
+void ReorderArray(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles)
+		return;
+	uint sortedIndex = SortedIndices[id.x];
+	SortedParticles[id.x] = Particles[sortedIndex];
+}
+
+[numthreads(NumThreads, 1, 1)]
+void CopybackArray(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles)
+		return;
+	Particles[id.x] = SortedParticles[id.x];
 }
 
 [numthreads(NumThreads,1,1)]
@@ -587,14 +610,14 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint indexData = SpatialIndices[currIndex];
 			currIndex ++;
 			// Exit if no longer looking at correct bin (index, hash, key)
-			if (indexData[2] != key) break;
+			if (indexData != key) break;
 			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			//if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = indexData[0];
+			uint neighbourIndex = currIndex;
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
@@ -659,14 +682,14 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint indexData = SpatialIndices[currIndex];
 			currIndex ++;
 			// Exit if no longer looking at correct bin
-			if (indexData[2] != key) break;
+			if (indexData != key) break;
 			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			//if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = indexData[0];
+			uint neighbourIndex = currIndex;
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
