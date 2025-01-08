@@ -27,11 +27,22 @@ public struct Circle //12 bytes total
 }
 
 [System.Serializable]
-[StructLayout(LayoutKind.Sequential, Size = 16)]
-public struct SourceObject //16 bytes total
+public struct SourceObjectInitializer //X bytes total
+{
+    public Transform transform;
+
+    public Vector2 initVelo; //8 bytes
+    public int fluidType; //4 bytes
+}
+
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 24)]
+public struct SourceObject //24 bytes total
 {
     public Vector2 pos; //8 bytes
     public float radius; //4 bytes
+
+    public Vector2 initVelo; //8 bytes
     public int fluidType; //4 bytes
 }
 
@@ -114,6 +125,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     [Header("Source and Drain Objects")]
 
     public Transform[] sourceObjects;
+    public SourceObjectInitializer[] sourceObjectsWIP;
     public Transform[] drainObjects;
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
