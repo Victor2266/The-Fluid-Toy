@@ -85,7 +85,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public float interactionRadius;
     public float interactionStrength;
 
-    public uint spawnRate = 100; // How many particles to spawn per frame
+    public uint spawnRate = 100; // How many particles that can spawn per frame
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]

@@ -444,13 +444,15 @@ void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate
 
 			particle.position = interactionInputPoint + offset;
 			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
-			
 		}
 		
 	}
 }
 
 void HandleSourceObject(inout Particle particle){
+	
+	// Only try to spawn if particle is disabled (type == 0)
+    if (particle.type != 0) return;
 	
 	atomicIncrementCounter();
 	
