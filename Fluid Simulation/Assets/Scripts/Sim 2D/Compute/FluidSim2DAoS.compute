@@ -45,6 +45,13 @@ struct Circle //12 bytes total
     float radius; //4 bytes
 };
 
+struct SourceObj //16 bytes total
+{
+    float2 pos; //8 bytes
+    float radius; //4 bytes
+	int fluidType; // fluid type enum
+};
+
 struct OrientedBox //24 bytes total
 {
     float2 pos; //8 bytes
@@ -71,6 +78,8 @@ RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<uint> SortedIndices;  // Post-sort indices
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
+RWStructuredBuffer<Circle> SourceObjs;
+RWStructuredBuffer<OrientedBox> DrainObjs;
 RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
 
 // Settings
@@ -84,6 +93,8 @@ const float maxSmoothingRadius;
 
 int numBoxColliders;
 int numCircleColliders;
+int numSourceObjs;
+int numDrainObjs;
 int brushType;
 int selectedFluidType;
 int edgeType;
@@ -331,6 +342,30 @@ void HandleBoxCollision2(inout float2 pos, inout float2 vel, OrientedBox box, fl
     vel = right * localVel.x + up * localVel.y;
 }
 
+void HandleDrainCollision(inout Particle particle, OrientedBox drain)
+{
+    // Transform position to drain's local space
+    float2 right = drain.zLocal;
+    float2 up = float2(-drain.zLocal.y, drain.zLocal.x);
+    
+    float2 localPos = particle.position - drain.pos;
+    float2 rotatedPos = float2(
+        dot(localPos, right),
+        dot(localPos, up)
+    );
+
+    // Check if particle is inside drain
+    float2 boxHalfSize = drain.size * 0.5;
+    float2 distanceFromCenter = abs(rotatedPos);
+    float2 penetration = distanceFromCenter - boxHalfSize;
+    
+    // If particle is inside drain, disable it
+    if (penetration.x < 0 && penetration.y < 0)
+    {
+        particle.type = 0; // Disable particle
+    }
+}
+
 void HandleCollisions(inout Particle particle)
 {
 	// if (particle.type == 0) return; // Skip disabled, this already gets checked in UpdatePositions()
@@ -373,6 +408,14 @@ void HandleCollisions(inout Particle particle)
 	// Only process box collisions if particle hasn't been disabled
     if (!particleDisabled)
     {
+		// Handle drain collisions
+		for (int a = 0; a < numDrainObjs; a++)
+		{
+			HandleDrainCollision(particle, DrainObjs[a]);
+			// If particle was disabled by drain, exit early
+			if (particle.type == 0) return;
+		}
+
 		// Handle box collisions
 		for (int i = 0; i < numBoxColliders; i++)
 		{
@@ -410,6 +453,37 @@ void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate
 		
 	}
 }
+
+void HandleSourceObject(inout Particle particle){
+	
+	atomicIncrementCounter();
+	
+	// Only spawn if we haven't reached the spawn rate for this frame
+    if (atomicCounter[0] >= spawnRate) return;
+
+	// Create random state for this spawn attempt
+    uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;
+    
+	// Select a random source object
+	uint sourceIndex = NextRandom(randomState) % numSourceObjs;
+	Circle source = SourceObjs[sourceIndex];
+	
+	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
+	float radius = RandomValue(randomState) * source.radius; // Random distance from center
+	
+	// Calculate random position within source circle
+	float2 offset = float2(cos(angle), sin(angle)) * radius;
+	float2 spawnPos = source.pos + offset;
+	
+	// Initialize the particle
+	particle.velocity = float2(0, 0);
+	particle.predictedPosition = spawnPos;
+	particle.position = spawnPos;
+	particle.temperature = FluidDataSet[0].startTemperature; // TODO: replace this with the source object's type
+	particle.type = 1;
+    
+}
+
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
 	// Input interactions to remove particles
 	if (brushType == 0 && interactionInputStrength == -1) {
@@ -453,6 +527,10 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0){
 		HandleLeftMouseInput(particle);
+		
+		// Only proceed if we have source objects
+		if (numSourceObjs > 0)
+			HandleSourceObject(particle);
 	}
 	HandleRightMouseInput(particle);
 	Particles[id.x] = particle;

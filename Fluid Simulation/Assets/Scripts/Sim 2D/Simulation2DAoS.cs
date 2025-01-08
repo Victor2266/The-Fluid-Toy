@@ -27,6 +27,15 @@ public struct Circle //12 bytes total
 }
 
 [System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 16)]
+public struct SourceObject //16 bytes total
+{
+    public Vector2 pos; //8 bytes
+    public float radius; //4 bytes
+    public int fluidType; //4 bytes
+}
+
+[System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 24)]
 public struct OrientedBox //24 bytes total
 {
@@ -99,7 +108,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     [Header("Obstacle Colliders")]
     public Transform[] boxColliders;
     public Transform[] circleColliders;
-
     private ComputeBuffer boxCollidersBuffer;
     private ComputeBuffer circleCollidersBuffer;
 
@@ -107,6 +115,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     public Transform[] sourceObjects;
     public Transform[] drainObjects;
+    private ComputeBuffer sourceObjectBuffer;
+    private ComputeBuffer drainObjectBuffer;
 
     // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
@@ -115,7 +125,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     // Private Variables 
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
-    private const int MAX_COLLIDERS = 64; // Set a reasonable maximum number of colliders
+
+    private Circle[] sourceObjectData;
+    private OrientedBox[] drainObjectData;
 
     [Header("Particle Data")]
     // Buffers
@@ -210,12 +222,17 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         sortedParticleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
+        
+        boxColliderData = new OrientedBox[boxColliders.Length];
+        circleColliderData = new Circle[circleColliders.Length];
+        sourceObjectData = new Circle[sourceObjects.Length];
+        drainObjectData = new OrientedBox[drainObjects.Length];
 
-        boxColliderData = new OrientedBox[MAX_COLLIDERS];
-        circleColliderData = new Circle[MAX_COLLIDERS];
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
+        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(sourceObjects.Length, 1));
+        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
 
-        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(MAX_COLLIDERS);
-        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(MAX_COLLIDERS);
         atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(2);
 
         
@@ -238,8 +255,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
         ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, sortedParticleBuffer, "SortedParticles", reorderKernel, reorderCopybackKernel);
-        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", externalForcesKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", externalForcesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", spatialHashKernel);
+        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", spatialHashKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
@@ -324,7 +343,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void UpdateColliderData()
     {
         // Update box colliders
-        for (int i = 0; i < boxColliders.Length && i < MAX_COLLIDERS; i++)
+        for (int i = 0; i < boxColliders.Length; i++)
         {
             Transform collider = boxColliders[i];
             boxColliderData[i] = new OrientedBox
@@ -336,7 +355,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         }
 
         // Update circle colliders
-        for (int i = 0; i < circleColliders.Length && i < MAX_COLLIDERS; i++)
+        for (int i = 0; i < circleColliders.Length; i++)
         {
             Transform collider = circleColliders[i];
             circleColliderData[i] = new Circle
@@ -346,9 +365,35 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             };
         }
 
+        // Update source objects
+        for (int i = 0; i < sourceObjects.Length; i++)
+        {
+            Transform source = sourceObjects[i];
+            sourceObjectData[i] = new Circle
+            {
+                pos = source.position,
+                radius = source.localScale.x * 0.5f // Assuming uniform scale
+            };
+        }
+
+        // Update drain objects
+        for (int i = 0; i < drainObjects.Length; i++)
+        {
+            Transform drain = drainObjects[i];
+            drainObjectData[i] = new OrientedBox
+            {
+                pos = drain.position,
+                size = drain.localScale,
+                zLocal = (Vector2)(drain.right) // Use right vector for orientation
+            };
+                
+        }
+
         // Update buffers
         boxCollidersBuffer.SetData(boxColliderData);
         circleCollidersBuffer.SetData(circleColliderData);
+        sourceObjectBuffer.SetData(sourceObjectData);
+        drainObjectBuffer.SetData(drainObjectData);
     }
 
     void UpdateSettings(float deltaTime)
@@ -364,11 +409,19 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetVector("boundsSize", boundsSize);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
+        compute.SetInt("numSourceObjs", sourceObjects.Length);
+        compute.SetInt("numDrainObjs", drainObjects.Length);
+
         compute.SetInt("selectedFluidType", selectedFluid);
 
         compute.SetInt("edgeType", (int) edgeType);
 
         compute.SetInt("spawnRate", (int) spawnRate);
+
+        if  (sourceObjects.Length > 0){
+            uint[] atomicCounter = {0, uintCounter++};
+            atomicCounterBuffer.SetData(atomicCounter);
+        }
 
         //These are now computed once at the start
         /*
@@ -391,16 +444,19 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         bool isPushInteraction = Input.GetMouseButton(1);
         float currInteractStrength = 0;
 
-        if(brushState == BrushType.GRAVITY){
+        if (brushState == BrushType.GRAVITY)
+        {
             if (isPushInteraction || isPullInteraction)
             {
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
             }
-        } else if(brushState == BrushType.DRAW){
+        }
+        else if (brushState == BrushType.DRAW)
+        {
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                uint[] atomicCounter = {0, uintCounter++};
+                uint[] atomicCounter = { 0, uintCounter++ };
                 atomicCounterBuffer.SetData(atomicCounter);
             }
             else if (isPushInteraction)
@@ -408,7 +464,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
                 currInteractStrength = -1f;
             }
         }
-        
+
         compute.SetInt("brushType", (int) brushState);
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
@@ -475,6 +531,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             sortedIndices,
             boxCollidersBuffer,
             circleCollidersBuffer,
+            sourceObjectBuffer,
+            drainObjectBuffer,
             atomicCounterBuffer
         );
     }
