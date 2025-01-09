@@ -167,7 +167,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     private float accumulatedTime = 0f;
     private const float MAX_DELTA_TIME = 1f/30f; // Maximum allowed delta time
     private const float FIXED_TIME_STEP = 1f/120f; // Your desired fixed time step
-
+    
     void Start()
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
@@ -284,7 +284,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void Update()
     {
         // Run simulation in fixed timestep mode
-        // It may be slower but the behavior is consistent accross all frame rates
+        // It may be slower but the behavior is consistent accross different frame rates
+        // (it will be perfectly consistent down to 30fps)
         // ONLY ACTIVATE IF CONSISTENCY BETWEEN FRAMERATES IS VERY IMPORTANT, non-fixed is smoother looking.
         // (skip running for first few frames as deltaTime can be disproportionaly large)
         if (fixedTimeStep && Time.frameCount > 10)
