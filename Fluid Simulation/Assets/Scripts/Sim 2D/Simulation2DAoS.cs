@@ -61,7 +61,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [Header("Simulation Settings")]
     public float timeScale = 1;
-    public bool fixedTimeStep;
+    public bool fixedTimeStep; // Don't use this anymore, the deltatime is capped
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
 
@@ -313,9 +313,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     void RunSimulationFrame(float frameTime)
     {
+        // Cap the maximum deltaTime to prevent instability
+        float cappedFrameTime = frameTime > 1f/30f ? 1f/30f : frameTime; // Cap at 30fps equivalent
+
         if (!isPaused)
         {
-            float timeStep = frameTime / iterationsPerFrame * timeScale;
+            float timeStep = cappedFrameTime / iterationsPerFrame * timeScale;
 
             UpdateSettings(timeStep);
 
