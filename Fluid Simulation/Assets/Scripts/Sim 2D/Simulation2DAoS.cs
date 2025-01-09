@@ -61,7 +61,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [Header("Simulation Settings")]
     public float timeScale = 1;
-    public bool fixedTimeStep; // Don't use this anymore, the deltatime is capped
+    public bool fixedTimeStep; // Enable for consistent simulation speed accross different framerates at the cost of smoothness
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
 
@@ -164,12 +164,13 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     public int numParticles { get; private set; }
 
+    private float accumulatedTime = 0f;
+    private const float MAX_DELTA_TIME = 1f/30f; // Maximum allowed delta time
+    private const float FIXED_TIME_STEP = 1f/120f; // Your desired fixed time step
+
     void Start()
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
-
-        float deltaTime = 1 / 120f; // Default was 1 / 60f, this sets the fixed update interval to 120 updates per second
-        Time.fixedDeltaTime = deltaTime;
 
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
@@ -280,24 +281,32 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         display.InitAoS(this);
     }
 
-    void FixedUpdate()
-    {
-        if (fixedTimeStep)
-        {
-            RunSimulationFrame(Time.deltaTime);
-            //Debug.Log($"FPS: {1 / Time.deltaTime}");
-        }
-        
-    }
-
     void Update()
     {
-        // Run simulation if not in fixed timestep mode
+        // Run simulation in fixed timestep mode
+        // It may be slower but the behavior is consistent accross all frame rates
+        // ONLY ACTIVATE IF CONSISTENCY BETWEEN FRAMERATES IS VERY IMPORTANT, non-fixed is smoother looking.
         // (skip running for first few frames as deltaTime can be disproportionaly large)
-        if (!fixedTimeStep && Time.frameCount > 10)
+        if (fixedTimeStep && Time.frameCount > 10)
+        {
+            // Accumulate time, but cap it to prevent spiral of death
+            accumulatedTime += Mathf.Min(Time.deltaTime, MAX_DELTA_TIME);
+            
+            // Run as many fixed updates as necessary to catch up
+            // When the FPS is low then it will run more times to catch up
+            // When the FPS is high then it will run less times
+            while (accumulatedTime >= FIXED_TIME_STEP)
+            {
+                RunSimulationFrame(FIXED_TIME_STEP); // This way the simulation steps are consistent
+                accumulatedTime -= FIXED_TIME_STEP;
+            }
+        } 
+        // In variable timestep mode, the delta time can vary, which slightly effects physics consistency across framerates
+        // Tabbing out has been fixed so it won't cause issues
+        // This seems to give smoother results than fixed timestep.
+        else if (!fixedTimeStep && Time.frameCount > 10)  
         {
             RunSimulationFrame(Time.deltaTime);
-            //Debug.Log($"FPS: {1 / Time.deltaTime}");
         }
 
         if (pauseNextFrame)
@@ -313,7 +322,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     void RunSimulationFrame(float frameTime)
     {
-        // Cap the maximum deltaTime to prevent instability
+        // Cap the maximum deltaTime to prevent instability when tabbing out
         float cappedFrameTime = frameTime > 1f/30f ? 1f/30f : frameTime; // Cap at 30fps equivalent
 
         if (!isPaused)
