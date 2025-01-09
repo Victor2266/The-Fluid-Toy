@@ -236,7 +236,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(2);
 
         
-        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
+        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 

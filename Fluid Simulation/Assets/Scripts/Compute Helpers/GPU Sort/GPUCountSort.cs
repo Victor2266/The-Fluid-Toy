@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Mathematics;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -22,7 +23,7 @@ public class GPUCountSort
 		int count = keyBuffer.count;
 		cs = ComputeHelper.LoadComputeShader("CountSort");
 
-		sortedKBuffer = ComputeHelper.CreateStructuredBuffer<uint>(count);
+		sortedKBuffer = ComputeHelper.CreateStructuredBuffer<uint3>(count);
 		sortedVBuffer = ComputeHelper.CreateStructuredBuffer<uint>(count);
 		cntBuffer = ComputeHelper.CreateStructuredBuffer<uint>( (int) maxValue + 1 );
 
