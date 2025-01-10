@@ -61,7 +61,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     [Header("Simulation Settings")]
     public float timeScale = 1;
-    public bool fixedTimeStep; // Enable for consistent simulation speed accross different framerates at the cost of smoothness
+    public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
 
@@ -285,9 +285,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void Update()
     {
         // Run simulation in fixed timestep mode
-        // It may be slower but the behavior is consistent accross different frame rates
+        // It will make number of simulation steps more consistent accross different frame rates
         // (it will be perfectly consistent down to 30fps)
-        // ONLY ACTIVATE IF CONSISTENCY BETWEEN FRAMERATES IS VERY IMPORTANT, non-fixed is smoother looking.
+        // ONLY ACTIVATE IF CONSISTENCY BETWEEN FRAMERATES IS IMPORTANT, non-fixed can be smoother looking above 120fps.
         // (skip running for first few frames as deltaTime can be disproportionaly large)
         if (fixedTimeStep && Time.frameCount > 10)
         {
@@ -304,8 +304,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             }
         } 
         // In variable timestep mode, the delta time can vary, which slightly effects physics consistency across framerates
+        // The number of simulation steps varies depending on the framerate 
         // Tabbing out has been fixed so it won't cause issues
-        // This seems to give smoother results than fixed timestep.
+        // This seems to give smoother results than fixed timestep above 120fps.
         else if (!fixedTimeStep && Time.frameCount > 10)  
         {
             RunSimulationFrame(Time.deltaTime);
