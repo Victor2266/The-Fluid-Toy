@@ -1,3 +1,4 @@
+#pragma kernel SpawnParticles
 #pragma kernel ExternalForces
 #pragma kernel UpdateSpatialHash
 #pragma kernel CalculateDensities
@@ -425,41 +426,31 @@ void HandleCollisions(inout Particle particle)
 		particle.velocity = vel;
 	}
 }
-void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate number of particles per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
-	// Input interactions to add particles
-	if (brushType == 0 && interactionInputStrength == 1) {
+void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawnRate number of times per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
 
-		atomicIncrementCounter();
+	uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
+	float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
 
-		if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means [spawnRate] particles created each frame
+	// Calculate offset from interactionInputPoint
+	float2 offset = float2(cos(angle), sin(angle)) * radius;
 
-			uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
-			float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-			float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
-
-			// Calculate offset from interactionInputPoint
-			float2 offset = float2(cos(angle), sin(angle)) * radius;
-
-			particle.velocity = float2(0, 0);
-			particle.predictedPosition = interactionInputPoint + offset;
-			particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
-
-			particle.position = interactionInputPoint + offset;
-			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
-		}
-		
-	}
+	particle.velocity = float2(0, 0);
+	particle.predictedPosition = interactionInputPoint + offset;
+	particle.position = interactionInputPoint + offset;
+	particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
+	particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
 }
 
 void HandleSourceObject(inout Particle particle){
 	
 	// Only try to spawn if particle is disabled (type == 0)
-    if (particle.type != 0) return;
+    //if (particle.type != 0) return;
 	
-	atomicIncrementCounter();
+	//atomicIncrementCounter();
 	
 	// Only spawn if we haven't reached the spawn rate for this frame
-    if (atomicCounter[0] >= spawnRate) return;
+    //if (atomicCounter[0] >= spawnRate) return;
 
 	// Create random state for this spawn attempt
     uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;
@@ -497,6 +488,37 @@ void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more eff
 }
 
 [numthreads(NumThreads,1,1)]
+void SpawnParticles (uint3 id : SV_DispatchThreadID){
+	Particle particle = Particles[id.x];
+    bool wasDisabled = particle.type == 0;
+    
+    // Batch atomic operations for spawning in particles
+    if (wasDisabled) {
+		atomicIncrementCounter();
+
+		if (atomicCounter[0] >= spawnRate) { 
+			return;
+		}
+
+		if (brushType == 0 && interactionInputStrength == 1) {
+			HandleLeftMouseInput(particle);
+			Particles[id.x] = particle;
+		} 
+		else if (numSourceObjs > 0) {
+			HandleSourceObject(particle);
+			Particles[id.x] = particle;
+		}
+		
+    }
+    
+    // Only process RightMouseInput if particle is still active
+    if (particle.type != 0) {
+        HandleRightMouseInput(particle);
+		Particles[id.x] = particle;
+    }
+}
+
+[numthreads(NumThreads,1,1)]
 void ExternalForces(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
@@ -521,19 +543,8 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 [numthreads(NumThreads,1,1)]
 void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 {
-	if (id.x >= numParticles) return;
-
 	// Skip shouldn't skip disabled particles here because the spatial hash needs to get updated even for disabled particles
-	Particle particle = Particles[id.x];
-	if (particle.type == 0){
-		HandleLeftMouseInput(particle);
-		
-		// Only proceed if we have source objects
-		if (numSourceObjs > 0)
-			HandleSourceObject(particle);
-	}
-	HandleRightMouseInput(particle);
-	Particles[id.x] = particle;
+	if (id.x >= numParticles) return;
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
