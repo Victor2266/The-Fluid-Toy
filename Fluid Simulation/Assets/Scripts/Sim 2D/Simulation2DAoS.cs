@@ -265,7 +265,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel);
+        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
