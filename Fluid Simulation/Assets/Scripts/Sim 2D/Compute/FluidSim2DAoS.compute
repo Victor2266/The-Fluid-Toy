@@ -445,7 +445,7 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawn
 void HandleSourceObject(inout Particle particle){
 	
 	// Only try to spawn if particle is disabled (type == 0)
-    //if (particle.type != 0) return;
+    if (particle.type != 0) return;
 	
 	//atomicIncrementCounter();
 	
@@ -489,11 +489,12 @@ void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more eff
 
 [numthreads(NumThreads,1,1)]
 void SpawnParticles (uint3 id : SV_DispatchThreadID){
+	if (id.x >= numParticles) return;
+
 	Particle particle = Particles[id.x];
-    bool wasDisabled = particle.type == 0;
     
     // Batch atomic operations for spawning in particles
-    if (wasDisabled) {
+    if (particle.type == 0) {
 		atomicIncrementCounter();
 
 		if (atomicCounter[0] >= spawnRate) { 
@@ -502,13 +503,11 @@ void SpawnParticles (uint3 id : SV_DispatchThreadID){
 
 		if (brushType == 0 && interactionInputStrength == 1) {
 			HandleLeftMouseInput(particle);
-			Particles[id.x] = particle;
 		} 
-		else if (numSourceObjs > 0) {
+		if (numSourceObjs > 0) {
 			HandleSourceObject(particle);
-			Particles[id.x] = particle;
 		}
-		
+		Particles[id.x] = particle;
     }
     
     // Only process RightMouseInput if particle is still active
