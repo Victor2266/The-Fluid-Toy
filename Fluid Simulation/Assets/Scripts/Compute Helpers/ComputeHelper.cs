@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 
@@ -101,6 +102,14 @@ public static class ComputeHelper
         for (int i = 0; i < kernels.Length; i++)
         {
             compute.SetBuffer(kernels[i], id, buffer);
+        }
+    }
+
+    public static void SetBuffers(ComputeShader cs, int kernel, Dictionary<ComputeBuffer, string> nameLookup, params ComputeBuffer[] buffers)
+    {
+        foreach (ComputeBuffer buffer in buffers)
+        {
+            cs.SetBuffer(kernel, nameLookup[buffer], buffer);
         }
     }
 
