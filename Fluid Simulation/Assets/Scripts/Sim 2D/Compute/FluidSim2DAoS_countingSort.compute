@@ -179,7 +179,7 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 			// Skip if hash does not match
 			if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = currIndex;
+			uint neighbourIndex = currIndex-1;
 			Particle neighbourParticle = Particles[neighbourIndex];
 			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
 
@@ -616,7 +616,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			// Skip if hash does not match
 			if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = currIndex;
+			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
@@ -688,7 +688,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 			// Skip if hash does not match
 			if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = currIndex;
+			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
