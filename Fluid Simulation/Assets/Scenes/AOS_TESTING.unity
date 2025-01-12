@@ -2075,7 +2075,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 1
+  fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
   boundsSize: {x: 34.2, y: 18.6}
@@ -2088,9 +2088,7 @@ MonoBehaviour:
   interactionStrength: 360
   spawnRate: 100
   manuallySelectFluidTypes: 0
-  fluidDataArray:
-  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
+  fluidDataArray: []
   compute: {fileID: 7200000, guid: c4e04fbd8b42e9e49be8bbd01966b4da, type: 3}
   spawner: {fileID: 271053320}
   display: {fileID: 271053323}
@@ -2716,7 +2714,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &380785142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2730,7 +2728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 1
+  fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
   boundsSize: {x: 34.2, y: 18.6}
@@ -2747,7 +2745,11 @@ MonoBehaviour:
   compute: {fileID: 7200000, guid: 87065ffabc56e7844853b2d3a56f5654, type: 3}
   spawner: {fileID: 380785144}
   display: {fileID: 380785143}
-  boxColliders: []
+  boxColliders:
+  - {fileID: 2141652550}
+  - {fileID: 765292489}
+  - {fileID: 1822802307}
+  - {fileID: 265848397}
   circleColliders: []
   sourceObjects: []
   drainObjects: []
@@ -3499,7 +3501,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &424244912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3578,7 +3580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 1
+  fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
   boundsSize: {x: 34.2, y: 18.6}
