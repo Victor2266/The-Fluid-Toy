@@ -444,6 +444,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                     uint[] atomicCounter = { 0, uintCounter++ };
                     atomicCounterBuffer.SetData(atomicCounter);
                 }
+                
             }
             else if (isPushInteraction)
             {
