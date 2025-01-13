@@ -400,11 +400,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         compute.SetInt("spawnRate", (int) spawnRate);
 
-        if  (sourceObjects.Length > 0){
-            uint[] atomicCounter = {0, uintCounter++};
-            atomicCounterBuffer.SetData(atomicCounter);
-        }
-
         //These are now computed once at the start
         /*
         compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
@@ -413,6 +408,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(currentFluid.smoothingRadius, 5) * Mathf.PI));
         compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
         */
+
+        if (sourceObjects.Length > 0)
+        {
+            uint[] atomicCounter = { 0, uintCounter++ };
+            atomicCounterBuffer.SetData(atomicCounter);
+        }
+
         // Mouse interaction settings:
         HandleMouseInput();
 
