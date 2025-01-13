@@ -553,6 +553,7 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
     if (id.x >= numParticles) return;
 
     Particle particle = Particles[id.x];
+	
 	if (particle.type == 0){ // Skip disabled
 		return;
 	}
