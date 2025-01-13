@@ -327,50 +327,41 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         for (int i = 0; i < boxColliders.Length; i++)
         {
             Transform collider = boxColliders[i];
-            boxColliderData[i] = new OrientedBox
-            {
-                pos = collider.position,
-                size = collider.localScale,
-                zLocal = (Vector2)(collider.right) // Use right vector for orientation
-            };
+            // Modify properties directly
+            boxColliderData[i].pos = collider.position;
+            boxColliderData[i].size = collider.localScale;
+            boxColliderData[i].zLocal = (Vector2)(collider.right); // Use right vector for orientation
         }
 
         // Update circle colliders
         for (int i = 0; i < circleColliders.Length; i++)
         {
             Transform collider = circleColliders[i];
-            circleColliderData[i] = new Circle
-            {
-                pos = collider.position,
-                radius = collider.localScale.x * 0.5f // Assuming uniform scale
-            };
+            // Modify properties directly
+            circleColliderData[i].pos = collider.position;
+            circleColliderData[i].radius = collider.localScale.x * 0.5f; // Assuming uniform scale
         }
 
         // Update source objects
         for (int i = 0; i < sourceObjects.Length; i++)
         {
             Transform source = sourceObjects[i].transform;
-            sourceObjectData[i] = new SourceObject
-            {
-                pos = source.position,
-                radius = source.localScale.x * 0.5f, // Assuming uniform scale
-                velo = sourceObjects[i].velo,
-                spawnRate = sourceObjects[i].spawnRate,
-                fluidType = sourceObjects[i].fluidType
-            };
+            // Modify properties directly
+            sourceObjectData[i].pos = source.position;
+            sourceObjectData[i].radius = source.localScale.x * 0.5f; // Assuming uniform scale
+            sourceObjectData[i].velo = sourceObjects[i].velo;
+            sourceObjectData[i].spawnRate = sourceObjects[i].spawnRate;
+            sourceObjectData[i].fluidType = sourceObjects[i].fluidType;
         }
 
         // Update drain objects
         for (int i = 0; i < drainObjects.Length; i++)
         {
             Transform drain = drainObjects[i];
-            drainObjectData[i] = new OrientedBox
-            {
-                pos = drain.position,
-                size = drain.localScale,
-                zLocal = (Vector2)(drain.right) // Use right vector for orientation
-            };
-                
+            // Modify properties directly
+            drainObjectData[i].pos = drain.position;
+            drainObjectData[i].size = drain.localScale;
+            drainObjectData[i].zLocal = (Vector2)(drain.right); // Use right vector for orientation  
         }
 
         // Update buffers
