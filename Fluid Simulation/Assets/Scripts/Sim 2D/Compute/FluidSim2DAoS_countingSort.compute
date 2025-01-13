@@ -639,7 +639,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			// Skip if hash does not match
 			if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = indexData[0];
+			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
@@ -711,7 +711,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 			// Skip if hash does not match
 			if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = indexData[0];
+			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self
 			if (neighbourIndex == id.x) continue;
 			Particle neighbourParticle = Particles[neighbourIndex];
