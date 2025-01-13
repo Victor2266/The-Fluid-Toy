@@ -247,12 +247,32 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     void Update()
     {
-        // Run simulation if not in fixed timestep mode
+        // Run simulation in fixed timestep mode
+        // It will make number of simulation steps more consistent accross different frame rates
+        // (it will be perfectly consistent down to 30fps)
+        // ONLY ACTIVATE IF CONSISTENCY BETWEEN FRAMERATES IS IMPORTANT, non-fixed can be smoother looking above 120fps.
         // (skip running for first few frames as deltaTime can be disproportionaly large)
-        if (!fixedTimeStep && Time.frameCount > 10)
+        if (fixedTimeStep && Time.frameCount > 10)
+        {
+            // Accumulate time, but cap it to prevent spiral of death
+            accumulatedTime += Mathf.Min(Time.deltaTime, MAX_DELTA_TIME);
+            
+            // Run as many fixed updates as necessary to catch up
+            // When the FPS is low then it will run more times to catch up
+            // When the FPS is high then it will run less times
+            while (accumulatedTime >= FIXED_TIME_STEP)
+            {
+                RunSimulationFrame(FIXED_TIME_STEP); // This way the simulation steps are consistent
+                accumulatedTime -= FIXED_TIME_STEP;
+            }
+        } 
+        // In variable timestep mode, the delta time can vary, which slightly effects physics consistency across framerates
+        // The number of simulation steps varies depending on the framerate 
+        // Tabbing out has been fixed so it won't cause issues
+        // This seems to give smoother results than fixed timestep above 120fps.
+        else if (!fixedTimeStep && Time.frameCount > 10)  
         {
             RunSimulationFrame(Time.deltaTime);
-            //Debug.Log($"FPS: {1 / Time.deltaTime}");
         }
 
         if (pauseNextFrame)
