@@ -573,19 +573,8 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 [numthreads(NumThreads,1,1)]
 void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 {
-	if (id.x >= numParticles) return;
-
 	// Skip shouldn't skip disabled particles here because the spatial hash needs to get updated even for disabled particles
-	Particle particle = Particles[id.x];
-	if (particle.type == 0){
-		HandleLeftMouseInput(particle);
-		
-		// Only proceed if we have source objects
-		if (numSourceObjs > 0)
-			HandleSourceObject(particle);
-	}
-	HandleRightMouseInput(particle);
-	Particles[id.x] = particle;
+	if (id.x >= numParticles) return;
 
 	// Reset offsets
 	SpatialOffsets[id.x] = numParticles;
