@@ -242,17 +242,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
-        display.InitAoSCounting(this);
-    }
-
-    void FixedUpdate()
-    {
-        if (fixedTimeStep)
-        {
-            RunSimulationFrame(Time.deltaTime);
-            //Debug.Log($"FPS: {1 / Time.deltaTime}");
-        }
-        
+        display.InitAoS(this);  
     }
 
     void Update()
