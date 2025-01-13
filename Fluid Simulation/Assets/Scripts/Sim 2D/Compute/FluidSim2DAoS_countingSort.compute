@@ -1,6 +1,8 @@
 #pragma kernel SpawnParticles
 #pragma kernel ExternalForces
 #pragma kernel UpdateSpatialHash
+#pragma kernel ReorderArray
+#pragma kernel CopybackArray
 #pragma kernel CalculateDensities
 #pragma kernel CalculatePressureForce
 #pragma kernel CalculateViscosity
