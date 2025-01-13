@@ -584,6 +584,24 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	uint hash = HashCell2D(cell);
 	uint key = KeyFromHash(hash, numParticles);
 	SpatialIndices[id.x] = uint3(index, hash, key);
+	SortedIndices[id.x] = id.x;
+}
+
+[numthreads(NumThreads, 1, 1)]
+void ReorderArray(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles)
+		return;
+	uint sortedIndex = SortedIndices[id.x];
+	SortedParticles[id.x] = Particles[sortedIndex];
+}
+
+[numthreads(NumThreads, 1, 1)]
+void CopybackArray(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles)
+		return;
+	Particles[id.x] = SortedParticles[id.x];
 }
 
 [numthreads(NumThreads,1,1)]
