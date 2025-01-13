@@ -522,6 +522,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             drainObjectBuffer,
             atomicCounterBuffer
         );
+
+        gpuSort.Release();
     }
 
 
