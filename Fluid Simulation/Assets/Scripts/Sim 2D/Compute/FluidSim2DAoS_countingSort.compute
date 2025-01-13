@@ -345,6 +345,20 @@ void HandleBoxCollision2(inout float2 pos, inout float2 vel, OrientedBox box, fl
     vel = right * localVel.x + up * localVel.y;
 }
 
+void DisableParticle(inout Particle particle){
+	// Create a random seed based on particle position and current tick
+	uint randomState = (uint)(particle.position.x * 1000) + (uint)(particle.position.y * 1000) + atomicCounter[1] * 982451653;
+
+	// Randomize position within bounds before disabling
+	float2 halfSize = boundsSize * 0.5;
+	particle.position.x = (RandomValue(randomState) * 2 - 1) * halfSize.x;
+	particle.position.y = (RandomValue(randomState) * 2 - 1) * halfSize.y;
+	particle.predictedPosition = particle.position;
+	particle.velocity = float2(0, 0);
+
+	particle.type = 0; // Remove the particle by setting to 0 which is disabled.
+}
+
 void HandleDrainCollision(inout Particle particle, OrientedBox drain)
 {
     // Transform position to drain's local space
@@ -365,19 +379,7 @@ void HandleDrainCollision(inout Particle particle, OrientedBox drain)
 	// If particle is inside drain, randomize position before disabling
 	if (penetration.x < 0 && penetration.y < 0)
 	{
-		// Create a random seed based on particle position and current tick
-		uint randomState = (uint)(particle.position.x * 1000) + 
-						(uint)(particle.position.y * 1000) + 
-						atomicCounter[1] * 982451653;
-		
-		// Randomize position within bounds before disabling
-		float2 halfSize = boundsSize * 0.5;
-		particle.position.x = (RandomValue(randomState) * 2 - 1) * halfSize.x;
-		particle.position.y = (RandomValue(randomState) * 2 - 1) * halfSize.y;
-		particle.predictedPosition = particle.position;
-		particle.velocity = float2(0, 0);
-		
-		particle.type = 0; // Disable particle
+		DisableParticle(particle);
 	}
 }
 
@@ -413,9 +415,7 @@ void HandleCollisions(inout Particle particle)
 		if (any(edgeDst <= 0))
 		{
 			// Create random seed based on position and current tick
-			uint randomState = (uint)(pos.x * 1000) + 
-							(uint)(pos.y * 1000) + 
-							atomicCounter[1] * 982451653;
+			uint randomState = (uint)(pos.x * 1000) + (uint)(pos.y * 1000) + atomicCounter[1] * 982451653;
 			
 			// Randomize position within bounds before disabling
 			pos.x = (RandomValue(randomState) * 2 - 1) * halfSize.x;
@@ -521,20 +521,6 @@ void HandleSourceObject(inout Particle particle){
     
 }
 
-void DisableParticle(inout Particle particle){
-	// Create a random seed based on particle position and current tick
-	uint randomState = (uint)(particle.position.x * 1000) + (uint)(particle.position.y * 1000) + atomicCounter[1] * 982451653;
-
-	// Randomize position within bounds before disabling
-	float2 halfSize = boundsSize * 0.5;
-	particle.position.x = (RandomValue(randomState) * 2 - 1) * halfSize.x;
-	particle.position.y = (RandomValue(randomState) * 2 - 1) * halfSize.y;
-	particle.predictedPosition = particle.position;
-	particle.velocity = float2(0, 0);
-
-	particle.type = 0; // Remove the particle by setting to 0 which is disabled.
-}
-
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
 	// Input interactions to remove particles
 	if (brushType == 0 && interactionInputStrength == -1) {
@@ -546,7 +532,6 @@ void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more eff
 		}
 	}
 }
-
 
 
 [numthreads(NumThreads,1,1)]
