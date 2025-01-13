@@ -407,7 +407,7 @@ void HandleCollisions(inout Particle particle)
     }
     else if (edgeType == 1) // Void edge
     {
-    	// Check if particle is out of bounds
+		// Check if particle is out of bounds
 		if (any(edgeDst <= 0))
 		{
 			// Create random seed based on position and current tick
