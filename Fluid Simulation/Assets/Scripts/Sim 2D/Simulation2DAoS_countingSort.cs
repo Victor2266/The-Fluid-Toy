@@ -204,7 +204,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
-
+        
         // Set buffer data
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
