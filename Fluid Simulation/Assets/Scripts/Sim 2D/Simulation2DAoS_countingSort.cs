@@ -288,9 +288,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     void RunSimulationFrame(float frameTime)
     {
+        // Cap the maximum deltaTime to prevent instability when tabbing out
+        float cappedFrameTime = frameTime > 1f/30f ? 1f/30f : frameTime; // Cap at 30fps equivalent
+
         if (!isPaused)
         {
-            float timeStep = frameTime / iterationsPerFrame * timeScale;
+            float timeStep = cappedFrameTime / iterationsPerFrame * timeScale;
 
             UpdateSettings(timeStep);
 
