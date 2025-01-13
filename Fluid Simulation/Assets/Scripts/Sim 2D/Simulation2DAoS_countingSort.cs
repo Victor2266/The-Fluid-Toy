@@ -127,6 +127,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     void Start()
     {
+        // Debug.Log(System.Runtime.InteropServices.Marshal.SizeOf(typeof(SourceObjectInitializer))); //This prints the size of the typeof(struct)
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
         spawnData = spawner.GetSpawnData();

@@ -26,22 +26,23 @@ public struct Circle //12 bytes total
 }
 
 [System.Serializable]
-public struct SourceObjectInitializer //X bytes total: This is for setting up source objects in the inspector
+public struct SourceObjectInitializer //40 bytes total: This is for setting up source objects in the inspector
 {
-    public Transform transform;
-
+    public Transform transform; //24 bytes
     public Vector2 initVelo; //8 bytes
+    public float initStrength; //4 bytes
     public int fluidType; //4 bytes
 }
 
 [System.Serializable]
-[StructLayout(LayoutKind.Sequential, Size = 24)]
-public struct SourceObject //24 bytes total: This is for sending source object info to the GPU
+[StructLayout(LayoutKind.Sequential, Size = 28)]
+public struct SourceObject //28 bytes total: This is for sending source object info to the GPU
 {
     public Vector2 pos; //8 bytes
     public float radius; //4 bytes
 
     public Vector2 initVelo; //8 bytes
+    public float strength; //4 bytes
     public int fluidType; //4 bytes
 }
 
