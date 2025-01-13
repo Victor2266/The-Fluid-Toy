@@ -235,13 +235,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
 
-
-        gpuSort = new();
-        gpuSort.SetBuffers(spatialIndices, spatialOffsets);
-
+        // Old
+        //gpuSort = new();
+        //gpuSort.SetBuffers(spatialIndices, spatialOffsets);
+        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1) );
+        spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
-        display.InitAoS(this);
+        display.InitAoS(this);  
     }
 
     void Update()
