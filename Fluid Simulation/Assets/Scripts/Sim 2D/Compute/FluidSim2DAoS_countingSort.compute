@@ -482,7 +482,7 @@ void HandleSourceObject(inout Particle particle){
 	
 	// Only try to spawn if particle is disabled (type == 0)
 	if (particle.type != 0) return;
-
+	
 	atomicIncrementCounter();
 	
 	// Only spawn if we haven't reached the spawn rate for this frame
