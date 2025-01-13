@@ -119,6 +119,17 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     private float accumulatedTime = 0f;
     private const float MAX_DELTA_TIME = 1f/30f; // Maximum allowed delta time
     private const float FIXED_TIME_STEP = 1f/120f; // Your desired fixed time step
+
+    [Header("CPU Computing")]
+    //CPU Compute
+
+    public bool isCPUComputingEnabled;
+
+    public bool toggleCPUComputing;
+    public bool isUsingAoS;
+    // public CPUParticleKernel CPUKernel;
+
+    public CPUParticleKernelAoS CPUKernelAOS;
     
     void Start()
     {
@@ -224,6 +235,18 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
 
+
+        //Initialize CPU kernel based on settings flags
+        if(isCPUComputingEnabled){
+            if(isUsingAoS){
+                //CPUKernelAOS = new CPUParticleKernelAoS();
+                initializeCPUKernelSettingsAoS();
+            }else{
+                // CPUKernel = new CPUParticleKernel();
+
+            }
+            
+        }
 
         gpuSort = new();
         gpuSort.SetBuffers(spatialIndices, spatialOffsets);
@@ -402,7 +425,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         // Mouse interaction settings:
         
         HandleMouseInput();
-
+        if(isCPUComputingEnabled){
+            if(isUsingAoS){
+                CPUKernelAOS.deltaTime = deltaTime;
+                
+            }
+        }
     }
 
     void HandleMouseInput()
@@ -610,5 +638,113 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public int GetParticleCount()
     {
         return numParticles;
+    }
+    void initializeCPUKernelSettingsAoS(){
+        CPUKernelAOS.numParticles = numParticles;
+        CPUKernelAOS.offsets = new int2[9];
+
+        CPUKernelAOS.offsets[0] = new int2(-1, 1);
+	    CPUKernelAOS.offsets[1] = new int2(0, 1);
+	    CPUKernelAOS.offsets[2] = new int2(1, 1);
+	    CPUKernelAOS.offsets[3] = new int2(-1, 0);
+	    CPUKernelAOS.offsets[4] = new int2(0, 0);
+	    CPUKernelAOS.offsets[5] = new int2(1, 0);
+	    CPUKernelAOS.offsets[6] = new int2(-1, -1);
+	    CPUKernelAOS.offsets[7] = new int2(0, -1);
+	    CPUKernelAOS.offsets[8] = new int2(1, -1);
+
+        CPUKernelAOS.fluidParams = new FluidParam[Enum.GetValues(typeof(FluidType)).Length - 1];
+        CPUKernelAOS.scalingFactors = new ScalingFactors[Enum.GetValues(typeof(FluidType)).Length - 1];
+        CPUKernelAOS.maxSmoothingRadius = maxSmoothingRadius;
+        CPUKernelAOS.boxCollidersData = new OrientedBox[boxColliders.Length];
+        CPUKernelAOS.circleCollidersData = new Circle[circleColliders.Length];
+        CPUKernelAOS.drainData = new OrientedBox[drainObjects.Length];
+        CPUKernelAOS.sourceData = new Circle[sourceObjects.Length];
+        CPUKernelAOS.spatialIndices = new uint3[numParticles];
+        CPUKernelAOS.spatialOffsets = new uint[numParticles];
+        CPUKernelAOS.particles = new Particle[numParticles];
+        fluidParamArr.CopyTo(CPUKernelAOS.fluidParams, 0);
+        scalingFactorsArr.CopyTo(CPUKernelAOS.scalingFactors, 0);
+    }
+    
+    public void runCPUComputeTest(){
+        initializeCPUKernelSettingsAoS();
+        CPUKernelAOS.fluidParamBuffer = new NativeArray<FluidParam>(CPUKernelAOS.fluidParams.Length, Allocator.TempJob);
+        CPUKernelAOS.scalingFactorsBuffer = new NativeArray<ScalingFactors>(CPUKernelAOS.scalingFactors.Length, Allocator.TempJob);
+        CPUKernelAOS.spatialIndicesBuffer = new NativeArray<uint3>(numParticles, Allocator.TempJob);
+        CPUKernelAOS.spatialOffsetsBuffer = new NativeArray<uint>(numParticles, Allocator.TempJob);
+        CPUKernelAOS.particleBuffer = new NativeArray<Particle>(numParticles, Allocator.TempJob);
+        CPUKernelAOS.offsets2DBuffer = new NativeArray<int2>(CPUKernelAOS.offsets.Length, Allocator.TempJob);
+        CPUKernelAOS.particleResultBuffer = new NativeArray<Particle>(numParticles, Allocator.TempJob);
+        CPUKernelAOS.AfterDensity = new Particle[numParticles];
+        CPUKernelAOS.AfterPressure = new Particle[numParticles];
+        CPUKernelAOS.offsets2DBuffer.CopyFrom(CPUKernelAOS.offsets);
+        CPUKernelAOS.fluidParamBuffer.CopyFrom(fluidParamArr);
+        CPUKernelAOS.scalingFactorsBuffer.CopyFrom(scalingFactorsArr);
+        spatialIndices.GetData(CPUKernelAOS.spatialIndices);
+        CPUKernelAOS.spatialIndicesBuffer.CopyFrom(CPUKernelAOS.spatialIndices);
+        spatialOffsets.GetData(CPUKernelAOS.spatialOffsets);
+        CPUKernelAOS.spatialOffsetsBuffer.CopyFrom(CPUKernelAOS.spatialOffsets);
+        particleBuffer.GetData(CPUKernelAOS.particles);
+        CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.particles);
+        CPUKernelAOS.particleResultBuffer.CopyFrom(CPUKernelAOS.particles);
+
+        CPUDensityCalcAoS densitycalc = new CPUDensityCalcAoS{
+            numParticles = (uint) numParticles,
+            maxSmoothingRadius = maxSmoothingRadius,
+            densityOut = CPUKernelAOS.particleResultBuffer,
+            particles = CPUKernelAOS.particleBuffer,
+            spatialIndices = CPUKernelAOS.spatialIndicesBuffer,
+            spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
+            fluidPs = CPUKernelAOS.fluidParamBuffer,
+            scalingFacts = CPUKernelAOS.scalingFactorsBuffer,
+            offsets2D = CPUKernelAOS.offsets2DBuffer
+        };
+        JobHandle density = densitycalc.Schedule(numParticles, 50);
+        density.Complete();
+        CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.AfterDensity);
+        CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.AfterDensity);
+        CPUPressureCalcAoS pressureCalc = new CPUPressureCalcAoS{
+            numParticles = (uint) numParticles,
+            maxSmoothingRadius = maxSmoothingRadius,
+            pressureOut = CPUKernelAOS.particleResultBuffer,
+            particles = CPUKernelAOS.particleBuffer,
+            spatialIndices = CPUKernelAOS.spatialIndicesBuffer,
+            spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
+            fluidPs = CPUKernelAOS.fluidParamBuffer,
+            scalingFacts = CPUKernelAOS.scalingFactorsBuffer,
+            offsets2D = CPUKernelAOS.offsets2DBuffer
+        };
+        JobHandle pressure = pressureCalc.Schedule(numParticles, 50);
+        pressure.Complete();
+        CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.AfterPressure);
+        CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.AfterPressure);
+        CPUViscosityCalcAoS viscosityCalc = new CPUViscosityCalcAoS{
+            numParticles = (uint) numParticles,
+            maxSmoothingRadius = maxSmoothingRadius,
+            viscosityOut = CPUKernelAOS.particleResultBuffer,
+            particles = CPUKernelAOS.particleBuffer,
+            spatialIndices = CPUKernelAOS.spatialIndicesBuffer,
+            spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
+            fluidPs = CPUKernelAOS.fluidParamBuffer,
+            scalingFacts = CPUKernelAOS.scalingFactorsBuffer,
+            offsets2D = CPUKernelAOS.offsets2DBuffer
+        };
+
+        JobHandle viscosity = viscosityCalc.Schedule(numParticles, 50);
+        viscosity.Complete();
+        //Debug.Log("CPUComputeCompleted");
+        CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.particles);
+        particleBuffer.SetData(CPUKernelAOS.particles);
+
+        CPUKernelAOS.fluidParamBuffer.Dispose();
+        CPUKernelAOS.scalingFactorsBuffer.Dispose();
+        CPUKernelAOS.spatialIndicesBuffer.Dispose();
+        CPUKernelAOS.spatialOffsetsBuffer.Dispose();
+        CPUKernelAOS.particleBuffer.Dispose();
+        CPUKernelAOS.offsets2DBuffer.Dispose();
+        CPUKernelAOS.particleResultBuffer.Dispose();
+
+        particleBuffer.GetData(CPUKernelAOS.particles);
     }
 }
