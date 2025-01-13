@@ -214,6 +214,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         uint[] atomicCounter = { 0, uintCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
 
+
         // Init compute
         ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
