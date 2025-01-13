@@ -482,7 +482,7 @@ void HandleSourceObject(inout Particle particle){
 	
 	// Only try to spawn if particle is disabled (type == 0)
 	if (particle.type != 0) return;
-	
+
 	atomicIncrementCounter();
 	
 	// Only spawn if we haven't reached the spawn rate for this frame
@@ -524,7 +524,7 @@ void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more eff
 }
 
 [numthreads(NumThreads,1,1)]
-vvoid SpawnParticles (uint3 id : SV_DispatchThreadID){
+void SpawnParticles (uint3 id : SV_DispatchThreadID){
 	if (id.x >= numParticles) return;
 
 	Particle particle = Particles[id.x];
