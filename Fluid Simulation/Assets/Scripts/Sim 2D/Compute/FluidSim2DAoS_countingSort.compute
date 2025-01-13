@@ -180,7 +180,7 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 			// Skip if hash does not match
 			if (indexData[1] != hash) continue;
 
-			uint neighbourIndex = indexData[0];
+			uint neighbourIndex = currIndex-1;
 			Particle neighbourParticle = Particles[neighbourIndex];
 			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
 
