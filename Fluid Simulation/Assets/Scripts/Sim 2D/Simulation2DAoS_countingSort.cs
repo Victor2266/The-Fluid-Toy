@@ -187,7 +187,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         sortedParticleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
-        
+
         boxColliderData = new OrientedBox[boxColliders.Length];
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new Circle[sourceObjects.Length];
@@ -204,7 +204,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
-
+        
         // Set buffer data
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
