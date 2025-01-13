@@ -502,13 +502,11 @@ void HandleSourceObject(inout Particle particle){
 	if (source.fluidType == 0) // If the source is disabled
 		return;
 
-	float randVal = RandomValue(randomState);
-
-	if (randVal > source.spawnRate) // Skips some particles when the spawn rate is below 1
+	if (RandomValue(randomState) > source.spawnRate) // Skips some particles when the spawn rate is below 1
 		return;
 	
-	float angle = randVal * 2.0 * 3.14159; // Random angle [0, 2pi)
-	float radius = randVal * source.radius; // Random distance from center
+	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
+	float radius = RandomValue(randomState) * source.radius; // Random distance from center
 	
 	// Calculate random position within source circle
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
