@@ -30,8 +30,9 @@ public struct SourceObjectInitializer //40 bytes total: This is for setting up s
 {
     public Transform transform; //24 bytes
     public Vector2 velo; //8 bytes
-    public float spawnRate; //4 bytes
-    public int fluidType; //4 bytes
+    [Range(0, 1)]
+    public float spawnRate; //4 bytes: This is the percent chance that the particle spawns
+    public int fluidType; //4 bytes: Setting this to 0 will disable this source
 }
 
 [System.Serializable]
