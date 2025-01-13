@@ -124,7 +124,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     private float accumulatedTime = 0f;
     private const float MAX_DELTA_TIME = 1f/30f; // Maximum allowed delta time
     private const float FIXED_TIME_STEP = 1f/120f; // Your desired fixed time step
-    
+
     void Start()
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
@@ -187,7 +187,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         sortedParticleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
-
+        
         boxColliderData = new OrientedBox[boxColliders.Length];
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new Circle[sourceObjects.Length];
