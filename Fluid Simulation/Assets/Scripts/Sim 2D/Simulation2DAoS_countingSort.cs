@@ -307,6 +307,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     void RunSimulationStep()
     {
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: SpawnParticlesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: externalForcesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
         gpuSort.Run();
