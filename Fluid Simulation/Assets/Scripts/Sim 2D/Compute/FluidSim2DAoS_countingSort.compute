@@ -360,11 +360,23 @@ void HandleDrainCollision(inout Particle particle, OrientedBox drain)
     float2 distanceFromCenter = abs(rotatedPos);
     float2 penetration = distanceFromCenter - boxHalfSize;
     
-    // If particle is inside drain, disable it
-    if (penetration.x < 0 && penetration.y < 0)
-    {
-        particle.type = 0; // Disable particle
-    }
+    // If particle is inside drain, randomize position before disabling
+	if (penetration.x < 0 && penetration.y < 0)
+	{
+		// Create a random seed based on particle position and current tick
+		uint randomState = (uint)(particle.position.x * 1000) + 
+						(uint)(particle.position.y * 1000) + 
+						atomicCounter[1] * 982451653;
+		
+		// Randomize position within bounds before disabling
+		float2 halfSize = boundsSize * 0.5;
+		particle.position.x = (RandomValue(randomState) * 2 - 1) * halfSize.x;
+		particle.position.y = (RandomValue(randomState) * 2 - 1) * halfSize.y;
+		particle.predictedPosition = particle.position;
+		particle.velocity = float2(0, 0);
+		
+		particle.type = 0; // Disable particle
+	}
 }
 
 void HandleCollisions(inout Particle particle)
