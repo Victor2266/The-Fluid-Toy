@@ -524,9 +524,34 @@ void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more eff
 }
 
 [numthreads(NumThreads,1,1)]
+vvoid SpawnParticles (uint3 id : SV_DispatchThreadID){
+	if (id.x >= numParticles) return;
+
+	Particle particle = Particles[id.x];
+    
+    // Batch atomic operations for spawning in particles
+    if (particle.type == 0) {
+		if (brushType == 0 && interactionInputStrength == 1) {
+			HandleLeftMouseInput(particle);
+		} 
+		if (numSourceObjs > 0) {
+			HandleSourceObject(particle);
+		}
+		Particles[id.x] = particle;
+    }
+    
+    // Only process RightMouseInput if particle is still active
+    if (particle.type != 0) {
+        HandleRightMouseInput(particle);
+		Particles[id.x] = particle;
+    }
+}
+
+[numthreads(NumThreads,1,1)]
 void ExternalForces(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
+
     Particle particle = Particles[id.x];
 	
 	if (particle.type == 0){ // Skip disabled
