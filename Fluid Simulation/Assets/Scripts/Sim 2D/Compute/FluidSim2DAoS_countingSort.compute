@@ -407,9 +407,23 @@ void HandleCollisions(inout Particle particle)
     }
     else if (edgeType == 1) // Void edge
     {
-        // Check if particle is out of bounds on either axis
-        particleDisabled = any(edgeDst <= 0);
-        particle.type = particleDisabled ? 0 : particle.type;
+        // Check if particle is out of bounds
+		if (any(edgeDst <= 0))
+		{
+			// Create random seed based on position and current tick
+			uint randomState = (uint)(pos.x * 1000) + 
+							(uint)(pos.y * 1000) + 
+							atomicCounter[1] * 982451653;
+			
+			// Randomize position within bounds before disabling
+			pos.x = (RandomValue(randomState) * 2 - 1) * halfSize.x;
+			pos.y = (RandomValue(randomState) * 2 - 1) * halfSize.y;
+			particle.predictedPosition = pos;
+			vel = float2(0, 0);
+			
+			particleDisabled = true;
+			particle.type = 0;
+		};
     }
 	else if (edgeType == 2) // Loop edge
     {
