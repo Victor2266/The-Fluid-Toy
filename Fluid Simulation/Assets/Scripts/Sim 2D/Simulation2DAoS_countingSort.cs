@@ -409,13 +409,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
         */
 
-        if  (sourceObjects.Length > 0){
-            uint[] atomicCounter = {0, uintCounter++};
+        if (sourceObjects.Length > 0)
+        {
+            uint[] atomicCounter = { 0, uintCounter++ };
             atomicCounterBuffer.SetData(atomicCounter);
         }
 
         // Mouse interaction settings:
-        
+
         HandleMouseInput();
 
     }
