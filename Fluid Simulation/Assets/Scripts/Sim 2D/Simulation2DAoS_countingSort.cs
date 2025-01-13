@@ -12,7 +12,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     [Header("Simulation Settings")]
     public float timeScale = 1;
-    public bool fixedTimeStep;
+    public bool fixedTimeStep;  // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
 
@@ -47,7 +47,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public float interactionRadius;
     public float interactionStrength;
 
-    public uint spawnRate = 100; // How many particles to spawn per frame
+    public uint spawnRate = 100; // How many particles that can spawn per frame
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
@@ -76,6 +76,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Source and Drain Objects")]
 
     public Transform[] sourceObjects;
+    public SourceObjectInitializer[] sourceObjectsWIP;
     public Transform[] drainObjects;
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
