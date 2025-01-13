@@ -247,71 +247,19 @@ float2 ExternalForces(float2 pos, float2 velocity, float gravity)
 
 void HandleBoxCollision(inout float2 pos, inout float2 vel, OrientedBox box, float collisionDamping)
 {
+	// Create rotation matrix for local space transformation
+    float2 right = box.zLocal;
+    float2 up = float2(-box.zLocal.y, box.zLocal.x); // Precompute once
+    
     // Transform position to box's local space
     float2 localPos = pos - box.pos;
-
-    // Create rotation matrix for local space transformation
-    float2 right = box.zLocal;
-    float2 up = float2(-box.zLocal.y, box.zLocal.x);
-
-    // Transform to box's local space
+	// Transform to box's local space
     float2 rotatedPos = float2(
         dot(localPos, right),
         dot(localPos, up)
     );
 
     // Calculate distance to box edges in local space
-    float2 boxHalfSize = box.size * 0.5;
-    float2 distanceFromCenter = abs(rotatedPos);
-    float2 penetration = distanceFromCenter - boxHalfSize;
-
-    // Only process collision if we're actually inside the box
-    if (penetration.x < 0 && penetration.y < 0)
-    {
-        // Transform velocity to local space
-        float2 localVel = float2(
-            dot(vel, right),
-            dot(vel, up)
-        );
-
-        // Determine which axis has less penetration
-        if (penetration.x > penetration.y)
-        {
-            // X axis collision
-            float sign = rotatedPos.x > 0 ? 1 : -1;
-            rotatedPos.x = boxHalfSize.x * sign;
-            localVel.x *= -1 * collisionDamping;
-        }
-        else
-        {
-            // Y axis collision
-            float sign = rotatedPos.y > 0 ? 1 : -1;
-            rotatedPos.y = boxHalfSize.y * sign;
-            localVel.y *= -1 * collisionDamping;
-        }
-
-        // Transform position back to world space
-        pos = box.pos + right * rotatedPos.x + up * rotatedPos.y;
-
-        // Transform velocity back to world space
-        vel = right * localVel.x + up * localVel.y;
-    }
-}
-
-void HandleBoxCollision2(inout float2 pos, inout float2 vel, OrientedBox box, float collisionDamping)
-{
-    // Transform position to box's local space (combined operations)
-    float2 right = box.zLocal;
-    float2 up = float2(-box.zLocal.y, box.zLocal.x); // Precompute once
-    
-    // Combined transformation to local space (reduced operations)
-    float2 localPos = pos - box.pos;
-    float2 rotatedPos = float2(
-        dot(localPos, right),
-        dot(localPos, up)
-    );
-
-    // Early exit optimization
     float2 boxHalfSize = box.size * 0.5;
     float2 distanceFromCenter = abs(rotatedPos);
     float2 penetration = distanceFromCenter - boxHalfSize;
@@ -326,7 +274,7 @@ void HandleBoxCollision2(inout float2 pos, inout float2 vel, OrientedBox box, fl
         dot(vel, up)
     );
 
-    // Branchless version of axis selection
+    // Determine which axis has less penetration (Branchless version)
     bool useXAxis = penetration.x > penetration.y;
     float penetrationAmount = useXAxis ? penetration.x : penetration.y;
     float sign = useXAxis ? (rotatedPos.x > 0 ? 1 : -1) : (rotatedPos.y > 0 ? 1 : -1);
