@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 using System.Linq;
 
 
-public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
+public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 {
     public event System.Action SimulationStepCompleted;
 
