@@ -129,9 +129,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
-        float deltaTime = 1 / 120f; // Default was 1 / 60f, this sets the fixed update interval to 120 updates per second
-        Time.fixedDeltaTime = deltaTime;
-
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
         
