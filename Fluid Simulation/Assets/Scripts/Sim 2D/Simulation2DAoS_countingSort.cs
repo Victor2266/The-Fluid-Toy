@@ -104,14 +104,15 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     SpatialOffsetCalculator spatialOffsetsCalc;
 
     // Kernel IDs
-    const int externalForcesKernel = 0;
-    const int spatialHashKernel = 1;
-    const int reorderKernel = 2;
-    const int reorderCopybackKernel = 3;
-    const int densityKernel = 4;
-    const int pressureKernel = 5;
-    const int viscosityKernel = 6;
-    const int updatePositionKernel = 7;
+    const int SpawnParticlesKernel = 0;
+    const int externalForcesKernel = 1;
+    const int spatialHashKernel = 2;
+    const int reorderKernel = 3;
+    const int reorderCopybackKernel = 4;
+    const int densityKernel = 5;
+    const int pressureKernel = 6;
+    const int viscosityKernel = 7;
+    const int updatePositionKernel = 8;
 
     // State
     bool isPaused;
