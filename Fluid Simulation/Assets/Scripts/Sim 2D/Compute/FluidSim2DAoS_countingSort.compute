@@ -453,11 +453,13 @@ void HandleCollisions(inout Particle particle)
 
 		//TODO Handle Circle Collisions
 
-		// Update position and velocity in the particle struct only if particle is still active
-		particle.position = pos;
-		particle.velocity = vel;
 	}
+	
+	// Update position and velocity in the particle struct
+	particle.position = pos;
+	particle.velocity = vel;
 }
+
 void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawnRate number of times per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
 
 	atomicIncrementCounter();
@@ -496,6 +498,9 @@ void HandleSourceObject(inout Particle particle){
 	// Select a random source object
 	uint sourceIndex = NextRandom(randomState) % numSourceObjs;
 	SourceObj source = SourceObjs[sourceIndex];
+
+	if (source.fluidType == 0) // If the source is disabled
+		return;
 	
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
 	float radius = RandomValue(randomState) * source.radius; // Random distance from center
@@ -505,11 +510,11 @@ void HandleSourceObject(inout Particle particle){
 	float2 spawnPos = source.pos + offset;
 	
 	// Initialize the particle
-	particle.velocity = float2(0, 0);
+	particle.velocity = source.velo;
 	particle.predictedPosition = spawnPos;
 	particle.position = spawnPos;
 	particle.temperature = FluidDataSet[0].startTemperature; // TODO: replace this with the source object's type
-	particle.type = 1;
+	particle.type = source.fluidType;
     
 }
 
