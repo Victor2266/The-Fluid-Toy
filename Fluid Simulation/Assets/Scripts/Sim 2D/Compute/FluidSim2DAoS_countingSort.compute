@@ -423,7 +423,7 @@ void HandleCollisions(inout Particle particle)
 			
 			particleDisabled = true;
 			particle.type = 0;
-		};
+		}
     }
 	else if (edgeType == 2) // Loop edge
     {
