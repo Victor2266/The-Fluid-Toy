@@ -96,18 +96,23 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     // Buffers
     private Particle[] particleData;
     public ComputeBuffer particleBuffer { get; private set; }
+    public ComputeBuffer sortedParticleBuffer { get; private set; }
+    public ComputeBuffer sortedIndices { get; private set; }
     ComputeBuffer spatialIndices;
     ComputeBuffer spatialOffsets;
-    GPUSort gpuSort;
+    GPUCountSort gpuSort; // Class adjust for sorting algorithm
+    SpatialOffsetCalculator spatialOffsetsCalc;
 
     // Kernel IDs
     const int SpawnParticlesKernel = 0;
     const int externalForcesKernel = 1;
     const int spatialHashKernel = 2;
-    const int densityKernel = 3;
-    const int pressureKernel = 4;
-    const int viscosityKernel = 5;
-    const int updatePositionKernel = 6;
+    const int reorderKernel = 3;
+    const int reorderCopybackKernel = 4;
+    const int densityKernel = 5;
+    const int pressureKernel = 6;
+    const int viscosityKernel = 7;
+    const int updatePositionKernel = 8;
 
     // State
     bool isPaused;
