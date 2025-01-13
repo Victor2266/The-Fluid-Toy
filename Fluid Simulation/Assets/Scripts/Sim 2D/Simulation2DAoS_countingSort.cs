@@ -440,8 +440,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                uint[] atomicCounter = { 0, uintCounter++ };
-                atomicCounterBuffer.SetData(atomicCounter);
+                if (sourceObjects.Length == 0){
+                    uint[] atomicCounter = { 0, uintCounter++ };
+                    atomicCounterBuffer.SetData(atomicCounter);
+                }
             }
             else if (isPushInteraction)
             {
