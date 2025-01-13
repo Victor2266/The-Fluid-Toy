@@ -310,13 +310,16 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: SpawnParticlesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: externalForcesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
-        gpuSort.SortAndCalculateOffsets();
+        gpuSort.Run();
+        spatialOffsetsCalc.Run(false);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
+        //gpuSort.SortAndCalculateOffsets(); // Old
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
         //compute the pressure and viscosity on CPU
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
-
     }
 
     void UpdateColliderData()
