@@ -73,8 +73,10 @@ struct ScalingFactors
 RWStructuredBuffer<FluidData> FluidDataSet;
 RWStructuredBuffer<ScalingFactors> ScalingFactorsBuffer;
 RWStructuredBuffer<Particle> Particles;
+RWStructuredBuffer<Particle> SortedParticles; // Sorted array
 RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, hash, key
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
+RWStructuredBuffer<uint> SortedIndices;  // Post-sort indices
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
 RWStructuredBuffer<Circle> SourceObjs;
