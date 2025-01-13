@@ -12,7 +12,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     [Header("Simulation Settings")]
     public float timeScale = 1;
-    public bool fixedTimeStep;  // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
+    public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
 
