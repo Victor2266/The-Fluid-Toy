@@ -416,7 +416,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
 
         // Mouse interaction settings:
-
         HandleMouseInput();
 
     }
