@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using System;
 using UnityEngine.UIElements;
 using System.Linq;
+using Unity.Collections;
+using Unity.Jobs;
 
 
 public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
@@ -322,10 +324,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: externalForcesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
         gpuSort.SortAndCalculateOffsets();
-        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
-        //compute the pressure and viscosity on CPU
-        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
-        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
+        runCPUComputeTest();
+        // ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
+        // //compute the pressure and viscosity on CPU
+        // ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
+        // ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
 
     }
