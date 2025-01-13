@@ -481,7 +481,7 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawn
 void HandleSourceObject(inout Particle particle){
 	
 	// Only try to spawn if particle is disabled (type == 0)
-    if (particle.type != 0) return;
+	if (particle.type != 0) return;
 	
 	atomicIncrementCounter();
 	
