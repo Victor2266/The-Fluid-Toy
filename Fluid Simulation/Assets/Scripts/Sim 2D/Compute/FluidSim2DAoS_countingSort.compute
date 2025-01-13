@@ -456,35 +456,33 @@ void HandleCollisions(inout Particle particle)
 		particle.velocity = vel;
 	}
 }
-void HandleLeftMouseInput(inout Particle particle){ //This reactivates spawnRate number of particles per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
-	// Input interactions to add particles
-	if (brushType == 0 && interactionInputStrength == 1) {
+void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawnRate number of times per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
 
-		atomicIncrementCounter();
+	atomicIncrementCounter();
 
-		if (atomicCounter[0] < (spawnRate)){ //This happens every frame (so that means [spawnRate] particles created each frame
-
-			uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
-			float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-			float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
-
-			// Calculate offset from interactionInputPoint
-			float2 offset = float2(cos(angle), sin(angle)) * radius;
-
-			particle.velocity = float2(0, 0);
-			particle.predictedPosition = interactionInputPoint + offset;
-			particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
-
-			particle.position = interactionInputPoint + offset;
-			particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
-			
-		}
-		
+	if (atomicCounter[0] >= spawnRate) { 
+		return;
 	}
+
+	uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
+	float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
+
+	// Calculate offset from interactionInputPoint
+	float2 offset = float2(cos(angle), sin(angle)) * radius;
+
+	particle.velocity = float2(0, 0);
+	particle.predictedPosition = interactionInputPoint + offset;
+	particle.position = interactionInputPoint + offset;
+	particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
+	particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
 }
 
 void HandleSourceObject(inout Particle particle){
 	
+	// Only try to spawn if particle is disabled (type == 0)
+	if (particle.type != 0) return;
+
 	atomicIncrementCounter();
 	
 	// Only spawn if we haven't reached the spawn rate for this frame
