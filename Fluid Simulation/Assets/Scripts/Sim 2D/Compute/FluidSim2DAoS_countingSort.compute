@@ -360,7 +360,7 @@ void HandleDrainCollision(inout Particle particle, OrientedBox drain)
     float2 distanceFromCenter = abs(rotatedPos);
     float2 penetration = distanceFromCenter - boxHalfSize;
     
-    // If particle is inside drain, randomize position before disabling
+	// If particle is inside drain, randomize position before disabling
 	if (penetration.x < 0 && penetration.y < 0)
 	{
 		// Create a random seed based on particle position and current tick
