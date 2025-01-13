@@ -449,6 +449,8 @@ void HandleCollisions(inout Particle particle)
 			HandleBoxCollision(pos, vel, BoxColliders[i], fluidData.collisionDamping);
 		}
 
+		//TODO Handle Circle Collisions
+
 		// Update position and velocity in the particle struct only if particle is still active
 		particle.position = pos;
 		particle.velocity = vel;
