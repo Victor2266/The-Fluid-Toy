@@ -2149,8 +2149,10 @@ MonoBehaviour:
   - {fileID: 228796735}
   circleColliders: []
   sourceObjects:
-  - {fileID: 336022954}
-  sourceObjectsWIP: []
+  - transform: {fileID: 336022954}
+    initVelo: {x: 0, y: 0}
+    initStrength: 0
+    fluidType: 0
   drainObjects:
   - {fileID: 479231988}
 --- !u!4 &1430943824

@@ -74,9 +74,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     private ComputeBuffer circleCollidersBuffer;
 
     [Header("Source and Drain Objects")]
-
-    public Transform[] sourceObjects;
-    public SourceObjectInitializer[] sourceObjectsWIP;
+    public SourceObjectInitializer[] sourceObjects;
     public Transform[] drainObjects;
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
@@ -89,7 +87,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
 
-    private Circle[] sourceObjectData;
+    private SourceObject[] sourceObjectData;
     private OrientedBox[] drainObjectData;
 
     [Header("Particle Data")]
@@ -193,12 +191,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         boxColliderData = new OrientedBox[boxColliders.Length];
         circleColliderData = new Circle[circleColliders.Length];
-        sourceObjectData = new Circle[sourceObjects.Length];
+        sourceObjectData = new SourceObject[sourceObjects.Length];
         drainObjectData = new OrientedBox[drainObjects.Length];
 
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
-        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(sourceObjects.Length, 1));
+        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
 
         atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
@@ -351,11 +349,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Update source objects
         for (int i = 0; i < sourceObjects.Length; i++)
         {
-            Transform source = sourceObjects[i];
-            sourceObjectData[i] = new Circle
+            Transform source = sourceObjects[i].transform;
+            sourceObjectData[i] = new SourceObject
             {
                 pos = source.position,
-                radius = source.localScale.x * 0.5f // Assuming uniform scale
+                radius = source.localScale.x * 0.5f, // Assuming uniform scale
+                velo = sourceObjects[i].velo,
+                spawnRate = sourceObjects[i].spawnRate,
+                fluidType = sourceObjects[i].fluidType
             };
         }
 

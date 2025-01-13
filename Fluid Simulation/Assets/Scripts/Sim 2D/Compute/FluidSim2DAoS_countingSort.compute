@@ -48,9 +48,11 @@ struct Circle //12 bytes total
 
 struct SourceObj //16 bytes total
 {
-    float2 pos; //8 bytes
-    float radius; //4 bytes
-	int fluidType; // fluid type enum
+	float2 pos; 		//8 bytes
+    float radius; 		//4 bytes
+    float2 velo; 		//8 bytes
+    float spawnRate; 	//4 bytes
+	int fluidType; 		//4 bytes, fluid type enum
 };
 
 struct OrientedBox //24 bytes total
@@ -79,7 +81,7 @@ RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<uint> SortedIndices;  // Post-sort indices
 RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
-RWStructuredBuffer<Circle> SourceObjs;
+RWStructuredBuffer<SourceObj> SourceObjs;
 RWStructuredBuffer<OrientedBox> DrainObjs;
 RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
 
@@ -493,7 +495,7 @@ void HandleSourceObject(inout Particle particle){
     
 	// Select a random source object
 	uint sourceIndex = NextRandom(randomState) % numSourceObjs;
-	Circle source = SourceObjs[sourceIndex];
+	SourceObj source = SourceObjs[sourceIndex];
 	
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
 	float radius = RandomValue(randomState) * source.radius; // Random distance from center
