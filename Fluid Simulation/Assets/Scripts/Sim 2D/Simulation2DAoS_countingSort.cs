@@ -53,7 +53,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Fluid Data Types")]
     // For the spatial subdivision to work we use the largest smoothing radius for the grid
     // By manually selecting the fluid types you can finetune the grid size
-    [SerializeField] private bool manuallySelectFluidTypes; 
+    [SerializeField] private bool manuallySelectFluidTypes;
     private float maxSmoothingRadius = 0f;
     [SerializeField] public FluidData[] fluidDataArray;
     private FluidParam[] fluidParamArr; // Compute-friendly data type
@@ -122,17 +122,18 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public int numParticles { get; private set; }
 
     private float accumulatedTime = 0f;
-    private const float MAX_DELTA_TIME = 1f/30f; // Maximum allowed delta time
-    private const float FIXED_TIME_STEP = 1f/120f; // Your desired fixed time step
-    
+    private const float MAX_DELTA_TIME = 1f / 30f; // Maximum allowed delta time
+    private const float FIXED_TIME_STEP = 1f / 120f; // Your desired fixed time step
+
     void Start()
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
-        
-        if (!manuallySelectFluidTypes){
+
+        if (!manuallySelectFluidTypes)
+        {
             // Get the number of fluid types (excluding Disabled)
             int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
             // Initialize arrays
@@ -145,8 +146,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             {
                 string fluidName = Enum.GetName(typeof(FluidType), i);
                 FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
-                fluidData.fluidType = (FluidType) i;
-                
+                fluidData.fluidType = (FluidType)i;
+
                 if (fluidData == null)
                 {
                     Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
@@ -154,18 +155,19 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 }
 
                 // Assign to array at index-1 (since we skip Disabled which is 0)
-                fluidDataArray[i-1] = fluidData;
-                fluidParamArr[i-1] = fluidData.getFluidParams();
-                scalingFactorsArr[i-1] = fluidData.getScalingFactors();
+                fluidDataArray[i - 1] = fluidData;
+                fluidParamArr[i - 1] = fluidData.getFluidParams();
+                scalingFactorsArr[i - 1] = fluidData.getScalingFactors();
             }
         }
-        else{
+        else
+        {
             fluidParamArr = new FluidParam[fluidDataArray.Length];
             scalingFactorsArr = new ScalingFactors[fluidDataArray.Length];
             for (int i = 0; i < fluidDataArray.Length; i++)
             {
                 fluidParamArr[i] = fluidDataArray[i].getFluidParams();
-                fluidParamArr[i].fluidType = (FluidType) i + 1;
+                fluidParamArr[i].fluidType = (FluidType)i + 1;
                 scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
             }
         }
@@ -187,7 +189,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         sortedParticleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
-        
+
         boxColliderData = new OrientedBox[boxColliders.Length];
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new Circle[sourceObjects.Length];
@@ -198,9 +200,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(sourceObjects.Length, 1));
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
 
-        atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(2);
+        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
 
-        
+
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
