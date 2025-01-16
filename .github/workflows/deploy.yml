@@ -1,10 +1,10 @@
+
 name: Build and Deploy WebGL
 
 on:
-  workflow_dispatch:
-#  push:
-#    branches:
-#      - main  # or your default branch
+  push:
+    branches:
+      - main  # or your default branch
 
 jobs:
   build:
@@ -18,16 +18,23 @@ jobs:
       - name: Cache Library folder
         uses: actions/cache@v2
         with:
-          path: Library
+          path: 'Fluid Simulation/Library'
           key: Library-WebGL
           restore-keys: Library-
+
+      - name: Unity - Activate
+        uses: game-ci/unity-activate@v2
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
 
       - name: Build project
         uses: game-ci/unity-builder@v2
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: WebGL # It's really WebGPU
+          projectPath: 'Fluid Simulation'
+          targetPlatform: WebGL
           buildName: Build
