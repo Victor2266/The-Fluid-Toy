@@ -2105,7 +2105,8 @@ MonoBehaviour:
   drainObjects: []
   isCPUComputingEnabled: 1
   toggleCPUComputing: 1
-  ThreadBatchSize: 10
+  ThreadBatchSize: 100
+  numCPUKeys: 10
 --- !u!1 &273860550
 GameObject:
   m_ObjectHideFlags: 0

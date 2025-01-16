@@ -1,6 +1,6 @@
 #pragma kernel Sort
 #pragma kernel CalculateOffsets
-
+#pragma kernel SortPops
 struct Entry
 {
 	uint originalIndex;
@@ -55,7 +55,8 @@ void Sort (uint3 id : SV_DispatchThreadID)
 // 
 // NOTE: offsets buffer must filled with values equal to (or greater than) its length to ensure that this works correctly
 RWStructuredBuffer<uint> Offsets;
-
+RWStructuredBuffer<uint> keyPop;
+RWStructuredBuffer<uint> keyArr;
 [numthreads(128, 1, 1)]
 void CalculateOffsets(uint3 id : SV_DispatchThreadID)
 {
@@ -70,5 +71,35 @@ void CalculateOffsets(uint3 id : SV_DispatchThreadID)
 	if (key != keyPrev)
 	{
 		Offsets[key] = i;
+		keyPop[keyPrev] = i - Offsets[keyPrev];
+		keyArr[keyPrev] = keyPrev;
+	}
+}
+
+[numthreads(128, 1, 1)]
+void SortPops (uint3 id : SV_DispatchThreadID)
+{
+	uint i = id.x;
+
+	uint hIndex = i & (groupWidth - 1);
+	uint indexLeft = hIndex + (groupHeight + 1) * (i / groupWidth);
+	uint rightStepSize = stepIndex == 0 ? groupHeight - 2 * hIndex : (groupHeight + 1) / 2;
+	uint indexRight = indexLeft + rightStepSize;
+
+	// Exit if out of bounds (for non-power of 2 input sizes)
+	if (indexRight >= numEntries) return;
+
+	uint valueLeft = keyPop[indexLeft];
+	uint valueRight = keyPop[indexRight];
+
+	// Swap entries if value is descending
+	if (valueLeft < valueRight)
+	{
+		uint temp = keyPop[indexLeft];
+		uint temp2 = keyArr[indexLeft];
+		keyPop[indexLeft] = keyPop[indexRight];
+		keyPop[indexRight] = temp;
+		keyArr[indexLeft] = keyArr[indexRight];
+		keyArr[indexRight] = temp2;
 	}
 }

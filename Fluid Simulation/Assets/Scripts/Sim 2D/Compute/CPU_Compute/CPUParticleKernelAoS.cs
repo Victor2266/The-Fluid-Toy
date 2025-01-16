@@ -22,6 +22,10 @@ public struct CPUDensityCalcAoS : IJobParallelFor
     [WriteOnly]
     public NativeArray<Particle> densityOut;
     [ReadOnly]
+    public NativeArray<uint> keyarr;
+    [ReadOnly]
+    public uint numCPUKeys;
+    [ReadOnly]
     public NativeArray<Particle> particles;
     [ReadOnly]
     public NativeArray<uint3> spatialIndices;
@@ -98,15 +102,28 @@ public struct CPUDensityCalcAoS : IJobParallelFor
     public void Execute(int index)
     {
         
-        float2 pos = particles[index].predictedPosition;
+        
         Particle particleOut = particles[index];
         if(particleOut.type == FluidType.Disabled){
+            return;
+        }
+        float2 pos = particles[index].predictedPosition;
+        int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+        uint originHash = HashCell2D(originCell);
+        uint originKey = KeyFromHash(originHash, numParticles);
+        int j=0;
+        for(j=0; j<numCPUKeys; j++){
+            if(originKey == keyarr[j]){
+                break;
+            }
+        }
+        if(j == numCPUKeys){
             return;
         }
         FluidParam fparams = fluidPs[((int) particleOut.type) - 1];
         ScalingFactors sFactors = scalingFacts[((int) particleOut.type) - 1];
 
-        int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+        
         float sqrRadius = fparams.smoothingRadius * fparams.smoothingRadius;
         float density = 0;
         float nearDensity = 0;
@@ -161,6 +178,10 @@ public struct CPUPressureCalcAoS : IJobParallelFor
 
     [WriteOnly]
     public NativeArray<Particle> pressureOut;
+    [ReadOnly]
+    public NativeArray<uint> keyarr;
+    [ReadOnly]
+    public uint numCPUKeys;
     [ReadOnly]
     public NativeArray<Particle> particles;
     [ReadOnly]
@@ -247,6 +268,19 @@ public struct CPUPressureCalcAoS : IJobParallelFor
         if(particleOut.type == FluidType.Disabled){
             return;
         }
+        float2 pos = particles[index].predictedPosition;
+        int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+        uint originHash = HashCell2D(originCell);
+        uint originKey = KeyFromHash(originHash, numParticles);
+        int j=0;
+        for(j=0; j<numCPUKeys; j++){
+            if(originKey == keyarr[j]){
+                break;
+            }
+        }
+        if(j == numCPUKeys){
+            return;
+        }
         FluidParam fParams = fluidPs[((int) particleOut.type) - 1];
         ScalingFactors sFactors = scalingFacts[((int) particleOut.type) - 1];
         float density = particles[index].density[0];
@@ -255,8 +289,8 @@ public struct CPUPressureCalcAoS : IJobParallelFor
 	    float nearPressure = NearPressureFromDensity(densityNear, fParams.nearPressureMultiplier);
 	    float2 pressureForce = 0;
     
-	    float2 pos = particles[index].predictedPosition;
-	    int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+	    //float2 pos = particles[index].predictedPosition;
+	    //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	    float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
 
 	    // Neighbour search
@@ -321,6 +355,10 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
 {
     [WriteOnly]
     public NativeArray<Particle> viscosityOut;
+    [ReadOnly]
+    public NativeArray<uint> keyarr;
+    [ReadOnly]
+    public uint numCPUKeys;
     [ReadOnly]
     public NativeArray<Particle> particles;
     [ReadOnly]
@@ -388,10 +426,23 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
         if(particleOut.type == FluidType.Disabled){
             return;
         }
+        float2 pos = particles[index].predictedPosition;
+        int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+        uint originHash = HashCell2D(originCell);
+        uint originKey = KeyFromHash(originHash, numParticles);
+        int j=0;
+        for(j=0; j<numCPUKeys; j++){
+            if(originKey == keyarr[j]){
+                break;
+            }
+        }
+        if(j == numCPUKeys){
+            return;
+        }
         FluidParam fParams = fluidPs[((int) particleOut.type) - 1];
         ScalingFactors sFactors = scalingFacts[((int) particleOut.type) - 1];
-        float2 pos = particleOut.predictedPosition;
-	    int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+        //float2 pos = particleOut.predictedPosition;
+	    //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	    float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
 
 	    float2 viscosityForce = 0;
@@ -491,6 +542,7 @@ public class CPUParticleKernelAoS : MonoBehaviour
     public uint3[] spatialIndices;
     public uint[] spatialOffsets;
     public Particle[] particles;
+    public uint[] keyarr;
     public NativeArray<FluidParam> fluidParamBuffer;
     public NativeArray<ScalingFactors> scalingFactorsBuffer;
     public NativeArray<OrientedBox> boxBuffer;
@@ -502,5 +554,7 @@ public class CPUParticleKernelAoS : MonoBehaviour
     public NativeArray<Particle> particleBuffer;
     public NativeArray<Particle> particleResultBuffer;
     public NativeArray<int2> offsets2DBuffer;
+    public NativeArray<uint> keypopsbuffer;
+    public NativeArray<uint> keyarrbuffer;
 
 }
