@@ -490,9 +490,6 @@ public class CPUParticleKernelAoS : MonoBehaviour
     public Circle[] sourceData;
     public uint3[] spatialIndices;
     public uint[] spatialOffsets;
-
-    public Particle[] AfterDensity;
-    public Particle[] AfterPressure;
     public Particle[] particles;
     public NativeArray<FluidParam> fluidParamBuffer;
     public NativeArray<ScalingFactors> scalingFactorsBuffer;

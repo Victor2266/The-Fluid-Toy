@@ -125,11 +125,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     [Header("CPU Computing")]
     //CPU Compute
 
-    public bool isCPUComputingEnabled;
+    public bool isCPUComputingEnabled = false;
 
-    public bool toggleCPUComputing;
-    public bool isUsingAoS;
-    // public CPUParticleKernel CPUKernel;
+    public bool toggleCPUComputing = false;
 
     public CPUParticleKernelAoS CPUKernelAOS;
 
@@ -239,19 +237,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
 
-
-        //Initialize CPU kernel based on settings flags
-        if(isCPUComputingEnabled){
-            if(isUsingAoS){
-                //CPUKernelAOS = new CPUParticleKernelAoS();
-                initializeCPUKernelSettingsAoS();
-            }else{
-                // CPUKernel = new CPUParticleKernel();
-
-            }
-            
-        }
-
         gpuSort = new();
         gpuSort.SetBuffers(spatialIndices, spatialOffsets);
 
@@ -327,14 +312,15 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
         gpuSort.SortAndCalculateOffsets();
         if(isCPUComputingEnabled){
-            if(isUsingAoS){
-                if(toggleCPUComputing){
-                    runCPUComputeTest();
-                }
+            if(toggleCPUComputing){
+                runCPUComputeTest();
+            }else{
+                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
+                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
+                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
             }
         }else{
             ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
-            //compute the pressure and viscosity on CPU
             ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
             ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
         }
@@ -440,10 +426,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         
         HandleMouseInput();
         if(isCPUComputingEnabled){
-            if(isUsingAoS){
-                CPUKernelAOS.deltaTime = deltaTime;
-                
-            }
+            CPUKernelAOS.deltaTime = deltaTime;
         }
     }
 
@@ -690,8 +673,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.particleBuffer = new NativeArray<Particle>(numParticles, Allocator.TempJob);
         CPUKernelAOS.offsets2DBuffer = new NativeArray<int2>(CPUKernelAOS.offsets.Length, Allocator.TempJob);
         CPUKernelAOS.particleResultBuffer = new NativeArray<Particle>(numParticles, Allocator.TempJob);
-        CPUKernelAOS.AfterDensity = new Particle[numParticles];
-        CPUKernelAOS.AfterPressure = new Particle[numParticles];
         CPUKernelAOS.offsets2DBuffer.CopyFrom(CPUKernelAOS.offsets);
         CPUKernelAOS.fluidParamBuffer.CopyFrom(fluidParamArr);
         CPUKernelAOS.scalingFactorsBuffer.CopyFrom(scalingFactorsArr);
@@ -702,9 +683,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         particleBuffer.GetData(CPUKernelAOS.particles);
         CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.particles);
         CPUKernelAOS.particleResultBuffer.CopyFrom(CPUKernelAOS.particles);
-
-        //This ratio specifies the batch size. can be changed during simulation for testing
-        //int batch_size = (int) (numParticles * ThreadBatchSize);
 
         CPUDensityCalcAoS densitycalc = new CPUDensityCalcAoS{
             numParticles = (uint) numParticles,
@@ -717,15 +695,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             scalingFacts = CPUKernelAOS.scalingFactorsBuffer,
             offsets2D = CPUKernelAOS.offsets2DBuffer
         };
-        JobHandle density = densitycalc.Schedule(numParticles, (int) ThreadBatchSize);
-        density.Complete();
-        CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.AfterDensity);
-        CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.AfterDensity);
+        
         CPUPressureCalcAoS pressureCalc = new CPUPressureCalcAoS{
             numParticles = (uint) numParticles,
             maxSmoothingRadius = maxSmoothingRadius,
-            pressureOut = CPUKernelAOS.particleResultBuffer,
-            particles = CPUKernelAOS.particleBuffer,
+            pressureOut = CPUKernelAOS.particleBuffer,
+            particles = CPUKernelAOS.particleResultBuffer,
             spatialIndices = CPUKernelAOS.spatialIndicesBuffer,
             spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
             fluidPs = CPUKernelAOS.fluidParamBuffer,
@@ -733,10 +708,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             offsets2D = CPUKernelAOS.offsets2DBuffer,
             deltaTime = CPUKernelAOS.deltaTime
         };
-        JobHandle pressure = pressureCalc.Schedule(numParticles, (int) ThreadBatchSize);
-        pressure.Complete();
-        CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.AfterPressure);
-        CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.AfterPressure);
+
         CPUViscosityCalcAoS viscosityCalc = new CPUViscosityCalcAoS{
             numParticles = (uint) numParticles,
             maxSmoothingRadius = maxSmoothingRadius,
@@ -750,6 +722,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             deltaTime = CPUKernelAOS.deltaTime
         };
 
+        JobHandle density = densitycalc.Schedule(numParticles, (int) ThreadBatchSize);
+        density.Complete();
+
+        JobHandle pressure = pressureCalc.Schedule(numParticles, (int) ThreadBatchSize);
+        pressure.Complete();
+
         JobHandle viscosity = viscosityCalc.Schedule(numParticles, (int) ThreadBatchSize);
         viscosity.Complete();
         //Debug.Log("CPUComputeCompleted");
@@ -762,8 +740,6 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.spatialOffsetsBuffer.Dispose();
         CPUKernelAOS.particleBuffer.Dispose();
         CPUKernelAOS.offsets2DBuffer.Dispose();
-        CPUKernelAOS.particleResultBuffer.Dispose();
-
-        particleBuffer.GetData(CPUKernelAOS.particles);
+        CPUKernelAOS.particleResultBuffer.Dispose();;
     }
 }

@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 using static UnityEngine.Mathf;
 
@@ -13,7 +14,7 @@ public class GPUSort
     {
         sortCompute = ComputeHelper.LoadComputeShader("BitonicMergeSort");
     }
-
+ 
     public void SetBuffers(ComputeBuffer indexBuffer, ComputeBuffer offsetBuffer)
     {
         this.indexBuffer = indexBuffer;
@@ -22,7 +23,7 @@ public class GPUSort
         ComputeHelper.SetBuffer(sortCompute, offsetBuffer, "Offsets", calculateOffsetsKernel);
         ComputeHelper.SetBuffer(sortCompute, indexBuffer, "Entries", calculateOffsetsKernel);
     }
-
+  
     // Sorts given buffer of integer values using bitonic merge sort
     // Note: buffer size is not restricted to powers of 2 in this implementation
     public void Sort()
