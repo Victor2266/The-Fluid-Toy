@@ -129,14 +129,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     public bool toggleCPUComputing = false;
 
-    public CPUParticleKernelAoS CPUKernelAOS;
+    CPUParticleKernelAoS CPUKernelAOS;
 
     public uint ThreadBatchSize = 50;
     
     void Start()
     { 
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
-
+        CPUKernelAOS = new CPUParticleKernelAoS();
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
         

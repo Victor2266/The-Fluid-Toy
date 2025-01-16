@@ -1975,7 +1975,6 @@ GameObject:
   - component: {fileID: 271053324}
   - component: {fileID: 271053320}
   - component: {fileID: 271053323}
-  - component: {fileID: 271053325}
   m_Layer: 0
   m_Name: SimulationAoS
   m_TagString: Untagged
@@ -2106,33 +2105,7 @@ MonoBehaviour:
   drainObjects: []
   isCPUComputingEnabled: 1
   toggleCPUComputing: 1
-  CPUKernelAOS: {fileID: 271053325}
   ThreadBatchSize: 10
---- !u!114 &271053325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 271053315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0269aae3dc60a9e4b973e1901b783247, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numParticles: 0
-  maxSmoothingRadius: 0
-  deltaTime: 0
-  offsets: []
-  fluidParams: []
-  scalingFactors: []
-  boxCollidersData: []
-  circleCollidersData: []
-  drainData: []
-  sourceData: []
-  spatialIndices: []
-  spatialOffsets: 
-  particles: []
 --- !u!1 &273860550
 GameObject:
   m_ObjectHideFlags: 0
