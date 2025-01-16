@@ -2087,8 +2087,9 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   spawnRate: 100
-  manuallySelectFluidTypes: 0
-  fluidDataArray: []
+  manuallySelectFluidTypes: 1
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   compute: {fileID: 7200000, guid: c4e04fbd8b42e9e49be8bbd01966b4da, type: 3}
   spawner: {fileID: 271053320}
   display: {fileID: 271053323}
@@ -2715,7 +2716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &380785142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2741,8 +2742,9 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   spawnRate: 100
-  manuallySelectFluidTypes: 0
-  fluidDataArray: []
+  manuallySelectFluidTypes: 1
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 380785144}
   display: {fileID: 380785143}
@@ -3502,7 +3504,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &424244912
 MonoBehaviour:
   m_ObjectHideFlags: 0
