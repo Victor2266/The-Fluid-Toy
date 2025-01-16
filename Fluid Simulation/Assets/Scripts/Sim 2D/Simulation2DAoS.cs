@@ -132,6 +132,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     // public CPUParticleKernel CPUKernel;
 
     public CPUParticleKernelAoS CPUKernelAOS;
+
+    public uint ThreadBatchSize = 50;
     
     void Start()
     {
@@ -324,11 +326,20 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: externalForcesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
         gpuSort.SortAndCalculateOffsets();
-        runCPUComputeTest();
-        // ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
-        // //compute the pressure and viscosity on CPU
-        // ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
-        // ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
+        if(isCPUComputingEnabled){
+            if(isUsingAoS){
+                if(toggleCPUComputing){
+                    runCPUComputeTest();
+                }
+            }
+        }else{
+            ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
+            //compute the pressure and viscosity on CPU
+            ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
+            ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
+        }
+        
+        
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
 
     }
@@ -692,6 +703,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.particles);
         CPUKernelAOS.particleResultBuffer.CopyFrom(CPUKernelAOS.particles);
 
+        //This ratio specifies the batch size. can be changed during simulation for testing
+        //int batch_size = (int) (numParticles * ThreadBatchSize);
+
         CPUDensityCalcAoS densitycalc = new CPUDensityCalcAoS{
             numParticles = (uint) numParticles,
             maxSmoothingRadius = maxSmoothingRadius,
@@ -703,7 +717,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             scalingFacts = CPUKernelAOS.scalingFactorsBuffer,
             offsets2D = CPUKernelAOS.offsets2DBuffer
         };
-        JobHandle density = densitycalc.Schedule(numParticles, 50);
+        JobHandle density = densitycalc.Schedule(numParticles, (int) ThreadBatchSize);
         density.Complete();
         CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.AfterDensity);
         CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.AfterDensity);
@@ -716,9 +730,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
             fluidPs = CPUKernelAOS.fluidParamBuffer,
             scalingFacts = CPUKernelAOS.scalingFactorsBuffer,
-            offsets2D = CPUKernelAOS.offsets2DBuffer
+            offsets2D = CPUKernelAOS.offsets2DBuffer,
+            deltaTime = CPUKernelAOS.deltaTime
         };
-        JobHandle pressure = pressureCalc.Schedule(numParticles, 50);
+        JobHandle pressure = pressureCalc.Schedule(numParticles, (int) ThreadBatchSize);
         pressure.Complete();
         CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.AfterPressure);
         CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.AfterPressure);
@@ -731,10 +746,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
             fluidPs = CPUKernelAOS.fluidParamBuffer,
             scalingFacts = CPUKernelAOS.scalingFactorsBuffer,
-            offsets2D = CPUKernelAOS.offsets2DBuffer
+            offsets2D = CPUKernelAOS.offsets2DBuffer,
+            deltaTime = CPUKernelAOS.deltaTime
         };
 
-        JobHandle viscosity = viscosityCalc.Schedule(numParticles, 50);
+        JobHandle viscosity = viscosityCalc.Schedule(numParticles, (int) ThreadBatchSize);
         viscosity.Complete();
         //Debug.Log("CPUComputeCompleted");
         CPUKernelAOS.particleResultBuffer.CopyTo(CPUKernelAOS.particles);
