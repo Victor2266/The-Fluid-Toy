@@ -2,6 +2,7 @@
 name: Build and Deploy WebGL
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main  # or your default branch
