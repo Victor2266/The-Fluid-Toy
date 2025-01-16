@@ -134,7 +134,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public uint ThreadBatchSize = 50;
     
     void Start()
-    {
+    { 
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
         spawnData = spawner.GetSpawnData();
