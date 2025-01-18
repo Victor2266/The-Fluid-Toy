@@ -2125,7 +2125,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1430943820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4832da661883614da4715c8bbcd64d5, type: 3}
+  m_Script: {fileID: 11500000, guid: 1843c627eed05cd46b946938ea28065d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
@@ -2141,8 +2141,9 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   spawnRate: 20
-  manuallySelectFluidTypes: 0
-  fluidDataArray: []
+  manuallySelectFluidTypes: 1
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 1430943822}
   display: {fileID: 1430943821}
