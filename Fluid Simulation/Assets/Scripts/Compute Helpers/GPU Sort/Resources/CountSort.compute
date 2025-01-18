@@ -55,7 +55,6 @@ void ScatterOutput(uint3 id : SV_DispatchThreadID)
 
 	SortedKeys[sortedIndex] = e;
 	SortedValues[sortedIndex] = value;
-	KeyArr[sortedIndex] = key;
 }
 
 [numthreads(GroupSize, 1, 1)]
@@ -65,4 +64,5 @@ void CopyBack(uint3 id : SV_DispatchThreadID)
 
 	InputKeys[id.x] = SortedKeys[id.x];
 	InputValues[id.x] = SortedValues[id.x];
+	KeyArr[id.x] = SortedKeys[id.x].key;
 }

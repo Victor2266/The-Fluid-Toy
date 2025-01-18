@@ -254,11 +254,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numParticles", numParticles);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
-        compute.SetInt("numCPUKeys", (int)numCPUKeys);
+        compute.SetInt("numCPUKeys", (int) numCPUKeys);
 
         // GPU Sort Init
         gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1), keyarrbuffer );
-        spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets );
+        spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
         display.InitAoS(this);  

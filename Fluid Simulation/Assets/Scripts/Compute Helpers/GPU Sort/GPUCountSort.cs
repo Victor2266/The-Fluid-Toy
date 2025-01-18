@@ -1,5 +1,7 @@
 using UnityEngine;
 using Unity.Mathematics;
+using System.Collections;
+using System.Collections.Generic;
 
 // Counting sort dispatcher
 public class GPUCountSort
@@ -36,7 +38,7 @@ public class GPUCountSort
 		ComputeHelper.SetBuffer(cs, sortedVBuffer, "SortedValues", ScatterOutputsKernel, CopyBackKernel);
 		ComputeHelper.SetBuffer(cs, cntBuffer, "Counts", ClearCountsKernel, CountKernel, ScatterOutputsKernel);
 
-		ComputeHelper.SetBuffer(cs, keyArr, "KeyArr", ScatterOutputsKernel, CopyBackKernel);
+		ComputeHelper.SetBuffer(cs, keyArr, "KeyArr", CopyBackKernel);
 
 		cs.SetInt("numInputs", count);
 	}
