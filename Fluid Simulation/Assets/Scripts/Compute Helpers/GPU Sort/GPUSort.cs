@@ -11,7 +11,6 @@ public class GPUSort
     ComputeBuffer indexBuffer;
 
     ComputeBuffer keyPop;
-    //ComputeBuffer keyArr;
     public GPUSort()
     {
         sortCompute = ComputeHelper.LoadComputeShader("BitonicMergeSort");
@@ -21,20 +20,13 @@ public class GPUSort
     {
         this.indexBuffer = indexBuffer;
         keyPop = ComputeHelper.CreateStructuredBuffer<uint>(indexBuffer.count);
-        //keyArr = ComputeHelper.CreateStructuredBuffer<uint>(indexBuffer.count);
+
+        
         sortCompute.SetBuffer(sortKernel, "Entries", indexBuffer);
         ComputeHelper.SetBuffer(sortCompute, offsetBuffer, "Offsets", calculateOffsetsKernel);
         ComputeHelper.SetBuffer(sortCompute, indexBuffer, "Entries", calculateOffsetsKernel);
         ComputeHelper.SetBuffer(sortCompute, keyPop, "keyPop", calculateOffsetsKernel, sortPopsKernel);
         ComputeHelper.SetBuffer(sortCompute, keyArr, "keyArr", calculateOffsetsKernel, sortPopsKernel); 
-    }
-
-    public void SetBuffers(ComputeBuffer indexBuffer, ComputeBuffer offsetBuffer)
-    {
-        this.indexBuffer = indexBuffer;
-        sortCompute.SetBuffer(sortKernel, "Entries", indexBuffer);
-        ComputeHelper.SetBuffer(sortCompute, offsetBuffer, "Offsets", calculateOffsetsKernel);
-        ComputeHelper.SetBuffer(sortCompute, indexBuffer, "Entries", calculateOffsetsKernel);
     }
   
     // Sorts given buffer of integer values using bitonic merge sort
@@ -88,13 +80,20 @@ public class GPUSort
             }
         }
     }
-    public void SortAndCalculateOffsets()
+    public void SortAndCalculateOffsetsCPUGPU()
     {
         Sort();
 
         ComputeHelper.Dispatch(sortCompute, indexBuffer.count, kernelIndex: calculateOffsetsKernel);
 
         SortPops();
+    }
+
+    public void SortAndCalculateOffsets()
+    {
+        Sort();
+
+        ComputeHelper.Dispatch(sortCompute, indexBuffer.count, kernelIndex: calculateOffsetsKernel);
     }
 
 }

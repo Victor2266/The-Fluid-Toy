@@ -113,6 +113,7 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
 
     public int numParticles { get; private set; }
 
+    ComputeBuffer keyarrbuffer;
 
     void Start()
     {
@@ -156,8 +157,10 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
 
+        keyarrbuffer = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
+
         gpuSort = new();
-        gpuSort.SetBuffers(spatialIndices, spatialOffsets);
+        gpuSort.SetBuffers(spatialIndices, spatialOffsets, keyarrbuffer);
 
 
         // Init display
