@@ -248,7 +248,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
 
         // Init display
-        display.InitAoS(this);
+        display.Init(this);
     }
 
     void Update()

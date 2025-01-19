@@ -241,7 +241,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
-        display.InitAoS(this, fluidDataArray);  
+        display.Init(this, fluidDataArray);  
     }
 
     void Update()

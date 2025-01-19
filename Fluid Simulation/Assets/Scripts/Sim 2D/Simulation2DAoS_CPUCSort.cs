@@ -261,7 +261,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
-        display.InitAoS(this, fluidDataArray);  
+        display.Init(this, fluidDataArray);  
     }
 
     void Update()
