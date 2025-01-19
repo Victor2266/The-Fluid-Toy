@@ -67,7 +67,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     [Header("References")]
     public ComputeShader compute;
     public ParticleSpawner spawner;
-    public ParticleDisplay2D display;
+    public MultiParticleDisplay2D display;
 
     [Header("Obstacle Colliders")]
     public Transform[] boxColliders;
@@ -261,7 +261,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
-        display.InitAoS(this);  
+        display.InitAoS(this, fluidDataArray);  
     }
 
     void Update()
