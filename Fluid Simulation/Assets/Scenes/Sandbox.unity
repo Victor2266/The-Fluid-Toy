@@ -1799,6 +1799,9 @@ MonoBehaviour:
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
+  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
+  - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
+  - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 981710268}
   display: {fileID: 981710267}
@@ -2303,8 +2306,12 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   spawnRate: 20
-  manuallySelectFluidTypes: 0
-  fluidDataArray: []
+  manuallySelectFluidTypes: 1
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
+  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
+  - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
+  - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawner: {fileID: 1430943822}
   display: {fileID: 1430943821}
