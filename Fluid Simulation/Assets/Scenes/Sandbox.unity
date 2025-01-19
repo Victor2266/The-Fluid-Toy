@@ -1757,7 +1757,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 981710268}
-  display: {fileID: 981710271}
   boxColliders:
   - {fileID: 1163845349}
   - {fileID: 917702759}
@@ -2235,7 +2234,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawner: {fileID: 1430943822}
-  display: {fileID: 1430943826}
   boxColliders:
   - {fileID: 1163845349}
   - {fileID: 917702759}
@@ -2258,7 +2256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
+  shader: {fileID: 4800000, guid: bfa6cbae1ccaae443a7d284803c09d26, type: 3}
   gradientResolution: 64
 --- !u!1 &1497315417
 GameObject:
