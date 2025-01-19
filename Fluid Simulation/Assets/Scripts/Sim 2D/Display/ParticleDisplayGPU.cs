@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ParticleDisplay2D : MonoBehaviour
+public class ParticleDisplay2D : MonoBehaviour, IParticleDisplay
 {
 	public Mesh mesh;
 	public Shader shader;
@@ -26,7 +26,7 @@ public class ParticleDisplay2D : MonoBehaviour
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
-	public void Init(Simulation2DAoSCounting sim)
+	public void Init(Simulation2DAoSCounting sim, FluidData[] fluidDataArray)
 	{
         needsUpdate = true;
         material = new Material(shader);
@@ -36,7 +36,7 @@ public class ParticleDisplay2D : MonoBehaviour
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
-	public void Init(Simulation2DAoS_CPUCSort sim)
+	public void Init(Simulation2DAoS_CPUCSort sim, FluidData[] fluidDataArray)
 	{
         needsUpdate = true;
         material = new Material(shader);

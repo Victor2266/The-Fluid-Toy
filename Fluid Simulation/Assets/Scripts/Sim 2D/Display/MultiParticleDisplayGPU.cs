@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MultiParticleDisplay2D : MonoBehaviour
+public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 {
 	public Mesh mesh;
 	public Shader shader;
