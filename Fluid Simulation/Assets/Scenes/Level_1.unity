@@ -8242,7 +8242,7 @@ GameObject:
   - component: {fileID: 1173401526}
   - component: {fileID: 1173401525}
   - component: {fileID: 1173401524}
-  - component: {fileID: 1173401527}
+  - component: {fileID: 1173401528}
   m_Layer: 0
   m_Name: SimulationAoSCounting CPU
   m_TagString: Simulation
@@ -8298,7 +8298,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 423f11e3028cd9f41a43da9a7715b357, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 1173401524}
-  display: {fileID: 1173401527}
   boxColliders:
   - {fileID: 1163845349}
   - {fileID: 2123023228}
@@ -8329,7 +8328,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1173401527
+--- !u!114 &1173401528
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8338,12 +8337,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 1173401522}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
+  m_Script: {fileID: 11500000, guid: b090cee05a6cd0e4291a0e02381231c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
+  shader: {fileID: 4800000, guid: 2bbf926de3a6aa449a7803e9b686de14, type: 3}
+  scale: 0.23
+  colourMap:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.8217412, b: 0, a: 1}
+    key1: {r: 1.0002804, g: 0.93725497, b: 0.73333335, a: 1}
+    key2: {r: 1, g: 0.7600515, b: 0, a: 0}
+    key3: {r: 1, g: 0.8845242, b: 0.48627448, a: 0}
+    key4: {r: 1, g: 1, b: 1, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 4048
+    ctime1: 18890
+    ctime2: 33191
+    ctime3: 46738
+    ctime4: 53083
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 2
+    m_ColorSpace: -1
+    m_NumColorKeys: 5
+    m_NumAlphaKeys: 2
   gradientResolution: 64
+  velocityDisplayMax: 6.5
 --- !u!1 &1208266442
 GameObject:
   m_ObjectHideFlags: 0
