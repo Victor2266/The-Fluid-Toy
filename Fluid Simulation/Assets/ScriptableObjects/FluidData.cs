@@ -102,16 +102,6 @@ public class FluidData : ScriptableObject
     [Tooltip("Starting temperature of the fluid")]
     public float startTemperature = 22f;
 
-
-    [Header("Shader Properties")]
-    [Tooltip("What Type of Shader to use")]
-    
-    public Shader shader;
-    public float scale;
-	public Gradient colourMap;
-	public int gradientResolution;
-	public float velocityDisplayMax;
-
     [Header("Visual Properties")]
     [Tooltip("Setup the look of the fluid")]
     public VisualParameters visualParams;
