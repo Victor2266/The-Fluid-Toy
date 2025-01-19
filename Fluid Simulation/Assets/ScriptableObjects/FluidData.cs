@@ -60,7 +60,8 @@ public struct VisualParameters
     
     // Glow parameters
     public float glowIntensity;
-    public float minPropertyValue; // For temperature/velocity mapping
+    public float glowFalloff;  // Added glow falloff parameter
+    public float minPropertyValue; // For temperature mapping
     public float maxPropertyValue;
     
 }
@@ -156,6 +157,7 @@ public class FluidData : ScriptableObject
         public float noiseScale;
         public float timeScale;
         public float glowIntensity;
+        public float glowFalloff; 
         public float minValue;
         public float maxValue;
     }
@@ -170,6 +172,7 @@ public class FluidData : ScriptableObject
             noiseScale = visualParams.noiseScale,
             timeScale = visualParams.timeScale,
             glowIntensity = visualParams.glowIntensity,
+            glowFalloff = visualParams.glowFalloff,
             minValue = visualParams.minPropertyValue,
             maxValue = visualParams.maxPropertyValue
         };
