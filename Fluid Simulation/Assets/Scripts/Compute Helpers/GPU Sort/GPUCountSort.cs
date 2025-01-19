@@ -18,6 +18,25 @@ public class GPUCountSort
 	const int ScatterOutputsKernel = 2;
 	const int CopyBackKernel = 3;
 
+	// Original Function
+	public GPUCountSort(ComputeBuffer keyBuffer, ComputeBuffer valueBuffer, uint maxValue)
+	{
+		int count = keyBuffer.count;
+		cs = ComputeHelper.LoadComputeShader("CountSort");
+
+		sortedKBuffer = ComputeHelper.CreateStructuredBuffer<uint3>(count);
+		sortedVBuffer = ComputeHelper.CreateStructuredBuffer<uint>(count);
+		cntBuffer = ComputeHelper.CreateStructuredBuffer<uint>( (int) maxValue + 1 );
+
+		ComputeHelper.SetBuffer(cs, keyBuffer, "InputKeys", CountKernel, ScatterOutputsKernel, CopyBackKernel);
+		ComputeHelper.SetBuffer(cs, valueBuffer, "InputValues", ScatterOutputsKernel, CopyBackKernel);
+
+		ComputeHelper.SetBuffer(cs, sortedKBuffer, "SortedKeys", ScatterOutputsKernel, CopyBackKernel);
+		ComputeHelper.SetBuffer(cs, sortedVBuffer, "SortedValues", ScatterOutputsKernel, CopyBackKernel);
+		ComputeHelper.SetBuffer(cs, cntBuffer, "Counts", ClearCountsKernel, CountKernel, ScatterOutputsKernel);
+		cs.SetInt("numInputs", count);
+	}
+
 	// Sorts a buffer of keys based on a buffer of values (note that value buffer will also be sorted in the process).
 	// keyArr stores keys sorted by population is descending order
 	public GPUCountSort(ComputeBuffer keyBuffer, ComputeBuffer valueBuffer, uint maxValue, ComputeBuffer keyArr)
@@ -42,6 +61,7 @@ public class GPUCountSort
 
 		cs.SetInt("numInputs", count);
 	}
+	
 
 	public void Run()
 	{
