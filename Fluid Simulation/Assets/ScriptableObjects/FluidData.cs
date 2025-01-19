@@ -77,11 +77,17 @@ public class FluidData : ScriptableObject
 
     [Header("Shader Properties")]
     [Tooltip("What Type of Shader to use")]
+    
     public Shader shader;
     public float scale;
 	public Gradient colourMap;
 	public int gradientResolution;
 	public float velocityDisplayMax;
+    public float lavaGlowIntensity = 1.0f;
+    public float lavaMinTemp = 800f;
+    public float lavaMaxTemp = 1200f;
+    public float steamNoiseScale = 10f;
+    public float steamTimeFactor = 1f;
 
     // Validation method to ensure values stay within reasonable bounds
     private void OnValidate()

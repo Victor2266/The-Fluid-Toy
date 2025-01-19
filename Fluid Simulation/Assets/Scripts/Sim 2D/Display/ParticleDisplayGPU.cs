@@ -74,9 +74,14 @@ public class ParticleDisplay2D : MonoBehaviour
 			needsUpdate = false;
 			TextureFromGradient(ref gradientTexture, gradientResolution, colourMap);
 			material.SetTexture("ColourMap", gradientTexture);
-
 			material.SetFloat("scale", scale);
 			material.SetFloat("velocityMax", velocityDisplayMax);
+
+			material.SetFloat("_LavaGlowIntensity", 1f);
+			material.SetFloat("_LavaMinTemp", 800f);
+			material.SetFloat("_LavaMaxTemp", 1200f);
+			material.SetFloat("_SteamNoiseScale", 10f);
+			material.SetFloat("_SteamTimeFactor", 1f);
 		}
 	}
 
