@@ -94,6 +94,8 @@ Shader "Instanced/MultiFluidParticle2D"
                     return saturate(length(particle.velocity) / visualData.maxValue);
                 case 1: // Temperature-based visualization
                     return saturate((particle.temperature - visualData.minValue) / (visualData.maxValue - visualData.minValue));
+                //case 3:
+                //    return saturate(length(particle.velocity) / visualData.maxValue);
                 default:
                     return 0;
             }
