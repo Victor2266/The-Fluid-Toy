@@ -262,7 +262,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
         // Init display
         display = GetComponent<IParticleDisplay>();
-        display.Init(this, fluidDataArray);  
+        display.Init(this);  
     }
 
     void Update()

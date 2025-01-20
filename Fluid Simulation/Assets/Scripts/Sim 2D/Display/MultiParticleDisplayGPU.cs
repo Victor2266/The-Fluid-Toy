@@ -13,23 +13,23 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 	ComputeBuffer visualParamsBuffer;
     public Dictionary<FluidType, Texture2D> gradientTextures;
 
-	public void Init(Simulation2DAoSCounting sim, FluidData[] fluidDataArray)
+	public void Init(Simulation2DAoSCounting sim)
 	{
         material = new Material(shader);
 		material.SetBuffer("Particles", sim.particleBuffer);
 
-		CreateAndSetupVisualParamsBuffer(fluidDataArray);
+		CreateAndSetupVisualParamsBuffer(sim.fluidDataArray);
 
 		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
-	public void Init(Simulation2DAoS_CPUCSort sim, FluidData[] fluidDataArray)
+	public void Init(Simulation2DAoS_CPUCSort sim)
 	{
         material = new Material(shader);
 		material.SetBuffer("Particles", sim.particleBuffer);
 
-        CreateAndSetupVisualParamsBuffer(fluidDataArray);
+        CreateAndSetupVisualParamsBuffer(sim.fluidDataArray);
 
 		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);

@@ -26,7 +26,7 @@ public class ParticleDisplay2D : MonoBehaviour, IParticleDisplay
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
-	public void Init(Simulation2DAoSCounting sim, FluidData[] fluidDataArray)
+	public void Init(Simulation2DAoSCounting sim)
 	{
         needsUpdate = true;
         material = new Material(shader);
@@ -36,7 +36,7 @@ public class ParticleDisplay2D : MonoBehaviour, IParticleDisplay
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
-	public void Init(Simulation2DAoS_CPUCSort sim, FluidData[] fluidDataArray)
+	public void Init(Simulation2DAoS_CPUCSort sim)
 	{
         needsUpdate = true;
         material = new Material(shader);
