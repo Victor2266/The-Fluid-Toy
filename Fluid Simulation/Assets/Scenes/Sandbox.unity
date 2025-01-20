@@ -1879,10 +1879,10 @@ MonoBehaviour:
     fluidType: 1
   drainObjects:
   - {fileID: 479231988}
-  isCPUComputingEnabled: 0
-  toggleCPUComputing: 0
-  ThreadBatchSize: 50
-  numCPUKeys: 10
+  isCPUComputingEnabled: 1
+  toggleCPUComputing: 1
+  ThreadBatchSize: 1000
+  numCPUKeys: 5
 --- !u!4 &981710270
 Transform:
   m_ObjectHideFlags: 0
@@ -2022,8 +2022,9 @@ MonoBehaviour:
   interactionRadius: 3
   interactionStrength: 360
   spawnRate: 20
-  manuallySelectFluidTypes: 0
-  fluidDataArray: []
+  manuallySelectFluidTypes: 1
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   compute: {fileID: 7200000, guid: c4e04fbd8b42e9e49be8bbd01966b4da, type: 3}
   spawner: {fileID: 1080519536}
   display: {fileID: 1080519535}
@@ -2038,10 +2039,10 @@ MonoBehaviour:
   sourceObjectsWIP: []
   drainObjects:
   - {fileID: 479231988}
-  isCPUComputingEnabled: 0
-  toggleCPUComputing: 0
-  ThreadBatchSize: 100
-  numCPUKeys: 10
+  isCPUComputingEnabled: 1
+  toggleCPUComputing: 1
+  ThreadBatchSize: 1000
+  numCPUKeys: 5
 --- !u!4 &1080519538
 Transform:
   m_ObjectHideFlags: 0
@@ -2349,7 +2350,11 @@ MonoBehaviour:
   - {fileID: 1364603427}
   - {fileID: 228796735}
   circleColliders: []
-  sourceObjects: []
+  sourceObjects:
+  - transform: {fileID: 336022954}
+    velo: {x: 0, y: 0}
+    spawnRate: 1
+    fluidType: 1
   drainObjects:
   - {fileID: 479231988}
 --- !u!114 &1430943826
