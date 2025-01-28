@@ -1046,9 +1046,9 @@ MonoBehaviour:
   brushState: 1
   interactionRadius: 3
   interactionStrength: 360
-  minRadius: 0.5
-  maxRadius: 50
-  smoothingTime: 0.1
+  minRadius: 0.25
+  maxRadius: 24
+  smoothingTime: 0.04
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
@@ -1861,9 +1861,9 @@ MonoBehaviour:
   brushState: 1
   interactionRadius: 3
   interactionStrength: 360
-  minRadius: 0.5
-  maxRadius: 50
-  smoothingTime: 0.1
+  minRadius: 0.25
+  maxRadius: 24
+  smoothingTime: 0.04
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
@@ -2498,7 +2498,7 @@ MonoBehaviour:
   interactionStrength: 360
   minRadius: 0.25
   maxRadius: 24
-  smoothingTime: 0.05
+  smoothingTime: 0.04
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
