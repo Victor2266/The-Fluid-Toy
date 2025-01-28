@@ -30,8 +30,10 @@ public class InteractionRadiusVisualizer : MonoBehaviour
         // Set color based on mode and interaction type
         if (defaultGreyCircle)
         {
+            lineRenderer.enabled = true;
             lineRenderer.startColor = neutralColor;
             lineRenderer.endColor = neutralColor;
+            UpdateLineRenderer();
         }
 
         if (!isInteracting) return;
@@ -39,7 +41,15 @@ public class InteractionRadiusVisualizer : MonoBehaviour
         // Set color based on interaction type
         lineRenderer.startColor = Input.GetMouseButton(0) ? attractColor : repelColor;
         lineRenderer.endColor = lineRenderer.startColor;
+        
+        if (!defaultGreyCircle)
+        {
+            UpdateLineRenderer();
+        }
+    }
 
+    void UpdateLineRenderer()
+    {
         // Update circle positions
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         float radius = simulation.GetInteractionRadius();
