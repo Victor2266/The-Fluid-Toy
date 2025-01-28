@@ -2289,9 +2289,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ce76073a268794c95890f3f2f80891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulationGameObject: {fileID: 1430943820}
+  simulationGameObject: {fileID: 0}
   attractColor: {r: 0, g: 1, b: 0, a: 1}
   repelColor: {r: 1, g: 0, b: 0, a: 1}
+  neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alwaysShowDefault: 1
   segments: 32
 --- !u!120 &1419749883
 LineRenderer:

@@ -3,66 +3,115 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class InteractionRadiusVisualizer : MonoBehaviour
 {
-    public IFluidSimulation simulation;
-    public GameObject simulationGameObject;
-    public Color attractColor = Color.green;
-    public Color repelColor = Color.red;
-    public Color neutralColor = Color.grey;
-    public bool defaultGreyCircle = true;  // New toggle, default true
+    [Header("Dependencies")]
+    private IFluidSimulation simulation;
+    private GameObject simulationGameObject;
+    
+    [Header("Visual Settings")]
+    [SerializeField] private Color attractColor = Color.green;
+    [SerializeField] private Color repelColor = Color.red;
+    [SerializeField] private Color neutralColor = Color.grey;
+    [SerializeField] private bool alwaysShowDefault = true;
+    [SerializeField] [Range(8, 64)] private int segments = 32;
     
     private LineRenderer lineRenderer;
-    public int segments = 32;
+    private Vector3[] circlePositions;
+    private float lastRadius;
+    private Vector2 lastMousePosition;
 
     void Start()
     {
+        simulationGameObject = GameObject.FindGameObjectWithTag("Simulation");
         simulation = simulationGameObject.GetComponent<IFluidSimulation>();
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.positionCount = segments;
-        lineRenderer.loop = true;
-        lineRenderer.enabled = false;
+        InitializeLineRenderer();
+        PrecalculateCircle();
     }
 
     void Update()
     {
-        bool isInteracting = Input.GetMouseButton(0) || Input.GetMouseButton(1);
-        lineRenderer.enabled = isInteracting;
-        
-        // Set color based on mode and interaction type
-        if (defaultGreyCircle)
-        {
-            lineRenderer.enabled = true;
-            lineRenderer.startColor = neutralColor;
-            lineRenderer.endColor = neutralColor;
-            UpdateLineRenderer();
-        }
+        UpdateVisualizationState();
+        UpdateCirclePositionsIfNeeded();
+    }
 
-        if (!isInteracting) return;
-
-        // Set color based on interaction type
-        lineRenderer.startColor = Input.GetMouseButton(0) ? attractColor : repelColor;
-        lineRenderer.endColor = lineRenderer.startColor;
+    void InitializeLineRenderer()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.loop = true;
+        lineRenderer.positionCount = segments;
+        lineRenderer.enabled = alwaysShowDefault;
         
-        if (!defaultGreyCircle)
+        if (alwaysShowDefault)
         {
-            UpdateLineRenderer();
+            SetLineColor(neutralColor);
         }
     }
 
-    void UpdateLineRenderer()
+    void PrecalculateCircle()
     {
-        // Update circle positions
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float radius = simulation.GetInteractionRadius();
-        
-        float angle = 0f;
+        circlePositions = new Vector3[segments];
         float angleStep = 360f / segments;
         
         for(int i = 0; i < segments; i++)
         {
-            float x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
-            float y = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
-            lineRenderer.SetPosition(i, new Vector3(mousePos.x + x, mousePos.y + y, 0));
-            angle += angleStep;
+            float angle = i * angleStep;
+            circlePositions[i] = new Vector3(
+                Mathf.Sin(Mathf.Deg2Rad * angle),
+                Mathf.Cos(Mathf.Deg2Rad * angle),
+                0
+            );
         }
+    }
+
+    void UpdateVisualizationState()
+    {
+        bool isInteracting = Input.GetMouseButton(0) || Input.GetMouseButton(1);
+        
+        if (alwaysShowDefault)
+        {
+            lineRenderer.enabled = true;
+            if (isInteracting)
+            {
+                SetLineColor(Input.GetMouseButton(0) ? attractColor : repelColor);
+            }
+            else
+            {
+                SetLineColor(neutralColor);
+            }
+        }
+        else
+        {
+            lineRenderer.enabled = isInteracting;
+            if (isInteracting)
+            {
+                SetLineColor(Input.GetMouseButton(0) ? attractColor : repelColor);
+            }
+        }
+    }
+
+    void UpdateCirclePositionsIfNeeded()
+    {
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float currentRadius = simulation.GetInteractionRadius();
+
+        if (currentRadius != lastRadius || mousePosition != lastMousePosition)
+        {
+            UpdateCirclePositions(mousePosition, currentRadius);
+            lastRadius = currentRadius;
+            lastMousePosition = mousePosition;
+        }
+    }
+
+    void UpdateCirclePositions(Vector2 center, float radius)
+    {
+        for(int i = 0; i < segments; i++)
+        {
+            lineRenderer.SetPosition(i, center + (Vector2)(circlePositions[i] * radius));
+        }
+    }
+
+    void SetLineColor(Color color)
+    {
+        lineRenderer.startColor = color;
+        lineRenderer.endColor = color;
     }
 }
