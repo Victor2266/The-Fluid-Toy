@@ -11,7 +11,7 @@ public class InteractionRadiusVisualizer : MonoBehaviour
     [SerializeField] private Color attractColor = Color.green;
     [SerializeField] private Color repelColor = Color.red;
     [SerializeField] private Color neutralColor = Color.grey;
-    [SerializeField] private bool alwaysShowDefault = true;
+    [SerializeField] private bool alwaysShowNeutral = true;
     [SerializeField] [Range(8, 64)] private int segments = 32;
     
     private LineRenderer lineRenderer;
@@ -44,9 +44,9 @@ public class InteractionRadiusVisualizer : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.loop = true;
         lineRenderer.positionCount = segments;
-        lineRenderer.enabled = alwaysShowDefault;
+        lineRenderer.enabled = alwaysShowNeutral;
         
-        if (alwaysShowDefault)
+        if (alwaysShowNeutral)
         {
             SetLineColor(neutralColor);
         }
@@ -72,7 +72,7 @@ public class InteractionRadiusVisualizer : MonoBehaviour
     {
         bool isInteracting = Input.GetMouseButton(0) || Input.GetMouseButton(1);
         
-        if (alwaysShowDefault)
+        if (alwaysShowNeutral)
         {
             lineRenderer.enabled = true;
             if (isInteracting)
