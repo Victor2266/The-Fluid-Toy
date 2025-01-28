@@ -676,6 +676,10 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         return numParticles;
     }
+    public float GetInteractionRadius()
+    {
+        return interactionRadius;
+    }
 
     void initializeCPUKernelSettingsAoS()
     {

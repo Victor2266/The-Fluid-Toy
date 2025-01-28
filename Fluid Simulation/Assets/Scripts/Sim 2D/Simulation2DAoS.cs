@@ -647,6 +647,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         return numParticles;
     }
+    public float GetInteractionRadius()
+    {
+        return interactionRadius;
+    }
     void initializeCPUKernelSettingsAoS(){
         CPUKernelAOS.numParticles = numParticles;
         CPUKernelAOS.offsets = new int2[9];

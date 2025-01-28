@@ -472,4 +472,8 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     {
         return numParticles;
     }
+    public float GetInteractionRadius()
+    {
+        return interactionRadius;
+    }
 }

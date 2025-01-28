@@ -624,4 +624,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         return numParticles;
     }
+
+    public float GetInteractionRadius()
+    {
+        return interactionRadius;
+    }
 }

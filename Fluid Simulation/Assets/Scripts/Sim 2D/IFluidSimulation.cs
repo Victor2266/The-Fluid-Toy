@@ -54,5 +54,10 @@ public interface IFluidSimulation
     /// <summary>
     /// Get total number of particles
     /// </summary>
-    int GetParticleCount(); // 
+    int GetParticleCount();
+
+    /// <summary>
+    /// Get interaction radius
+    /// </summary>
+    float GetInteractionRadius();
 }
