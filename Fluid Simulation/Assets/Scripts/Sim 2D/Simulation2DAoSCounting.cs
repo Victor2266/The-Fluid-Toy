@@ -27,6 +27,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         Loop
     }
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
+    public uint spawnRate = 100; // How many particles that can spawn per frame
 
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
@@ -46,8 +47,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Interaction Settings")]
     public float interactionRadius;
     public float interactionStrength;
-
-    public uint spawnRate = 100; // How many particles that can spawn per frame
+    public float minRadius = 0.25f;
+    public float maxRadius = 24f;
+    public float smoothingTime = 0.04f;
+    private float targetInteractionRadius;
+    private float smoothVelocity;
+    
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
@@ -128,6 +133,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Debug.Log(System.Runtime.InteropServices.Marshal.SizeOf(typeof(SourceObjectInitializer))); //This prints the size of the typeof(struct)
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
+        targetInteractionRadius = interactionRadius;
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
 
@@ -282,6 +288,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
 
         UpdateColliderData();
+        
+        HandleScrollInput();
+
         if (enableHotkeys)
             HandleHotkeysInput();
     }
@@ -412,6 +421,28 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Mouse interaction settings:
         HandleMouseInput();
 
+    }
+    void HandleScrollInput()
+    {
+        ApplySmoothing();
+
+        float scrollDelta = Input.mouseScrollDelta.y;
+        
+        if (scrollDelta != 0)
+        {
+            // Apply scroll input to target radius with exponential scaling
+            float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
+            targetInteractionRadius *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
+            targetInteractionRadius = Mathf.Clamp(targetInteractionRadius, minRadius, maxRadius);
+        }
+    }
+    void ApplySmoothing()
+    {
+        // Smoothly interpolate to the target radius
+        interactionRadius = Mathf.SmoothDamp(interactionRadius, 
+            targetInteractionRadius, 
+            ref smoothVelocity, 
+            smoothingTime);
     }
 
     void HandleMouseInput()

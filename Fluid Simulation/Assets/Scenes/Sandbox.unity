@@ -1041,11 +1041,14 @@ MonoBehaviour:
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 0
+  spawnRate: 20
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
   interactionStrength: 360
-  spawnRate: 20
+  minRadius: 0.5
+  maxRadius: 50
+  smoothingTime: 0.1
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
@@ -1853,11 +1856,14 @@ MonoBehaviour:
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 0
+  spawnRate: 20
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
   interactionStrength: 360
-  spawnRate: 20
+  minRadius: 0.5
+  maxRadius: 50
+  smoothingTime: 0.1
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
@@ -2335,7 +2341,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -2485,11 +2491,14 @@ MonoBehaviour:
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 0
+  spawnRate: 20
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
   interactionStrength: 360
-  spawnRate: 20
+  minRadius: 0.25
+  maxRadius: 24
+  smoothingTime: 0.05
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
