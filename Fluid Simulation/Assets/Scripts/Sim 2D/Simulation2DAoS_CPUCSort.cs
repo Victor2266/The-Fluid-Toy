@@ -52,6 +52,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public float minRadius = 0.25f;
     public float maxRadius = 24f;
     public float smoothingTime = 0.04f;
+    public bool enableScrolling = false;
     private float targetInteractionRadius;
     private float smoothVelocity;
 
@@ -310,7 +311,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
         UpdateColliderData();
 
-        HandleScrollInput();
+        if (enableScrolling)
+            HandleScrollInput();
 
         if (enableHotkeys)
             HandleHotkeysInput();
