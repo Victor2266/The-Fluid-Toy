@@ -7,6 +7,8 @@ public class InteractionRadiusVisualizer : MonoBehaviour
     public GameObject simulationGameObject;
     public Color attractColor = Color.green;
     public Color repelColor = Color.red;
+    public Color neutralColor = Color.grey;
+    public bool defaultGreyCircle = true;  // New toggle, default true
     
     private LineRenderer lineRenderer;
     public int segments = 32;
@@ -24,6 +26,13 @@ public class InteractionRadiusVisualizer : MonoBehaviour
     {
         bool isInteracting = Input.GetMouseButton(0) || Input.GetMouseButton(1);
         lineRenderer.enabled = isInteracting;
+        
+        // Set color based on mode and interaction type
+        if (defaultGreyCircle)
+        {
+            lineRenderer.startColor = neutralColor;
+            lineRenderer.endColor = neutralColor;
+        }
 
         if (!isInteracting) return;
 
