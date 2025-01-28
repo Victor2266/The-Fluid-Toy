@@ -10,11 +10,14 @@ public class TooltipManager : MonoBehaviour
     [SerializeField] private RectTransform tooltipPanel;
     [SerializeField] private TextMeshProUGUI tooltipText;
     [SerializeField] private float fadeTime = 0.25f;
+    [SerializeField] private float moveDistance = 8f; // Distance to move upwards
+    
+    private Vector2 targetPosition;
     private CanvasGroup canvasGroup;
     private Sequence currentSequence;
 
     [SerializeField] private Image background;
-    [SerializeField] private Vector2 padding = new Vector2(10, 5);
+    [SerializeField] private Vector2 padding = new Vector2(16, 2);
 
     private void Awake()
     {
@@ -34,6 +37,7 @@ public class TooltipManager : MonoBehaviour
         canvasGroup.alpha = 0;
         tooltipPanel.gameObject.SetActive(false);
 
+        targetPosition = tooltipPanel.anchoredPosition;
     }
 
     public void ShowTooltip(string message)
@@ -41,6 +45,11 @@ public class TooltipManager : MonoBehaviour
         // Kill any ongoing animations
         currentSequence?.Kill();
         canvasGroup.DOKill();
+
+        if(!tooltipPanel.gameObject.activeSelf){
+            // Set starting position
+            tooltipPanel.anchoredPosition = targetPosition - new Vector2(0, moveDistance);
+        }
 
         tooltipPanel.gameObject.SetActive(true);
         tooltipText.text = message;
@@ -57,7 +66,10 @@ public class TooltipManager : MonoBehaviour
         // Set background size with padding
         background.rectTransform.sizeDelta = textSize + padding;
 
-        currentSequence = DOTween.Sequence().Append(canvasGroup.DOFade(1, fadeTime).SetEase(Ease.OutCubic));
+        // Create animation sequence
+        currentSequence = DOTween.Sequence()
+            .Join(canvasGroup.DOFade(1, fadeTime).SetEase(Ease.OutCubic))
+            .Join(tooltipPanel.DOAnchorPos(targetPosition, fadeTime).SetEase(Ease.OutCubic));
     }
 
     public void HideTooltip()
