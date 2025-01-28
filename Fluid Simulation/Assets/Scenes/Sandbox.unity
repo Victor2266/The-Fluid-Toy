@@ -730,7 +730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &336022953
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2289,7 +2289,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ce76073a268794c95890f3f2f80891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulationGameObject: {fileID: 0}
   attractColor: {r: 0, g: 1, b: 0, a: 1}
   repelColor: {r: 1, g: 0, b: 0, a: 1}
   neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -2505,7 +2504,11 @@ MonoBehaviour:
   - {fileID: 1364603427}
   - {fileID: 228796735}
   circleColliders: []
-  sourceObjects: []
+  sourceObjects:
+  - transform: {fileID: 336022954}
+    velo: {x: 0, y: 0}
+    spawnRate: 1
+    fluidType: 1
   drainObjects:
   - {fileID: 479231988}
 --- !u!114 &1430943826

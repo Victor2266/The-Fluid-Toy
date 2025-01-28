@@ -29,8 +29,14 @@ public class InteractionRadiusVisualizer : MonoBehaviour
 
     void Update()
     {
-        UpdateVisualizationState();
-        UpdateCirclePositionsIfNeeded();
+        if (Time.timeScale != 0){
+            UpdateVisualizationState();
+            UpdateCirclePositionsIfNeeded();
+        }
+        else {
+            lineRenderer.enabled = false;
+        }
+
     }
 
     void InitializeLineRenderer()
