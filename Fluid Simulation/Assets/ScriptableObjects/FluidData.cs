@@ -20,7 +20,7 @@ public enum VisualStyle
 
 // Struct for passing to compute shader.
 [System.Serializable]
-[StructLayout(LayoutKind.Sequential, Size = 32)]
+[StructLayout(LayoutKind.Sequential, Size = 36)]
 public struct FluidParam
 {
     public FluidType fluidType;
