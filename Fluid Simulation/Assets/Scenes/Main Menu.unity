@@ -942,6 +942,8 @@ GameObject:
   - component: {fileID: 124768779}
   - component: {fileID: 124768778}
   - component: {fileID: 124768777}
+  - component: {fileID: 124768782}
+  - component: {fileID: 124768781}
   m_Layer: 5
   m_Name: Quit Button
   m_TagString: Untagged
@@ -1084,6 +1086,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124768775}
   m_CullTransparentMesh: 1
+--- !u!225 &124768781
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124768775}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &124768782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124768775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  startOffsetY: -128
+  animationDuration: 2
+  easeType: 27
+  animateOnEnable: 1
 --- !u!1 &162220646
 GameObject:
   m_ObjectHideFlags: 0
@@ -3177,6 +3209,8 @@ GameObject:
   - component: {fileID: 682149573}
   - component: {fileID: 682149572}
   - component: {fileID: 682149571}
+  - component: {fileID: 682149576}
+  - component: {fileID: 682149575}
   m_Layer: 5
   m_Name: Sandbox Button
   m_TagString: Untagged
@@ -3319,6 +3353,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 682149569}
   m_CullTransparentMesh: 1
+--- !u!225 &682149575
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682149569}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &682149576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682149569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  startOffsetY: -128
+  animationDuration: 2
+  easeType: 27
+  animateOnEnable: 1
 --- !u!1 &794961137
 GameObject:
   m_ObjectHideFlags: 0
@@ -4591,6 +4655,8 @@ GameObject:
   - component: {fileID: 988131549}
   - component: {fileID: 988131548}
   - component: {fileID: 988131547}
+  - component: {fileID: 988131552}
+  - component: {fileID: 988131551}
   m_Layer: 5
   m_Name: Settings Button
   m_TagString: Untagged
@@ -4733,6 +4799,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988131545}
   m_CullTransparentMesh: 1
+--- !u!225 &988131551
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988131545}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &988131552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988131545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  startOffsetY: -128
+  animationDuration: 2
+  easeType: 27
+  animateOnEnable: 1
 --- !u!1 &992768936
 GameObject:
   m_ObjectHideFlags: 0
@@ -6949,6 +7045,8 @@ GameObject:
   - component: {fileID: 1521755526}
   - component: {fileID: 1521755525}
   - component: {fileID: 1521755524}
+  - component: {fileID: 1521755529}
+  - component: {fileID: 1521755528}
   m_Layer: 5
   m_Name: Play Button
   m_TagString: Untagged
@@ -7091,6 +7189,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1521755522}
   m_CullTransparentMesh: 1
+--- !u!225 &1521755528
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521755522}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1521755529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521755522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1521755525}
+  canvasGroup: {fileID: 1521755528}
+  startOffsetY: -128
+  animationDuration: 2
+  easeType: 27
+  animateOnEnable: 1
 --- !u!1 &1537894257
 GameObject:
   m_ObjectHideFlags: 0
@@ -9975,6 +10103,8 @@ GameObject:
   - component: {fileID: 2096419606}
   - component: {fileID: 2096419609}
   - component: {fileID: 2096419610}
+  - component: {fileID: 2096419612}
+  - component: {fileID: 2096419611}
   m_Layer: 5
   m_Name: Github Button
   m_TagString: Untagged
@@ -9998,9 +10128,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -16, y: 12}
+  m_AnchoredPosition: {x: -42, y: 36}
   m_SizeDelta: {x: 48, y: 48}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2096419606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10129,6 +10259,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   url: https://github.com/Victor2266/The-Fluid-Toy/
+--- !u!225 &2096419611
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096419604}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &2096419612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096419604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 2096419606}
+  canvasGroup: {fileID: 2096419611}
+  startOffsetY: -128
+  animationDuration: 2
+  easeType: 27
+  animateOnEnable: 1
 --- !u!1 &2105496640
 GameObject:
   m_ObjectHideFlags: 0
