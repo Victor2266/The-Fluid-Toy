@@ -51,6 +51,8 @@ public class ButtonSlideUp : MonoBehaviour
     {
         // Reset and start animation whenever the object is enabled
         // Only animate if the scene is already loaded
+        // THIS WILL NOT RUN IMMEDIATELY WHEN THE SCENE IS LOADED BECAUSE isSceneLoaded IS FALSE
+        // THIS IS FOR ANIMATIONS AFTER DISABLING AND RE-ENABLING THE BUTTON
         if (animateOnEnable && isSceneLoaded)
         {
             ResetPosition();
