@@ -499,7 +499,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
                 density = new float2(0, 0),
-                temperature = 22.0f,
+                //temperature = 22.0f,
+                temperature = UnityEngine.Random.Range(0f, 100f), // FIXME temp remove later
                 type = FluidType.Water // Or whatever default type you want};
             };
             allPoints[i] = p;
@@ -619,6 +620,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public void togglePause()
     {
+        float[] temps = GetParticleTemps();
+        for (int i = 0; i < numParticles; i++) {
+            Debug.Log($"Particle {i}: Temp: {temps[i]}");
+        }
         isPaused = !isPaused;
     }
     public bool getPaused()
@@ -654,6 +659,18 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             positions[i] = particleData[i].position;
         }
         return positions;
+    }
+
+    public float[] GetParticleTemps()
+    {
+        float[] temps = new float[numParticles];
+        particleBuffer.GetData(particleData);
+
+        for (int i = 0; i < numParticles; i++)
+        {
+            temps[i] = particleData[i].temperature;
+        }
+        return temps;
     }
     public int GetParticleCount()
     {
