@@ -74,4 +74,9 @@ public class TitleAnimation : MonoBehaviour
         text.DOFade(1f, animationDuration * 0.8f)
             .SetEase(Ease.OutQuad);
     }
+
+    void OnDestroy(){
+        // Kill any existing animations
+        DOTween.KillAll();
+    }
 }

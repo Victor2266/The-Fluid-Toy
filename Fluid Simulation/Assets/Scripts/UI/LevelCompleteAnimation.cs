@@ -147,4 +147,9 @@ public class LevelCompleteAnimation : MonoBehaviour
     {
         currentLevelScore = score;
     }
+
+    void OnDestroy()
+    {
+        DOTween.KillAll();
+    }
 }
