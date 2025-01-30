@@ -131,7 +131,7 @@ float ViscosityKernel(float dst, float radius, int type)
 
 float TemperatureKernel(float dst, float radius, int type)
 {
-	return SpikyKernelPow2(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow2); // TEMP kernel to test
+	return DerivativeSpikyPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3); // TEMP kernel to test.
 }
 
 //get the maximum smoothing radius between two fluid types
