@@ -1,21 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using DG.Tweening;
 
 public class ButtonSlideUp : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Button button;
-    [SerializeField] private CanvasGroup canvasGroup; // For fading the entire button
+    [SerializeField] private CanvasGroup canvasGroup;
 
     [Header("Animation Settings")]
     [SerializeField] private float startOffsetY = -50f;
     [SerializeField] private float animationDuration = 0.8f;
     [SerializeField] private Ease easeType = Ease.OutQuint;
     [SerializeField] private bool animateOnEnable = true;
+    [SerializeField] private float delayAfterSceneLoad = 0.1f; // Small delay after scene load
 
     private Vector3 originalPosition;
     private bool hasAnimated = false;
+    private bool isSceneLoaded = false;
 
     private void Awake()
     {
@@ -27,28 +30,34 @@ public class ButtonSlideUp : MonoBehaviour
 
         // Store original position
         originalPosition = button.transform.localPosition;
+
+        // Subscribe to scene loaded event
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        isSceneLoaded = true;
+        if (gameObject.activeSelf)
+        {
+            ResetPosition();
+            // Add a small delay to ensure everything is properly initialized
+            DOVirtual.DelayedCall(delayAfterSceneLoad, AnimateButton)
+                .SetUpdate(true);
+        }
     }
 
     private void OnEnable()
     {
-        if (animateOnEnable)
+        // Reset and start animation whenever the object is enabled
+        // Only animate if the scene is already loaded
+        if (animateOnEnable && isSceneLoaded)
         {
-            // Ensure we start from the reset position when enabled
             ResetPosition();
-            // Trigger animation
-            AnimateButton();
-        }
-    }
 
-    private void Start()
-    {
-       if (!animateOnEnable)
-        {
-            // Ensure we start from the reset position when scene loads
-            ResetPosition();
-            // Trigger animation
-            AnimateButton();
-        } 
+            DOVirtual.DelayedCall(delayAfterSceneLoad, AnimateButton)
+                .SetUpdate(true);
+        }
     }
 
     private void ResetPosition()
@@ -77,20 +86,19 @@ public class ButtonSlideUp : MonoBehaviour
         // Animate position
         button.transform.DOLocalMove(originalPosition, animationDuration)
             .SetEase(easeType)
-            .SetUpdate(true); // Make it time scale independent
+            .SetUpdate(true);
 
         // Animate opacity
         if (canvasGroup != null)
         {
             canvasGroup.DOFade(1f, animationDuration * 0.8f)
                 .SetEase(Ease.OutQuad)
-                .SetUpdate(true); // Make it time scale independent
+                .SetUpdate(true);
         }
 
         hasAnimated = true;
     }
 
-    // Optional: Call this if you need to manually reset and replay the animation
     public void ReplayAnimation()
     {
         ResetPosition();
@@ -99,7 +107,10 @@ public class ButtonSlideUp : MonoBehaviour
 
     void OnDestroy()
     {
-        // Clean up tweens when the object is destroyed
+        // Unsubscribe from scene loaded event
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        // Clean up tweens
         DOTween.Kill(button.transform);
         if (canvasGroup != null)
             DOTween.Kill(canvasGroup);

@@ -1110,12 +1110,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  button: {fileID: 124768778}
+  canvasGroup: {fileID: 124768781}
   startOffsetY: -128
-  animationDuration: 1.2
+  animationDuration: 1.1
   easeType: 27
   animateOnEnable: 0
+  delayAfterSceneLoad: 0.1
 --- !u!1 &162220646
 GameObject:
   m_ObjectHideFlags: 0
@@ -3377,12 +3378,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  button: {fileID: 682149572}
+  canvasGroup: {fileID: 682149575}
   startOffsetY: -128
-  animationDuration: 1.2
+  animationDuration: 1.1
   easeType: 27
   animateOnEnable: 0
+  delayAfterSceneLoad: 0.1
 --- !u!1 &794961137
 GameObject:
   m_ObjectHideFlags: 0
@@ -4823,12 +4825,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d91a6d88da3134b9ee681e9b018ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  button: {fileID: 988131548}
+  canvasGroup: {fileID: 988131551}
   startOffsetY: -128
-  animationDuration: 1.2
+  animationDuration: 1.1
   easeType: 27
   animateOnEnable: 0
+  delayAfterSceneLoad: 0.1
 --- !u!1 &992768936
 GameObject:
   m_ObjectHideFlags: 0
@@ -7216,9 +7219,10 @@ MonoBehaviour:
   button: {fileID: 1521755525}
   canvasGroup: {fileID: 1521755528}
   startOffsetY: -128
-  animationDuration: 1.2
+  animationDuration: 1.1
   easeType: 27
   animateOnEnable: 0
+  delayAfterSceneLoad: 0.1
 --- !u!1 &1537894257
 GameObject:
   m_ObjectHideFlags: 0
@@ -10289,6 +10293,7 @@ MonoBehaviour:
   animationDuration: 2
   easeType: 27
   animateOnEnable: 1
+  delayAfterSceneLoad: 0.1
 --- !u!1 &2105496640
 GameObject:
   m_ObjectHideFlags: 0
