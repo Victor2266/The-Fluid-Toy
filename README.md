@@ -1,5 +1,5 @@
-# CPU-GPU Fluid Simulation in Unity  
-**Optimizing Collision Detection with GPU Acceleration for Real-Time Particle-Based Fluid Simulations**  
+# The Fluid Toy
+**CPU-GPU Fluid Simulation in Unity: Optimizing Collision Detection with GPU Acceleration for Real-Time Particle-Based Fluid Simulations**  
 
 ![Project Banner](https://github.com/user-attachments/assets/516de58e-c79b-4065-b4ed-0b03a61b7f06)  
 
