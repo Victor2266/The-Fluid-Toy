@@ -18,15 +18,37 @@
 - **Hybrid Circle Colliders**:  
   - Small colliders: GPU-accelerated using spatial hashing grids  
   - Large colliders: CPU-managed to prevent GPU performance degradation  
+- **Dynamic Colliders**:  
+  - Texture-based density maps for complex shapes  
+  - Runtime-alterable collider geometry via alpha threshold sampling  
+  - Player-editable collider deformation through brush tools  
 
 ### ⚡ Dynamic Particle Management  
 - **Activation/Deactivation**:  
   - Particle structs with enable flags for conditional processing  
-  - Memory-optimized allocation using pre-allocated buffers  
+  - Memory-optimized allocation using pre-allocated buffers
+  - Draw Brush which uses interlocked add operation to avoid race condition
+  - Eraser Brush which randomizes particle position for even density distribution
+  - **Source/Drain Objects**:  
+  - Source: Spawns particles with configurable initial velocities  
+  - Drain: Disables particles using spatial triggers  
+  - Automatic buffer management with particle recycling
 - **Multi-Fluid Support**:  
   - Data-oriented design with fluid property tables  
   - 64px×1px gradient textures per fluid type stitched into 2D atlas  
   - Shader-driven visual differentiation using dynamic branching  
+
+### 🌐 Simulation Properties  
+- **Edge Behavior Modes**:  
+  - *Solid*: Acts as immovable wall (default)  
+  - *Void*: Disables particles and randomizes positions
+    - Position randomization avoids spatial hash collisions in void mode  
+  - *Loop*: Warps particles to opposite boundary  
+- **Gravity Behavior Modes**: (WIP)
+  - *Normal*
+  - *Radial*
+  - *Reversed*
+  - *Zero*
 
 ### 🎮 Game Systems  
 - **Fluid Density Detection**:  
@@ -43,6 +65,9 @@
   - Main menu with Play, Sandbox, Settings, and Quit  
   - Level selection screen with progress visualization  
   - Pause menu with real-time settings adjustment  
+- **Contextual Tooltips**:  
+  - Hover-sensitive help system  
+  - Mobile-optimized touch-and-hold activation  
 - **Graphics Settings**:  
   - Resolution, refresh rate, and fullscreen controls  
   - Developer-level unlock shortcuts  
@@ -70,17 +95,38 @@
 
 ## ⚙️ Technical Highlights  
 
-### Compute Shader Optimization  
-- Wavefront-optimized memory access patterns (32-64 threads)  
-- Particle property tables loaded per-threadgroup  
+### CPU-GPU Architecture  
+- **Memory Bridges**:  
+  - Compute buffers for particle data transfer  
+  - Structured buffers for collider information  
+  - Constant buffers for simulation setting properties  
+- **Command Execution**:  
+  - ComputeShader.Dispatch for kernel launches  
+  - AsyncGPUReadback for non-blocking data retrieval  
+  - Graphics.DrawMeshInstancedIndirect for rendering  
 
+### Compute Shader Optimization  
+- **Dispatch Strategy**:  
+  - Thread groups sized to GPU wavefront (32-64 threads)  
+  - Particle property tables loaded per-threadgroup  
+- **Thread Synchronization**:  
+  - InterlockedAdd for controlled particle spawning  
+  - Position randomization seed generated using frame number and atomic counter value  
+    
 ### Visual Pipeline  
 - Dual-pass rendering with custom alpha blending  
 - Vertex/fragment shaders using fluid-type flags  
+- Dynamic texture atlas for fluid gradients  
 
-### Hybrid Architecture  
-- CPU: Manages large colliders and game state  
-- GPU: Parallelized particle physics (SPH solver)  
+### Hybrid Workload Distribution  
+- **CPU Responsibilities**:  
+  - Large collider transformations  
+  - Game state management  
+  - UI/input processing  
+- **GPU Pipeline**:  
+  - SPH fluid solver (density/pressure/viscosity)  
+  - Spatial hashing for neighbor detection  
+  - Collision resolution using boundary textures  
 
 ---
 
