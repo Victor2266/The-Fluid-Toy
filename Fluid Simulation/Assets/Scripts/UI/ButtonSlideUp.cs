@@ -27,9 +27,6 @@ public class ButtonSlideUp : MonoBehaviour
 
         // Store original position
         originalPosition = button.transform.localPosition;
-
-        // Set initial state
-        ResetPosition();
     }
 
     private void OnEnable()
@@ -41,6 +38,17 @@ public class ButtonSlideUp : MonoBehaviour
             // Trigger animation
             AnimateButton();
         }
+    }
+
+    private void Start()
+    {
+       if (!animateOnEnable)
+        {
+            // Ensure we start from the reset position when scene loads
+            ResetPosition();
+            // Trigger animation
+            AnimateButton();
+        } 
     }
 
     private void ResetPosition()

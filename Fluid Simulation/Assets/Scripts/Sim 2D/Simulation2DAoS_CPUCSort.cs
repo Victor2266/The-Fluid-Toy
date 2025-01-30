@@ -149,7 +149,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     void Start()
     {
         // Debug.Log(System.Runtime.InteropServices.Marshal.SizeOf(typeof(SourceObjectInitializer))); //This prints the size of the typeof(struct)
-        Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
+        //Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
+        Debug.Log("This level is using the CPU CSort");
         CPUKernelAOS = new CPUParticleKernelAoS();
         targetInteractionRadius = interactionRadius;
         spawnData = spawner.GetSpawnData();
