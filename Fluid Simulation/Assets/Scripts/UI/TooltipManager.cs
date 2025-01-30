@@ -82,4 +82,10 @@ public class TooltipManager : MonoBehaviour
             .Append(canvasGroup.DOFade(0, fadeTime).SetEase(Ease.OutCubic))
             .OnComplete(() => tooltipPanel.gameObject.SetActive(false));
     }
+
+    void OnDestroy(){
+        // Kill any ongoing animations
+        currentSequence?.Kill();
+        canvasGroup.DOKill();
+    }
 }
