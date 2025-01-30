@@ -24,7 +24,7 @@ public class GPUCountSort
 		int count = keyBuffer.count;
 		cs = ComputeHelper.LoadComputeShader("CountSort");
 
-		sortedKBuffer = ComputeHelper.CreateStructuredBuffer<uint3>(count);
+		sortedKBuffer = ComputeHelper.CreateStructuredBuffer<uint>(count);
 		sortedVBuffer = ComputeHelper.CreateStructuredBuffer<uint>(count);
 		cntBuffer = ComputeHelper.CreateStructuredBuffer<uint>( (int) maxValue + 1 );
 
@@ -44,7 +44,7 @@ public class GPUCountSort
 		int count = keyBuffer.count;
 		cs = ComputeHelper.LoadComputeShader("CountSort_CPU");
 
-		sortedKBuffer = ComputeHelper.CreateStructuredBuffer<uint3>(count);
+		sortedKBuffer = ComputeHelper.CreateStructuredBuffer<uint>(count);
 		sortedVBuffer = ComputeHelper.CreateStructuredBuffer<uint>(count);
 		cntBuffer = ComputeHelper.CreateStructuredBuffer<uint>( (int) maxValue + 1 );
 

@@ -77,7 +77,7 @@ RWStructuredBuffer<FluidData> FluidDataSet;
 RWStructuredBuffer<ScalingFactors> ScalingFactorsBuffer;
 RWStructuredBuffer<Particle> Particles;
 RWStructuredBuffer<Particle> SortedParticles; // Sorted array
-RWStructuredBuffer<uint3> SpatialIndices; // used for spatial hashing index, hash, key
+RWStructuredBuffer<uint> SpatialIndices; // used for spatial hashing index, hash, key
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<uint> SortedIndices;  // Post-sort indices
 RWStructuredBuffer<OrientedBox> BoxColliders;
@@ -179,12 +179,10 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint currKey = SpatialIndices[currIndex];
 			currIndex++;
 			// Exit if no longer looking at correct bin
-			if (indexData[2] != key) break;
-			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			if (currKey != key) break;
 
 			uint neighbourIndex = currIndex-1;
 			Particle neighbourParticle = Particles[neighbourIndex];
@@ -546,7 +544,7 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	int2 cell = GetCell2D(Particles[index].predictedPosition, maxSmoothingRadius);
 	uint hash = HashCell2D(cell);
 	uint key = KeyFromHash(hash, numParticles);
-	SpatialIndices[id.x] = uint3(index, hash, key);
+	SpatialIndices[id.x] = key;
 	SortedIndices[id.x] = id.x;
 }
 
@@ -633,12 +631,10 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint currKey = SpatialIndices[currIndex];
 			currIndex ++;
 			// Exit if no longer looking at correct bin (index, hash, key)
-			if (indexData[2] != key) break;
-			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			if (currKey != key) break;
 
 			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self
@@ -715,12 +711,10 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint currKey = SpatialIndices[currIndex];
 			currIndex ++;
 			// Exit if no longer looking at correct bin
-			if (indexData[2] != key) break;
-			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			if (currKey != key) break;
 
 			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self

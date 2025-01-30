@@ -2741,16 +2741,19 @@ MonoBehaviour:
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 0
+  spawnRate: 100
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
   interactionStrength: 360
-  spawnRate: 100
+  minRadius: 0.25
+  maxRadius: 24
+  smoothingTime: 0.04
+  enableScrolling: 0
   manuallySelectFluidTypes: 0
   fluidDataArray: []
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 380785144}
-  display: {fileID: 380785143}
   boxColliders: []
   circleColliders: []
   sourceObjects: []

@@ -209,7 +209,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
 
 
-        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
+        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
@@ -241,9 +241,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
 
-        // Old
-        //gpuSort = new();
-        //gpuSort.SetBuffers(spatialIndices, spatialOffsets);
         gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1) );
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 

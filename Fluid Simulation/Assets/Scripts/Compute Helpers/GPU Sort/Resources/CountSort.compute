@@ -3,17 +3,10 @@
 #pragma kernel ScatterOutput
 #pragma kernel CopyBack
 
-struct Entry
-{
-	uint originalIndex;
-	uint hash;
-	uint key;
-};
-
 // Actual counting sort algorithm below
-RWStructuredBuffer<Entry> InputKeys;
+RWStructuredBuffer<uint> InputKeys;
 RWStructuredBuffer<uint> InputValues;
-RWStructuredBuffer<Entry> SortedKeys;
+RWStructuredBuffer<uint> SortedKeys;
 RWStructuredBuffer<uint> SortedValues;
 
 RWStructuredBuffer<uint> Counts;
@@ -34,8 +27,7 @@ void CalculateCounts(uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numInputs) return;
 
-	Entry e = InputKeys[id.x];
-	uint key = e.key;
+	uint key = InputKeys[id.x];
 	InterlockedAdd(Counts[key], 1);
 }
 
@@ -44,14 +36,13 @@ void ScatterOutput(uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numInputs) return;
 
-	Entry e = InputKeys[id.x];
-	uint key = e.key;
+	uint key = InputKeys[id.x];
 	uint value = InputValues[id.x];
 
 	uint sortedIndex;
 	InterlockedAdd(Counts[key], 1, sortedIndex);
 
-	SortedKeys[sortedIndex] = e;
+	SortedKeys[sortedIndex] = key;
 	SortedValues[sortedIndex] = value;
 }
 
