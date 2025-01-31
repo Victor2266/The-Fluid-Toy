@@ -35,9 +35,24 @@ public class BoxColliderOutline : MonoBehaviour
 
 
 
+    private Vector3 lastSize;
+    private Vector3 lastPosition;
+    private Quaternion lastRotation;
+
     void Update()
     {
-        UpdateOutline();
+        // Only update if something has changed
+        if (lastSize != transform.localScale || 
+            lastPosition != transform.position ||
+            lastRotation != transform.rotation)
+        {
+            UpdateOutline();
+            
+            // Store current values
+            lastSize = transform.localScale;
+            lastPosition = transform.position;
+            lastRotation = transform.rotation;
+        }
     }
 
 
