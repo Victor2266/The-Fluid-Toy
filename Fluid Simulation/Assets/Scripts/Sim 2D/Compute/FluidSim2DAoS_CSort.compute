@@ -131,7 +131,7 @@ float ViscosityKernel(float dst, float radius, int type)
 
 float TemperatureKernel(float dst, float radius, int type)
 {
-	return SpikyKernelPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3); // TEMP kernel to test.
+	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6); // TEMP kernel to test.
 }
 
 //get the maximum smoothing radius between two fluid types
@@ -227,7 +227,7 @@ float NearPressureFromDensity(float nearDensity, float nearPressureMultiplier)
 
 float ApproxHeatCapacity(float temperature, int type) {
 	// Tries to approximate heat capacity based on fluid type
-	return 4182; // FIXME TEMP
+	return 4.182; // FIXME TEMP
 
 	// TODO:
 	//  - Add either some way to represent a polynomial func. for empirical temperature modelling, or a LUT to interpolate fluid properties
@@ -753,7 +753,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	float1 temp = Particles[id.x].temperature;
 	float specHeatCap = ApproxHeatCapacity(temp, particle.type); // Approx. b/c it is not constant
 	float thermalCond = ApproxThermalConductivity(temp, particle.type); // Approx. b/c it is not constant
-	float thermalDiffusivity = thermalCond / (specHeatCap * density);
+	float thermalDiffusivity = density > 0 ? thermalCond / (specHeatCap * density) : thermalCond / specHeatCap;
 	float1 deltaTemp = 0;
 
 	for (int i = 0; i < 9; i++)
@@ -789,7 +789,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			float dst = sqrt(sqrDstToNeighbour);
 			float1 neighbourTemp = Particles[neighbourIndex].temperature;
 
-			deltaTemp += (neighbourTemp - temp) / sqrDstToNeighbour; //TemperatureKernel(dst, fluidData.smoothingRadius, particle.type); // FIXME using viewpoint particle's smoothing radius
+			deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, particle.type); // FIXME using viewpoint particle's smoothing radius
 		}
 
 	}
