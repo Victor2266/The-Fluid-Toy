@@ -557,7 +557,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
 
-        GetComponent<MultiParticleDisplay2D>().CreateAndSetupVisualParamsBuffer(fluidDataArray);
+        var multiParticleDisplay2D = GetComponent<MultiParticleDisplay2D>();
+        if (multiParticleDisplay2D != null)
+        {
+            multiParticleDisplay2D.CreateAndSetupVisualParamsBuffer(fluidDataArray);
+        }
     }
 
     void OnDestroy()
