@@ -57,9 +57,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
-    // For the spatial subdivision to work we use the largest smoothing radius for the grid
+    // For the spatial subdivision to work we use the largest smoothing radius for the its grid
     // By manually selecting the fluid types you can finetune the grid size
+    [Tooltip("You should always manually select fluids types, otherwise it will grab all the fluids in the resources folder which is less efficient")] 
     [SerializeField] private bool manuallySelectFluidTypes;
+
+    [Tooltip("THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD")] 
+    [SerializeField] private bool updateFluidsEveryFrame = false; // THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD
+    private bool updateFluidsNextFrame = false; // This can be used to trigger a fluid list update once
     private float maxSmoothingRadius = 0f;
     [SerializeField] public FluidData[] fluidDataArray;
     private FluidParam[] fluidParamArr; // Compute-friendly data type
@@ -296,6 +301,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         if (enableHotkeys)
             HandleHotkeysInput();
+
+        if(updateFluidsNextFrame || updateFluidsEveryFrame){
+            updateFluidsNextFrame = false;
+            UpdateFluids();
+        }
     }
 
     void RunSimulationFrame(float frameTime)
@@ -535,6 +545,31 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
     }
 
+    void UpdateFluids(){
+        for (int i = 0; i < fluidDataArray.Length; i++)
+        {
+            fluidParamArr[i] = fluidDataArray[i].getFluidParams();
+            fluidParamArr[i].fluidType = (FluidType)i + 1;
+            scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
+
+            if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
+            {
+                maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
+            }
+        }
+
+        // Set buffer data
+        fluidDataBuffer.SetData(fluidParamArr);
+        ScalingFactorsBuffer.SetData(scalingFactorsArr);
+
+        compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
+
+        var multiParticleDisplay2D = GetComponent<MultiParticleDisplay2D>();
+        if (multiParticleDisplay2D != null)
+        {
+            multiParticleDisplay2D.CreateAndSetupVisualParamsBuffer(fluidDataArray);
+        }
+    }
 
     void OnDestroy()
     {

@@ -317,6 +317,28 @@ void HandleBoxCollision(inout float2 pos, inout float2 vel, OrientedBox box, flo
     vel = right * localVel.x + up * localVel.y;
 }
 
+void HandleCircleCollision(inout float2 pos, inout float2 vel, Circle circle, float collisionDamping)
+{
+    float2 delta = pos - circle.pos;
+    float distanceSq = dot(delta, delta);
+    float radiusSq = circle.radius * circle.radius;
+
+    // Early exit if no collision
+    if (distanceSq >= radiusSq)
+        return;
+
+    // Calculate collision normal and penetration
+    float distance = sqrt(distanceSq);
+    float2 normal = distance > 0 ? delta/distance : float2(1, 0);
+
+    // Position correction
+    pos = circle.pos + normal * circle.radius;
+
+    // Velocity reflection with damping
+    float velNormal = dot(vel, normal);
+    vel -= (1.0 + collisionDamping) * velNormal * normal;
+}
+
 void DisableParticle(inout Particle particle){
 	// Create a random seed based on particle position and current tick
 	uint randomState = (uint)(particle.position.x * 1000) + (uint)(particle.position.y * 1000) + atomicCounter[1] * 982451653;
@@ -423,8 +445,11 @@ void HandleCollisions(inout Particle particle)
 			HandleBoxCollision(pos, vel, BoxColliders[i], fluidData.collisionDamping);
 		}
 
-		//TODO Handle Circle Collisions
-
+		// Handle circle collisions
+		for (int j = 0; j < numCircleColliders; j++)
+		{
+			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping);
+		}
 	}
 
 	// Update position and velocity in the particle struct
