@@ -26,14 +26,23 @@ public class Draggable : MonoBehaviour
     void OnMouseDown()
     {
         isDragging = true;
-        if (rb2d != null) rb2d.isKinematic = true;
+        if (rb2d != null) {
+            rb2d.isKinematic = true;
+            rb2d.freezeRotation = true;
+            rb2d.velocity = Vector2.zero;
+            rb2d.angularVelocity = 0f;
+        }
+
         offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     void OnMouseUp()
     {
         isDragging = false;
-        if (rb2d != null) rb2d.isKinematic = false;
+        if (rb2d != null) {
+            rb2d.isKinematic = false;
+            rb2d.freezeRotation = false;
+        }
     }
 
     void Update()
