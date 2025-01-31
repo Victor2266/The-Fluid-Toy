@@ -1741,10 +1741,14 @@ PrefabInstance:
 
         RMB
 
-        SCROLL WHEEL
+        SCROLL
 
         SHIFT
-        + SCROLL WHEEL'
+        + SCROLL
+
+        LMB + SCROLL
+
+        LMB + SHIFT + SCROLL'
       objectReference: {fileID: 0}
     - target: {fileID: 1414927193157430713, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_Name
@@ -1756,19 +1760,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2987655510687563668, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 148
+      value: 198
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3524787591176181153, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4365769675071356382, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_Pivot.x
@@ -1857,14 +1861,19 @@ PrefabInstance:
         Reset Simulation
 
         Use Selected
-        Brush
+        Brush, Drag Objects
 
         Use Alternate Brush Effect
 
-        Change Brush Size
+        Change Brush
+        Size
 
-        Change
-        Brush Strength (For Gravity)'
+        Change Brush Strength (For Gravity)
+
+        Resize Object
+        Vertically (When Dragging)
+
+        Resize Object Horizontally (When Dragging)'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
