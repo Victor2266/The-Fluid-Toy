@@ -739,7 +739,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 [numthreads(NumThreads, 1, 1)]
 void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 {
-	return; // WIP --- remove later
+	//return; // WIP --- remove later
 
 	if (id.x >= numParticles) return;
 	Particle particle = Particles[id.x];
