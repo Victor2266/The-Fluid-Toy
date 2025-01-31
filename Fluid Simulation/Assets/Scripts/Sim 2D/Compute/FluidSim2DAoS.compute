@@ -472,9 +472,9 @@ void HandleCollisions(inout Particle particle)
 		}
 
 		// Handle circle collisions
-		for (int i = 0; i < numCircleColliders; i++)
+		for (int j = 0; j < numCircleColliders; j++)
 		{
-			HandleCircleCollision(pos, vel, CircleColliders[i], fluidData.collisionDamping);
+			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping);
 		}
 
 		// Update position and velocity in the particle struct only if particle is still active
