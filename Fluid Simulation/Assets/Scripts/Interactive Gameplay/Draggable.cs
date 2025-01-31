@@ -14,20 +14,25 @@ public class Draggable : MonoBehaviour
     
     private Vector3 targetScale;
 
+    private Rigidbody2D rb2d;
+
     void Start()
     {
         targetScale = transform.localScale;
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     void OnMouseDown()
     {
         isDragging = true;
+        if (rb2d != null) rb2d.isKinematic = true;
         offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
     
     void OnMouseUp()
     {
         isDragging = false;
+        if (rb2d != null) rb2d.isKinematic = false;
     }
     
     void Update()
