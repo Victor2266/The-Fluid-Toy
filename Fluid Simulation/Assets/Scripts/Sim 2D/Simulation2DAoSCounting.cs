@@ -57,7 +57,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
-
     // For the spatial subdivision to work we use the largest smoothing radius for the its grid
     // By manually selecting the fluid types you can finetune the grid size
     [Tooltip("You should always manually select fluids types, otherwise it will grab all the fluids in the resources folder which is less efficient")] 
