@@ -131,7 +131,7 @@ float ViscosityKernel(float dst, float radius, int type)
 
 float TemperatureKernel(float dst, float radius, int type)
 {
-	return DerivativeSpikyPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3); // TEMP kernel to test.
+	return SpikyKernelPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3); // TEMP kernel to test.
 }
 
 //get the maximum smoothing radius between two fluid types
@@ -739,8 +739,6 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 [numthreads(NumThreads, 1, 1)]
 void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 {
-	//return; // WIP --- remove later
-
 	if (id.x >= numParticles) return;
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
@@ -791,7 +789,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			float dst = sqrt(sqrDstToNeighbour);
 			float1 neighbourTemp = Particles[neighbourIndex].temperature;
 
-			deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, particle.type); // FIXME using viewpoint particle's smoothing radius
+			deltaTemp += (neighbourTemp - temp) / sqrDstToNeighbour; //TemperatureKernel(dst, fluidData.smoothingRadius, particle.type); // FIXME using viewpoint particle's smoothing radius
 		}
 
 	}

@@ -499,8 +499,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
                 density = new float2(0, 0),
-                //temperature = 22.0f,
-                temperature = UnityEngine.Random.Range(0f, 100f), // FIXME temp remove later
+                temperature = 22.0f,
+                //temperature = UnityEngine.Random.Range(0f, 100f), // FIXME temp remove later
                 type = FluidType.Water // Or whatever default type you want};
             };
             allPoints[i] = p;
