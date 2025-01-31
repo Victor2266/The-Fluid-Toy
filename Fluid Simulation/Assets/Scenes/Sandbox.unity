@@ -812,6 +812,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothingSpeed: 0.2
   enableSmoothing: 1
+  resizable: 0
+  scaleSpeed: 0.1
+  minScale: 0.1
+  maxScale: 5
 --- !u!58 &336022956
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -880,6 +884,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothingSpeed: 0.2
   enableSmoothing: 1
+  resizable: 0
+  scaleSpeed: 0.1
+  minScale: 0.1
+  maxScale: 5
 --- !u!50 &479231986
 Rigidbody2D:
   serializedVersion: 4
@@ -1378,6 +1386,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothingSpeed: 0.2
   enableSmoothing: 1
+  resizable: 0
+  scaleSpeed: 0.1
+  minScale: 0.1
+  maxScale: 5
 --- !u!58 &797593690
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1543,6 +1555,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothingSpeed: 0.2
   enableSmoothing: 1
+  resizable: 0
+  scaleSpeed: 0.1
+  minScale: 0.1
+  maxScale: 5
 --- !u!50 &917702757
 Rigidbody2D:
   serializedVersion: 4
@@ -2100,6 +2116,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothingSpeed: 0.2
   enableSmoothing: 1
+  resizable: 1
+  scaleSpeed: 0.1
+  minScale: 1
+  maxScale: 16
 --- !u!50 &1163845347
 Rigidbody2D:
   serializedVersion: 4
