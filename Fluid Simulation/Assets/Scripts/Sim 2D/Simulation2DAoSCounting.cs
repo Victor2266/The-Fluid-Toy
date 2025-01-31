@@ -60,6 +60,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     // For the spatial subdivision to work we use the largest smoothing radius for the grid
     // By manually selecting the fluid types you can finetune the grid size
     [SerializeField] private bool manuallySelectFluidTypes;
+    [SerializeField] private bool updateFluidsNextFrame = false;
     private float maxSmoothingRadius = 0f;
     [SerializeField] public FluidData[] fluidDataArray;
     private FluidParam[] fluidParamArr; // Compute-friendly data type
@@ -295,6 +296,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         if (enableHotkeys)
             HandleHotkeysInput();
+
+        if(updateFluidsNextFrame){
+            updateFluidsNextFrame = false;
+            UpdateFluids();
+        }
     }
 
     void RunSimulationFrame(float frameTime)
@@ -532,6 +538,27 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
     }
 
+    void UpdateFluids(){
+        for (int i = 0; i < fluidDataArray.Length; i++)
+        {
+            fluidParamArr[i] = fluidDataArray[i].getFluidParams();
+            fluidParamArr[i].fluidType = (FluidType)i + 1;
+            scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
+
+            if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
+            {
+                maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
+            }
+        }
+
+        // Set buffer data
+        fluidDataBuffer.SetData(fluidParamArr);
+        ScalingFactorsBuffer.SetData(scalingFactorsArr);
+
+        compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
+
+        GetComponent<MultiParticleDisplay2D>().CreateAndSetupVisualParamsBuffer(fluidDataArray);
+    }
 
     void OnDestroy()
     {
