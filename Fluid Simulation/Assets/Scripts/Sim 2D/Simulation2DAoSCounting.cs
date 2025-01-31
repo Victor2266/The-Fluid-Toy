@@ -60,7 +60,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     // For the spatial subdivision to work we use the largest smoothing radius for the grid
     // By manually selecting the fluid types you can finetune the grid size
     [SerializeField] private bool manuallySelectFluidTypes;
-    [SerializeField] private bool updateFluidsEveryFrame = false; // THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD
+    
+    [Tooltip("THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD")] 
+    [SerializeField] private bool updateFluidsEveryFrame = false;
     private bool updateFluidsNextFrame = false; // This can be used to trigger a fluid list update once
     private float maxSmoothingRadius = 0f;
     [SerializeField] public FluidData[] fluidDataArray;
