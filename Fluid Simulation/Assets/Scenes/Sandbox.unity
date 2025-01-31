@@ -645,6 +645,7 @@ MonoBehaviour:
   smoothingSpeed: 0.2
   enableSmoothing: 1
   resizable: 0
+  uniformScaling: 1
   scaleSpeed: 0.1
   minScale: 0.1
   maxScale: 5
@@ -837,9 +838,10 @@ MonoBehaviour:
   smoothingSpeed: 0.2
   enableSmoothing: 1
   resizable: 1
+  uniformScaling: 0
   scaleSpeed: 0.1
   minScale: 1
-  maxScale: 16
+  maxScale: 18
 --- !u!50 &474748747
 Rigidbody2D:
   serializedVersion: 4
@@ -1337,6 +1339,7 @@ MonoBehaviour:
   smoothingSpeed: 0.2
   enableSmoothing: 1
   resizable: 0
+  uniformScaling: 0
   scaleSpeed: 0.1
   minScale: 0.1
   maxScale: 5
@@ -1943,9 +1946,10 @@ MonoBehaviour:
   smoothingSpeed: 0.2
   enableSmoothing: 1
   resizable: 1
+  uniformScaling: 0
   scaleSpeed: 0.1
   minScale: 1
-  maxScale: 16
+  maxScale: 18
 --- !u!50 &1163845347
 Rigidbody2D:
   serializedVersion: 4
@@ -2861,9 +2865,10 @@ MonoBehaviour:
   smoothingSpeed: 0.2
   enableSmoothing: 1
   resizable: 1
+  uniformScaling: 0
   scaleSpeed: 0.1
   minScale: 1
-  maxScale: 16
+  maxScale: 18
 --- !u!50 &1812870173
 Rigidbody2D:
   serializedVersion: 4
