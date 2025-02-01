@@ -12,7 +12,6 @@ public class BoxColliderOutline : MonoBehaviour
         // Setup Line Renderer
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 4; // 4 points to close the rectangle
-        
         // Get collider bounds
         boxCollider = GetComponent<BoxCollider2D>();
         UpdateOutline();
