@@ -620,10 +620,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public void togglePause()
     {
-        float[] temps = GetParticleTemps();
-        for (int i = 0; i < numParticles; i++) {
-            Debug.Log($"Particle {i}: Temp: {temps[i]}");
-        }
+        //// FOR DEBUG:
+        //float[] temps = GetParticleTemps();
+        //for (int i = 0; i < numParticles; i++) {
+        //    Debug.Log($"Particle {i}: Temp: {temps[i]}");
+        //}
         isPaused = !isPaused;
     }
     public bool getPaused()

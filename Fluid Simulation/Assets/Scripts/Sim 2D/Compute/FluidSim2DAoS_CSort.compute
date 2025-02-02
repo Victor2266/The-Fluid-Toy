@@ -39,6 +39,7 @@ struct FluidData
 	float1 nearPressureMultiplier;
 	float1 viscosityStrength;
 	float1 startTemperature;
+	float1 thermalDiffusivity;
 };
 
 struct Circle //12 bytes total
@@ -224,24 +225,6 @@ float NearPressureFromDensity(float nearDensity, float nearPressureMultiplier)
 {
 	return nearPressureMultiplier * nearDensity;
 }
-
-float ApproxHeatCapacity(float temperature, int type) {
-	// Tries to approximate heat capacity based on fluid type
-	return 4.182; // FIXME TEMP
-
-	// TODO:
-	//  - Add either some way to represent a polynomial func. for empirical temperature modelling, or a LUT to interpolate fluid properties
-	//  - Calculate and return heart capacity
-}
-
-float ApproxThermalConductivity(float temperature, int type) {
-	// Tries to approximate thermal conductivity for a fluid type
-	return 0.598;
-
-	// TODO:
-	//  - Same as above, need either a func. or a LUT
-}
-
 
 float2 ExternalForces(float2 pos, float2 velocity, float gravity)
 {
@@ -751,9 +734,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
 	
 	float1 temp = Particles[id.x].temperature;
-	float specHeatCap = ApproxHeatCapacity(temp, particle.type); // Approx. b/c it is not constant
-	float thermalCond = ApproxThermalConductivity(temp, particle.type); // Approx. b/c it is not constant
-	float thermalDiffusivity = density > 0 ? thermalCond / (specHeatCap * density) : thermalCond / specHeatCap;
+	float1 thermalDiffusivity = density > 0 ? fluidData.thermalDiffusivity / (density) : fluidData.thermalDiffusivity;
 	float1 deltaTemp = 0;
 
 	for (int i = 0; i < 9; i++)
