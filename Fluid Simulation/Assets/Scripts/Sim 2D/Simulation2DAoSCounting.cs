@@ -336,7 +336,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         spatialOffsetsCalc.Run(false);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
-        //gpuSort.SortAndCalculateOffsets(); // Old
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
         //compute the pressure and viscosity on CPU
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
@@ -398,33 +397,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     void UpdateSettings(float deltaTime)
     {
         compute.SetFloat("deltaTime", deltaTime);
-        //compute.SetFloat("gravity", gravity);
-        //compute.SetFloat("collisionDamping", collisionDamping);
-        //compute.SetFloat("smoothingRadius", smoothingRadius);
-        //compute.SetFloat("targetDensity", targetDensity);
-        //compute.SetFloat("pressureMultiplier", pressureMultiplier);
-        //compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
-        //compute.SetFloat("viscosityStrength", viscosityStrength);
         compute.SetVector("boundsSize", boundsSize);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
         compute.SetInt("numDrainObjs", drainObjects.Length);
-
         compute.SetInt("selectedFluidType", selectedFluid);
-
         compute.SetInt("edgeType", (int) edgeType);
-
         compute.SetInt("spawnRate", (int) spawnRate);
-
-        //These are now computed once at the start
-        /*
-        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
-        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 5)));
-        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 4)));
-        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(currentFluid.smoothingRadius, 5) * Mathf.PI));
-        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
-        */
 
         if (sourceObjects.Length > 0)
         {
@@ -509,8 +489,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
                 density = new float2(0, 0),
-                //temperature = 22.0f,
-                temperature = UnityEngine.Random.Range(0f, 100f), // FIXME temp remove later
+                temperature = 22.0f,
                 type = FluidType.Water // Or whatever default type you want};
             };
             allPoints[i] = p;
@@ -696,7 +675,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
         return positions;
     }
-
     public float[] GetParticleTemps()
     {
         float[] temps = new float[numParticles];
