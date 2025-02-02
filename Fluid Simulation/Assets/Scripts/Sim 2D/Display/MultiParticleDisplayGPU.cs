@@ -91,7 +91,7 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
         }
 	}
 
-	void CreateAndSetupVisualParamsBuffer(FluidData[] fluidDataArray){
+	public void CreateAndSetupVisualParamsBuffer(FluidData[] fluidDataArray){
 		// Create and set up visual parameters buffer
         var visualParams = new FluidData.VisualParamBuffer[fluidDataArray.Length];
         for (int i = 0; i < fluidDataArray.Length; i++)
