@@ -120,7 +120,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     const int pressureKernel = 6;
     const int viscosityKernel = 7;
     const int updatePositionKernel = 8;
-    //const int mergeCPUParticlesKernel = 9; // For CPU-GPU
+    const int mergeCPUParticlesKernel = 9; // For CPU-GPU
 
     // State
     bool isPaused;
@@ -140,7 +140,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
     public bool toggleCPUComputing = false;
 
-    //CPUParticleKernelAoS CPUKernelAOS;
+    CPUParticleKernelAoS CPUKernelAOS;
 
     ComputeBuffer cpuparticlebuffer;
     ComputeBuffer keyarrbuffer;
@@ -151,7 +151,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // Debug.Log(System.Runtime.InteropServices.Marshal.SizeOf(typeof(SourceObjectInitializer))); //This prints the size of the typeof(struct)
         //Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
         Debug.Log("This level is using the CPU CSort");
-        //CPUKernelAOS = new CPUParticleKernelAoS();
+        CPUKernelAOS = new CPUParticleKernelAoS();
         targetInteractionRadius = interactionRadius;
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
@@ -428,13 +428,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     void UpdateSettings(float deltaTime)
     {
         compute.SetFloat("deltaTime", deltaTime);
-        //compute.SetFloat("gravity", gravity);
-        //compute.SetFloat("collisionDamping", collisionDamping);
-        //compute.SetFloat("smoothingRadius", smoothingRadius);
-        //compute.SetFloat("targetDensity", targetDensity);
-        //compute.SetFloat("pressureMultiplier", pressureMultiplier);
-        //compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
-        //compute.SetFloat("viscosityStrength", viscosityStrength);
         compute.SetVector("boundsSize", boundsSize);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
@@ -446,15 +439,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         compute.SetInt("edgeType", (int) edgeType);
 
         compute.SetInt("spawnRate", (int) spawnRate);
-
-        //These are now computed once at the start
-        /*
-        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
-        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 5)));
-        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 4)));
-        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(currentFluid.smoothingRadius, 5) * Mathf.PI));
-        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
-        */
 
         if (sourceObjects.Length > 0)
         {
@@ -468,7 +452,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // CPU compute keys
         if (isCPUComputingEnabled)
         {
-            //CPUKernelAOS.deltaTime = deltaTime;
+            CPUKernelAOS.deltaTime = deltaTime;
             compute.SetInt("numCPUKeys", (int)numCPUKeys);
         }
         else
@@ -715,7 +699,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         return interactionRadius;
     }
-    /*
+    
     void initializeCPUKernelSettingsAoS()
     {
         CPUKernelAOS.numParticles = numParticles;
@@ -869,5 +853,5 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.offsets2DBuffer.Dispose();
         CPUKernelAOS.particleResultBuffer.Dispose();
         CPUKernelAOS.keyarrbuffer.Dispose();
-    }*/
+    }
 }
