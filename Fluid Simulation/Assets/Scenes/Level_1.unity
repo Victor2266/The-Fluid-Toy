@@ -349,7 +349,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 105816474}
-  - component: {fileID: 105816475}
+  - component: {fileID: 105816478}
   - component: {fileID: 105816477}
   - component: {fileID: 105816476}
   m_Layer: 0
@@ -374,31 +374,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &105816475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105816473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5deeaceccaf8e7542acbd66f84ce575e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentLevel: 1
-  requiredHoldTime: 5
-  fluidDetector: {fileID: 367842095}
-  audioSource: {fileID: 105816476}
-  winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
-  backgroundMusic: {fileID: 2035263640}
-  initialMusicVolume: 0.5
-  fadeOutStartTime: 0
-  showDebugTimer: 1
-  levelCompleteAnim: {fileID: 105816477}
-  timer: 0
-  threeStarTime: 15
-  twoStarTime: 20
 --- !u!82 &105816476
 AudioSource:
   m_ObjectHideFlags: 0
@@ -522,6 +497,31 @@ MonoBehaviour:
   ThirdStarImage: {fileID: 674052236}
   starSound: {fileID: 8300000, guid: d71dadee69424724898984a43168a771, type: 3}
   audioSource: {fileID: 105816476}
+--- !u!114 &105816478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105816473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f46c5283a1bfc54ba77c85b41ed88e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentLevel: 1
+  requiredHoldTime: 5
+  audioSource: {fileID: 105816476}
+  winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
+  backgroundMusic: {fileID: 2035263640}
+  initialMusicVolume: 0.5
+  fadeOutStartTime: 0
+  showDebugTimer: 1
+  levelCompleteAnim: {fileID: 105816477}
+  timer: 0
+  threeStarTime: 15
+  twoStarTime: 20
+  fluidDetector: {fileID: 367842095}
 --- !u!1 &129142224
 GameObject:
   m_ObjectHideFlags: 0

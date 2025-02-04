@@ -9,29 +9,28 @@ public class LevelManager : MonoBehaviour
     public float requiredHoldTime = 5f;
     
     [Header("References")]
-    public FluidDetector fluidDetector;
     public AudioSource audioSource;
     public AudioClip winSound;
     public AudioSource backgroundMusic;
     
     [Header("Audio Settings")]
-    [SerializeField] private float initialMusicVolume = 0.5f;
+    [SerializeField] protected float initialMusicVolume = 0.5f;
     [Range(0f, 1f)]
     public float fadeOutStartTime = 0f; // When to start fading (as percentage of hold time)
     
     [Header("Debug")]
     public bool showDebugTimer = true;
     
-    private float holdTimer = 0f;
-    private bool isHolding = false;
-    private bool hasWon = false;
-    private float lastMouseInputTime;
+    protected float holdTimer = 0f;
+    protected bool isHolding = false;
+    protected bool hasWon = false;
+    protected float lastMouseInputTime;
 
     public LevelCompleteAnimation levelCompleteAnim;
 
-    [SerializeField] private float timer = 0;
-    [SerializeField] private float threeStarTime = 0;
-    [SerializeField] private float twoStarTime = 0;
+    [SerializeField] protected float timer = 0;
+    [SerializeField] protected float threeStarTime = 0;
+    [SerializeField] protected float twoStarTime = 0;
 
     void Start()
     {
@@ -39,17 +38,6 @@ public class LevelManager : MonoBehaviour
         if (backgroundMusic != null)
         {
             backgroundMusic.volume = initialMusicVolume;
-        }
-        
-        if (fluidDetector == null)
-        {
-            fluidDetector = FindObjectOfType<FluidDetector>();
-            if (fluidDetector == null)
-            {
-                Debug.LogError("No FluidDetector found in the scene!");
-                enabled = false;
-                return;
-            }
         }
 
         if (audioSource == null)
@@ -65,62 +53,14 @@ public class LevelManager : MonoBehaviour
         lastMouseInputTime = Time.time;
     }
 
+    // Extend this class and implement the update loop for each individual level
+    /*
     void Update()
     {
-        if (hasWon) return;
-        timer += Time.deltaTime;
 
-        // Check for any mouse input
-        if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
-        {
-            lastMouseInputTime = Time.time;
-            ResetHoldTimer();
-            return;
-        }
+    }*/
 
-        // Only start counting if we haven't had mouse input for at least 0.5 seconds
-        if (Time.time - lastMouseInputTime < 0.5f)
-        {
-            ResetHoldTimer();
-            return;
-        }
-
-        // Check if fluid detector is above threshold
-        if (fluidDetector.isFluidPresent)
-        {
-            if (!isHolding)
-            {
-                isHolding = true;
-                holdTimer = 0f;
-            }
-
-            holdTimer += Time.deltaTime;
-
-            // Update background music volume
-            if (backgroundMusic != null)
-            {
-                float fadeStartThreshold = requiredHoldTime * fadeOutStartTime;
-                if (holdTimer >= fadeStartThreshold)
-                {
-                    float fadeProgress = (holdTimer - fadeStartThreshold) / (requiredHoldTime - fadeStartThreshold);
-                    fadeProgress = Mathf.Clamp01(fadeProgress);
-                    backgroundMusic.volume = Mathf.Lerp(initialMusicVolume, 0f, fadeProgress);
-                }
-            }
-
-            // Check if we've held for long enough
-            if (holdTimer >= requiredHoldTime)
-            {
-                TriggerWin();
-            }
-        }
-        else
-        {
-            ResetHoldTimer();
-        }
-    }
-
-    void ResetHoldTimer()
+    protected void ResetHoldTimer()
     {
         holdTimer = 0f;
         isHolding = false;
@@ -132,7 +72,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    void TriggerWin()
+    protected void TriggerWin()
     {
         if (hasWon) return;
         
@@ -175,7 +115,7 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(WinSequence());
     }
 
-    IEnumerator WinSequence()
+    protected IEnumerator WinSequence()
     {
         Debug.Log($"Level {currentLevel} Complete!");
 
@@ -196,7 +136,7 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadScene("Main Menu"); // Uncomment and modify as needed
     }
 
-    void OnGUI()
+    protected void OnGUI()
     {
         if (!showDebugTimer || hasWon) return;
 
