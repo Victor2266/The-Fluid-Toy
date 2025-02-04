@@ -37,7 +37,7 @@ public class Level1Manager : LevelManager
             return;
         }
 
-        // Only start counting if we haven't had mouse input for at least 0.5 seconds
+        // Only start counting after 0.5 seconds have past since last mouse input
         if (Time.time - lastMouseInputTime < 0.5f)
         {
             ResetHoldTimer();
