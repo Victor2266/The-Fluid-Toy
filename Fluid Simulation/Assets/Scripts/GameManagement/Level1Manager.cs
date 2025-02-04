@@ -22,6 +22,8 @@ public class Level1Manager : LevelManager
         }
     }
     // Update is called once per frame
+    // This script will check for the win conditions
+    // this can be customized for each level
     void Update()
     {
         if (hasWon) return;
@@ -42,7 +44,7 @@ public class Level1Manager : LevelManager
             return;
         }
 
-        // Check if fluid detector is above threshold
+        // Check if fluid detector is above threshold (WIN CONDITION)
         if (fluidDetector.isFluidPresent)
         {
             if (!isHolding)
