@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System;
 using UnityEngine.UIElements;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 
 public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
@@ -443,8 +444,19 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         // Mouse interaction settings:
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        bool isPullInteraction = Input.GetMouseButton(0);
+        bool isPullInteraction = false;
         bool isPushInteraction = Input.GetMouseButton(1);
+
+        if (!EventSystem.current.IsPointerOverGameObject()){ // Checks for mouse click over UI
+
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit.collider == null) // Click wasn't over any game objects
+            {
+                // Click wasn't over any UI or game objects
+                isPullInteraction = Input.GetMouseButton(0);
+            }
+        }
+
         float currInteractStrength = 0;
 
         if (brushState == BrushType.GRAVITY)

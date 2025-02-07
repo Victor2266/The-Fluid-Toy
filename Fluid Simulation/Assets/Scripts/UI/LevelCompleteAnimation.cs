@@ -10,7 +10,7 @@ public class LevelCompleteAnimation : MonoBehaviour
     private CanvasGroup overlayCanvasGroup;
     [SerializeField] private RectTransform checkmarkTransform;
     [SerializeField] private Image checkmarkImage;
-    [SerializeField] private CanvasGroup completionText;
+    [SerializeField] private CanvasGroup completionScore;
 
     [SerializeField] private int currentLevel;
     
@@ -37,10 +37,10 @@ public class LevelCompleteAnimation : MonoBehaviour
         overlayCanvasGroup.alpha = 0f;
         checkmarkImage.color = new Color(1f, 1f, 1f, 0f);
         checkmarkTransform.localScale = Vector3.zero;
-        if (completionText != null)
+        if (completionScore != null)
         {
-            completionText.alpha = 0f; // Use alpha property for TextMeshPro
-            completionText.transform.localPosition = new Vector3(0f, -410f, 0f);
+            completionScore.alpha = 0f; // Use alpha property for TextMeshPro
+            completionScore.transform.localPosition = new Vector3(0f, -410f, 0f);
         }
     }
     
@@ -67,10 +67,10 @@ public class LevelCompleteAnimation : MonoBehaviour
             .SetEase(Ease.OutBack));
         
         // Fade in completion score if available
-        if (completionText != null)
+        if (completionScore != null)
         {
-            completeSequence.Append(completionText.DOFade(1f, textFadeDuration));
-            completeSequence.Join(completionText.transform.DOLocalMoveY(-300f, textFadeDuration)).SetEase(Ease.OutQuint);
+            completeSequence.Append(completionScore.DOFade(1f, textFadeDuration));
+            completeSequence.Join(completionScore.transform.DOLocalMoveY(-300f, textFadeDuration)).SetEase(Ease.OutQuint);
 
             // Fade in each star image based on score
             if (currentLevelScore >= 3)
@@ -137,9 +137,9 @@ public class LevelCompleteAnimation : MonoBehaviour
         checkmarkImage.color = new Color(1f, 1f, 1f, 0f);
         checkmarkTransform.localScale = Vector3.zero;
         checkmarkTransform.rotation = Quaternion.identity;
-        if (completionText != null){
-            completionText.alpha = 0f; // Reset TextMeshPro alpha
-            completionText.transform.localPosition = new Vector3(0f, -410f, 0f);
+        if (completionScore != null){
+            completionScore.alpha = 0f; // Reset TextMeshPro alpha
+            completionScore.transform.localPosition = new Vector3(0f, -410f, 0f);
         }
     }
 

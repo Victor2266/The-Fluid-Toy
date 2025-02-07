@@ -64,25 +64,68 @@ Shader "Instanced/MultiFluidParticle2D"
         // Hash function for noise generation
         float2 hash2D(float2 p)
         {
-            float2 k = float2(0.3183099, 0.3678794);
-            p = p * k + k.yx;
-            return -1.0 + 2.0 * frac(16.0 * k * frac(p.x * p.y * (p.x + p.y)));
+            float3 p3 = frac(float3(p.xyx) * float3(.1031, .1030, .0973));
+            p3 += dot(p3, p3.yzx + 33.33);
+            return frac((p3.xx + p3.yz) * p3.zy);
         }
-
         // 2D noise function for creating organic-looking effects
         float noise(float2 p)
         {
-            float2 i = floor(p);
-            float2 f = frac(p);
-            float2 u = f * f * (3.0 - 2.0 * f); // Smooth interpolation
+            float2 pi = floor(p);
+            float2 pf = frac(p);
+            
+            // Quintic interpolation curve
+            //float2 w = pf * pf * pf * (pf * (pf * 6.0 - 15.0) + 10.0);
+            // Simplified interpolation - cubic instead of quintic
+            float2 w = pf * pf * (3.0 - 2.0 * pf);
+            
+            // Generate gradient directions
+            float n00 = dot(hash2D(pi + float2(0, 0)) * 2.0 - 1.0, pf - float2(0, 0));
+            float n10 = dot(hash2D(pi + float2(1, 0)) * 2.0 - 1.0, pf - float2(1, 0));
+            float n01 = dot(hash2D(pi + float2(0, 1)) * 2.0 - 1.0, pf - float2(0, 1));
+            float n11 = dot(hash2D(pi + float2(1, 1)) * 2.0 - 1.0, pf - float2(1, 1));
+            
+            // Blend noise values
+            float n0 = lerp(n00, n10, w.x);
+            float n1 = lerp(n01, n11, w.x);
+            float n = lerp(n0, n1, w.y);
+            
+            // Transform to 0.0 - 1.0 range
+            return n * 0.5 + 0.5;
+        }
 
-            return lerp(
-                lerp(dot(hash2D(i + float2(0.0, 0.0)), f - float2(0.0, 0.0)),
-                    dot(hash2D(i + float2(1.0, 0.0)), f - float2(1.0, 0.0)), u.x),
-                lerp(dot(hash2D(i + float2(0.0, 1.0)), f - float2(0.0, 1.0)),
-                    dot(hash2D(i + float2(1.0, 1.0)), f - float2(1.0, 1.0)), u.x),
-                u.y
-            );
+        // Improved noise function with multiple octaves for more detail
+        float fbm(float2 p)
+        {
+            float value = 0.0;
+            float amplitude = 0.5;
+            float frequency = 1.0;
+            
+            // Add multiple layers of noise
+            for(int i = 0; i < 1; i++)
+            {
+                value += amplitude * noise(p * frequency);
+                frequency *= 2.17; // Slightly off from 2.0 for less repetition
+                amplitude *= 0.49; // Slightly off from 0.5 for more natural look
+            }
+            
+            return value * 0.5 + 0.5; // Normalize to 0-1 range
+        }
+
+        // Curl noise for more swirling motion
+        float2 curl(float2 p)
+        {
+            float2 e = float2(0.01, 0);
+            
+            float n1 = fbm(p + float2(0, e.x));
+            float n2 = fbm(p + float2(0, -e.x));
+            float n3 = fbm(p + float2(e.x, 0));
+            float n4 = fbm(p + float2(-e.x, 0));
+            
+            float x = n1 - n2;
+            float y = n3 - n4;
+            
+            return float2(y, -x);
         }
 
         // Maps particle properties to a 0-1 range for gradient sampling
@@ -93,9 +136,9 @@ Shader "Instanced/MultiFluidParticle2D"
                 case 0: // Velocity-based visualization
                     return saturate(length(particle.velocity) / visualData.maxValue);
                 case 1: // Temperature-based visualization
-                    return saturate((particle.temperature - visualData.minValue) / (visualData.maxValue - visualData.minValue)); // FIXME
-                //case 3:
-                //    return saturate(length(particle.velocity) / visualData.maxValue);
+                    return saturate((particle.temperature - visualData.minValue) / (visualData.maxValue - visualData.minValue));
+                case 3:
+                    return saturate(length(particle.velocity) / visualData.maxValue);
                 default:
                     return 0;
             }
@@ -169,15 +212,49 @@ Shader "Instanced/MultiFluidParticle2D"
                 
                 // Sample color from gradient array
                 float4 finalColor = _GradientArray.SampleLevel(linear_clamp_sampler, i.gradientParams, 0);
-                float baseAlpha = 1 - smoothstep(1 - delta, 1 + delta, sqrDst);
-                float alpha = baseAlpha * i.baseOpacity;
+                float alpha = i.baseOpacity;
 
                 // Apply fuzzy effect if needed
-                if (i.visualStyle == 3)
+                if (i.visualStyle == 3) // Smoke effect
                 {
-                    float2 noiseCoord = i.worldPos * i.noiseScale + _Time.y * i.timeScale;
-                    float noiseVal = noise(noiseCoord) * 0.5 + 0.5;
-                    alpha *= noiseVal * (1 - smoothstep(1 - delta, 1 + delta, sqrDst));
+                    // Base coordinates for noise
+                    float2 noiseCoord = i.worldPos * i.noiseScale;
+                    
+                    // Add time-based movement
+                    float2 timeOffset = _Time.y * i.timeScale * float2(0.5, 1.0);
+                    noiseCoord += timeOffset;
+                    
+                    // Generate curl noise for swirling effect
+                    float2 curlOffset = curl(noiseCoord * 0.5) * 0.4;
+                    
+                    // Combine different noise layers
+                    float baseNoise = fbm(noiseCoord + curlOffset);
+                    float detailNoise = fbm((noiseCoord + baseNoise) * 2.0) * 0.5;
+                    
+                    // Create more interesting edge pattern
+                    float edge = 1 - smoothstep(0.2, 1, sqrt(sqrDst));
+                    
+                    // Combine noise layers with edge falloff
+                    float smokePattern = baseNoise * detailNoise * edge;
+                    
+                    // Add subtle variation to color based on noise
+                    finalColor.rgb += (detailNoise * 0.2 - 0.1);
+                    
+                    // Calculate final alpha with soft edges
+                    alpha *= smokePattern * (1.0 - sqrDst * 0.8);
+                    
+                    // Add subtle movement to edges
+                    float edgeNoise = fbm(noiseCoord * 3.0 + _Time.y * 0.5) * 0.2;
+                    alpha *= 1.0 + edgeNoise;
+                    
+                    // Ensure alpha stays in valid range
+                    alpha = saturate(alpha);
+                }
+                else
+                {
+                    // Original non-smoke particle rendering
+                    float baseAlpha = 1 - smoothstep(1 - delta, 1 + delta, sqrDst);
+                    alpha *= baseAlpha;
                 }
 
                 return float4(finalColor.rgb, alpha);
@@ -188,7 +265,7 @@ Shader "Instanced/MultiFluidParticle2D"
         // Second Pass: Additive blending for glowing particles
         Pass
         {
-            Blend SrcAlpha DstAlpha
+            Blend SrcAlpha One
 
             CGPROGRAM
             #pragma vertex vert_main
