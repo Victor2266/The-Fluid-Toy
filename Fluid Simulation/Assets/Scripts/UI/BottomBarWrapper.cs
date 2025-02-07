@@ -5,6 +5,7 @@ using UnityEngine;
 public class BottomBarWrapper : MonoBehaviour
 {
     [SerializeField] GameObject simulation2DGameObject;
+    [SerializeField] AudioSource audioSource;
     private IFluidSimulation simulation2DScript;
 
     void Awake()
@@ -33,10 +34,12 @@ public class BottomBarWrapper : MonoBehaviour
     {
         simulation2DScript.setSelectedFluid(fluidTypeIndex);
         simulation2DScript.SetBrushType(0);
+        audioSource.Play();
     }
 
     public void SetBrushType(int brushTypeIndex)
     {
         simulation2DScript.SetBrushType(brushTypeIndex);
+        audioSource.Play();
     }
 }
