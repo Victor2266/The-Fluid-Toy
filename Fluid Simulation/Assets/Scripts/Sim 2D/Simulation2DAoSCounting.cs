@@ -463,7 +463,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Mouse interaction settings:
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         bool isPullInteraction = false;
-        bool isPushInteraction = false;
+        bool isPushInteraction = Input.GetMouseButton(1);
 
         if (!EventSystem.current.IsPointerOverGameObject()){ // Checks for mouse click over UI
 
@@ -472,7 +472,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             {
                 // Click wasn't over any UI or game objects
                 isPullInteraction = Input.GetMouseButton(0);
-                isPushInteraction = Input.GetMouseButton(1);
             }
         }
 
