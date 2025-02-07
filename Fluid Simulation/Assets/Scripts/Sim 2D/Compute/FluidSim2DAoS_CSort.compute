@@ -8,6 +8,7 @@
 #pragma kernel CalculateViscosity
 #pragma kernel CalculateTemperature
 #pragma kernel UpdatePositions
+#pragma kernel UpdateStates
 
 // Includes
 #include "./FluidMaths2DAoS.hlsl"
@@ -26,7 +27,7 @@ struct Particle
 	int type;			// 4 (fluid type enum); currently used to key FluidDataSet array
 };
 
-// Condensed version of FluidData ScriptableObject (without shader details as those are not needed)
+// Condensed version of FluidData ScriptableObject (without shader details as those are not needed; AKA FluidParam)
 struct FluidData
 {
 	// Fluid properties
@@ -40,6 +41,10 @@ struct FluidData
 	float1 viscosityStrength;
 	float1 startTemperature;
 	float1 thermalDiffusivity;
+	int boilState;
+	float1 boilTemp;
+	int freezeState;
+	float1 freezeTemp;
 };
 
 struct Circle //12 bytes total
@@ -812,4 +817,24 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     particle.position += particle.velocity * deltaTime;
     HandleCollisions(particle); // This needs the FluidDataSet
     Particles[id.x] = particle;
+}
+
+[numthreads(NumThreads, 1, 1)]
+void UpdateStates(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles) return;
+	Particle particle = Particles[id.x];
+	if (particle.type == 0) return; // Skip disabled
+	FluidData fluidData = FluidDataSet[particle.type - 1];
+
+	// Check if boil/freeze is possible for particle. If so, convert on temperature threshold
+	if (fluidData.boilState != 0 && particle.temperature > fluidData.boilTemp) 
+	{
+		particle.type = fluidData.boilState;
+	}
+	else if (fluidData.freezeState != 0 && particle.temperature <= fluidData.freezeTemp) 
+	{
+		particle.type = fluidData.freezeState;
+	}
+	Particles[id.x] = particle; // Writeback
 }

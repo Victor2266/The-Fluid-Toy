@@ -124,6 +124,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     const int viscosityKernel = 7;
     const int temperatureKernel = 8;
     const int updatePositionKernel = 9;
+    const int updateStateKernel = 10;
 
     // State
     bool isPaused;
@@ -229,9 +230,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
 
         // Init compute
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
         ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
@@ -343,6 +344,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: temperatureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
     }
 
     void UpdateColliderData()
@@ -647,10 +649,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public void togglePause()
     {
         //// FOR DEBUG:
-        //float[] temps = GetParticleTemps();
-        //for (int i = 0; i < numParticles; i++) {
-        //    Debug.Log($"Particle {i}: Temp: {temps[i]}");
-        //}
+        float[] temps = GetParticleTemps();
+        FluidType[] types = GetParticleTypes();
+        for (int i = 0; i < numParticles; i++) {
+            Debug.Log($"Particle {i}: Temp: {temps[i]}, Type: {types[i]}");
+        }
         isPaused = !isPaused;
     }
     public bool getPaused()
@@ -697,6 +700,17 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             temps[i] = particleData[i].temperature;
         }
         return temps;
+    }
+    public FluidType[] GetParticleTypes()
+    {
+        FluidType[] types = new FluidType[numParticles];
+        particleBuffer.GetData(particleData);
+
+        for (int i = 0; i < numParticles; i++)
+        {
+            types[i] = (FluidType) particleData[i].type;
+        }
+        return types;
     }
     public int GetParticleCount()
     {
