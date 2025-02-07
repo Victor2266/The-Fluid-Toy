@@ -831,10 +831,11 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 	if (fluidData.boilState != 0 && particle.temperature > fluidData.boilTemp) 
 	{
 		particle.type = fluidData.boilState;
+		Particles[id.x] = particle; // Writeback
 	}
 	else if (fluidData.freezeState != 0 && particle.temperature <= fluidData.freezeTemp) 
 	{
 		particle.type = fluidData.freezeState;
+		Particles[id.x] = particle; // Writeback
 	}
-	Particles[id.x] = particle; // Writeback
 }
