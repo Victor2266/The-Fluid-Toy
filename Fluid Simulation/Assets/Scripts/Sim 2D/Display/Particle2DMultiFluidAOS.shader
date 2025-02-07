@@ -263,7 +263,7 @@ Shader "Instanced/MultiFluidParticle2D"
         // Second Pass: Additive blending for glowing particles
         Pass
         {
-            Blend SrcAlpha DstAlpha
+            Blend SrcAlpha One
 
             CGPROGRAM
             #pragma vertex vert_main
