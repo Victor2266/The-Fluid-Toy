@@ -368,6 +368,7 @@ void HandleCollisions(inout Particle particle)
     float2 pos = particle.position;
     float2 vel = particle.velocity;
 	FluidData fluidData = FluidDataSet[particle.type - 1];
+	float sqrtRadius = (fluidData.smoothingRadius) * 0.5;
 	bool particleDisabled = false;
 
     // Keep particle inside bounds
@@ -426,13 +427,13 @@ void HandleCollisions(inout Particle particle)
 		// Handle box collisions
 		for (int i = 0; i < numBoxColliders; i++)
 		{
-			HandleBoxCollision(pos, vel, BoxColliders[i], fluidData.collisionDamping, fluidData.smoothingRadius);
+			HandleBoxCollision(pos, vel, BoxColliders[i], fluidData.collisionDamping, sqrtRadius);
 		}
 
 		// Handle circle collisions
 		for (int j = 0; j < numCircleColliders; j++)
 		{
-			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping, fluidData.smoothingRadius);
+			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping, sqrtRadius);
 		}
 	}
 
