@@ -75,7 +75,9 @@ Shader "Instanced/MultiFluidParticle2D"
             float2 pf = frac(p);
             
             // Quintic interpolation curve
-            float2 w = pf * pf * pf * (pf * (pf * 6.0 - 15.0) + 10.0);
+            //float2 w = pf * pf * pf * (pf * (pf * 6.0 - 15.0) + 10.0);
+            // Simplified interpolation - cubic instead of quintic
+            float2 w = pf * pf * (3.0 - 2.0 * pf);
             
             // Generate gradient directions
             float n00 = dot(hash2D(pi + float2(0, 0)) * 2.0 - 1.0, pf - float2(0, 0));
