@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 [ExecuteInEditMode] // This makes it run in editor
 public class CircleColliderOutline : MonoBehaviour
 {
