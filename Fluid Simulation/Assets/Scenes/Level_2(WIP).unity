@@ -464,12 +464,14 @@ MonoBehaviour:
   threeStarTime: 15
   twoStarTime: 20
   fluidDetector: {fileID: 367842095}
+  totalTargetHitsNeeded: 50
   sourcePlayerModulationStrength: 1
   sourceAcceleration: 0.0005
   sourceVelocity: 0.1
   maxSourceJitter: 0.0005
   maxSourceOffset: 10
   sourceOffset: 0
+  targetHits: 0
 --- !u!1 &168916477
 GameObject:
   m_ObjectHideFlags: 0
@@ -780,14 +782,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6dba1f9b3821b84f94671ee52db88ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  densityThreshold: 160
-  checkInterval: 0.1
+  densityThreshold: 70
+  checkInterval: 0.2
   detectionRadius: 2
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
   densityDisplayOffset: {x: 0, y: -120}
-  simulationGameobject: {fileID: 1173401522}
+  simulationGameobject: {fileID: 402679189}
 --- !u!1 &402679189
 GameObject:
   m_ObjectHideFlags: 0
@@ -3097,7 +3099,7 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1566603615}
   m_BodyType: 0
-  m_Simulated: 1
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 10
@@ -3149,7 +3151,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.25
 --- !u!4 &1566603621
 Transform:
   m_ObjectHideFlags: 0
