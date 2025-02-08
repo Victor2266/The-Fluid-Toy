@@ -245,19 +245,11 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         atomicCounterBuffer.SetData(atomicCounter);
 
         // Init compute
-<<<<<<< HEAD
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel/*, mergeCPUParticlesKernel*/);
-        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-=======
         ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
         ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, mergeCPUParticlesKernel, updateStateKernel);
         ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
->>>>>>> origin/main
         ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, sortedParticleBuffer, "SortedParticles", reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
@@ -265,8 +257,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
-        //ComputeHelper.SetBuffer(compute, cpuparticlebuffer, "CPUParticles", mergeCPUParticlesKernel);
-        ComputeHelper.SetBuffer(compute, keyarrbuffer, "keyarr", densityKernel, pressureKernel, viscosityKernel/* /*mergeCPUParticlesKernel*/);
+        ComputeHelper.SetBuffer(compute, cpuparticlebuffer, "CPUParticles", mergeCPUParticlesKernel);
+        ComputeHelper.SetBuffer(compute, keyarrbuffer, "keyarr", densityKernel, pressureKernel, viscosityKernel, mergeCPUParticlesKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
@@ -366,7 +358,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         {
             if (toggleCPUComputing)
             {
-                //runCPUComputeTest();
+                runCPUComputeTest();
             }
             else
             {

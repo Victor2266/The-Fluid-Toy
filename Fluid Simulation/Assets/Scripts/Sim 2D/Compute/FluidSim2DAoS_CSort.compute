@@ -769,12 +769,10 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint currKey = SpatialIndices[currIndex];
 			currIndex++;
 			// Exit if no longer looking at correct bin
-			if (indexData[2] != key) break;
-			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			if (currKey != key) break;
 
 			uint neighbourIndex = currIndex - 1;
 			// Skip if looking at self
