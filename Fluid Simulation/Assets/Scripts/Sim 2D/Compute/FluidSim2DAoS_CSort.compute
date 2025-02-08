@@ -6,7 +6,9 @@
 #pragma kernel CalculateDensities
 #pragma kernel CalculatePressureForce
 #pragma kernel CalculateViscosity
+#pragma kernel CalculateTemperature
 #pragma kernel UpdatePositions
+#pragma kernel UpdateStates
 
 // Includes
 #include "./FluidMaths2DAoS.hlsl"
@@ -25,7 +27,7 @@ struct Particle
 	int type;			// 4 (fluid type enum); currently used to key FluidDataSet array
 };
 
-// Condensed version of FluidData ScriptableObject (without shader details as those are not needed)
+// Condensed version of FluidData ScriptableObject (without shader details as those are not needed; AKA FluidParam)
 struct FluidData
 {
 	// Fluid properties
@@ -38,6 +40,11 @@ struct FluidData
 	float1 nearPressureMultiplier;
 	float1 viscosityStrength;
 	float1 startTemperature;
+	float1 thermalDiffusivity;
+	int boilState;
+	float1 boilTemp;
+	int freezeState;
+	float1 freezeTemp;
 };
 
 struct Circle //12 bytes total
@@ -126,6 +133,11 @@ float NearDensityDerivative(float dst, float radius, int type)
 float ViscosityKernel(float dst, float radius, int type)
 {
 	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6);
+}
+
+float TemperatureKernel(float dst, float radius, int type)
+{
+	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6); // TEMP kernel to test.
 }
 
 //get the maximum smoothing radius between two fluid types
@@ -291,6 +303,28 @@ void HandleBoxCollision(inout float2 pos, inout float2 vel, OrientedBox box, flo
     vel = right * localVel.x + up * localVel.y;
 }
 
+void HandleCircleCollision(inout float2 pos, inout float2 vel, Circle circle, float collisionDamping)
+{
+    float2 delta = pos - circle.pos;
+    float distanceSq = dot(delta, delta);
+    float radiusSq = circle.radius * circle.radius;
+
+    // Early exit if no collision
+    if (distanceSq >= radiusSq)
+        return;
+
+    // Calculate collision normal and penetration
+    float distance = sqrt(distanceSq);
+    float2 normal = distance > 0 ? delta/distance : float2(1, 0);
+
+    // Position correction
+    pos = circle.pos + normal * circle.radius;
+
+    // Velocity reflection with damping
+    float velNormal = dot(vel, normal);
+    vel -= (1.0 + collisionDamping) * velNormal * normal;
+}
+
 void DisableParticle(inout Particle particle){
 	// Create a random seed based on particle position and current tick
 	uint randomState = (uint)(particle.position.x * 1000) + (uint)(particle.position.y * 1000) + atomicCounter[1] * 982451653;
@@ -397,8 +431,11 @@ void HandleCollisions(inout Particle particle)
 			HandleBoxCollision(pos, vel, BoxColliders[i], fluidData.collisionDamping);
 		}
 
-		//TODO Handle Circle Collisions
-
+		// Handle circle collisions
+		for (int j = 0; j < numCircleColliders; j++)
+		{
+			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping);
+		}
 	}
 
 	// Update position and velocity in the particle struct
@@ -706,6 +743,65 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 	Particles[id.x].velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
 }
 
+[numthreads(NumThreads, 1, 1)]
+void CalculateTemperature(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles) return;
+	Particle particle = Particles[id.x];
+	if (particle.type == 0) return; // Skip disabled
+
+	FluidData fluidData = FluidDataSet[particle.type - 1];
+
+	float density = Particles[id.x].density[0];
+	float2 pos = Particles[id.x].predictedPosition;
+	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
+	
+	float1 temp = Particles[id.x].temperature;
+	float1 thermalDiffusivity = density > 0 ? fluidData.thermalDiffusivity / (density) : fluidData.thermalDiffusivity;
+	float1 deltaTemp = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		uint hash = HashCell2D(originCell + offsets2D[i]);
+		uint key = KeyFromHash(hash, numParticles);
+		uint currIndex = SpatialOffsets[key];
+
+		while (currIndex < numParticles)
+		{
+			uint3 indexData = SpatialIndices[currIndex];
+			currIndex++;
+			// Exit if no longer looking at correct bin
+			if (indexData[2] != key) break;
+			// Skip if hash does not match
+			if (indexData[1] != hash) continue;
+
+			uint neighbourIndex = currIndex - 1;
+			// Skip if looking at self
+			if (neighbourIndex == id.x) continue;
+			Particle neighbourParticle = Particles[neighbourIndex];
+			if (neighbourParticle.type == 0) continue; // Skip disabled
+
+			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
+
+			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
+			float2 offsetToNeighbour = neighbourPos - pos;
+			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
+
+			// Skip if not within radius
+			if (sqrDstToNeighbour > sqrRadius) continue;
+
+			float dst = sqrt(sqrDstToNeighbour);
+			float1 neighbourTemp = Particles[neighbourIndex].temperature;
+
+			deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, particle.type); // FIXME using viewpoint particle's smoothing radius
+		}
+
+	}
+
+	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;
+}
+
 [numthreads(NumThreads,1,1)]
 void UpdatePositions(uint3 id : SV_DispatchThreadID)
 {
@@ -715,4 +811,25 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     particle.position += particle.velocity * deltaTime;
     HandleCollisions(particle); // This needs the FluidDataSet
     Particles[id.x] = particle;
+}
+
+[numthreads(NumThreads, 1, 1)]
+void UpdateStates(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles) return;
+	Particle particle = Particles[id.x];
+	if (particle.type == 0) return; // Skip disabled
+	FluidData fluidData = FluidDataSet[particle.type - 1];
+
+	// Check if boil/freeze is possible for particle. If so, convert on temperature threshold
+	if (fluidData.boilState != 0 && particle.temperature > fluidData.boilTemp) 
+	{
+		particle.type = fluidData.boilState;
+		Particles[id.x] = particle; // Writeback
+	}
+	else if (fluidData.freezeState != 0 && particle.temperature <= fluidData.freezeTemp) 
+	{
+		particle.type = fluidData.freezeState;
+		Particles[id.x] = particle; // Writeback
+	}
 }

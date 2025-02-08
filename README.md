@@ -7,7 +7,7 @@
 - Victor Do  
 - Davis Cheung  
 - Cameron Tuffner-Lyons  
-- Jj Marr  
+- JJ Marr  
 
 ---
 

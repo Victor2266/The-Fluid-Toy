@@ -32,6 +32,11 @@ public struct FluidParam
     public float nearPressureMultiplier;
     public float viscosityStrength;
     public float startTemperature;
+    public float thermalDiffusivity;
+    public FluidType boilState;
+    public float boilTemp;
+    public FluidType freezeState;
+    public float freezeTemp;
 };
 
 // These are calculated once based on the smoothing radius of each fluid
@@ -102,6 +107,16 @@ public class FluidData : ScriptableObject
     [Header("Thermal Properties")]
     [Tooltip("Starting temperature of the fluid")]
     public float startTemperature = 22f;
+    [Tooltip("Rate at which particles change temperature")]
+    public float thermalDiffusivity = 0.143f;
+    [Tooltip("Fluid to turn into on boil")]
+    public FluidType boilState = FluidType.Disabled;
+    [Tooltip("Temperature max before state change")]
+    public float boilTemp = 100f;
+    [Tooltip("Fluid to turn into on freeze")]
+    public FluidType freezeState = FluidType.Disabled;
+    [Tooltip("Temperature min before state change")]
+    public float freezeTemp = 0f;
 
     [Header("Visual Properties")]
     [Tooltip("Setup the look of the fluid")]
@@ -129,7 +144,12 @@ public class FluidData : ScriptableObject
             pressureMultiplier = pressureMultiplier,
             nearPressureMultiplier = nearPressureMultiplier,
             viscosityStrength = viscosityStrength,
-            startTemperature = startTemperature
+            startTemperature = startTemperature,
+            thermalDiffusivity = thermalDiffusivity,
+            boilState = boilState,
+            boilTemp = boilTemp,
+            freezeState = freezeState,
+            freezeTemp = freezeTemp
         };
         return fluidParams;
     }

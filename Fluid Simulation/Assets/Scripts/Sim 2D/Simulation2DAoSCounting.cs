@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System;
 using UnityEngine.UIElements;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 
 public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
@@ -57,9 +58,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
-    // For the spatial subdivision to work we use the largest smoothing radius for the grid
+    // For the spatial subdivision to work we use the largest smoothing radius for the its grid
     // By manually selecting the fluid types you can finetune the grid size
+    [Tooltip("You should always manually select fluids types, otherwise it will grab all the fluids in the resources folder which is less efficient")] 
     [SerializeField] private bool manuallySelectFluidTypes;
+
+    [Tooltip("THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD")] 
+    [SerializeField] private bool updateFluidsEveryFrame = false; // THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD
+    private bool updateFluidsNextFrame = false; // This can be used to trigger a fluid list update once
     private float maxSmoothingRadius = 0f;
     [SerializeField] public FluidData[] fluidDataArray;
     private FluidParam[] fluidParamArr; // Compute-friendly data type
@@ -116,7 +122,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     const int densityKernel = 5;
     const int pressureKernel = 6;
     const int viscosityKernel = 7;
-    const int updatePositionKernel = 8;
+    const int temperatureKernel = 8;
+    const int updatePositionKernel = 9;
+    const int updateStateKernel = 10;
 
     // State
     bool isPaused;
@@ -222,11 +230,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
 
         // Init compute
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
-        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel);
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
+        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
+        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, sortedParticleBuffer, "SortedParticles", reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
@@ -292,6 +300,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         if (enableHotkeys)
             HandleHotkeysInput();
+
+        if(updateFluidsNextFrame || updateFluidsEveryFrame){
+            updateFluidsNextFrame = false;
+            UpdateFluids();
+        }
     }
 
     void RunSimulationFrame(float frameTime)
@@ -322,12 +335,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         spatialOffsetsCalc.Run(false);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
-        //gpuSort.SortAndCalculateOffsets(); // Old
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
         //compute the pressure and viscosity on CPU
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: temperatureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
     }
 
     void UpdateColliderData()
@@ -383,33 +397,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     void UpdateSettings(float deltaTime)
     {
         compute.SetFloat("deltaTime", deltaTime);
-        //compute.SetFloat("gravity", gravity);
-        //compute.SetFloat("collisionDamping", collisionDamping);
-        //compute.SetFloat("smoothingRadius", smoothingRadius);
-        //compute.SetFloat("targetDensity", targetDensity);
-        //compute.SetFloat("pressureMultiplier", pressureMultiplier);
-        //compute.SetFloat("nearPressureMultiplier", nearPressureMultiplier);
-        //compute.SetFloat("viscosityStrength", viscosityStrength);
         compute.SetVector("boundsSize", boundsSize);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
         compute.SetInt("numDrainObjs", drainObjects.Length);
-
         compute.SetInt("selectedFluidType", selectedFluid);
-
         compute.SetInt("edgeType", (int) edgeType);
-
         compute.SetInt("spawnRate", (int) spawnRate);
-
-        //These are now computed once at the start
-        /*
-        compute.SetFloat("Poly6ScalingFactor", 4 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 8)));
-        compute.SetFloat("SpikyPow3ScalingFactor", 10 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 5)));
-        compute.SetFloat("SpikyPow2ScalingFactor", 6 / (Mathf.PI * Mathf.Pow(currentFluid.smoothingRadius, 4)));
-        compute.SetFloat("SpikyPow3DerivativeScalingFactor", 30 / (Mathf.Pow(currentFluid.smoothingRadius, 5) * Mathf.PI));
-        compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
-        */
 
         if (sourceObjects.Length > 0)
         {
@@ -448,8 +443,19 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         // Mouse interaction settings:
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        bool isPullInteraction = Input.GetMouseButton(0);
+        bool isPullInteraction = false;
         bool isPushInteraction = Input.GetMouseButton(1);
+
+        if (!EventSystem.current.IsPointerOverGameObject()){ // Checks for mouse click over UI
+
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit.collider == null) // Click wasn't over any game objects
+            {
+                // Click wasn't over any UI or game objects
+                isPullInteraction = Input.GetMouseButton(0);
+            }
+        }
+
         float currInteractStrength = 0;
 
         if (brushState == BrushType.GRAVITY)
@@ -529,6 +535,31 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
     }
 
+    void UpdateFluids(){
+        for (int i = 0; i < fluidDataArray.Length; i++)
+        {
+            fluidParamArr[i] = fluidDataArray[i].getFluidParams();
+            fluidParamArr[i].fluidType = (FluidType)i + 1;
+            scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
+
+            if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
+            {
+                maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
+            }
+        }
+
+        // Set buffer data
+        fluidDataBuffer.SetData(fluidParamArr);
+        ScalingFactorsBuffer.SetData(scalingFactorsArr);
+
+        compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
+
+        var multiParticleDisplay2D = GetComponent<MultiParticleDisplay2D>();
+        if (multiParticleDisplay2D != null)
+        {
+            multiParticleDisplay2D.CreateAndSetupVisualParamsBuffer(fluidDataArray);
+        }
+    }
 
     void OnDestroy()
     {
@@ -614,6 +645,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public void togglePause()
     {
+        //// FOR DEBUG:
+        //float[] temps = GetParticleTemps();
+        //FluidType[] types = GetParticleTypes();
+        //for (int i = 0; i < numParticles; i++) {
+        //    Debug.Log($"Particle {i}: Temp: {temps[i]}, Type: {types[i]}");
+        //}
         isPaused = !isPaused;
     }
     public bool getPaused()
@@ -649,6 +686,28 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             positions[i] = particleData[i].position;
         }
         return positions;
+    }
+    public float[] GetParticleTemps()
+    {
+        float[] temps = new float[numParticles];
+        particleBuffer.GetData(particleData);
+
+        for (int i = 0; i < numParticles; i++)
+        {
+            temps[i] = particleData[i].temperature;
+        }
+        return temps;
+    }
+    public FluidType[] GetParticleTypes()
+    {
+        FluidType[] types = new FluidType[numParticles];
+        particleBuffer.GetData(particleData);
+
+        for (int i = 0; i < numParticles; i++)
+        {
+            types[i] = (FluidType) particleData[i].type;
+        }
+        return types;
     }
     public int GetParticleCount()
     {
