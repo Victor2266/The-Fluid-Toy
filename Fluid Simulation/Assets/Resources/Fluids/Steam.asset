@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
   m_Name: Steam
   m_EditorClassIdentifier: 
-  fluidType: 2
+  fluidType: 1
   gravity: 10
   collisionDamping: 0.5
   smoothingRadius: 0.35
@@ -20,7 +20,7 @@ MonoBehaviour:
   pressureMultiplier: 48
   nearPressureMultiplier: 18
   viscosityStrength: 0.2
-  startTemperature: 120
+  startTemperature: 100
   thermalDiffusivity: 1.4
   boilState: 0
   boilTemp: 2000

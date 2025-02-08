@@ -22,13 +22,12 @@ public class FluidDetector : MonoBehaviour
     public bool isFluidPresent { get; private set; }
     public float currentDensity { get; private set; }
 
-    private GameObject simulationGameobject;
+    public GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
 
     void Start()
     {
-        simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
         // Find the fluid simulation in the scene
         fluidSimulation = simulationGameobject.GetComponent<IFluidSimulation>();
         if (fluidSimulation == null)

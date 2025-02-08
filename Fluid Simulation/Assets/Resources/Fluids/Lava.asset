@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
   m_Name: Lava
   m_EditorClassIdentifier: 
-  fluidType: 4
+  fluidType: 1
   gravity: -12
   collisionDamping: 0.7
   smoothingRadius: 0.35
@@ -22,10 +22,6 @@ MonoBehaviour:
   viscosityStrength: 0.06
   startTemperature: 1200
   thermalDiffusivity: 0.143
-  boilState: 0
-  boilTemp: 100
-  freezeState: 0
-  freezeTemp: 0
   visualParams:
     style: 1
     colorGradient:

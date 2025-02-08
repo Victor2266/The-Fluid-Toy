@@ -181,7 +181,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             for (int i = 0; i < fluidDataArray.Length; i++)
             {
                 fluidParamArr[i] = fluidDataArray[i].getFluidParams();
-                //fluidParamArr[i].fluidType = (FluidType)i + 1;
+                fluidParamArr[i].fluidType = (FluidType)i + 1;
                 scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
             }
         }
@@ -246,7 +246,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
-        compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
 
@@ -543,7 +542,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         for (int i = 0; i < fluidDataArray.Length; i++)
         {
             fluidParamArr[i] = fluidDataArray[i].getFluidParams();
-            //fluidParamArr[i].fluidType = (FluidType)i + 1;
+            fluidParamArr[i].fluidType = (FluidType)i + 1;
             scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
 
             if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
@@ -556,7 +555,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
 
-        compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
 
         var multiParticleDisplay2D = GetComponent<MultiParticleDisplay2D>();
