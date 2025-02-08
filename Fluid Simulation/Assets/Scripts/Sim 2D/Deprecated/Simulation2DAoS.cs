@@ -807,4 +807,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.particleResultBuffer.Dispose();
         CPUKernelAOS.keyarrbuffer.Dispose();
     }
+
+    public SourceObjectInitializer GetFirstSourceObject(){
+        return new SourceObjectInitializer();
+    }
+    public void SetFirstSourceObject(SourceObjectInitializer source){
+        sourceObjects[0] = null;
+    }
 }

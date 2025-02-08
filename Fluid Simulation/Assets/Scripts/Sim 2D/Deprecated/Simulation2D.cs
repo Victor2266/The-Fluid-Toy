@@ -476,4 +476,11 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     {
         return interactionRadius;
     }
+
+    public SourceObjectInitializer GetFirstSourceObject(){
+        return new SourceObjectInitializer();
+    }
+    public void SetFirstSourceObject(SourceObjectInitializer source){
+        return;
+    }
 }

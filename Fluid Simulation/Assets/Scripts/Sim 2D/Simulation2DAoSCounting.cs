@@ -707,4 +707,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         return interactionRadius;
     }
+
+    public SourceObjectInitializer GetFirstSourceObject(){
+        return sourceObjects[0];
+    }
+    public void SetFirstSourceObject(SourceObjectInitializer source){
+        sourceObjects[0] = source;
+    }
 }

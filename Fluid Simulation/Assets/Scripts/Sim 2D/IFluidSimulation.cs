@@ -60,4 +60,8 @@ public interface IFluidSimulation
     /// Get interaction radius
     /// </summary>
     float GetInteractionRadius();
+
+    SourceObjectInitializer GetFirstSourceObject();
+
+    void SetFirstSourceObject(SourceObjectInitializer source);
 }

@@ -865,4 +865,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.particleResultBuffer.Dispose();
         CPUKernelAOS.keyarrbuffer.Dispose();
     }
+
+    public SourceObjectInitializer GetFirstSourceObject(){
+        return sourceObjects[0];
+    }
+    public void SetFirstSourceObject(SourceObjectInitializer source){
+        sourceObjects[0] = source;
+    }
+
+
 }
