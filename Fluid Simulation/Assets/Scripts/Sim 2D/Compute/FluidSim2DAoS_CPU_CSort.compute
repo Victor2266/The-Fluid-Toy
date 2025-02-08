@@ -612,13 +612,14 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 	if (particle.type == 0){ // Skip disabled
 		return;
 	}
-
+	
 	// CPU key check
-	int2 cell = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
-	uint hash = HashCell2D(cell);
-	uint key = KeyFromHash(hash, numParticles);
+	float2 pos = Particles[id.x].predictedPosition;
+	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+	uint hash2 = HashCell2D(originCell);
+	uint key2 = KeyFromHash(hash2, numParticles);
 	for (uint j = 0; j < numCPUKeys; j++) {
-		if (key == keyarr[j]) {
+		if (key2 == keyarr[j]) {
 			return;
 		}
 	}
@@ -638,16 +639,6 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 
-	// CPU key check
-	int2 cell2 = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
-	uint hash2 = HashCell2D(cell2);
-	uint key2 = KeyFromHash(hash2, numParticles);
-	for (uint j = 0; j < numCPUKeys; j++) {
-		if (key2 == keyarr[j]) {
-			return;
-		}
-	}
-
 	FluidData fluidData = FluidDataSet[particle.type - 1];
 
 	float density = Particles[id.x].density[0];
@@ -659,6 +650,15 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
+
+	// CPU key check
+	uint hash2 = HashCell2D(originCell);
+	uint key2 = KeyFromHash(hash2, numParticles);
+	for (uint j = 0; j < numCPUKeys; j++) {
+		if (key2 == keyarr[j]) {
+			return;
+		}
+	}
 
 	// Neighbour search
 	for (int i = 0; i < 9; i ++)
@@ -722,24 +722,23 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 
-	// CPU key check
-	int2 cell2 = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
-	uint hash2 = HashCell2D(cell2);
-	uint key2 = KeyFromHash(hash2, numParticles);
-	for (uint j = 0; j < numCPUKeys; j++) {
-		if (key2 == keyarr[j]) {
-			return;
-		}
-	}
-
 	FluidData fluidData = FluidDataSet[particle.type - 1];
-		
+	
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
 
 	float2 viscosityForce = 0;
 	float2 velocity = Particles[id.x].velocity;
+
+	// CPU key check
+	uint hash2 = HashCell2D(originCell);
+	uint key2 = KeyFromHash(hash2, numParticles);
+	for (uint j = 0; j < numCPUKeys; j++) {
+		if (key2 == keyarr[j]) {
+			return;
+		}
+	}
 
 	for (int i = 0; i < 9; i ++)
 	{
