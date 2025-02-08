@@ -105,45 +105,57 @@ int numBoxColliders;
 int numCircleColliders;
 int numSourceObjs;
 int numDrainObjs;
+int numFluidTypes;
 int brushType;
 int selectedFluidType;
 int edgeType;
 uint spawnRate;
 
+int GetFluidTypeIndexFromID(int fluidID){
+	for (int i = 0; i < numFluidTypes; i++)
+	{
+		if (FluidDataSet[i].fluidType == fluidID)
+		{
+			return i;
+		}
+	}
+	return -1; // fluid type not found
+}
+
 float DensityKernel(float dst, float radius, int type)
 {
-	return SpikyKernelPow2(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow2);
+	return SpikyKernelPow2(dst, radius, ScalingFactorsBuffer[GetFluidTypeIndexFromID(type)].SpikyPow2);
 }
 
 float NearDensityKernel(float dst, float radius, int type)
 {
-	return SpikyKernelPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3);
+	return SpikyKernelPow3(dst, radius, ScalingFactorsBuffer[GetFluidTypeIndexFromID(type)].SpikyPow3);
 }
 
 float DensityDerivative(float dst, float radius, int type)
 {
-	return DerivativeSpikyPow2(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow2Derivative);
+	return DerivativeSpikyPow2(dst, radius, ScalingFactorsBuffer[GetFluidTypeIndexFromID(type)].SpikyPow2Derivative);
 }
 
 float NearDensityDerivative(float dst, float radius, int type)
 {
-	return DerivativeSpikyPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3Derivative);
+	return DerivativeSpikyPow3(dst, radius, ScalingFactorsBuffer[GetFluidTypeIndexFromID(type)].SpikyPow3Derivative);
 }
 
 float ViscosityKernel(float dst, float radius, int type)
 {
-	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6);
+	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[GetFluidTypeIndexFromID(type)].Poly6);
 }
 
 float TemperatureKernel(float dst, float radius, int type)
 {
-	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6); // TEMP kernel to test.
+	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[GetFluidTypeIndexFromID(type)].Poly6); // TEMP kernel to test.
 }
 
 //get the maximum smoothing radius between two fluid types
 float GetMaxSmoothingRadius(int typeA, int typeB)
 {
-    return max(FluidDataSet[typeA - 1].smoothingRadius, FluidDataSet[typeB - 1].smoothingRadius);
+    return max(FluidDataSet[GetFluidTypeIndexFromID(typeA)].smoothingRadius, FluidDataSet[GetFluidTypeIndexFromID(typeB)].smoothingRadius);
 }
 
 
@@ -196,7 +208,7 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 
 			uint neighbourIndex = currIndex-1;
 			Particle neighbourParticle = Particles[neighbourIndex];
-			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
+			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
 
 			if (neighbourParticle.type == 0) continue; // Skip disabled particles
 
@@ -371,7 +383,7 @@ void HandleCollisions(inout Particle particle)
 
     float2 pos = particle.position;
     float2 vel = particle.velocity;
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 	bool particleDisabled = false;
 
     // Keep particle inside bounds
@@ -463,8 +475,8 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawn
 	particle.velocity = float2(0, 0);
 	particle.predictedPosition = interactionInputPoint + offset;
 	particle.position = interactionInputPoint + offset;
-	particle.temperature = FluidDataSet[selectedFluidType - 1].startTemperature;
-	particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0
+	particle.temperature = FluidDataSet[GetFluidTypeIndexFromID(selectedFluidType)].startTemperature;
+	particle.type = GetFluidTypeIndexFromID(selectedFluidType) + 1; // Reactivate the particle by setting it to non 0
 }
 
 void HandleSourceObject(inout Particle particle){
@@ -501,8 +513,8 @@ void HandleSourceObject(inout Particle particle){
 	particle.velocity = source.velo;
 	particle.predictedPosition = spawnPos;
 	particle.position = spawnPos;
-	particle.temperature = FluidDataSet[source.fluidType - 1].startTemperature;
-	particle.type = source.fluidType;
+	particle.temperature = FluidDataSet[GetFluidTypeIndexFromID(source.fluidType)].startTemperature;
+	particle.type = GetFluidTypeIndexFromID(source.fluidType) + 1;
     
 }
 
@@ -554,7 +566,7 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 		return;
 	}
 
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 	
     // External forces (gravity and input interaction)
     particle.velocity += ExternalForces(particle.position, particle.velocity, fluidData.gravity) * deltaTime;
@@ -610,7 +622,7 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 		return;
 	}
 
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
     particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius, particle.type); // This needs the fluidData
 	
 	//particle.density.x = max(particle.density.x, 0.1); // Clamp density
@@ -625,7 +637,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 
 	float density = Particles[id.x].density[0];
 	float densityNear = Particles[id.x].density[1];
@@ -659,7 +671,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 			Particle neighbourParticle = Particles[neighbourIndex];
 			if (neighbourParticle.type == 0) continue; // Skip disabled
 			
-			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
+			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -701,7 +713,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 		
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
@@ -731,7 +743,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 			Particle neighbourParticle = Particles[neighbourIndex];
 			if (neighbourParticle.type == 0) continue; // Skip disabled
 
-			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
+			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -756,7 +768,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 
 	float density = Particles[id.x].density[0];
 	float2 pos = Particles[id.x].predictedPosition;
@@ -788,7 +800,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			Particle neighbourParticle = Particles[neighbourIndex];
 			if (neighbourParticle.type == 0) continue; // Skip disabled
 
-			FluidData neighbourData = FluidDataSet[neighbourParticle.type - 1];
+			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -825,17 +837,18 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 	if (id.x >= numParticles) return;
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 
 	// Check if boil/freeze is possible for particle. If so, convert on temperature threshold
 	if (fluidData.boilState != 0 && particle.temperature > fluidData.boilTemp) 
 	{
-		particle.type = fluidData.boilState;
+		particle.type = GetFluidTypeIndexFromID(fluidData.boilState) + 1;
 		Particles[id.x] = particle; // Writeback
+
 	}
 	else if (fluidData.freezeState != 0 && particle.temperature <= fluidData.freezeTemp) 
 	{
-		particle.type = fluidData.freezeState;
+		particle.type = GetFluidTypeIndexFromID(fluidData.freezeState) + 1;
 		Particles[id.x] = particle; // Writeback
 	}
 }

@@ -7,7 +7,8 @@ public enum FluidType
     Water,
     Steam,
     Honey,
-    Lava
+    Lava,
+    Beer
 }
 
 public enum VisualStyle
