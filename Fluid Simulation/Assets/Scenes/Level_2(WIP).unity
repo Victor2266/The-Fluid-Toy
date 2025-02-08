@@ -156,7 +156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.32, y: -0.02}
+  m_AnchoredPosition: {x: 2.6, y: -0.02}
   m_SizeDelta: {x: 12, y: 6.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &64377469
@@ -206,8 +206,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 6
-  m_fontSizeBase: 6
+  m_fontSize: 3
+  m_fontSizeBase: 3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -265,7 +265,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 105816474}
-  - component: {fileID: 105816478}
   - component: {fileID: 105816477}
   - component: {fileID: 105816476}
   - component: {fileID: 105816479}
@@ -414,31 +413,6 @@ MonoBehaviour:
   ThirdStarImage: {fileID: 674052236}
   starSound: {fileID: 8300000, guid: d71dadee69424724898984a43168a771, type: 3}
   audioSource: {fileID: 105816476}
---- !u!114 &105816478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105816473}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f46c5283a1bfc54ba77c85b41ed88e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentLevel: 1
-  requiredHoldTime: 5
-  audioSource: {fileID: 105816476}
-  winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
-  backgroundMusic: {fileID: 2035263640}
-  initialMusicVolume: 0.5
-  fadeOutStartTime: 0
-  showDebugTimer: 1
-  levelCompleteAnim: {fileID: 105816477}
-  timer: 0
-  threeStarTime: 15
-  twoStarTime: 20
-  fluidDetector: {fileID: 367842095}
 --- !u!114 &105816479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,8 +435,8 @@ MonoBehaviour:
   showDebugTimer: 1
   levelCompleteAnim: {fileID: 105816477}
   timer: 0
-  threeStarTime: 15
-  twoStarTime: 20
+  threeStarTime: 20
+  twoStarTime: 30
   fluidDetector: {fileID: 367842095}
   totalTargetHitsNeeded: 50
   sourcePlayerModulationStrength: 1
@@ -782,8 +756,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6dba1f9b3821b84f94671ee52db88ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  densityThreshold: 70
-  checkInterval: 0.2
+  densityThreshold: 55
+  checkInterval: 0.5
   detectionRadius: 2
   showDebugGizmos: 1
   showDebugLogs: 0
@@ -878,7 +852,8 @@ MonoBehaviour:
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawner: {fileID: 402679191}
   boxColliders: []
-  circleColliders: []
+  circleColliders:
+  - {fileID: 437067912}
   sourceObjects:
   - transform: {fileID: 625874048}
     velo: {x: 0, y: 0}
@@ -896,6 +871,101 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &437067909
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 437067912}
+  - component: {fileID: 437067911}
+  - component: {fileID: 437067910}
+  m_Layer: 0
+  m_Name: Circle Obstacle (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!50 &437067910
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437067909}
+  m_BodyType: 0
+  m_Simulated: 0
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 10
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &437067911
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437067909}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.25
+--- !u!4 &437067912
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437067909}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.03, y: 5.52, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1319,6 +1389,7 @@ GameObject:
   - component: {fileID: 914899444}
   - component: {fileID: 914899445}
   - component: {fileID: 914899446}
+  - component: {fileID: 914899447}
   m_Layer: 5
   m_Name: Percentage Complete
   m_TagString: Untagged
@@ -1406,8 +1477,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -9.5, y: 5.2}
-  m_SizeDelta: {x: 12, y: 8}
+  m_AnchoredPosition: {x: -12.5, y: -7.07}
+  m_SizeDelta: {x: 8.46, y: 3.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &914899444
 MonoBehaviour:
@@ -1416,7 +1487,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914899439}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0369bca76cf29ec46a2a2ca423e82c1d, type: 3}
   m_Name: 
@@ -1443,7 +1514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf79507e3e962142b77e1201bafb8f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPos: {x: 0, y: 5.2, z: 0}
+  startPos: {x: -12.5, y: -7.07, z: 0}
   hoverSpeed: 4
   hoverHeightAmp: 0.2
   isChild: 0
@@ -1463,6 +1534,25 @@ MonoBehaviour:
   Speed: 6
   HeightAmp: 1.5
   isChild: 0
+--- !u!114 &914899447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914899439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ae4754bb7301594cb5300f31235fe39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 105816479}
+  displayText: {fileID: 64377469}
+  prefix: 
+  suffix: /
+  startColor: {r: 1, g: 1, b: 1, a: 1}
+  endColor: {r: 0, g: 1, b: 0, a: 1}
+  thresholdColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1713,7 +1803,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: '
 
-    Get the man a drink!'
+    Hit the target 50 times to WIN!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
   m_sharedMaterial: {fileID: 4419277419123658369, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
@@ -2400,7 +2490,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4592926617858281530, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: '<b>Level 1</b>
+      value: '<b>Level 2</b>
 
 
 '
@@ -3579,3 +3669,4 @@ SceneRoots:
   - {fileID: 791139166}
   - {fileID: 625874048}
   - {fileID: 1566603621}
+  - {fileID: 437067912}

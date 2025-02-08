@@ -58,7 +58,7 @@ public class Level2Manager : LevelManager
 
         updateSourceStream();
 
-        // Check if fluid detector is above threshold (WIN CONDITION)
+        // Check if fluid detector is above threshold (HIT CONDITION)
         if (fluidDetector.isFluidPresent)
         {
             if(Time.time - timeOfLastHit > 0.2F){
