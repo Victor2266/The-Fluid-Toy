@@ -435,8 +435,8 @@ MonoBehaviour:
   showDebugTimer: 1
   levelCompleteAnim: {fileID: 105816477}
   timer: 0
-  threeStarTime: 20
-  twoStarTime: 30
+  threeStarTime: 30
+  twoStarTime: 50
   fluidDetector: {fileID: 367842095}
   totalTargetHitsNeeded: 50
   targetHits: 0
@@ -770,7 +770,6 @@ MonoBehaviour:
   showDebugLogs: 0
   showDensityValue: 1
   densityDisplayOffset: {x: 0, y: -172.5}
-  simulationGameobject: {fileID: 402679189}
 --- !u!1 &402679189
 GameObject:
   m_ObjectHideFlags: 0
