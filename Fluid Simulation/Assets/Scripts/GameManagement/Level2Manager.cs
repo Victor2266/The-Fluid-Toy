@@ -25,11 +25,24 @@ public class Level2Manager : LevelManager
 
     public float maxSourceOffset;
     public float sourceOffset;
+
+    public float nozzleStrength = 25F;
+
+    public float nozzleSpawnRate = 0.1F;
     private SourceObjectInitializer source;
 
     public int targetHits = 0;
 
     private float timeOfLastHit = 0;
+
+    private float timeOfLastDecrease = 0;
+
+    public float decreaseAcceleration = 1;
+    public float decreaseSpeed = 1;
+
+    public float maxDecreaseSpeed = 0.1F;
+
+    public float minDecreaseSpeed = 1F;
 
     // Start is called before the first frame update
     void Start()
@@ -64,6 +77,8 @@ public class Level2Manager : LevelManager
             if(Time.time - timeOfLastHit > 0.2F){
                 targetHits += 1;
                 timeOfLastHit = Time.time;
+                timeOfLastDecrease = 0;
+                decreaseSpeed = minDecreaseSpeed;
             }
             
 
@@ -81,10 +96,23 @@ public class Level2Manager : LevelManager
 
             
         }
-        else
-        {
-            ResetHoldTimer();
+
+        timeOfLastDecrease += Time.deltaTime;
+
+        if(timeOfLastDecrease > decreaseSpeed){
+            decreaseSpeed -= decreaseAcceleration;
+            targetHits -= 1;
+            timeOfLastDecrease = 0;
+            if (targetHits < 0){
+                targetHits = 0;
+            }
+            if(decreaseSpeed < maxDecreaseSpeed){
+                decreaseSpeed = maxDecreaseSpeed;
+            }
+                
         }
+            
+            
 
         // Check if we've held for long enough
         if (targetHits >= totalTargetHitsNeeded)
@@ -94,25 +122,38 @@ public class Level2Manager : LevelManager
     }
 
     void updateSourceStream(){
+
         source = sim.GetFirstSourceObject();
         Vector3 mousePos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
         mousePos = Camera.main.ViewportToWorldPoint(mousePos);
         Vector3 dirToMouse = mousePos - source.transform.position;
         float rand = UnityEngine.Random.Range(-maxSourceJitter, maxSourceJitter);
-        source.velo.y = dirToMouse.y * 1.5F;
-        source.velo.x = dirToMouse.x;
         
         sourceVelocity += -1 * Math.Sign(sourceOffset) * sourceAcceleration;
         sourceVelocity += -1 * Math.Sign(sourceOffset) * rand;
 
         sourceOffset += sourceVelocity;
 
+
+        float angle = Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg;
+
         if(Math.Abs(sourceOffset) > maxSourceOffset){
             sourceOffset = Math.Sign(sourceOffset) * maxSourceOffset;
         }
 
-        source.velo.x += sourceOffset;
+        angle += sourceOffset;
 
+        if(Input.GetMouseButton(0))
+            source.spawnRate = nozzleSpawnRate;
+        else
+            source.spawnRate = 0;
+
+        Vector3 direction = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0);
+        direction *= nozzleStrength;
+        source.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90F);
+
+        source.velo.x = direction.x;
+        source.velo.y = direction.y;
         sim.SetFirstSourceObject(source);
     }
 

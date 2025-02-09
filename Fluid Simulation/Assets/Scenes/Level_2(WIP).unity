@@ -427,8 +427,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevel: 1
   requiredHoldTime: 5
-  audioSource: {fileID: 0}
-  winSound: {fileID: 0}
+  audioSource: {fileID: 105816476}
+  winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
   backgroundMusic: {fileID: 0}
   initialMusicVolume: 0.5
   fadeOutStartTime: 0
@@ -440,11 +440,13 @@ MonoBehaviour:
   fluidDetector: {fileID: 367842095}
   totalTargetHitsNeeded: 50
   sourcePlayerModulationStrength: 1
-  sourceAcceleration: 0.0005
+  sourceAcceleration: 0.0001
   sourceVelocity: 0.1
-  maxSourceJitter: 0.0005
+  maxSourceJitter: 0
   maxSourceOffset: 10
   sourceOffset: 0
+  nozzleStrength: 25
+  nozzleSpawnRate: 0.1
   targetHits: 0
 --- !u!1 &168916477
 GameObject:
@@ -756,13 +758,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6dba1f9b3821b84f94671ee52db88ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  densityThreshold: 55
-  checkInterval: 0.5
+  densityThreshold: 0.5
+  checkInterval: 0.2
   detectionRadius: 2
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
-  densityDisplayOffset: {x: 0, y: -120}
+  densityDisplayOffset: {x: 0, y: -172.5}
   simulationGameobject: {fileID: 402679189}
 --- !u!1 &402679189
 GameObject:
@@ -1009,7 +1011,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 5.49, y: -0.2916296, z: -0.99079746}
-  m_LocalScale: {x: 3.52, y: 1.51, z: 1}
+  m_LocalScale: {x: 2.8, y: 1.51, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609287617}
@@ -1069,10 +1071,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: 2.8654268, y: -0.75500005, z: 0}
-  - {x: 6.385427, y: -0.75500005, z: 0}
-  - {x: 6.385427, y: 0.755, z: 0}
-  - {x: 2.8654268, y: 0.755, z: 0}
+  - {x: 3.2254267, y: -0.75500005, z: 0}
+  - {x: 6.025427, y: -0.75500005, z: 0}
+  - {x: 6.025427, y: 0.755, z: 0}
+  - {x: 3.2254267, y: 0.755, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -1144,11 +1146,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eddcea47376ae34ba2e76e4999629d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: -0.04
+  velocity: 0.04
   acceleration: 0.0001
   offset: 0
   maxOffset: 10000
-  maxRandomVelocityStart: 0.01
+  maxRandomVelocityStart: 0
 --- !u!50 &551213856
 Rigidbody2D:
   serializedVersion: 4
@@ -1265,7 +1267,6 @@ GameObject:
   m_Component:
   - component: {fileID: 625874048}
   - component: {fileID: 625874047}
-  - component: {fileID: 625874046}
   - component: {fileID: 625874045}
   m_Layer: 0
   m_Name: Nozzle
@@ -1309,25 +1310,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.4
---- !u!114 &625874046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625874044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  smoothingSpeed: 0.2
-  enableSmoothing: 1
-  resizable: 0
-  uniformScaling: 1
-  scaleSpeed: 0.1
-  minScale: 0.1
-  maxScale: 5
 --- !u!212 &625874047
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1369,8 +1351,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: cd33585a8277dbb4794cd67d6b081a53, type: 3}
-  m_Color: {r: 0, g: 0.52797985, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 74515fc3bb5b6a446b65997e6327dab6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1666,7 +1648,6 @@ GameObject:
   - component: {fileID: 914899442}
   - component: {fileID: 914899441}
   - component: {fileID: 914899440}
-  - component: {fileID: 914899444}
   - component: {fileID: 914899445}
   - component: {fileID: 914899446}
   - component: {fileID: 914899447}
@@ -1760,28 +1741,6 @@ RectTransform:
   m_AnchoredPosition: {x: -12.5, y: -7.07}
   m_SizeDelta: {x: 8.46, y: 3.3}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &914899444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 914899439}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0369bca76cf29ec46a2a2ca423e82c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fluidDetector: {fileID: 367842095}
-  displayText: {fileID: 64377469}
-  prefix: 
-  suffix: '%'
-  completionString: HOLD IT
-  decimalPlaces: 0
-  smoothingSpeed: 3
-  startColor: {r: 0, g: 0, b: 0, a: 1}
-  endColor: {r: 1, g: 1, b: 1, a: 1}
-  thresholdColor: {r: 0.18472636, g: 1, b: 0, a: 1}
 --- !u!114 &914899445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2002,6 +1961,97 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 62, y: 15}
   m_EdgeRadius: 0
+--- !u!1 &1089645944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1089645945}
+  - component: {fileID: 1089645951}
+  - component: {fileID: 1089645950}
+  - component: {fileID: 1089645949}
+  m_Layer: 5
+  m_Name: Fill Bar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1089645945
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089645944}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1514508576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -473, y: 57.27946}
+  m_SizeDelta: {x: 91.2011, y: 459.7549}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1089645949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089645944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.01868701, g: 1, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: c948d789378ca5846882bf84a5acf2bf, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 1
+  m_FillAmount: 0
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1089645950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089645944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d1dac11a502a72459be6390e70d3cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 105816479}
+  fillImage: {fileID: 1089645949}
+  fillSpeed: 1
+--- !u!222 &1089645951
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089645944}
+  m_CullTransparentMesh: 1
 --- !u!225 &1127829677 stripped
 CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 1511865850944546621, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
@@ -2341,7 +2391,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.864573, y: -0.2916296, z: -0.99079746}
-  m_LocalScale: {x: 3.52, y: 1.51, z: 1}
+  m_LocalScale: {x: 2.8, y: 1.51, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609287617}
@@ -2401,10 +2451,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: -1.76, y: -0.75500005, z: 0}
-  - {x: 1.76, y: -0.75500005, z: 0}
-  - {x: 1.76, y: 0.755, z: 0}
-  - {x: -1.76, y: 0.755, z: 0}
+  - {x: -1.4, y: -0.75500005, z: 0}
+  - {x: 1.4000001, y: -0.75500005, z: 0}
+  - {x: 1.4000001, y: 0.755, z: 0}
+  - {x: -1.4, y: 0.755, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -2480,7 +2530,7 @@ MonoBehaviour:
   acceleration: 0.0001
   offset: 0
   maxOffset: 10000
-  maxRandomVelocityStart: 0.01
+  maxRandomVelocityStart: 0
 --- !u!50 &1184461106
 Rigidbody2D:
   serializedVersion: 4
@@ -2743,7 +2793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eddcea47376ae34ba2e76e4999629d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: 0.037
+  velocity: 0.03
   acceleration: 0.0001
   offset: 0
   maxOffset: 10
@@ -3317,6 +3367,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 19118732087008230, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       insertIndex: 2
       addedObject: {fileID: 1145553628}
+    - targetCorrespondingSourceObject: {fileID: 19118732087008230, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1089645945}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
 --- !u!224 &1514508576 stripped
@@ -4072,7 +4125,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -3.84, y: -0.2916296, z: -0.99079746}
-  m_LocalScale: {x: 3.52, y: 1.51, z: 1}
+  m_LocalScale: {x: 2.8, y: 1.51, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609287617}
@@ -4132,10 +4185,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: -6.464573, y: -0.75500005, z: 0}
-  - {x: -2.944573, y: -0.75500005, z: 0}
-  - {x: -2.944573, y: 0.755, z: 0}
-  - {x: -6.464573, y: 0.755, z: 0}
+  - {x: -6.104573, y: -0.75500005, z: 0}
+  - {x: -3.304573, y: -0.75500005, z: 0}
+  - {x: -3.304573, y: 0.755, z: 0}
+  - {x: -6.104573, y: 0.755, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -4207,11 +4260,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eddcea47376ae34ba2e76e4999629d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: 0.03
+  velocity: 0.04
   acceleration: 0.0001
   offset: 0
   maxOffset: 10000
-  maxRandomVelocityStart: 0.01
+  maxRandomVelocityStart: 0
 --- !u!50 &2115163185
 Rigidbody2D:
   serializedVersion: 4

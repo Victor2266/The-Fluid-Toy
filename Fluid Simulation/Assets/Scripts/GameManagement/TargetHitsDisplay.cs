@@ -4,7 +4,7 @@ using TMPro;
 public class targetHitsDisplay : MonoBehaviour
 {
     [Header("References")]
-    public Level2Manager manager;
+    public LevelManager manager;
     public TextMeshProUGUI displayText;
     
     [Header("Display Settings")]
@@ -15,8 +15,6 @@ public class targetHitsDisplay : MonoBehaviour
     public Color startColor = Color.black;
     public Color endColor = Color.white;
     public Color thresholdColor = Color.red;
-    
-    private int totalTargetHitsNeeded;
 
     void Start()
     {
@@ -24,18 +22,16 @@ public class targetHitsDisplay : MonoBehaviour
         // Auto-find references if not set
         if (manager == null)
         {
-            manager = FindObjectOfType<Level2Manager>();
+            manager = FindObjectOfType<LevelManager>();
             if (manager == null)
             {
-                Debug.LogError("No level2manager found in scene!");
+                Debug.LogError("No levelManager found in scene!");
                 enabled = false;
                 return;
             }
 
             
         }
-        
-        totalTargetHitsNeeded = manager.totalTargetHitsNeeded;
 
         if (displayText == null)
         {
@@ -53,20 +49,24 @@ public class targetHitsDisplay : MonoBehaviour
     {
         if (manager == null || displayText == null) return;
         
-        // get target hits
-        int targetHits = manager.targetHits;
+
+        if(manager is Level2Manager manager2){
+            // get target hits
+            int targetHits = manager2.targetHits;
         
-        // Update text
-        displayText.text = $"{prefix}{targetHits.ToString()}{suffix}{totalTargetHitsNeeded.ToString()}";
-        if(targetHits < totalTargetHitsNeeded){
-            // Calculate color based on percentage
-            float colorLerpValue = (float) targetHits / totalTargetHitsNeeded;
-            Color currentColor = Color.Lerp(startColor, endColor, colorLerpValue);
-            displayText.color = currentColor;
-        }else{
-            // When threshold is reached, show text in threshold color
-            displayText.color = thresholdColor;
+            // Update text
+            displayText.text = $"{prefix}{targetHits}{suffix}{manager2.totalTargetHitsNeeded}";
+            if(targetHits < manager2.totalTargetHitsNeeded){
+                // Calculate color based on percentage
+                float colorLerpValue = (float) targetHits / manager2.totalTargetHitsNeeded;
+                Color currentColor = Color.Lerp(startColor, endColor, colorLerpValue);
+                displayText.color = currentColor;
+            }else{
+                // When threshold is reached, show text in threshold color
+                displayText.color = thresholdColor;
+            }
         }
+        
     }
 
 

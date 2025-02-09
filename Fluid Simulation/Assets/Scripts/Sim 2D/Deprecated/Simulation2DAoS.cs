@@ -632,16 +632,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Vector2[] GetParticlePositions()
+    public Particle[] GetParticlePositions()
     {
-        Vector2[] positions = new Vector2[numParticles];
         particleBuffer.GetData(particleData);
 
-        for (int i = 0; i < numParticles; i++)
-        {
-            positions[i] = particleData[i].position;
-        }
-        return positions;
+        return particleData;
     }
     public int GetParticleCount()
     {
@@ -814,4 +809,5 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public void SetFirstSourceObject(SourceObjectInitializer source){
         sourceObjects[0] = null;
     }
+    
 }
