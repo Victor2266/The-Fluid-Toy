@@ -446,10 +446,10 @@ MonoBehaviour:
   maxSourceJitter: 0
   maxSourceOffset: 10
   sourceOffset: 0
-  nozzleStrength: 25
+  nozzleStrength: 35
   nozzleSpawnRate: 0.1
   hitTimeOffset: 0.2
-  DecayAcceleration: 1
+  DecayAcceleration: 0.1
   DecaySpeed: 1
   maxDecaySpeed: 0.1
   minDecaySpeed: 1
@@ -1015,7 +1015,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 5.49, y: -0.2916296, z: -0.99079746}
-  m_LocalScale: {x: 2.8, y: 1.51, z: 1}
+  m_LocalScale: {x: 2, y: 1.51, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609287617}
@@ -1075,10 +1075,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: 3.2254267, y: -0.75500005, z: 0}
-  - {x: 6.025427, y: -0.75500005, z: 0}
-  - {x: 6.025427, y: 0.755, z: 0}
-  - {x: 3.2254267, y: 0.755, z: 0}
+  - {x: 3.6254268, y: -0.75500005, z: 0}
+  - {x: 5.625427, y: -0.75500005, z: 0}
+  - {x: 5.625427, y: 0.755, z: 0}
+  - {x: 3.6254268, y: 0.755, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -2395,7 +2395,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.864573, y: -0.2916296, z: -0.99079746}
-  m_LocalScale: {x: 2.8, y: 1.51, z: 1}
+  m_LocalScale: {x: 2, y: 1.51, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609287617}
@@ -2455,10 +2455,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: -1.4, y: -0.75500005, z: 0}
-  - {x: 1.4000001, y: -0.75500005, z: 0}
-  - {x: 1.4000001, y: 0.755, z: 0}
-  - {x: -1.4, y: 0.755, z: 0}
+  - {x: -1, y: -0.75500005, z: 0}
+  - {x: 1, y: -0.75500005, z: 0}
+  - {x: 1, y: 0.755, z: 0}
+  - {x: -1, y: 0.755, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -4129,7 +4129,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -3.84, y: -0.2916296, z: -0.99079746}
-  m_LocalScale: {x: 2.8, y: 1.51, z: 1}
+  m_LocalScale: {x: 2, y: 1.51, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609287617}
@@ -4189,10 +4189,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: -6.104573, y: -0.75500005, z: 0}
-  - {x: -3.304573, y: -0.75500005, z: 0}
-  - {x: -3.304573, y: 0.755, z: 0}
-  - {x: -6.104573, y: 0.755, z: 0}
+  - {x: -5.704573, y: -0.75500005, z: 0}
+  - {x: -3.704573, y: -0.75500005, z: 0}
+  - {x: -3.704573, y: 0.755, z: 0}
+  - {x: -5.704573, y: 0.755, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
