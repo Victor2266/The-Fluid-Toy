@@ -56,12 +56,12 @@ public class FluidDetector : MonoBehaviour
         float totalDensity = 0f;
         
         // Create temporary array to get particle positions
-        Particle[] positions = fluidSimulation.GetParticlePositions();
+        Particle[] particles = fluidSimulation.GetParticles();
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
 
-        foreach (Particle particle in positions)
+        foreach (Particle particle in particles)
         {
             if(particle.type == FluidType.Disabled){
                 continue;

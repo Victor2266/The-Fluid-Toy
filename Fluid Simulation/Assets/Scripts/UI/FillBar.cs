@@ -4,6 +4,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Performes bar fill like loading bar, can be updated to work in any level.
+/// </summary>
 public class FillBar : MonoBehaviour
 {
     public LevelManager manager;
@@ -11,7 +14,7 @@ public class FillBar : MonoBehaviour
     public Image fillImage;
 
     public float fillSpeed;
-    // Start is called before the first frame update
+
     void Start()
     {
         if (manager == null)

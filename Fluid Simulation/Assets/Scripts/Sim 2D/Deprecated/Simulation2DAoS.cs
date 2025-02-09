@@ -632,7 +632,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Particle[] GetParticlePositions()
+    public Particle[] GetParticles()
     {
         particleBuffer.GetData(particleData);
 

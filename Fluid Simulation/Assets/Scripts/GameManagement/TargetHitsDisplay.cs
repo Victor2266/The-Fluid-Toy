@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// Updates text display using level 2 values, can be updated to work on any level.
+/// </summary>
 public class targetHitsDisplay : MonoBehaviour
 {
     [Header("References")]

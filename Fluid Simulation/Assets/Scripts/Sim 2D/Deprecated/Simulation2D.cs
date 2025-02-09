@@ -462,7 +462,7 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     {
         return positionBuffer != null;
     }
-    public Particle[] GetParticlePositions()
+    public Particle[] GetParticles()
     {
         return null;
     }

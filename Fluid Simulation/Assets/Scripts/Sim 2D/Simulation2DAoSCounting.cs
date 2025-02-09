@@ -676,7 +676,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Particle[] GetParticlePositions()
+    public Particle[] GetParticles()
     {
         particleBuffer.GetData(particleData);
 

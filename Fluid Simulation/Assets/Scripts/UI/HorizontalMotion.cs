@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
+/// <summary>
+/// Produces controlled or random horizontal motion on any object. Can be updated as needed.
+/// </summary>
 public class HorizontalMotion : MonoBehaviour
 {
     public float velocity = 0.1F;
