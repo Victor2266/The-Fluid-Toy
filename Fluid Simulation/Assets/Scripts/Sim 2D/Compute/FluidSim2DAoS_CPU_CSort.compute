@@ -70,6 +70,14 @@ struct OrientedBox //24 bytes total
     float2 zLocal;
 };
 
+struct ThermalBox
+{
+	OrientedBox box;
+	float temperature;
+	float range;
+	float conductivity;
+};
+
 struct ScalingFactors
 {
 	float Poly6;
@@ -91,6 +99,7 @@ RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
 RWStructuredBuffer<SourceObj> SourceObjs;
 RWStructuredBuffer<OrientedBox> DrainObjs;
+RWStructuredBuffer<ThermalBox> ThermalBoxes;
 RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
 RWStructuredBuffer<uint> keyarr;
 RWStructuredBuffer<Particle> CPUParticles;
@@ -109,6 +118,7 @@ int numBoxColliders;
 int numCircleColliders;
 int numSourceObjs;
 int numDrainObjs;
+int numThermalBoxes;
 int brushType;
 int selectedFluidType;
 int edgeType;
@@ -444,6 +454,11 @@ void HandleCollisions(inout Particle particle)
 			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping, fluidData.smoothingRadius);
 		}
 
+		// Handle tBox collisions
+		for (int k = 0; k < numThermalBoxes; k++)
+		{
+			HandleBoxCollision(pos, vel, ThermalBoxes[k].box, fluidData.collisionDamping, fluidData.smoothingRadius);
+		}
 	}
 
 	// Update position and velocity in the particle struct
@@ -839,6 +854,43 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, particle.type); // FIXME using viewpoint particle's smoothing radius
 		}
 
+	}
+
+	// Calculate thermal contribution of any nearby tBoxes
+	for (int i = 0; i < numThermalBoxes; i++)
+	{
+		ThermalBox tBox = ThermalBoxes[i];
+
+		// Create rotation matrix for local space transformation
+		float2 right = tBox.box.zLocal;
+		float2 up = float2(-tBox.box.zLocal.y, tBox.box.zLocal.x); // Precompute once
+
+		// Transform position to box's local space
+		float2 localPos = pos - tBox.box.pos;
+		// Transform to box's local space
+		float2 rotatedPos = float2(
+			dot(localPos, right),
+			dot(localPos, up)
+			);
+
+		// Calculate distance to box edges in local space
+		float2 boxHalfSize = tBox.box.size * 0.5;
+		float2 distanceFromCenter = abs(rotatedPos) - fluidData.smoothingRadius;
+
+		// Check if within range
+		float2 penetration = distanceFromCenter - boxHalfSize;
+
+		// Skip all calculations if no collision (combined comparison)
+		if (penetration.x >= tBox.range || penetration.y >= tBox.range)
+			return;
+
+		float2 closestPoint = float2(
+			clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
+			clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
+			);
+		float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
+
+		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
 	}
 
 	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;

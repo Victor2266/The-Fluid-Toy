@@ -91,6 +91,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
 
+    [Header("Thermal Boxes (Box colliders with temperatures)")]
+    public ThermalBoxInitializer[] thermalBoxes;
+    private ComputeBuffer thermalBoxesBuffer;
+
     // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
     private uint uintCounter;
@@ -98,9 +102,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     // Private Variables 
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
-
     private SourceObject[] sourceObjectData;
     private OrientedBox[] drainObjectData;
+    private ThermalBox[] thermalBoxData;
 
     [Header("Particle Data")]
     // Buffers
@@ -208,11 +212,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new SourceObject[sourceObjects.Length];
         drainObjectData = new OrientedBox[drainObjects.Length];
+        thermalBoxData = new ThermalBox[thermalBoxes.Length];
 
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
         sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
+        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
 
         atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
 
@@ -241,10 +247,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
+        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("numParticles", numParticles);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
@@ -391,11 +399,26 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             drainObjectData[i].zLocal = (Vector2)(drain.right); // Use right vector for orientation  
         }
 
+        // Update thermal boxes
+        for (int i = 0; i < thermalBoxes.Length; i++)
+        {
+            ThermalBoxInitializer tBox = thermalBoxes[i];
+            Transform collider = tBox.transform;
+            // Modify properties directly
+            thermalBoxData[i].box.pos = collider.position;
+            thermalBoxData[i].box.size = collider.localScale;
+            thermalBoxData[i].box.zLocal = (Vector2)(collider.right); // Use right vector for orientation
+            thermalBoxData[i].temperature = tBox.temperature;
+            thermalBoxData[i].range = tBox.range;
+            thermalBoxData[i].conductivity = tBox.conductivity;
+        }
+
         // Update buffers
         boxCollidersBuffer.SetData(boxColliderData);
         circleCollidersBuffer.SetData(circleColliderData);
         sourceObjectBuffer.SetData(sourceObjectData);
         drainObjectBuffer.SetData(drainObjectData);
+        thermalBoxesBuffer.SetData(thermalBoxData);
     }
 
     void UpdateSettings(float deltaTime)
@@ -406,6 +429,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
         compute.SetInt("numDrainObjs", drainObjects.Length);
+        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int) edgeType);
         compute.SetInt("spawnRate", (int) spawnRate);
@@ -580,6 +604,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             circleCollidersBuffer,
             sourceObjectBuffer,
             drainObjectBuffer,
+            thermalBoxesBuffer,
             atomicCounterBuffer
         );
 
@@ -612,6 +637,19 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 if (circleCollider != null)
                 {
                     Gizmos.DrawWireSphere(circleCollider.position, circleCollider.localScale.x * 0.5f);
+                }
+            }
+        }
+
+        // Draw thermal boxes
+        if (thermalBoxes != null)
+        {
+            foreach (ThermalBoxInitializer tBox in thermalBoxes)
+            {
+                Transform boxCollider = tBox.transform;
+                if (boxCollider != null)
+                {
+                    Gizmos.DrawWireCube(boxCollider.position, boxCollider.localScale);
                 }
             }
         }
