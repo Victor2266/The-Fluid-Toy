@@ -439,6 +439,7 @@ MonoBehaviour:
   twoStarTime: 30
   fluidDetector: {fileID: 367842095}
   totalTargetHitsNeeded: 50
+  targetHits: 0
   sourcePlayerModulationStrength: 1
   sourceAcceleration: 0.0001
   sourceVelocity: 0.1
@@ -447,7 +448,11 @@ MonoBehaviour:
   sourceOffset: 0
   nozzleStrength: 25
   nozzleSpawnRate: 0.1
-  targetHits: 0
+  hitTimeOffset: 0.2
+  DecayAcceleration: 1
+  DecaySpeed: 1
+  maxDecaySpeed: 0.1
+  minDecaySpeed: 1
 --- !u!1 &168916477
 GameObject:
   m_ObjectHideFlags: 0
@@ -1996,7 +2001,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -473, y: 57.27946}
+  m_AnchoredPosition: {x: -559, y: 50}
   m_SizeDelta: {x: 91.2011, y: 459.7549}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1089645949
