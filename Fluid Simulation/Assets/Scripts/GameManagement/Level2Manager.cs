@@ -30,6 +30,9 @@ public class Level2Manager : LevelManager
     public float sourceOffset;
     public float nozzleStrength = 25F;
     public float nozzleSpawnRate = 0.1F;
+
+    public float rotationSpeed = 5f;  // Controls how fast the rotation occurs
+    private float currentAngle = 0f;  // Store the current rotation angle, initialize to vertical
     private SourceObjectInitializer source;
 
     [Header("Source Decay control")]
@@ -149,12 +152,16 @@ public class Level2Manager : LevelManager
             sourceOffset = Math.Sign(sourceOffset) * maxSourceOffset;
         }
 
-        //calculate nozzle angle from vector and apply modulation offset
-        float angle = Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg;
-        angle = Mathf.Clamp(angle, -55f +90f, 55f +90f);
-        sourceObjectParent.transform.rotation = Quaternion.Euler(0f, 0f, (angle - 90F)*0.75f);
-        tableObject.transform.rotation = Quaternion.Euler(0f, 0f, (angle - 90F)*0.35f);
-        angle += sourceOffset;
+        // Calculate target angle from mouse position
+        float targetAngle = Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg;
+        targetAngle = Mathf.Clamp(targetAngle, -55f + 90f, 55f + 90f);
+        
+        // Smoothly interpolate current angle towards target angle
+        currentAngle = Mathf.LerpAngle(currentAngle, targetAngle, rotationSpeed * Time.deltaTime);
+
+        // Set the rotation of the gun and table
+        sourceObjectParent.transform.rotation = Quaternion.Euler(0f, 0f, (currentAngle - 90F) * 0.75f);
+        tableObject.transform.rotation = Quaternion.Euler(0f, 0f, (currentAngle - 90F) * 0.35f);
 
         //nozzle enable only on left mouse down
         if(Input.GetMouseButton(0))
@@ -162,12 +169,14 @@ public class Level2Manager : LevelManager
         else
             source.spawnRate = 0;
 
+        // Add source offset to target angle (not current angle)
+        targetAngle = currentAngle + sourceOffset;
         // convert back to vector and apply nozzle strength
-        Vector3 direction = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0);
+        Vector3 direction = new Vector3(Mathf.Cos(targetAngle * Mathf.Deg2Rad), Mathf.Sin(targetAngle * Mathf.Deg2Rad), 0);
         direction *= nozzleStrength;
 
         //update source rotation and nozzle velocity
-        source.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90F);
+        source.transform.rotation = Quaternion.Euler(0f, 0f, currentAngle  - 90F); // This doesn't do anything since the rotation of the source isn't used by any script
         source.velo.x = direction.x;
         source.velo.y = direction.y;
 
