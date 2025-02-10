@@ -15,6 +15,8 @@ public class FillBar : MonoBehaviour
 
     public float fillSpeed;
 
+    public bool isOverheatBar;
+
     void Start()
     {
         if (manager == null)
@@ -48,9 +50,17 @@ public class FillBar : MonoBehaviour
     void Update()
     {
         if(manager is Level2Manager manager2){
-            float targetFillAmount = Mathf.Clamp01((float) manager2.targetHits / (float) manager2.totalTargetHitsNeeded);
-            fillImage.fillAmount = Mathf.Lerp(fillImage.fillAmount, targetFillAmount, fillSpeed * Time.deltaTime);
-        }
+            if(!isOverheatBar){
+                float targetFillAmount = Mathf.Clamp01((float) manager2.targetHits / (float) manager2.totalTargetHitsNeeded);
+                fillImage.fillAmount = Mathf.Lerp(fillImage.fillAmount, targetFillAmount, fillSpeed * Time.deltaTime);
+            }
+            else
+            {
+                float targetFillAmount = Mathf.Clamp01((float) manager2.currentHeatLevel / (float) manager2.maxHeatLevel);
+                fillImage.fillAmount = Mathf.Lerp(fillImage.fillAmount, targetFillAmount, fillSpeed * Time.deltaTime);
+            }
+
+        } 
         
     }
 }
