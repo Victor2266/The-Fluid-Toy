@@ -9,6 +9,7 @@ public class Level2Manager : LevelManager
 {
     [Header("Level References")]
     public FluidDetector fluidDetector;
+    public GameObject sourceObjectParent;
 
     private IFluidSimulation sim;
 
@@ -148,6 +149,7 @@ public class Level2Manager : LevelManager
 
         //calculate nozzle angle from vector and apply modulation offset
         float angle = Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg;
+        sourceObjectParent.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90F);
         angle += sourceOffset;
 
         //nozzle enable only on left mouse down
