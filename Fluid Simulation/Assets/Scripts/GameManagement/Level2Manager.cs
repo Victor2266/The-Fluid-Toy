@@ -153,7 +153,7 @@ public class Level2Manager : LevelManager
         float angle = Mathf.Atan2(dirToMouse.y, dirToMouse.x) * Mathf.Rad2Deg;
         angle = Mathf.Clamp(angle, -55f +90f, 55f +90f);
         sourceObjectParent.transform.rotation = Quaternion.Euler(0f, 0f, (angle - 90F)*0.75f);
-        tableObject.transform.rotation = Quaternion.Euler(0f, 0f, (angle - 90F)*0.25f);
+        tableObject.transform.rotation = Quaternion.Euler(0f, 0f, (angle - 90F)*0.35f);
         angle += sourceOffset;
 
         //nozzle enable only on left mouse down
