@@ -452,10 +452,10 @@ MonoBehaviour:
   nozzleSpawnRate: 1
   rotationSpeed: 5
   hitTimeOffset: 0.05
-  DecayAcceleration: 0.1
-  DecaySpeed: 1
-  maxDecaySpeed: 0.1
-  minDecaySpeed: 1
+  DecayAcceleration: 1
+  DecaySpeed: 1.05
+  maxDecaySpeed: 0.05
+  minDecaySpeed: 1.05
 --- !u!1 &162434190
 GameObject:
   m_ObjectHideFlags: 0
@@ -3982,7 +3982,8 @@ MonoBehaviour:
 
     Aim the nozzle with your mouse!
 
-    Fill the left bar to win!'
+    Build pressure on the left
+    to win!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
   m_sharedMaterial: {fileID: 4621470211802787547, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
