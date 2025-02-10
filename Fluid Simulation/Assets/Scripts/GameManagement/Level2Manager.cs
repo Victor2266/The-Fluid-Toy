@@ -106,17 +106,11 @@ public class Level2Manager : LevelManager
         }
 
         
-        // if time since last decrease is longer than decayspeed, then decrease targetHits varaible.
+        // if time since last decrease is longer than decayspeed, then decrease targetHits variable.
         if(timeOfLastDecay > DecaySpeed){
-            DecaySpeed -= DecayAcceleration;
-            targetHits -= 1;
+            DecaySpeed = Mathf.Max(DecaySpeed - DecayAcceleration, maxDecaySpeed);
+            targetHits = Mathf.Max(targetHits -1, 0);
             timeOfLastDecay = 0;
-            if (targetHits < 0){
-                targetHits = 0;
-            }
-            if(DecaySpeed < maxDecaySpeed){
-                DecaySpeed = maxDecaySpeed;
-            }
                 
         }
 
