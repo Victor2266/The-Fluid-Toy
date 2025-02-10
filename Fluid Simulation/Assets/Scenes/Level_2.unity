@@ -440,7 +440,7 @@ MonoBehaviour:
   fluidDetector: {fileID: 367842095}
   sourceObjectParent: {fileID: 1499615897}
   tableObject: {fileID: 1352604838}
-  totalTargetHitsNeeded: 50
+  totalTargetHitsNeeded: 150
   targetHits: 0
   sourcePlayerModulationStrength: 1
   sourceAcceleration: 0.00025
@@ -451,7 +451,7 @@ MonoBehaviour:
   nozzleStrength: 64
   nozzleSpawnRate: 1
   rotationSpeed: 5
-  hitTimeOffset: 0.2
+  hitTimeOffset: 0.05
   DecayAcceleration: 0.1
   DecaySpeed: 1
   maxDecaySpeed: 0.1
@@ -7527,7 +7527,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
