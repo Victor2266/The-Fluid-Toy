@@ -56,9 +56,13 @@ public class targetHitsDisplay : MonoBehaviour
         if(manager is Level2Manager manager2){
             // get target hits
             int targetHits = manager2.targetHits;
-        
+            int maxHits = manager2.totalTargetHitsNeeded;
+
+            // get current percentage
+            int totalPercentage = Mathf.RoundToInt((float)targetHits / maxHits * 100f);
+            
             // Update text
-            displayText.text = $"{prefix}{targetHits}{suffix}{manager2.totalTargetHitsNeeded}";
+            displayText.text = $"{prefix}{totalPercentage}{suffix}";
             if(targetHits < manager2.totalTargetHitsNeeded){
                 // Calculate color based on percentage
                 float colorLerpValue = (float) targetHits / manager2.totalTargetHitsNeeded;
