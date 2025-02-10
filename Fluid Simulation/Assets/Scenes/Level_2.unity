@@ -4521,9 +4521,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 8300000, guid: be8f11d4f9c74e4469b4750803f3a708, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8bf394b9c1760de418eb3cbdc84fef83, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -7465,15 +7465,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1854668170}
   leftClickSounds:
-  - {fileID: 8300000, guid: d8487ddfdb300054db80ca86e9b20401, type: 3}
+  - {fileID: 8300000, guid: 7ae6ae710199aeb4894deaee74e5213d, type: 3}
   leftClickMinPitch: 0.95
-  leftClickMaxPitch: 1.05
+  leftClickMaxPitch: 1.5
   leftClickVolume: 0.2
+  enableLeftClickHoldSound: 1
   rightClickSounds:
   - {fileID: 8300000, guid: d8487ddfdb300054db80ca86e9b20401, type: 3}
   rightClickMinPitch: 0.95
   rightClickMaxPitch: 1.05
   rightClickVolume: 0.3
+  enableRightClickHoldSound: 0
 --- !u!82 &1854668170
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8070,7 +8072,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 8300000, guid: cdee234277dda1448ad0125f968ceba9, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 1ee6735000a809a4fbc4f2507f6923e9, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: 1

@@ -11,12 +11,17 @@ public class ClickSoundPlayer : MonoBehaviour
     [SerializeField] private float leftClickMinPitch = 0.95f;
     [SerializeField] private float leftClickMaxPitch = 1.05f;
     [SerializeField] private float leftClickVolume = 1f;
+    [SerializeField] private bool enableLeftClickHoldSound = false; // Toggle for continuous left click sound
 
     [Header("Right Click Sounds")]
     [SerializeField] private List<AudioClip> rightClickSounds = new List<AudioClip>();
     [SerializeField] private float rightClickMinPitch = 0.95f;
     [SerializeField] private float rightClickMaxPitch = 1.05f;
     [SerializeField] private float rightClickVolume = 1f;
+    [SerializeField] private bool enableRightClickHoldSound = false; // Toggle for continuous right click sound
+
+    private AudioClip currentLeftClickSound;
+    private AudioClip currentRightClickSound;
 
     private void Start()
     {
@@ -36,41 +41,98 @@ public class ClickSoundPlayer : MonoBehaviour
 
     private void Update()
     {
-        // Check for left click
+        // Handle left click
         if (Input.GetMouseButtonDown(0))
         {
-            PlayRandomSound(leftClickSounds, leftClickVolume, leftClickMinPitch, leftClickMaxPitch);
+            if (enableLeftClickHoldSound)
+            {
+                // Start continuous play
+                currentLeftClickSound = GetRandomSound(leftClickSounds);
+                if (currentLeftClickSound != null)
+                {
+                    audioSource.loop = true;
+                    audioSource.clip = currentLeftClickSound;
+                    audioSource.pitch = Random.Range(leftClickMinPitch, leftClickMaxPitch);
+                    audioSource.volume = leftClickVolume;
+                    audioSource.Play();
+                }
+            }
+            else
+            {
+                // Play single sound
+                PlayRandomSound(leftClickSounds, leftClickVolume, leftClickMinPitch, leftClickMaxPitch);
+            }
+        }
+        else if (Input.GetMouseButtonUp(0) && enableLeftClickHoldSound && currentLeftClickSound != null)
+        {
+            if (audioSource.clip == currentLeftClickSound)
+            {
+                audioSource.Stop();
+                audioSource.loop = false;
+                currentLeftClickSound = null;
+            }
         }
 
-        // Check for right click
+        // Handle right click
         if (Input.GetMouseButtonDown(1))
         {
-            PlayRandomSound(rightClickSounds, rightClickVolume, rightClickMinPitch, rightClickMaxPitch);
+            if (enableRightClickHoldSound)
+            {
+                // Start continuous play
+                currentRightClickSound = GetRandomSound(rightClickSounds);
+                if (currentRightClickSound != null)
+                {
+                    audioSource.loop = true;
+                    audioSource.clip = currentRightClickSound;
+                    audioSource.pitch = Random.Range(rightClickMinPitch, rightClickMaxPitch);
+                    audioSource.volume = rightClickVolume;
+                    audioSource.Play();
+                }
+            }
+            else
+            {
+                // Play single sound
+                PlayRandomSound(rightClickSounds, rightClickVolume, rightClickMinPitch, rightClickMaxPitch);
+            }
+        }
+        else if (Input.GetMouseButtonUp(1) && enableRightClickHoldSound && currentRightClickSound != null)
+        {
+            if (audioSource.clip == currentRightClickSound)
+            {
+                audioSource.Stop();
+                audioSource.loop = false;
+                currentRightClickSound = null;
+            }
         }
     }
 
-    private void PlayRandomSound(List<AudioClip> soundList, float volume, float minPitch, float maxPitch)
+    private AudioClip GetRandomSound(List<AudioClip> soundList)
     {
         if (soundList == null || soundList.Count == 0)
         {
             Debug.LogWarning("No sound clips assigned to the list!");
-            return;
+            return null;
         }
 
-        // Get random sound from the list
         int randomIndex = Random.Range(0, soundList.Count);
         AudioClip randomClip = soundList[randomIndex];
 
+        if (randomClip == null)
+        {
+            Debug.LogWarning("Null audio clip found in the list!");
+        }
+
+        return randomClip;
+    }
+
+    private void PlayRandomSound(List<AudioClip> soundList, float volume, float minPitch, float maxPitch)
+    {
+        AudioClip randomClip = GetRandomSound(soundList);
         if (randomClip != null)
         {
-            // Randomize pitch slightly for variety
             audioSource.pitch = Random.Range(minPitch, maxPitch);
             audioSource.volume = volume;
             audioSource.PlayOneShot(randomClip);
-        }
-        else
-        {
-            Debug.LogWarning("Null audio clip found in the list!");
         }
     }
 
