@@ -25,7 +25,7 @@ public class HorizontalMotion : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
 
         velocity += -1 * Math.Sign(offset) * acceleration;

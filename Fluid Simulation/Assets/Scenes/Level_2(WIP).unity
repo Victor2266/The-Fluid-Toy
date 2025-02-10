@@ -2247,7 +2247,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -2
+  m_SortingOrder: -4
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.3490566, g: 0.20620938, b: 0, a: 1}
   m_FlipX: 0
@@ -4686,6 +4686,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1376936751}
   - component: {fileID: 1376936752}
+  - component: {fileID: 1376936753}
   m_Layer: 0
   m_Name: Target
   m_TagString: Untagged
@@ -4719,7 +4720,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376936750}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4eddcea47376ae34ba2e76e4999629d6, type: 3}
   m_Name: 
@@ -4729,6 +4730,41 @@ MonoBehaviour:
   offset: 0
   maxOffset: 10
   maxRandomVelocityStart: 0
+--- !u!114 &1376936753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376936750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9694d7a07eb94a64893a9d3bd7e61709, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slideDistance: 16
+  slideDuration: 2
+  initialDelay: 0
+  delayBetweenSlides: 0
+  easeType: 7
+  useSameEasing: 1
+  returnEaseType: 7
+  loopInfinitely: 1
+  numberOfCycles: 1
+  returnToStartOnDisable: 1
+  autoStart: 1
+  startRight: 1
+  alternateDirection: 1
+  enableRandomization: 0
+  randomDistanceVariation: 3
+  randomDurationVariation: 0.5
+  randomDelayVariation: 0
+  directionChangeChance: 0
+  minTimeBetweenDirectionChanges: 1
+  useBoundaries: 1
+  rightBoundary: 8
+  leftBoundary: 8
+  useLocalPosition: 0
 --- !u!1 &1458903688
 GameObject:
   m_ObjectHideFlags: 0
@@ -5996,7 +6032,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -2
+  m_SortingOrder: -4
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.34509805, g: 0.20784315, b: 0, a: 1}
   m_FlipX: 0
@@ -6590,7 +6626,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -2
+  m_SortingOrder: -4
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.3490566, g: 0.20620938, b: 0, a: 1}
   m_FlipX: 0
