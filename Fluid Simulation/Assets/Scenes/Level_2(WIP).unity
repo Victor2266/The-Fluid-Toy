@@ -4743,7 +4743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slideDistance: 16
-  slideDuration: 2
+  slideDuration: 4
   initialDelay: 0
   delayBetweenSlides: 0
   easeType: 7
@@ -4755,8 +4755,8 @@ MonoBehaviour:
   autoStart: 1
   startRight: 1
   alternateDirection: 1
-  enableRandomization: 0
-  randomDistanceVariation: 3
+  enableRandomization: 1
+  randomDistanceVariation: 8
   randomDurationVariation: 0.5
   randomDelayVariation: 0
   directionChangeChance: 0
