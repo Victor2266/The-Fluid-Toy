@@ -49,7 +49,11 @@
   - *Radial*
   - *Reversed*
   - *Zero*
-
+- **Temperature Simulation**:
+  - Particles have temperature which they use for visual shaders
+- **State Change**
+  - Particles can change states after reaching temperture thresholds
+    
 ### 🎮 Game Systems  
 - **Fluid Density Detection**:  
   - AsyncGPUReadback for non-blocking particle position queries  
