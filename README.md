@@ -14,11 +14,11 @@
 ## 🚀 Key Features  
 
 ### 🧊 Collision Systems  
-- **Box Colliders**: Combine multiple oriented boxes to create complex shapes (e.g., pinwheels)  
+- **Box Colliders**: Combine multiple static or dynamic oriented boxes to create complex shapes (e.g., pinwheels)  
 - **Hybrid Circle Colliders**:  
   - Small colliders: GPU-accelerated using spatial hashing grids  
   - Large colliders: CPU-managed to prevent GPU performance degradation  
-- **Dynamic Colliders**:  
+- **Complex Colliders**:  
   - Texture-based density maps for complex shapes  
   - Runtime-alterable collider geometry via alpha threshold sampling  
   - Player-editable collider deformation through brush tools  
