@@ -125,6 +125,7 @@ public class Level2Manager : LevelManager
                     float fadeProgress = (percentageComplete - fadeStartThreshold) / (1f - fadeStartThreshold);
                     fadeProgress = Mathf.Clamp01(fadeProgress);
                     backgroundMusic.volume = Mathf.Lerp(initialMusicVolume, 0f, fadeProgress);
+                    ambientSFXAudioSource.volume = Mathf.Lerp(initialMusicVolume, 0f, fadeProgress);
                 }
             }
         }
