@@ -3842,11 +3842,13 @@ MonoBehaviour:
   leftClickMinPitch: 0.95
   leftClickMaxPitch: 1.05
   leftClickVolume: 0.2
+  enableLeftClickHoldSound: 0
   rightClickSounds:
   - {fileID: 8300000, guid: d8487ddfdb300054db80ca86e9b20401, type: 3}
   rightClickMinPitch: 0.95
   rightClickMaxPitch: 1.05
   rightClickVolume: 0.3
+  enableRightClickHoldSound: 0
 --- !u!82 &1854668170
 AudioSource:
   m_ObjectHideFlags: 0

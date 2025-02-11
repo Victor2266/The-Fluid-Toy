@@ -96,6 +96,7 @@ public class FadeText : MonoBehaviour
             fadeBG.color = new Color(originalBGColor.r, originalBGColor.g, originalBGColor.b, 0);
         }
         Destroy(gameObject);
+        Destroy(fadeBG.gameObject);
     }
         IEnumerator FadeOut()
     {
@@ -126,5 +127,6 @@ public class FadeText : MonoBehaviour
             fadeBG.color = new Color(originalBGColor.r, originalBGColor.g, originalBGColor.b, 0);
         }
         Destroy(gameObject);
+        Destroy(fadeBG.gameObject);
     }
 }
