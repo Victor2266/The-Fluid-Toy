@@ -18,6 +18,8 @@ public class Level2Manager : LevelManager
     [Header("Audio Source")]
     [SerializeField] private AudioSource gunAudioSource;
     [SerializeField] private AudioSource barAudioSource;
+    [SerializeField] private AudioSource targetAudioSource;
+    [SerializeField] private AudioSource ambientSFXAudioSource;
 
     [Header("Left Click Sounds")]
     [SerializeField] private List<AudioClip> leftClickSounds = new List<AudioClip>();
@@ -105,19 +107,22 @@ public class Level2Manager : LevelManager
             if (Time.time - timeOfLastHit > hitTimeOffset)
             {
                 targetHits += 1;
+                targetAudioSource.PlayOneShot(targetAudioSource.clip, 1f);
                 timeOfLastHit = Time.time;
                 timeOfLastDecay = 0;
                 DecaySpeed = minDecaySpeed;
             }
 
 
-            // Update background music volume (couldnt get this working so hopefully someone could fix)
+            // Update background music volume (fixed)
             if (backgroundMusic != null)
             {
-                float fadeStartThreshold = totalTargetHitsNeeded * fadeOutStartTime;
-                if (holdTimer >= fadeStartThreshold)
+                float percentageComplete = (float)targetHits / (float)totalTargetHitsNeeded;
+                float fadeStartThreshold = 0.75f;
+
+                if (percentageComplete >= fadeStartThreshold)
                 {
-                    float fadeProgress = (targetHits - fadeStartThreshold) / (totalTargetHitsNeeded - fadeStartThreshold);
+                    float fadeProgress = (percentageComplete - fadeStartThreshold) / (1f - fadeStartThreshold);
                     fadeProgress = Mathf.Clamp01(fadeProgress);
                     backgroundMusic.volume = Mathf.Lerp(initialMusicVolume, 0f, fadeProgress);
                 }
