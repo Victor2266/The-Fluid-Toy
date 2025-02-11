@@ -51,7 +51,7 @@
   - *Zero*
 - **Temperature Simulation**:
   - Particles have temperature which they use for visual shaders
-- **State Change**
+- **State Change Behaviors**:
   - Particles can change states after reaching temperture thresholds
     
 ### 🎮 Game Systems  
