@@ -9,6 +9,13 @@
 - Cameron Tuffner-Lyons  
 - JJ Marr  
 
+## 🕹 Download Here (Coming Soon):
+- Itch.io
+- Windows
+- Mac
+- Linux
+- Android
+
 ---
 
 ## 🚀 Key Features  
