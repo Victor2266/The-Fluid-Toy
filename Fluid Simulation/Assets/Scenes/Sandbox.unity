@@ -1850,7 +1850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &981710268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1919,6 +1919,11 @@ MonoBehaviour:
     fluidType: 1
   drainObjects:
   - {fileID: 1812870175}
+  thermalBoxes:
+  - transform: {fileID: 2085101045}
+    temperature: 120
+    range: 1
+    conductivity: 5
   isCPUComputingEnabled: 0
   toggleCPUComputing: 0
   ThreadBatchSize: 1000
@@ -2712,7 +2717,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1430943822
 MonoBehaviour:
   m_ObjectHideFlags: 0

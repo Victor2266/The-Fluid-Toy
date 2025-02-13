@@ -857,9 +857,9 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	}
 
 	// Calculate thermal contribution of any nearby tBoxes
-	for (int i = 0; i < numThermalBoxes; i++)
+	for (int j = 0; j < numThermalBoxes; j++)
 	{
-		ThermalBox tBox = ThermalBoxes[i];
+		ThermalBox tBox = ThermalBoxes[j];
 
 		// Create rotation matrix for local space transformation
 		float2 right = tBox.box.zLocal;
@@ -890,7 +890,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			);
 		float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
 
-		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
+		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, particle.type);
 	}
 
 	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;
