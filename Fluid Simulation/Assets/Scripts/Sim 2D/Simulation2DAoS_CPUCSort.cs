@@ -683,16 +683,11 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Vector2[] GetParticlePositions()
+    public Particle[] GetParticles()
     {
-        Vector2[] positions = new Vector2[numParticles];
         particleBuffer.GetData(particleData);
 
-        for (int i = 0; i < numParticles; i++)
-        {
-            positions[i] = particleData[i].position;
-        }
-        return positions;
+        return particleData;
     }
     public float[] GetParticleTemps()
     {
@@ -879,4 +874,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.particleResultBuffer.Dispose();
         CPUKernelAOS.keyarrbuffer.Dispose();
     }
+
+    public SourceObjectInitializer GetFirstSourceObject(){
+        return sourceObjects[0];
+    }
+    public void SetFirstSourceObject(SourceObjectInitializer source){
+        sourceObjects[0] = source;
+    }
+
+
 }

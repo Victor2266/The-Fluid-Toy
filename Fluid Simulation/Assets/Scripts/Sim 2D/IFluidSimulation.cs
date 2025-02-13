@@ -49,7 +49,7 @@ public interface IFluidSimulation
     /// <summary>
     /// Get current particle positions
     /// </summary>
-    Vector2[] GetParticlePositions();
+    Particle[] GetParticles();
     
     /// <summary>
     /// Get total number of particles
@@ -60,4 +60,8 @@ public interface IFluidSimulation
     /// Get interaction radius
     /// </summary>
     float GetInteractionRadius();
+
+    SourceObjectInitializer GetFirstSourceObject();
+
+    void SetFirstSourceObject(SourceObjectInitializer source);
 }

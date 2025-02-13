@@ -126,7 +126,7 @@ public class FluidData : ScriptableObject
     private void OnValidate()
     {
         smoothingRadius = Mathf.Max(0.001f, smoothingRadius);
-        targetDensity = Mathf.Max(0.001f, targetDensity);
+        targetDensity = Mathf.Max(-1000F, targetDensity);
         pressureMultiplier = Mathf.Max(0f, pressureMultiplier);
         nearPressureMultiplier = Mathf.Max(0f, nearPressureMultiplier);
     }
