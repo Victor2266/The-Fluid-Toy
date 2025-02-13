@@ -49,7 +49,7 @@ public interface IFluidSimulation
     /// <summary>
     /// Get current particle positions
     /// </summary>
-    Particle[] GetParticles();
+    ComputeBuffer GetParticleBuffer();
     
     /// <summary>
     /// Get total number of particles

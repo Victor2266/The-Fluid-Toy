@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class FluidDetector : MonoBehaviour 
 // This only works for the regular simulation and not the AoS version right now because it accesses the buffers like positionBuffer,
@@ -26,6 +27,8 @@ public class FluidDetector : MonoBehaviour
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
 
+    private bool isRequestMade = false;
+
     void Start()
     {
         simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
@@ -43,21 +46,34 @@ public class FluidDetector : MonoBehaviour
     {
         if (Time.time >= nextCheckTime)
         {
-            CheckFluidDensity();
+            // CheckFluidDensity();
+            //sends async data request to GPU after each check time.
+            if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid())
+                return;
+            if(!isRequestMade){
+                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), CheckFluidDensity);
+                isRequestMade = true;
+            }
+                
+
             nextCheckTime = Time.time + checkInterval;
         }
     }
 
-    void CheckFluidDensity()
+    
+    // Performs fluid check as callback to async read
+    void CheckFluidDensity(AsyncGPUReadbackRequest request)
     {
-        if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid())
+        if(request.hasError){
+            Debug.Log("GPU ASync Readback Error in Fluid Simulation Readback");
             return;
+        }
 
         Vector2 checkPosition = transform.position;
         float totalDensity = 0f;
         
         // Create temporary array to get particle positions
-        Particle[] particles = fluidSimulation.GetParticles();
+        Particle[] particles = request.GetData<Particle>().ToArray();
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
@@ -89,6 +105,8 @@ public class FluidDetector : MonoBehaviour
         {
             OnFluidPresenceChanged();
         }
+
+        isRequestMade = false;
     }
 
     void OnFluidPresenceChanged()

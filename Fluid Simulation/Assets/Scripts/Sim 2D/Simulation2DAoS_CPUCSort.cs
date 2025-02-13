@@ -683,11 +683,10 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Particle[] GetParticles()
+    public ComputeBuffer GetParticleBuffer()
     {
-        particleBuffer.GetData(particleData);
 
-        return particleData;
+        return particleBuffer;
     }
     public float[] GetParticleTemps()
     {
