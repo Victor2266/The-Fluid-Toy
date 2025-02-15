@@ -55,7 +55,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     [Header("Fluid Data Types")]
     // For the spatial subdivision to work we use the largest smoothing radius for the grid
     // By manually selecting the fluid types you can finetune the grid size
-    [SerializeField] private bool manuallySelectFluidTypes; 
+    [SerializeField] private bool manuallySelectFluidTypes;
     private float maxSmoothingRadius = 0f;
     [SerializeField] public FluidData[] fluidDataArray;
     private FluidParam[] fluidParamArr; // Compute-friendly data type
@@ -119,8 +119,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public int numParticles { get; private set; }
 
     private float accumulatedTime = 0f;
-    private const float MAX_DELTA_TIME = 1f/30f; // Maximum allowed delta time
-    private const float FIXED_TIME_STEP = 1f/120f; // Your desired fixed time step
+    private const float MAX_DELTA_TIME = 1f / 30f; // Maximum allowed delta time
+    private const float FIXED_TIME_STEP = 1f / 120f; // Your desired fixed time step
 
     [Header("CPU Computing")]
     //CPU Compute
@@ -136,13 +136,14 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public uint ThreadBatchSize = 50;
     public uint numCPUKeys = 10;
     void Start()
-    { 
+    {
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
         CPUKernelAOS = new CPUParticleKernelAoS();
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
-        
-        if (!manuallySelectFluidTypes){
+
+        if (!manuallySelectFluidTypes)
+        {
             // Get the number of fluid types (excluding Disabled)
             int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
             // Initialize arrays
@@ -155,8 +156,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             {
                 string fluidName = Enum.GetName(typeof(FluidType), i);
                 FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
-                fluidData.fluidType = (FluidType) i;
-                
+                fluidData.fluidType = (FluidType)i;
+
                 if (fluidData == null)
                 {
                     Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
@@ -164,18 +165,19 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
                 }
 
                 // Assign to array at index-1 (since we skip Disabled which is 0)
-                fluidDataArray[i-1] = fluidData;
-                fluidParamArr[i-1] = fluidData.getFluidParams();
-                scalingFactorsArr[i-1] = fluidData.getScalingFactors();
+                fluidDataArray[i - 1] = fluidData;
+                fluidParamArr[i - 1] = fluidData.getFluidParams();
+                scalingFactorsArr[i - 1] = fluidData.getScalingFactors();
             }
         }
-        else{
+        else
+        {
             fluidParamArr = new FluidParam[fluidDataArray.Length];
             scalingFactorsArr = new ScalingFactors[fluidDataArray.Length];
             for (int i = 0; i < fluidDataArray.Length; i++)
             {
                 fluidParamArr[i] = fluidDataArray[i].getFluidParams();
-                fluidParamArr[i].fluidType = (FluidType) i + 1;
+                fluidParamArr[i].fluidType = (FluidType)i + 1;
                 scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
             }
         }
@@ -196,7 +198,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         particleData = new Particle[numParticles];
         particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
-        
+
         boxColliderData = new OrientedBox[boxColliders.Length];
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new Circle[sourceObjects.Length];
@@ -207,9 +209,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(sourceObjects.Length, 1));
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
 
-        atomicCounterBuffer =  ComputeHelper.CreateStructuredBuffer<uint>(2);
+        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
 
-        
+
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
@@ -219,7 +221,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         SetInitialBufferData(spawnData);
         uint[] atomicCounter = { 0, uintCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
-        
+
         cpuparticlebuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
         keyarrbuffer = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
@@ -241,8 +243,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numParticles", numParticles);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("spawnRate", (int) spawnRate);
-        compute.SetInt("numCPUKeys", (int) numCPUKeys);
+        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetInt("numCPUKeys", (int)numCPUKeys);
         gpuSort = new();
         gpuSort.SetBuffers(spatialIndices, spatialOffsets, keyarrbuffer);
 
@@ -250,7 +252,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         // Init display
         display.Init(this);
 
-        initializeCPUKernelSettingsAoS();
+        //initializeCPUKernelSettingsAoS();
     }
 
     void Update()
@@ -264,7 +266,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         {
             // Accumulate time, but cap it to prevent spiral of death
             accumulatedTime += Mathf.Min(Time.deltaTime, MAX_DELTA_TIME);
-            
+
             // Run as many fixed updates as necessary to catch up
             // When the FPS is low then it will run more times to catch up
             // When the FPS is high then it will run less times
@@ -273,12 +275,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
                 RunSimulationFrame(FIXED_TIME_STEP); // This way the simulation steps are consistent
                 accumulatedTime -= FIXED_TIME_STEP;
             }
-        } 
+        }
         // In variable timestep mode, the delta time can vary, which slightly effects physics consistency across framerates
         // The number of simulation steps varies depending on the framerate 
         // Tabbing out has been fixed so it won't cause issues
         // This seems to give smoother results than fixed timestep above 120fps.
-        else if (!fixedTimeStep && Time.frameCount > 10)  
+        else if (!fixedTimeStep && Time.frameCount > 10)
         {
             RunSimulationFrame(Time.deltaTime);
         }
@@ -297,7 +299,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     void RunSimulationFrame(float frameTime)
     {
         // Cap the maximum deltaTime to prevent instability when tabbing out
-        float cappedFrameTime = frameTime > 1f/30f ? 1f/30f : frameTime; // Cap at 30fps equivalent
+        float cappedFrameTime = frameTime > 1f / 30f ? 1f / 30f : frameTime; // Cap at 30fps equivalent
 
         if (!isPaused)
         {
@@ -319,21 +321,27 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: externalForcesKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
         gpuSort.SortAndCalculateOffsetsCPUGPU();
-        if(isCPUComputingEnabled){
-            if(toggleCPUComputing){
-                runCPUComputeTest();
-            }else{
+        if (isCPUComputingEnabled)
+        {
+            if (toggleCPUComputing)
+            {
+                //runCPUComputeTest();
+            }
+            else
+            {
                 ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
                 ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
-                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel); 
+                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
             }
-        }else{
+        }
+        else
+        {
             ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
             ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
             ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
         }
-        
-        
+
+
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
 
     }
@@ -384,7 +392,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
                 size = drain.localScale,
                 zLocal = (Vector2)(drain.right) // Use right vector for orientation
             };
-                
+
         }
 
         // Update buffers
@@ -412,9 +420,9 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
         compute.SetInt("selectedFluidType", selectedFluid);
 
-        compute.SetInt("edgeType", (int) edgeType);
+        compute.SetInt("edgeType", (int)edgeType);
 
-        compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetInt("spawnRate", (int)spawnRate);
 
         //These are now computed once at the start
         /*
@@ -425,18 +433,22 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         compute.SetFloat("SpikyPow2DerivativeScalingFactor", 12 / (Mathf.Pow(currentFluid.smoothingRadius, 4) * Mathf.PI));
         */
 
-        if  (sourceObjects.Length > 0){
-            uint[] atomicCounter = {0, uintCounter++};
+        if (sourceObjects.Length > 0)
+        {
+            uint[] atomicCounter = { 0, uintCounter++ };
             atomicCounterBuffer.SetData(atomicCounter);
         }
 
         // Mouse interaction settings:
-        
+
         HandleMouseInput();
-        if(isCPUComputingEnabled){
+        if (isCPUComputingEnabled)
+        {
             CPUKernelAOS.deltaTime = deltaTime;
-            compute.SetInt("numCPUKeys", (int) numCPUKeys);
-        }else{
+            compute.SetInt("numCPUKeys", (int)numCPUKeys);
+        }
+        else
+        {
             compute.SetInt("numCPUKeys", 0);
         }
     }
@@ -461,11 +473,12 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                if (sourceObjects.Length == 0){
+                if (sourceObjects.Length == 0)
+                {
                     uint[] atomicCounter = { 0, uintCounter++ };
                     atomicCounterBuffer.SetData(atomicCounter);
                 }
-                
+
             }
             else if (isPushInteraction)
             {
@@ -473,7 +486,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             }
         }
 
-        compute.SetInt("brushType", (int) brushState);
+        compute.SetInt("brushType", (int)brushState);
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
         compute.SetFloat("interactionInputRadius", interactionRadius);
@@ -486,7 +499,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
-            Particle p = new Particle {
+            Particle p = new Particle
+            {
                 position = spawnData.positions[i],
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
@@ -533,7 +547,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
             fluidDataBuffer,
             ScalingFactorsBuffer,
             particleBuffer,
-            spatialIndices, 
+            spatialIndices,
             spatialOffsets,
             boxCollidersBuffer,
             circleCollidersBuffer,
@@ -548,7 +562,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         Gizmos.color = new Color(0, 1, 0, 0.4f);
         Gizmos.DrawWireCube(Vector2.zero, boundsSize);
-        
+
         // Draw all box colliders
         if (boxColliders != null)
         {
@@ -592,11 +606,13 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     //
     //
 
-    public void setEdgeType(int edgeTypeIndex){
+    public void setEdgeType(int edgeTypeIndex)
+    {
         edgeType = (EdgeType)edgeTypeIndex;
     }
 
-    public void setSelectedFluid(int fluidTypeIndex){
+    public void setSelectedFluid(int fluidTypeIndex)
+    {
         selectedFluid = fluidTypeIndex;
     }
 
@@ -645,6 +661,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         return interactionRadius;
     }
+    
     void initializeCPUKernelSettingsAoS(){
         CPUKernelAOS.numParticles = numParticles;
         CPUKernelAOS.offsets = new int2[9];
@@ -666,7 +683,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.circleCollidersData = new Circle[circleColliders.Length];
         CPUKernelAOS.drainData = new OrientedBox[drainObjects.Length];
         CPUKernelAOS.sourceData = new Circle[sourceObjects.Length];
-        CPUKernelAOS.spatialIndices = new uint3[numParticles];
+        CPUKernelAOS.spatialIndices = new uint2[numParticles];
         CPUKernelAOS.spatialOffsets = new uint[numParticles];
         CPUKernelAOS.particles = new Particle[numParticles];
         
@@ -681,7 +698,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         //Initialize all CPU buffers
         CPUKernelAOS.fluidParamBuffer = new NativeArray<FluidParam>(CPUKernelAOS.fluidParams.Length, Allocator.TempJob);
         CPUKernelAOS.scalingFactorsBuffer = new NativeArray<ScalingFactors>(CPUKernelAOS.scalingFactors.Length, Allocator.TempJob);
-        CPUKernelAOS.spatialIndicesBuffer = new NativeArray<uint3>(numParticles, Allocator.TempJob);
+        CPUKernelAOS.spatialIndicesBuffer = new NativeArray<uint2>(numParticles, Allocator.TempJob);
         CPUKernelAOS.spatialOffsetsBuffer = new NativeArray<uint>(numParticles, Allocator.TempJob);
         CPUKernelAOS.particleBuffer = new NativeArray<Particle>(numParticles, Allocator.TempJob);
         CPUKernelAOS.offsets2DBuffer = new NativeArray<int2>(CPUKernelAOS.offsets.Length, Allocator.TempJob);
