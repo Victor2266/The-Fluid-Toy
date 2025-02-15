@@ -140,6 +140,8 @@ public struct CPUDensityCalcAoS : IJobParallelFor
                 currIndex++;
                 // Exit if no longer looking at correct bin
                 if (spatialHashKey[1] != key) break;
+                // Skip if hash does not match
+                if (spatialHashKey[0] != hash) continue;
 
                 uint neighbourIndex = currIndex-1;
                 Particle neighbourParticle = particles[(int) neighbourIndex];
@@ -304,6 +306,8 @@ public struct CPUPressureCalcAoS : IJobParallelFor
 	    		currIndex++;
 	    		// Exit if no longer looking at correct bin
 	    		if (spatialHashKey[1] != key) break;
+        		// Skip if hash does not match
+                if (spatialHashKey[0] != hash) continue;
 
 	    		int neighbourIndex = (int) currIndex-1;
 	    		// Skip if looking at self
@@ -456,6 +460,8 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
 	    		currIndex ++;
 	    		// Exit if no longer looking at correct bin
 	    		if (spatialHashKey[1] != key) break;
+                // Skip if hash does not match
+                if (spatialHashKey[0] != hash) continue;
 
                 int neighbourIndex = (int)currIndex - 1;
 	    		// Skip if looking at self
