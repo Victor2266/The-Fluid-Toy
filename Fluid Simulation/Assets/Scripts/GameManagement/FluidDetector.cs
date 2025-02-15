@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using Unity.Collections;
 
 public class FluidDetector : MonoBehaviour 
 // This only works for the regular simulation and not the AoS version right now because it accesses the buffers like positionBuffer,
@@ -73,7 +74,7 @@ public class FluidDetector : MonoBehaviour
         float totalDensity = 0f;
         
         // Create temporary array to get particle positions
-        Particle[] particles = request.GetData<Particle>().ToArray();
+        NativeArray<Particle> particles = request.GetData<Particle>();
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
