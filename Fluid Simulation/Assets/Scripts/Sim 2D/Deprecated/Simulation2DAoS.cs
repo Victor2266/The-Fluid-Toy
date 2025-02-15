@@ -683,7 +683,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.circleCollidersData = new Circle[circleColliders.Length];
         CPUKernelAOS.drainData = new OrientedBox[drainObjects.Length];
         CPUKernelAOS.sourceData = new Circle[sourceObjects.Length];
-        CPUKernelAOS.spatialIndices = new uint[numParticles];
+        CPUKernelAOS.spatialIndices = new uint2[numParticles];
         CPUKernelAOS.spatialOffsets = new uint[numParticles];
         CPUKernelAOS.particles = new Particle[numParticles];
         
@@ -698,7 +698,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         //Initialize all CPU buffers
         CPUKernelAOS.fluidParamBuffer = new NativeArray<FluidParam>(CPUKernelAOS.fluidParams.Length, Allocator.TempJob);
         CPUKernelAOS.scalingFactorsBuffer = new NativeArray<ScalingFactors>(CPUKernelAOS.scalingFactors.Length, Allocator.TempJob);
-        CPUKernelAOS.spatialIndicesBuffer = new NativeArray<uint>(numParticles, Allocator.TempJob);
+        CPUKernelAOS.spatialIndicesBuffer = new NativeArray<uint2>(numParticles, Allocator.TempJob);
         CPUKernelAOS.spatialOffsetsBuffer = new NativeArray<uint>(numParticles, Allocator.TempJob);
         CPUKernelAOS.particleBuffer = new NativeArray<Particle>(numParticles, Allocator.TempJob);
         CPUKernelAOS.offsets2DBuffer = new NativeArray<int2>(CPUKernelAOS.offsets.Length, Allocator.TempJob);

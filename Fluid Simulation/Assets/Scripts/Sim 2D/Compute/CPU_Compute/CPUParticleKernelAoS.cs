@@ -28,7 +28,7 @@ public struct CPUDensityCalcAoS : IJobParallelFor
     [ReadOnly]
     public NativeArray<Particle> particles;
     [ReadOnly]
-    public NativeArray<uint> spatialIndices;
+    public NativeArray<uint2> spatialIndices;
     [ReadOnly]
     public NativeArray<uint> spatialOffsets;
     [ReadOnly]
@@ -136,10 +136,10 @@ public struct CPUDensityCalcAoS : IJobParallelFor
             uint currIndex =spatialOffsets[(int) key];
 
             while (currIndex != numParticles){
-                uint currKey = spatialIndices[(int) currIndex];
+                uint2 spatialHashKey = spatialIndices[(int) currIndex];
                 currIndex++;
                 // Exit if no longer looking at correct bin
-                if (currKey != key) break;
+                if (spatialHashKey[1] != key) break;
 
                 uint neighbourIndex = currIndex-1;
                 Particle neighbourParticle = particles[(int) neighbourIndex];
@@ -183,7 +183,7 @@ public struct CPUPressureCalcAoS : IJobParallelFor
     [ReadOnly]
     public NativeArray<Particle> particles;
     [ReadOnly]
-    public NativeArray<uint> spatialIndices;
+    public NativeArray<uint2> spatialIndices;
     [ReadOnly]
     public NativeArray<uint> spatialOffsets;
     [ReadOnly]
@@ -300,10 +300,10 @@ public struct CPUPressureCalcAoS : IJobParallelFor
 
 	    	while (currIndex < numParticles)
 	    	{
-	    		uint currKey = spatialIndices[(int) currIndex];
+	    		uint2 spatialHashKey = spatialIndices[(int) currIndex];
 	    		currIndex++;
 	    		// Exit if no longer looking at correct bin
-	    		if (currKey != key) break;
+	    		if (spatialHashKey[1] != key) break;
 
 	    		int neighbourIndex = (int) currIndex-1;
 	    		// Skip if looking at self
@@ -358,7 +358,7 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
     [ReadOnly]
     public NativeArray<Particle> particles;
     [ReadOnly]
-    public NativeArray<uint> spatialIndices;
+    public NativeArray<uint2> spatialIndices;
     [ReadOnly]
     public NativeArray<uint> spatialOffsets;
     [ReadOnly]
@@ -452,10 +452,10 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
 
 	    	while (currIndex < numParticles)
 	    	{
-	    		uint currKey = spatialIndices[currIndex];
+	    		uint2 spatialHashKey = spatialIndices[currIndex];
 	    		currIndex ++;
 	    		// Exit if no longer looking at correct bin
-	    		if (currKey != key) break;
+	    		if (spatialHashKey[1] != key) break;
 
                 int neighbourIndex = (int)currIndex - 1;
 	    		// Skip if looking at self
@@ -533,7 +533,7 @@ public class CPUParticleKernelAoS
     public Circle[] circleCollidersData;
     public OrientedBox[] drainData;
     public Circle[] sourceData;
-    public uint[] spatialIndices;
+    public uint2[] spatialIndices;
     public uint[] spatialOffsets;
     public Particle[] particles;
     public uint[] keyarr;
@@ -543,7 +543,7 @@ public class CPUParticleKernelAoS
     public NativeArray<Circle> circleBuffer;
     public NativeArray<Circle> sourceBuffer;
     public NativeArray<OrientedBox> drainBuffer;
-    public NativeArray<uint> spatialIndicesBuffer;
+    public NativeArray<uint2> spatialIndicesBuffer;
     public NativeArray<uint> spatialOffsetsBuffer;
     public NativeArray<Particle> particleBuffer;
     public NativeArray<Particle> particleResultBuffer;
