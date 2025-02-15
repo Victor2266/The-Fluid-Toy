@@ -10,9 +10,17 @@ public enum FluidType
     Lava
 }
 
+public enum VisualStyle
+{
+    VelocityBased,
+    Temperature,
+    Glowing,
+    Fuzzy
+}
+
 // Struct for passing to compute shader.
 [System.Serializable]
-[StructLayout(LayoutKind.Sequential, Size = 32)]
+[StructLayout(LayoutKind.Sequential, Size = 36)]
 public struct FluidParam
 {
     public FluidType fluidType;
@@ -24,8 +32,14 @@ public struct FluidParam
     public float nearPressureMultiplier;
     public float viscosityStrength;
     public float startTemperature;
+    public float thermalDiffusivity;
+    public FluidType boilState;
+    public float boilTemp;
+    public FluidType freezeState;
+    public float freezeTemp;
 };
 
+// These are calculated once based on the smoothing radius of each fluid
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential, Size = 20)]
 public struct ScalingFactors
@@ -36,6 +50,26 @@ public struct ScalingFactors
 	public float SpikyPow3Derivative;
 	public float SpikyPow2Derivative;
 };
+
+[System.Serializable]
+public struct VisualParameters
+{
+    public VisualStyle style;
+    public Gradient colorGradient;
+    public float visualScale;
+    
+    // General parameters
+    public float baseOpacity;
+    public float noiseScale;
+    public float timeScale;
+    
+    // Glow parameters
+    public float glowIntensity;
+    public float glowFalloff;  // Added glow falloff parameter
+    public float minPropertyValue; // For temperature mapping
+    public float maxPropertyValue;
+    
+}
 
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]
 public class FluidData : ScriptableObject
@@ -73,21 +107,26 @@ public class FluidData : ScriptableObject
     [Header("Thermal Properties")]
     [Tooltip("Starting temperature of the fluid")]
     public float startTemperature = 22f;
+    [Tooltip("Rate at which particles change temperature")]
+    public float thermalDiffusivity = 0.143f;
+    [Tooltip("Fluid to turn into on boil")]
+    public FluidType boilState = FluidType.Disabled;
+    [Tooltip("Temperature max before state change")]
+    public float boilTemp = 100f;
+    [Tooltip("Fluid to turn into on freeze")]
+    public FluidType freezeState = FluidType.Disabled;
+    [Tooltip("Temperature min before state change")]
+    public float freezeTemp = 0f;
 
-
-    [Header("Shader Properties")]
-    [Tooltip("What Type of Shader to use")]
-    public Shader shader;
-    public float scale;
-	public Gradient colourMap;
-	public int gradientResolution;
-	public float velocityDisplayMax;
+    [Header("Visual Properties")]
+    [Tooltip("Setup the look of the fluid")]
+    public VisualParameters visualParams;
 
     // Validation method to ensure values stay within reasonable bounds
     private void OnValidate()
     {
         smoothingRadius = Mathf.Max(0.001f, smoothingRadius);
-        targetDensity = Mathf.Max(0.001f, targetDensity);
+        targetDensity = Mathf.Max(-1000F, targetDensity);
         pressureMultiplier = Mathf.Max(0f, pressureMultiplier);
         nearPressureMultiplier = Mathf.Max(0f, nearPressureMultiplier);
     }
@@ -105,7 +144,12 @@ public class FluidData : ScriptableObject
             pressureMultiplier = pressureMultiplier,
             nearPressureMultiplier = nearPressureMultiplier,
             viscosityStrength = viscosityStrength,
-            startTemperature = startTemperature
+            startTemperature = startTemperature,
+            thermalDiffusivity = thermalDiffusivity,
+            boilState = boilState,
+            boilTemp = boilTemp,
+            freezeState = freezeState,
+            freezeTemp = freezeTemp
         };
         return fluidParams;
     }
@@ -121,4 +165,37 @@ public class FluidData : ScriptableObject
         };
         return scalingFactors;
     }
+
+    // Struct for passing visual data to compute shader
+    [System.Serializable]
+    [StructLayout(LayoutKind.Sequential)]
+    public struct VisualParamBuffer
+    {
+        public int visualStyle;
+        public float visualScale;
+        public float baseOpacity;
+        public float noiseScale;
+        public float timeScale;
+        public float glowIntensity;
+        public float glowFalloff; 
+        public float minValue;
+        public float maxValue;
+    }
+
+    public VisualParamBuffer GetVisualParams()
+    {
+        return new VisualParamBuffer
+        {
+            visualStyle = (int)visualParams.style,
+            visualScale = visualParams.visualScale,
+            baseOpacity = visualParams.baseOpacity,
+            noiseScale = visualParams.noiseScale,
+            timeScale = visualParams.timeScale,
+            glowIntensity = visualParams.glowIntensity,
+            glowFalloff = visualParams.glowFalloff,
+            minValue = visualParams.minPropertyValue,
+            maxValue = visualParams.maxPropertyValue
+        };
+    }
+
 };

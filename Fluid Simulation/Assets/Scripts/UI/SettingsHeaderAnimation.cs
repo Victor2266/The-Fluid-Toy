@@ -75,4 +75,10 @@ public class SettingsHeaderAnimation : MonoBehaviour
         ResetPosition();
         AnimateHeader();
     }
+
+    void OnDestroy()
+    {
+        DOTween.Kill(headerText.transform);
+        DOTween.Kill(headerText);
+    }
 }

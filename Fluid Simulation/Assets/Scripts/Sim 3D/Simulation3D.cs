@@ -46,6 +46,7 @@ public class Simulation3D : MonoBehaviour
     bool pauseNextFrame;
     Spawner3D.SpawnData spawnData;
 
+    ComputeBuffer keyarrbuffer;
     void Start()
     {
         Debug.Log("Controls: Space = Play/Pause, R = Reset");
@@ -78,8 +79,10 @@ public class Simulation3D : MonoBehaviour
 
         compute.SetInt("numParticles", positionBuffer.count);
 
+        keyarrbuffer = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
+
         gpuSort = new();
-        gpuSort.SetBuffers(spatialIndices, spatialOffsets);
+        gpuSort.SetBuffers(spatialIndices, spatialOffsets, keyarrbuffer);
 
 
         // Init display
@@ -87,7 +90,7 @@ public class Simulation3D : MonoBehaviour
     }
 
     void FixedUpdate()
-    {
+    { 
         // Run simulation if in fixed timestep mode
         if (fixedTimeStep)
         {
