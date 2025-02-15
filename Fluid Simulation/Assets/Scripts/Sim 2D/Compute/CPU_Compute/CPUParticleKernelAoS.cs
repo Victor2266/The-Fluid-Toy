@@ -19,25 +19,25 @@ using UnityEngine.ParticleSystemJobs;
 [BurstCompile]
 public struct CPUDensityCalcAoS : IJobParallelFor
 {
-    [WriteOnly]
-    public NativeArray<Particle> densityOut;
+    public NativeArray<Particle> CPUTargetParticlesBuffer;
     [ReadOnly]
-    public NativeArray<uint> keyarr;
+    public NativeArray<Particle> CPUAdjacentParticlesBuffer;
     [ReadOnly]
-    public uint numCPUKeys;
+    public NativeArray<uint> CPUTargetHashOffsetsBuffer;
     [ReadOnly]
-    public NativeArray<Particle> particles;
+    public NativeArray<uint> CPUTargetHashBuffer;
     [ReadOnly]
-    public NativeArray<uint2> spatialIndices;
+    public NativeArray<uint> CPUAdjacentHashOffsetsBuffer;
     [ReadOnly]
-    public NativeArray<uint> spatialOffsets;
+    public NativeArray<uint> CPUAdjacentHashBuffer;
     [ReadOnly]
-    public uint numParticles;
+    public uint CPUTargetParticleCount;
+    [ReadOnly]
+    public uint CPUAdjacentParticleCount;
     [ReadOnly]
     public NativeArray<FluidParam> fluidPs;
     [ReadOnly]
     public NativeArray<ScalingFactors> scalingFacts;
-    
     [ReadOnly]
     public float maxSmoothingRadius;
     [ReadOnly]
@@ -97,77 +97,95 @@ public struct CPUDensityCalcAoS : IJobParallelFor
 
     float GetMaxSmoothingRadius(int typeA, int typeB)
     {
-        return Math.Max(fluidPs[typeA - 1].smoothingRadius, fluidPs[typeB - 1].smoothingRadius);
+        return Mathf.Max(fluidPs[typeA - 1].smoothingRadius, fluidPs[typeB - 1].smoothingRadius);
     }
     public void Execute(int index)
     {
-        
-        
-        Particle particleOut = particles[index];
-        if(particleOut.type == FluidType.Disabled){
-            return;
-        }
-        float2 pos = particles[index].predictedPosition;
-        int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-        uint originHash = HashCell2D(originCell);
-        uint originKey = KeyFromHash(originHash, numParticles);
-        int j=0;
-        for(j=0; j<numCPUKeys; j++){
-            if(originKey == keyarr[j]){
-                break;
-            }
-        }
-        if(j == numCPUKeys){
-            return;
-        }
-        FluidParam fparams = fluidPs[((int) particleOut.type) - 1];
-        ScalingFactors sFactors = scalingFacts[((int) particleOut.type) - 1];
-
-        
-        float sqrRadius = fparams.smoothingRadius * fparams.smoothingRadius;
+        Particle targetParticle = CPUTargetParticlesBuffer[index];
+        int2 targetCell = GetCell2D(targetParticle.predictedPosition, maxSmoothingRadius);
+        FluidParam fParams = fluidPs[((int) targetParticle.type) - 1];
+        ScalingFactors sFactors = scalingFacts[((int) targetParticle.type) - 1];
         float density = 0;
         float nearDensity = 0;
+        float2 pos = targetParticle.predictedPosition;
 
-        //neighbour search
-        for (int i = 0; i < 9; i++)
-        {
-            uint hash = HashCell2D(originCell + offsets2D[i]);
-            uint key = KeyFromHash(hash, numParticles);
-            uint currIndex =spatialOffsets[(int) key];
-
-            while (currIndex != numParticles){
-                uint2 spatialHashKey = spatialIndices[(int) currIndex];
-                currIndex++;
-                // Exit if no longer looking at correct bin
-                if (spatialHashKey[1] != key) break;
-                // Skip if hash does not match
-                if (spatialHashKey[0] != hash) continue;
-
-                uint neighbourIndex = currIndex-1;
-                Particle neighbourParticle = particles[(int) neighbourIndex];
-                if (neighbourParticle.type == FluidType.Disabled){
-                    continue;
+        for(int i=0; i<9; i++){
+            uint adjacentHash = HashCell2D(targetCell + offsets2D[i]);
+            int hashIndex = (int) Mathf.Max(CPUTargetParticleCount, CPUAdjacentParticleCount);
+            uint isInTarget = 0;
+            for(int j=0; j<CPUTargetHashBuffer.Length; j++){
+                if(adjacentHash == CPUTargetHashBuffer[j]){
+                    hashIndex = (int) CPUTargetHashOffsetsBuffer[j];
+                    isInTarget = 1;
+                    break;
                 }
-                FluidParam neighbourData = fluidPs[((int) neighbourParticle.type) - 1];
-                float2 neighbourPos = neighbourParticle.predictedPosition;
-                float2 offsetToNeighbour;
-                offsetToNeighbour.x = neighbourPos.x - pos.x;
-                offsetToNeighbour.y = neighbourPos.y - pos.y;
-                float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
-                float interactionRadius = GetMaxSmoothingRadius((int) particleOut.type, (int) neighbourParticle.type);
-                float interactionSquare = interactionRadius * interactionRadius;
-                // Skip if not within radius
-	    		if (sqrDstToNeighbour > interactionSquare) continue;
-
-	    		// Calculate density and near density
-	    		float dst = (float)Math.Sqrt(sqrDstToNeighbour);
-	    		density += SpikyKernelPow2(dst, fparams.smoothingRadius, sFactors.SpikyPow2);
-	    		nearDensity += SpikyKernelPow3(dst, fparams.smoothingRadius, sFactors.SpikyPow3);
             }
-        }
 
-        particleOut.density = new float2(density, nearDensity);
-        densityOut[index] = particleOut;
+            if(isInTarget == 0){
+                for(int j=0; j<CPUAdjacentHashBuffer.Length; j++){
+                    if(adjacentHash == CPUAdjacentHashBuffer[j]){
+                        hashIndex = (int) CPUAdjacentHashOffsetsBuffer[j];
+                        break;
+                    }
+                }
+            }
+
+            if(isInTarget == 1){
+                while(hashIndex < CPUTargetParticleCount){
+                    Particle neighbourParticle = CPUTargetParticlesBuffer[hashIndex];
+                    int2 neighbourCell = GetCell2D(neighbourParticle.predictedPosition, maxSmoothingRadius);
+                    uint neighbourHash = HashCell2D(neighbourCell);
+                    if(neighbourHash != adjacentHash) break;
+
+                    if(targetParticle.predictedPosition == neighbourParticle.predictedPosition) continue;
+                    
+                    float2 neighbourPos = neighbourParticle.predictedPosition;
+                    float2 offsetToNeighbour;
+                    offsetToNeighbour.x = neighbourPos.x - pos.x;
+                    offsetToNeighbour.y = neighbourPos.y - pos.y;
+                    float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
+                    float interactionRadius = GetMaxSmoothingRadius((int) targetParticle.type, (int) neighbourParticle.type);
+                    float interactionSquare = interactionRadius * interactionRadius;
+                    // Skip if not within radius
+	    		    if (sqrDstToNeighbour > interactionSquare) continue;
+
+	    		    // Calculate density and near density
+	    		    float dst = (float)Mathf.Sqrt(sqrDstToNeighbour);
+	    		    density += SpikyKernelPow2(dst, fParams.smoothingRadius, sFactors.SpikyPow2);
+	    		    nearDensity += SpikyKernelPow3(dst, fParams.smoothingRadius, sFactors.SpikyPow3);
+                    hashIndex++;
+                    
+                }
+            }else{
+                while(hashIndex < CPUAdjacentParticleCount){
+                    Particle neighbourParticle = CPUAdjacentParticlesBuffer[hashIndex];
+                    int2 neighbourCell = GetCell2D(neighbourParticle.predictedPosition, maxSmoothingRadius);
+                    uint neighbourHash = HashCell2D(neighbourCell);
+                    if(neighbourHash != adjacentHash) break;
+
+                    
+                    float2 neighbourPos = neighbourParticle.predictedPosition;
+                    float2 offsetToNeighbour;
+                    offsetToNeighbour.x = neighbourPos.x - pos.x;
+                    offsetToNeighbour.y = neighbourPos.y - pos.y;
+                    float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
+                    float interactionRadius = GetMaxSmoothingRadius((int) targetParticle.type, (int) neighbourParticle.type);
+                    float interactionSquare = interactionRadius * interactionRadius;
+                    // Skip if not within radius
+	    		    if (sqrDstToNeighbour > interactionSquare) continue;
+
+	    		    // Calculate density and near density
+	    		    float dst = (float)Mathf.Sqrt(sqrDstToNeighbour);
+	    		    density += SpikyKernelPow2(dst, fParams.smoothingRadius, sFactors.SpikyPow2);
+	    		    nearDensity += SpikyKernelPow3(dst, fParams.smoothingRadius, sFactors.SpikyPow3);
+                    hashIndex++;
+                }
+            } 
+        }
+        
+        targetParticle.density = new float2 (density, nearDensity);
+        CPUTargetParticlesBuffer[index] = targetParticle;
+        
     }
 
 }
@@ -529,32 +547,29 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
 
 public class CPUParticleKernelAoS
 {
-    public int numParticles;
-    public float maxSmoothingRadius;
     public float deltaTime;
+    public float maxSmoothingRadius;
     public int2[] offsets;
     public FluidParam[] fluidParams;
     public ScalingFactors[] scalingFactors;
-    public OrientedBox[] boxCollidersData;
-    public Circle[] circleCollidersData;
-    public OrientedBox[] drainData;
-    public Circle[] sourceData;
-    public uint2[] spatialIndices;
-    public uint[] spatialOffsets;
-    public Particle[] particles;
-    public uint[] keyarr;
+    public NativeArray<int2> offsets2DBuffer;
     public NativeArray<FluidParam> fluidParamBuffer;
     public NativeArray<ScalingFactors> scalingFactorsBuffer;
-    public NativeArray<OrientedBox> boxBuffer;
-    public NativeArray<Circle> circleBuffer;
-    public NativeArray<Circle> sourceBuffer;
-    public NativeArray<OrientedBox> drainBuffer;
-    public NativeArray<uint2> spatialIndicesBuffer;
-    public NativeArray<uint> spatialOffsetsBuffer;
-    public NativeArray<Particle> particleBuffer;
-    public NativeArray<Particle> particleResultBuffer;
-    public NativeArray<int2> offsets2DBuffer;
-    public NativeArray<uint> keypopsbuffer;
-    public NativeArray<uint> keyarrbuffer;
+    public NativeArray<Particle> CPUTargetParticlesBuffer;
+    public NativeArray<Particle> CPUAdjacentParticlesBuffer;
+    public NativeArray<uint> CPUTargetHashBuffer;
+    public NativeArray<uint> CPUAdjacentHashBuffer;
+    public NativeArray<uint> CPUTargetHashOffsetsBuffer;
+    public NativeArray<uint> CPUAdjacentHashOffsetsBuffer;
+    public uint CPUTargetParticleCount;
+    public uint CPUAdjacentParticleCount;
+    public uint CPUTargetHashCount;
+    public uint CPUAdjacentHashCount;
+    public Particle[] CPUTargetParticles;
+    public Particle[] CPUAdjacentParticles;
+    public uint[] CPUTargetHash;
+    public uint[] CPUAdjacentHash;
+    public uint[] CPUTargetHashOffsets;
+    public uint[] CPUAdjacentHashOffsets;
 
 }

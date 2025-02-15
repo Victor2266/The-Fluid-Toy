@@ -10,7 +10,7 @@
 #pragma kernel UpdatePositions
 #pragma kernel UpdateStates
 #pragma kernel mergeCPUParticles
-
+#pragma kernel getCPUParticles
 // Includes
 #include "./FluidMaths2DAoS.hlsl"
 #include "./SpatialHash.hlsl"
@@ -92,8 +92,20 @@ RWStructuredBuffer<Circle> CircleColliders;
 RWStructuredBuffer<SourceObj> SourceObjs;
 RWStructuredBuffer<OrientedBox> DrainObjs;
 RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
+
+//These buffers are used to copy specific particles to the CPU
 RWStructuredBuffer<uint> keyarr;
-RWStructuredBuffer<Particle> CPUParticles;
+RWStructuredBuffer<Particle> CPUTargetParticles;
+RWStructuredBuffer<uint> CPUTargetParticleCount;
+RWStructuredBuffer<uint> CPUTargetHashes;
+RWStructuredBuffer<uint> CPUTargetHashOffsets;
+RWStructuredBuffer<uint> CPUTargetHashCount;
+RWStructuredBuffer<Particle> CPUAdjacentParticles;
+RWStructuredBuffer<uint> CPUAdjacentParticleCount;
+RWStructuredBuffer<uint> CPUAdjacentHashes;
+RWStructuredBuffer<uint> CPUAdjacentHashOffsets;
+RWStructuredBuffer<uint> CPUAdjacentHashCount;
+RWStructuredBuffer<uint> CPUIndicesForMerging;
 
 // Settings
 const uint numParticles;
@@ -103,7 +115,8 @@ const float2 interactionInputPoint;
 const float interactionInputStrength;
 const float interactionInputRadius;
 const float maxSmoothingRadius;
-const uint numCPUKeys;
+
+uint numCPUKeys;
 
 int numBoxColliders;
 int numCircleColliders;
@@ -880,15 +893,157 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 [numthreads(NumThreads, 1, 1)]
 void mergeCPUParticles(uint3 id : SV_DispatchThreadID)
 {
-	if (id.x >= numParticles) return;
-	Particle particle = Particles[id.x];
-	if (particle.type == 0) return; // Skip disabled
-	int2 cell2 = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
-	uint hash2 = HashCell2D(cell2);
-	uint key2 = KeyFromHash(hash2, numParticles);
-	for (uint j = 0; j < numCPUKeys; j++) {
-		if (key2 == keyarr[j]) {
-			Particles[id.x] = CPUParticles[id.x];
+	if (id.x >= CPUTargetParticleCount[0]) return;
+	Particle particle = CPUTargetParticles[id.x];
+	Particles[CPUIndicesForMerging[id.x]] = particle;
+}
+
+
+
+
+[numthreads(NumThreads, 1, 1)]
+void getCPUParticles(uint3 id : SV_DispatchThreadID){
+
+	//must run sequentially to preserve hash order.
+	if(id.x > 1) return;
+
+	//variables to count number of hashes and particles
+	uint cpuTargetIndex = 0;
+	uint cpuAdjacentIndex = 0;
+	uint cpuTargetHashIndex = 0;
+	uint cpuAdjacentHashIndex = 0;
+
+	//iterate over the top <numCPUKeys> highest population keys
+	for(uint keyNum=0; keyNum<numCPUKeys; keyNum++)
+	{
+
+		uint cpuKey = keyarr[keyNum];
+		uint currOffset = SpatialOffsets[cpuKey];
+		uint isNewHash = 1;
+
+		//This while loop collects every single hash that will be needed for the CPU, and orders them in a approximately continuous spatial region
+		// meaning all hash regions adjacent to the target region are placed spatially adjacent in the list of hashes.
+		while(currOffset < numParticles){
+			uint3 index = SpatialIndices[currOffset];
+			uint targetHash = index[1];
+			if(index[2] != cpuKey) break;
+
+	
+			for(int i=0; i<cpuTargetHashIndex; i++){
+				if(targetHash == CPUTargetHashes[i]){
+					isNewHash = 0;
+					break;
+				}
+			}
+			for(int i=0; i<cpuAdjacentHashIndex; i++){
+				if(targetHash == CPUAdjacentHashes[i]){
+					isNewHash = 0;
+					break;
+				}
+			}
+			
+			if(isNewHash == 1){
+
+				Particle particle = Particles[currOffset];
+				int2 originCell = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
+				uint tempHashCount = cpuHashIndex;
+				for(int i=0; i<9; i++){
+					uint hash = HashCell2D(originCell + offsets2D[i]);
+					isNewHash = 1;
+					for(int i=0; i<cpuTargetHashIndex; i++){
+						if(hash == CPUTargetHashes[i]){
+							isNewHash = 0;
+							break;
+						}
+					}
+					for(int i=0; i<cpuAdjacentHashIndex; i++){
+						if(hash == CPUAdjacentHashes[i]){
+							isNewHash = 0;
+							break;
+						}
+					}
+					if(isNewHash == 1){
+						if(hash == targetHash){
+							CPUTargetHashes[cpuTargetHashIndex] = hash;
+							cpuTargetHashIndex++;
+						}else{
+							CPUAdjacentHashes[cpuAdjacentHashIndex] = hash;
+							cpuAdjacentHashIndex++;
+						}
+					}
+				}
+			}
+			currOffset++;
 		}
 	}
+
+	//iterate over all of the hashes needed and get all the particles in that target hash.
+	//This loop places the particles in the same order as the hash list and so a new offset array is used to indicate where the ith hash in the 
+	//hash list starts in the new particle array.
+	for(uint i=0; i<cpuTargetHashIndex; i++){
+		uint targetHash = CPUTargetHashes[i];
+		uint key = KeyFromHash(targetHash);
+		uint currIndex = SpatialOffsets[key];
+		uint isEmpty = 1;
+		CPUTargetHashOffsets[i] = (9 * numParticles) + 1; //if no particles in hash, offset points to end of hash list
+		while(currIndex < numParticles){
+			uint3 index = SpatialIndices[currIndex];
+			
+			if(index[2] != key) break;
+
+			if(index[1] != targetHash) continue;
+
+			if(Particles[currIndex].type == 0) continue;
+
+			if(isEmpty == 1){
+				CPUTargetHashOffsets[i] = cpuTargetIndex; //if particles in hash, offset points to hash's starting location in CPUParticles
+				isEmpty = 0;
+			}
+
+			CPUTargetParticles[cpuTargetIndex] = Particles[currIndex];
+			CPUIndicesForMerging[cpuTargetIndex] = currIndex;
+			cpuTargetIndex++;
+
+			currIndex++;
+			
+		}
+	}
+	//iterate over all of the hashes needed and get all the particles in that adjacent hash.
+	//This loop places the particles in the same order as the hash list and so a new offset array is used to indicate where the ith hash in the 
+	//hash list starts in the new particle array.
+	for(uint i=0; i<cpuAdjacentHashIndex; i++){
+		uint targetHash = CPUAdjacentHashes[i];
+		uint key = KeyFromHash(targetHash);
+		uint currIndex = SpatialOffsets[key];
+		uint isEmpty = 1;
+		CPUAdjacentHashOffsets[i] = (9 * numParticles) + 1; //if no particles in hash, offset points to end of hash list
+		while(currIndex < numParticles){
+			uint3 index = SpatialIndices[currIndex];
+			
+			if(index[2] != key) break;
+
+			if(index[1] != targetHash) continue;
+
+			if(Particles[currIndex].type == 0) continue;
+
+			if(isEmpty == 1){
+				CPUAdjacentHashOffsets[i] = cpuAdjacentIndex; //if particles in hash, offset points to hash's starting location in CPUParticles
+				isEmpty = 0;
+			}
+
+			CPUAdjacentParticles[cpuAdjacentIndex] = Particles[currIndex];
+			cpuAdjacentIndex++;
+
+			currIndex++;
+			
+		}
+	}
+
+	// save the hash list sizes and particle size so that we can read ONLY that many items from the buffers.
+	// allows static allocation of buffer sizes.
+	CPUTargetParticleCount[0] = cpuTargetIndex;
+	CPUAdjacentParticleCount[0] = cpuAdjacentIndex;
+	CPUTargetHashCount[0] = cpuTargetHashIndex;
+	CPUAdjacentHashCount[0] = cpuAdjacentHashIndex;
+
 }
