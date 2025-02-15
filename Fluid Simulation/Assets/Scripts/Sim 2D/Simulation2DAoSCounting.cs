@@ -5,6 +5,8 @@ using System;
 using UnityEngine.UIElements;
 using System.Linq;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
+using Unity.VisualScripting;
 
 
 public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
@@ -678,11 +680,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Particle[] GetParticles()
+    public ComputeBuffer GetParticleBuffer()
     {
-        particleBuffer.GetData(particleData);
 
-        return particleData;
+        return particleBuffer;
     }
     public float[] GetParticleTemps()
     {
