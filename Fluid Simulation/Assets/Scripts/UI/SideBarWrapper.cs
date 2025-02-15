@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
 
 public class SideBarWrapper : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] Sprite PlayIconImage;
 
     private IFluidSimulation simulation2DScript;
+
+    private bool isReloading = false;
 
     void Awake()
     {
@@ -87,6 +90,9 @@ public class SideBarWrapper : MonoBehaviour
 
     public void ReloadScene()
     {
+        if (isReloading) return;
+        isReloading = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+        Resources.UnloadUnusedAssets();
     }
 }
