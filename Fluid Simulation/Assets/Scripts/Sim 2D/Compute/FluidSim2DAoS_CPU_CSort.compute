@@ -84,7 +84,7 @@ RWStructuredBuffer<FluidData> FluidDataSet;
 RWStructuredBuffer<ScalingFactors> ScalingFactorsBuffer;
 RWStructuredBuffer<Particle> Particles;
 RWStructuredBuffer<Particle> SortedParticles; // Sorted array
-RWStructuredBuffer<uint> SpatialIndices; // used for spatial hashing index, hash, key
+RWStructuredBuffer<uint2> SpatialIndices; // used for spatial hashing (hash, key)
 RWStructuredBuffer<uint> SpatialOffsets; // used for spatial hashing
 RWStructuredBuffer<uint> SortedIndices;  // Post-sort indices
 RWStructuredBuffer<OrientedBox> BoxColliders;
@@ -191,10 +191,12 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 
 		while (currIndex < numParticles)
 		{
-			uint currKey = SpatialIndices[currIndex];
+			uint2 indexData = SpatialIndices[currIndex];
 			currIndex++;
 			// Exit if no longer looking at correct bin
-			if (currKey != key) break;
+			if (indexData[1] != key) break;
+			// Skip if hash does not match
+			if (indexData[0] != hash) continue;
 
 			uint neighbourIndex = currIndex-1;
 			Particle neighbourParticle = Particles[neighbourIndex];
@@ -583,7 +585,7 @@ void UpdateSpatialHash (uint3 id : SV_DispatchThreadID)
 	int2 cell = GetCell2D(Particles[index].predictedPosition, maxSmoothingRadius);
 	uint hash = HashCell2D(cell);
 	uint key = KeyFromHash(hash, numParticles);
-	SpatialIndices[id.x] = key;
+	SpatialIndices[id.x] = uint2(hash, key);
 	SortedIndices[id.x] = id.x;
 }
 
@@ -613,14 +615,13 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 	if (particle.type == 0){ // Skip disabled
 		return;
 	}
-	
+
 	// CPU key check
-	float2 pos = Particles[id.x].predictedPosition;
-	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-	uint hash2 = HashCell2D(originCell);
-	uint key2 = KeyFromHash(hash2, numParticles);
+	int2 cell = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
+	uint hash = HashCell2D(cell);
+	uint key = KeyFromHash(hash, numParticles);
 	for (uint j = 0; j < numCPUKeys; j++) {
-		if (key2 == keyarr[j]) {
+		if (key == keyarr[j]) {
 			return;
 		}
 	}
@@ -640,6 +641,16 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 
+	// CPU key check
+	int2 cell2 = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
+	uint hash2 = HashCell2D(cell2);
+	uint key2 = KeyFromHash(hash2, numParticles);
+	for (uint j = 0; j < numCPUKeys; j++) {
+		if (key2 == keyarr[j]) {
+			return;
+		}
+	}
+
 	FluidData fluidData = FluidDataSet[particle.type - 1];
 
 	float density = Particles[id.x].density[0];
@@ -652,15 +663,6 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
 
-	// CPU key check
-	uint hash2 = HashCell2D(originCell);
-	uint key2 = KeyFromHash(hash2, numParticles);
-	for (uint j = 0; j < numCPUKeys; j++) {
-		if (key2 == keyarr[j]) {
-			return;
-		}
-	}
-
 	// Neighbour search
 	for (int i = 0; i < 9; i ++)
 	{
@@ -670,10 +672,12 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint currKey = SpatialIndices[currIndex];
+			uint2 indexData = SpatialIndices[currIndex];
 			currIndex ++;
 			// Exit if no longer looking at correct bin (index, hash, key)
-			if (currKey != key) break;
+			if (indexData[1] != key) break;
+			// Skip if hash does not match
+			if (indexData[0] != hash) continue;
 
 			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self
@@ -723,22 +727,24 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 	Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 
-	FluidData fluidData = FluidDataSet[particle.type - 1];
-	float2 pos = Particles[id.x].predictedPosition;
-	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
-
-	float2 viscosityForce = 0;
-	float2 velocity = Particles[id.x].velocity;
-
 	// CPU key check
-	uint hash2 = HashCell2D(originCell);
+	int2 cell2 = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
+	uint hash2 = HashCell2D(cell2);
 	uint key2 = KeyFromHash(hash2, numParticles);
 	for (uint j = 0; j < numCPUKeys; j++) {
 		if (key2 == keyarr[j]) {
 			return;
 		}
 	}
+
+	FluidData fluidData = FluidDataSet[particle.type - 1];
+
+	float2 pos = Particles[id.x].predictedPosition;
+	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
+
+	float2 viscosityForce = 0;
+	float2 velocity = Particles[id.x].velocity;
 
 	for (int i = 0; i < 9; i ++)
 	{
@@ -748,10 +754,12 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint currKey = SpatialIndices[currIndex];
+			uint2 indexData = SpatialIndices[currIndex];
 			currIndex ++;
 			// Exit if no longer looking at correct bin
-			if (currKey != key) break;
+			if (indexData[1] != key) break;
+			// Skip if hash does not match
+			if (indexData[0] != hash) continue;
 
 			uint neighbourIndex = currIndex-1;
 			// Skip if looking at self
@@ -803,12 +811,12 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 
 		while (currIndex < numParticles)
 		{
-			uint3 indexData = SpatialIndices[currIndex];
+			uint2 indexData = SpatialIndices[currIndex];
 			currIndex++;
 			// Exit if no longer looking at correct bin
-			if (indexData[2] != key) break;
+			if (indexData[1] != key) break;
 			// Skip if hash does not match
-			if (indexData[1] != hash) continue;
+			if (indexData[0] != hash) continue;
 
 			uint neighbourIndex = currIndex - 1;
 			// Skip if looking at self
