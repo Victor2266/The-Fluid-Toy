@@ -85,7 +85,8 @@ public class SideBarWrapper : MonoBehaviour
         }
     }
 
-    public void ReloadScene(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
     }
 }
