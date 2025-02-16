@@ -15,6 +15,11 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 
 	public void Init(Simulation2DAoSCounting sim)
 	{
+		if (material != null || argsBuffer != null || visualParamsBuffer != null || gradientTextures != null || gradientArray != null)
+		{
+			Debug.LogError("One of the buffers in MultiParticleDisplay2D is not null before Init! This could cause errors.");
+		}
+		
         material = new Material(shader);
 		material.SetBuffer("Particles", sim.particleBuffer);
 
@@ -83,12 +88,27 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 
 	void OnDestroy()
 	{
+		ReleaseBuffers();
+	}
+
+	public void ReleaseBuffers()
+	{
+		if (material != null) 
+			Destroy(material);
+		
 		ComputeHelper.Release(argsBuffer, visualParamsBuffer);
-		foreach (var tex in gradientTextures.Values)
-        {
-            if (tex != null)
-                Destroy(tex);
-        }
+		
+		if (gradientTextures != null)
+		{
+			foreach (var tex in gradientTextures.Values)
+			{
+				if (tex != null)
+					Destroy(tex);
+			}
+		}
+
+		if (gradientArray != null)
+			Destroy(gradientArray);
 	}
 
 	public void CreateAndSetupVisualParamsBuffer(FluidData[] fluidDataArray){

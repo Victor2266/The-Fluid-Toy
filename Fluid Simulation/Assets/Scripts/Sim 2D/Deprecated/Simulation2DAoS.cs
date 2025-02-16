@@ -543,6 +543,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
     void OnDestroy()
     {
+        ReleaseComputeBuffers();
+    }
+
+    public void ReleaseComputeBuffers()
+    {
         ComputeHelper.Release(
             fluidDataBuffer,
             ScalingFactorsBuffer,

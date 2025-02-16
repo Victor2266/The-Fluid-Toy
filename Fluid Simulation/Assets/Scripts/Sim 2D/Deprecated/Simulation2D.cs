@@ -334,6 +334,11 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
 
     void OnDestroy()
     {
+        ReleaseComputeBuffers();
+    }
+
+    public void ReleaseComputeBuffers()
+    {
         ComputeHelper.Release(
             positionBuffer, 
             predictedPositionBuffer, 

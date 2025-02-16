@@ -118,6 +118,11 @@ public class ParticleDisplay2D : MonoBehaviour, IParticleDisplay
 
 	void OnDestroy()
 	{
+		ReleaseBuffers();
+	}
+
+	public void ReleaseBuffers()
+	{
 		ComputeHelper.Release(argsBuffer);
 	}
 }

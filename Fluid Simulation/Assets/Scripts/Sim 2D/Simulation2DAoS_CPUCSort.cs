@@ -574,24 +574,29 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
     void OnDestroy()
     {
-        ComputeHelper.Release(
-            fluidDataBuffer,
-            ScalingFactorsBuffer,
-            particleBuffer,
-            sortedParticleBuffer,
-            spatialIndices, 
-            spatialOffsets,
-            sortedIndices,
-            boxCollidersBuffer,
-            circleCollidersBuffer,
-            sourceObjectBuffer,
-            drainObjectBuffer,
-            atomicCounterBuffer,
-            cpuparticlebuffer,
-            keyarrbuffer
-        );
+        ReleaseComputeBuffers();
+    }
 
-        gpuSort.Release();
+    public void ReleaseComputeBuffers()
+    {
+        ComputeHelper.Release(
+        fluidDataBuffer,
+        ScalingFactorsBuffer,
+        particleBuffer,
+        sortedParticleBuffer,
+        spatialIndices, 
+        spatialOffsets,
+        sortedIndices,
+        boxCollidersBuffer,
+        circleCollidersBuffer,
+        sourceObjectBuffer,
+        drainObjectBuffer,
+        atomicCounterBuffer,
+        cpuparticlebuffer,
+        keyarrbuffer
+    );
+
+    gpuSort.Release();
     }
 
 

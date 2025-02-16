@@ -47,7 +47,7 @@ public interface IFluidSimulation
     bool IsPositionBufferValid();
 
     /// <summary>
-    /// Get current particle positions
+    /// Get current particle data
     /// </summary>
     Particle[] GetParticles();
     
@@ -64,4 +64,9 @@ public interface IFluidSimulation
     SourceObjectInitializer GetFirstSourceObject();
 
     void SetFirstSourceObject(SourceObjectInitializer source);
+
+    /// <summary>
+    /// Releases the compute buffers used by the simulation.
+    /// </summary>
+    void ReleaseComputeBuffers();
 }

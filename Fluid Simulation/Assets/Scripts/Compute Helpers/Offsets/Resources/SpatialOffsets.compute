@@ -8,7 +8,7 @@
 // look up Offsets[6] to find the index of 4.
 // 
 // NOTE: offsets buffer must be initialized with values equal to (or greater than) its length to ensure that this works correctly
-RWStructuredBuffer<uint2> SortedKeys;
+StructuredBuffer<uint2> SortedKeys;
 RWStructuredBuffer<uint> Offsets;
 uint numInputs;
 

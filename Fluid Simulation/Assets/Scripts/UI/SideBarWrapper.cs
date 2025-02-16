@@ -23,8 +23,6 @@ public class SideBarWrapper : MonoBehaviour
 
     private IFluidSimulation simulation2DScript;
 
-    private bool isReloading = false;
-
     void Awake()
     {
         // if the simulation object reference is not set, try to get it by tag
@@ -90,44 +88,8 @@ public class SideBarWrapper : MonoBehaviour
 
     public void ReloadScene()
     {
-        if (isReloading) return;
-        
-        isReloading = true;
-        StartCoroutine(ReloadSceneCoroutine());
-    }
-
-    private IEnumerator ReloadSceneCoroutine()
-    {
         // Get current scene info
         Scene currentScene = SceneManager.GetActiveScene();
-        
-        // Start loading the new scene in background
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(currentScene.buildIndex);
-        asyncLoad.allowSceneActivation = false; // Don't activate immediately
-        
-        // Wait until the scene is fully loaded in background
-        while (asyncLoad.progress < 0.9f)
-        {
-            yield return null;
-        }
-
-        // Now we can safely activate the new scene
-        asyncLoad.allowSceneActivation = true;
-        
-        // Wait until scene is fully switched
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        // Additional cleanup
-        Resources.UnloadUnusedAssets();
-        System.GC.Collect();
-        
-        // Cooldown period
-        yield return new WaitForSeconds(0.2f);
-        
-        isReloading = false;
+        SceneManager.LoadScene(currentScene.name);
     }
-
 }
