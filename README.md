@@ -9,16 +9,23 @@
 - Cameron Tuffner-Lyons  
 - JJ Marr  
 
+## 🕹 Download Here (Coming Soon):
+- Itch.io
+- Windows
+- Mac
+- Linux
+- Android
+
 ---
 
 ## 🚀 Key Features  
 
 ### 🧊 Collision Systems  
-- **Box Colliders**: Combine multiple oriented boxes to create complex shapes (e.g., pinwheels)  
+- **Box Colliders**: Combine multiple static or dynamic oriented boxes to create complex shapes (e.g., pinwheels)  
 - **Hybrid Circle Colliders**:  
   - Small colliders: GPU-accelerated using spatial hashing grids  
   - Large colliders: CPU-managed to prevent GPU performance degradation  
-- **Dynamic Colliders**:  
+- **Complex Colliders**:  
   - Texture-based density maps for complex shapes  
   - Runtime-alterable collider geometry via alpha threshold sampling  
   - Player-editable collider deformation through brush tools  
@@ -49,7 +56,11 @@
   - *Radial*
   - *Reversed*
   - *Zero*
-
+- **Temperature Simulation**:
+  - Particles have temperature which they use for visual shaders
+- **State Change Behaviors**:
+  - Particles can change states after reaching temperture thresholds
+    
 ### 🎮 Game Systems  
 - **Fluid Density Detection**:  
   - AsyncGPUReadback for non-blocking particle position queries  

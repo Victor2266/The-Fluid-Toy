@@ -70,7 +70,7 @@ public class LevelCompleteAnimation : MonoBehaviour
         if (completionScore != null)
         {
             completeSequence.Append(completionScore.DOFade(1f, textFadeDuration));
-            completeSequence.Join(completionScore.transform.DOLocalMoveY(-300f, textFadeDuration)).SetEase(Ease.OutQuint);
+            completeSequence.Join(completionScore.transform.DOLocalMoveY(-300f+25f, textFadeDuration)).SetEase(Ease.OutQuint);
 
             // Fade in each star image based on score
             if (currentLevelScore >= 3)

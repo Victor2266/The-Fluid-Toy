@@ -8,7 +8,7 @@
 // look up Offsets[6] to find the index of 4.
 // 
 // NOTE: offsets buffer must be initialized with values equal to (or greater than) its length to ensure that this works correctly
-RWStructuredBuffer<uint3> SortedKeys;
+StructuredBuffer<uint2> SortedKeys;
 RWStructuredBuffer<uint> Offsets;
 uint numInputs;
 
@@ -27,8 +27,8 @@ void CalculateOffsets(uint3 id : SV_DispatchThreadID)
 	uint i = id.x;
 	uint null = numInputs;
 
-	uint key = SortedKeys[i][2];
-	uint keyPrev = i == 0 ? null : SortedKeys[i - 1][2];
+	uint key = SortedKeys[i][1];
+	uint keyPrev = i == 0 ? null : SortedKeys[i - 1][1];
 
 	if (key != keyPrev)
 	{

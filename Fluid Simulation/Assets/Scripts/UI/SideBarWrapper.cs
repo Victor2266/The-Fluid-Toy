@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
 
 public class SideBarWrapper : MonoBehaviour
 {
@@ -85,7 +86,10 @@ public class SideBarWrapper : MonoBehaviour
         }
     }
 
-    public void ReloadScene(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    public void ReloadScene()
+    {
+        // Get current scene info
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 }

@@ -97,7 +97,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
-    private uint uintCounter;
+    private uint frameCounter; // This doesn't actually update each frame, just after it is used.
 
     // Private Variables 
     private OrientedBox[] boxColliderData;
@@ -223,7 +223,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
 
 
-        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint3>(numParticles);
+        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint2>(numParticles);
         spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
         sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
 
@@ -231,7 +231,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnData);
-        uint[] atomicCounter = { 0, uintCounter++ };
+        uint[] atomicCounter = { 0, frameCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
 
 
@@ -258,9 +258,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
 
-        // Old
-        //gpuSort = new();
-        //gpuSort.SetBuffers(spatialIndices, spatialOffsets);
         gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1) );
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
@@ -276,7 +273,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // (it will be perfectly consistent down to 30fps)
         // ONLY ACTIVATE IF CONSISTENCY BETWEEN FRAMERATES IS IMPORTANT, non-fixed can be smoother looking above 120fps.
         // (skip running for first few frames as deltaTime can be disproportionaly large)
-        if (fixedTimeStep && Time.frameCount > 10)
+        if (fixedTimeStep && frameCounter > 10)
         {
             // Accumulate time, but cap it to prevent spiral of death
             accumulatedTime += Mathf.Min(Time.deltaTime, MAX_DELTA_TIME);
@@ -294,9 +291,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // The number of simulation steps varies depending on the framerate 
         // Tabbing out has been fixed so it won't cause issues
         // This seems to give smoother results than fixed timestep above 120fps.
-        else if (!fixedTimeStep && Time.frameCount > 10)  
+        else if (!fixedTimeStep && frameCounter > 10)  
         {
             RunSimulationFrame(Time.deltaTime);
+        } else{
+            // Use custom frame counter because Time.frameCount does not reset on reloads
+            frameCounter++;
         }
 
         if (pauseNextFrame)
@@ -322,7 +322,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     void RunSimulationFrame(float frameTime)
     {
         // Cap the maximum deltaTime to prevent instability when tabbing out
-        float cappedFrameTime = frameTime > 1f/30f ? 1f/30f : frameTime; // Cap at 30fps equivalent
+        float cappedFrameTime = frameTime > MAX_DELTA_TIME ? MAX_DELTA_TIME : frameTime; // Cap at 30fps equivalent
 
         if (!isPaused)
         {
@@ -436,7 +436,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         if (sourceObjects.Length > 0)
         {
-            uint[] atomicCounter = { 0, uintCounter++ };
+            uint[] atomicCounter = { 0, frameCounter++ };
             atomicCounterBuffer.SetData(atomicCounter);
         }
 
@@ -499,7 +499,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             {
                 currInteractStrength = 1f;
                 if (sourceObjects.Length == 0){
-                    uint[] atomicCounter = { 0, uintCounter++ };
+                    uint[] atomicCounter = { 0, frameCounter++ };
                     atomicCounterBuffer.SetData(atomicCounter);
                 }
                 
@@ -592,25 +592,40 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     void OnDestroy()
     {
-        ComputeHelper.Release(
-            fluidDataBuffer,
-            ScalingFactorsBuffer,
-            particleBuffer,
-            sortedParticleBuffer,
-            spatialIndices, 
-            spatialOffsets,
-            sortedIndices,
-            boxCollidersBuffer,
-            circleCollidersBuffer,
-            sourceObjectBuffer,
-            drainObjectBuffer,
-            thermalBoxesBuffer,
-            atomicCounterBuffer
-        );
-
-        gpuSort.Release();
+        ReleaseComputeBuffers();
     }
 
+    public void ReleaseComputeBuffers()
+    {
+        try 
+        {
+            ComputeHelper.Release(
+                fluidDataBuffer,
+                ScalingFactorsBuffer,
+                particleBuffer,
+                sortedParticleBuffer,
+                spatialIndices, 
+                spatialOffsets,
+                sortedIndices,
+                boxCollidersBuffer,
+                circleCollidersBuffer,
+                sourceObjectBuffer,
+                drainObjectBuffer,
+                thermalBoxesBuffer,
+                atomicCounterBuffer
+            );
+
+            if (gpuSort != null)
+                gpuSort.Release();
+
+            if(spatialOffsetsCalc != null)
+                spatialOffsetsCalc = null;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error releasing compute buffers: {e}");
+        }
+    }
 
     void OnDrawGizmos()
     {
@@ -719,16 +734,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Vector2[] GetParticlePositions()
+    public Particle[] GetParticles()
     {
-        Vector2[] positions = new Vector2[numParticles];
         particleBuffer.GetData(particleData);
 
-        for (int i = 0; i < numParticles; i++)
-        {
-            positions[i] = particleData[i].position;
-        }
-        return positions;
+        return particleData;
     }
     public float[] GetParticleTemps()
     {
@@ -760,5 +770,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public float GetInteractionRadius()
     {
         return interactionRadius;
+    }
+
+    public SourceObjectInitializer GetFirstSourceObject(){
+        return sourceObjects[0];
+    }
+    public void SetFirstSourceObject(SourceObjectInitializer source){
+        sourceObjects[0] = source;
     }
 }

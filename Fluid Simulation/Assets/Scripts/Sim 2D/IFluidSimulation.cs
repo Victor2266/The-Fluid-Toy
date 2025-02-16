@@ -47,9 +47,9 @@ public interface IFluidSimulation
     bool IsPositionBufferValid();
 
     /// <summary>
-    /// Get current particle positions
+    /// Get current particle data
     /// </summary>
-    Vector2[] GetParticlePositions();
+    Particle[] GetParticles();
     
     /// <summary>
     /// Get total number of particles
@@ -60,4 +60,13 @@ public interface IFluidSimulation
     /// Get interaction radius
     /// </summary>
     float GetInteractionRadius();
+
+    SourceObjectInitializer GetFirstSourceObject();
+
+    void SetFirstSourceObject(SourceObjectInitializer source);
+
+    /// <summary>
+    /// Releases the compute buffers used by the simulation.
+    /// </summary>
+    void ReleaseComputeBuffers();
 }

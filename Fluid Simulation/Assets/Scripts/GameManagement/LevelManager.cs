@@ -133,7 +133,7 @@ public class LevelManager : MonoBehaviour
         }
 
         // You can add level transition logic here
-        SceneManager.LoadScene("Main Menu"); // Uncomment and modify as needed
+        SceneManager.LoadScene("Main Menu", LoadSceneMode.Single); // Uncomment and modify as needed
     }
 
     protected void OnGUI()

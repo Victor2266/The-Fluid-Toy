@@ -83,12 +83,27 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 
 	void OnDestroy()
 	{
+		ReleaseBuffers();
+	}
+
+	public void ReleaseBuffers()
+	{
+		if (material != null) 
+			Destroy(material);
+		
 		ComputeHelper.Release(argsBuffer, visualParamsBuffer);
-		foreach (var tex in gradientTextures.Values)
-        {
-            if (tex != null)
-                Destroy(tex);
-        }
+		
+		if (gradientTextures != null)
+		{
+			foreach (var tex in gradientTextures.Values)
+			{
+				if (tex != null)
+					Destroy(tex);
+			}
+		}
+
+		if (gradientArray != null)
+			Destroy(gradientArray);
 	}
 
 	public void CreateAndSetupVisualParamsBuffer(FluidData[] fluidDataArray){

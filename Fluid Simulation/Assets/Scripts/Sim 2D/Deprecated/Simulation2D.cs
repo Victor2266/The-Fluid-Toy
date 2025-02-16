@@ -334,6 +334,11 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
 
     void OnDestroy()
     {
+        ReleaseComputeBuffers();
+    }
+
+    public void ReleaseComputeBuffers()
+    {
         ComputeHelper.Release(
             positionBuffer, 
             predictedPositionBuffer, 
@@ -462,11 +467,9 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     {
         return positionBuffer != null;
     }
-    public Vector2[] GetParticlePositions()
+    public Particle[] GetParticles()
     {
-        Vector2[] positions = new Vector2[numParticles];
-        positionBuffer.GetData(positions);
-        return positions;
+        return null;
     }
     public int GetParticleCount()
     {
@@ -475,5 +478,12 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     public float GetInteractionRadius()
     {
         return interactionRadius;
+    }
+
+    public SourceObjectInitializer GetFirstSourceObject(){
+        return new SourceObjectInitializer();
+    }
+    public void SetFirstSourceObject(SourceObjectInitializer source){
+        return;
     }
 }
