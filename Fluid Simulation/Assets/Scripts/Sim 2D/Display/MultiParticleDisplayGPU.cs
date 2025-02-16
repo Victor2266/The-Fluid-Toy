@@ -15,11 +15,6 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 
 	public void Init(Simulation2DAoSCounting sim)
 	{
-		if (material != null || argsBuffer != null || visualParamsBuffer != null || gradientTextures != null || gradientArray != null)
-		{
-			Debug.LogError("One of the buffers in MultiParticleDisplay2D is not null before Init! This could cause errors.");
-		}
-		
         material = new Material(shader);
 		material.SetBuffer("Particles", sim.particleBuffer);
 
