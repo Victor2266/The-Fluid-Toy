@@ -1849,7 +1849,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &981710268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1920,7 +1920,6 @@ MonoBehaviour:
   - {fileID: 1812870175}
   isCPUComputingEnabled: 1
   toggleCPUComputing: 1
-  ThreadBatchSize: 1000
   numCPUKeys: 5
 --- !u!4 &981710270
 Transform:
@@ -2711,7 +2710,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1430943822
 MonoBehaviour:
   m_ObjectHideFlags: 0
