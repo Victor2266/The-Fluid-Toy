@@ -898,9 +898,6 @@ void mergeCPUParticles(uint3 id : SV_DispatchThreadID)
 	Particles[CPUIndicesForMerging[id.x]] = particle;
 }
 
-
-
-
 [numthreads(NumThreads, 1, 1)]
 void getCPUParticles(uint3 id : SV_DispatchThreadID){
 
@@ -912,6 +909,10 @@ void getCPUParticles(uint3 id : SV_DispatchThreadID){
 	uint cpuAdjacentIndex = 0;
 	uint cpuTargetHashIndex = 0;
 	uint cpuAdjacentHashIndex = 0;
+	CPUTargetParticleCount[0] = 0;
+	CPUAdjacentParticleCount[0] = 0; 
+	CPUTargetHashCount[0] = 0;
+	CPUAdjacentHashCount[0] = 0;
 
 	//iterate over the top <numCPUKeys> highest population keys
 	for(uint keyNum=0; keyNum<numCPUKeys; keyNum++)
@@ -919,49 +920,72 @@ void getCPUParticles(uint3 id : SV_DispatchThreadID){
 
 		uint cpuKey = keyarr[keyNum];
 		uint currOffset = SpatialOffsets[cpuKey];
-		uint isNewHash = 1;
+		uint isNewHash = 1; 
 
 		//This while loop collects every single hash that will be needed for the CPU, and orders them in a approximately continuous spatial region
 		// meaning all hash regions adjacent to the target region are placed spatially adjacent in the list of hashes.
 		while(currOffset < numParticles){
-			uint3 index = SpatialIndices[currOffset];
-			uint targetHash = index[1];
-			if(index[2] != cpuKey) break;
+			uint2 index = SpatialIndices[currOffset];
+			uint targetHash = index[0];
+			if(index[1] != cpuKey) break;
 
-	
-			for(int i=0; i<cpuTargetHashIndex; i++){
-				if(targetHash == CPUTargetHashes[i]){
-					isNewHash = 0;
-					break;
+			//check if in targethashes
+			if(cpuTargetHashIndex != 0){
+				uint temp1 = 0;
+				while(temp1 < (9*numParticles)){
+					if(temp1 > cpuTargetHashIndex) break;
+					if(targetHash == CPUTargetHashes[temp1]){
+						isNewHash = 0;
+						break;
+					}
+					temp1++;
 				}
-			}
-			for(int i=0; i<cpuAdjacentHashIndex; i++){
-				if(targetHash == CPUAdjacentHashes[i]){
-					isNewHash = 0;
-					break;
-				}
+				
 			}
 			
-			if(isNewHash == 1){
+			//check if in adjacent hashes
+			if(cpuAdjacentHashIndex != 0){
+				uint temp2 = 0;
+				while(temp2 < (9*numParticles)){
+					if(temp2 > cpuAdjacentHashIndex) break;
+					if(targetHash == CPUAdjacentHashes[temp2]){
+						isNewHash = 0;
+						break;
+					}
+					temp2++; 
+				}
+				
+			} 
+			//if hash is new hash iterate over itself plus neighbour hashes to get all the hashes needed
+			if(isNewHash == 1){ 
 
 				Particle particle = Particles[currOffset];
 				int2 originCell = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
-				uint tempHashCount = cpuHashIndex;
-				for(int i=0; i<9; i++){
+				uint tempTargetIndex = cpuTargetHashIndex;
+				uint tempAdjacentHashIndex = cpuAdjacentHashIndex;
+				for(uint i=0; i<9; i++){
 					uint hash = HashCell2D(originCell + offsets2D[i]);
 					isNewHash = 1;
-					for(int i=0; i<cpuTargetHashIndex; i++){
-						if(hash == CPUTargetHashes[i]){
+					uint temp3 = 0;
+					//check if hash was already added
+					while(temp3 < (9*numParticles)){
+						if(temp3 > tempTargetIndex) break;
+						if(hash == CPUTargetHashes[temp3]){
 							isNewHash = 0;
 							break;
 						}
+						temp3++;
 					}
-					for(int i=0; i<cpuAdjacentHashIndex; i++){
-						if(hash == CPUAdjacentHashes[i]){
-							isNewHash = 0;
+					temp3 = 0;
+					while(temp3 < (9*numParticles)){
+						if(temp3 > tempAdjacentHashIndex) break;
+						if(hash == CPUAdjacentHashes[temp3]){
+							isNewHash = 0; 
 							break;
 						}
+						temp3++;
 					}
+					//add hash to relevent hash list
 					if(isNewHash == 1){
 						if(hash == targetHash){
 							CPUTargetHashes[cpuTargetHashIndex] = hash;
@@ -980,54 +1004,59 @@ void getCPUParticles(uint3 id : SV_DispatchThreadID){
 	//iterate over all of the hashes needed and get all the particles in that target hash.
 	//This loop places the particles in the same order as the hash list and so a new offset array is used to indicate where the ith hash in the 
 	//hash list starts in the new particle array.
-	for(uint i=0; i<cpuTargetHashIndex; i++){
-		uint targetHash = CPUTargetHashes[i];
-		uint key = KeyFromHash(targetHash);
+	uint temp4 = 0;
+	while(temp4 < (9*numParticles)){
+		if(temp4 > cpuTargetHashIndex) break;
+		uint targetHash = CPUTargetHashes[temp4];
+		uint key = KeyFromHash(targetHash, numParticles);
 		uint currIndex = SpatialOffsets[key];
 		uint isEmpty = 1;
-		CPUTargetHashOffsets[i] = (9 * numParticles) + 1; //if no particles in hash, offset points to end of hash list
+		CPUTargetHashOffsets[temp4] = (9 * numParticles) + 1; //if no particles in hash, offset points to end of hash list
 		while(currIndex < numParticles){
-			uint3 index = SpatialIndices[currIndex];
+			uint2 index = SpatialIndices[currIndex];
 			
-			if(index[2] != key) break;
+			if(index[1] != key) break;
 
-			if(index[1] != targetHash) continue;
+			if(index[0] != targetHash) continue;
 
 			if(Particles[currIndex].type == 0) continue;
 
 			if(isEmpty == 1){
-				CPUTargetHashOffsets[i] = cpuTargetIndex; //if particles in hash, offset points to hash's starting location in CPUParticles
+				CPUTargetHashOffsets[temp4] = cpuTargetIndex; //if particles in hash, offset points to hash's starting location in CPUParticles
 				isEmpty = 0;
 			}
 
-			CPUTargetParticles[cpuTargetIndex] = Particles[currIndex];
-			CPUIndicesForMerging[cpuTargetIndex] = currIndex;
+			CPUTargetParticles[cpuTargetIndex] = Particles[currIndex]; //grab all particles in that hash
+			CPUIndicesForMerging[cpuTargetIndex] = currIndex; // store the index of the particles for later merging
 			cpuTargetIndex++;
 
 			currIndex++;
 			
 		}
+		temp4++;
 	}
+	temp4 = 0; 
 	//iterate over all of the hashes needed and get all the particles in that adjacent hash.
 	//This loop places the particles in the same order as the hash list and so a new offset array is used to indicate where the ith hash in the 
-	//hash list starts in the new particle array.
-	for(uint i=0; i<cpuAdjacentHashIndex; i++){
-		uint targetHash = CPUAdjacentHashes[i];
-		uint key = KeyFromHash(targetHash);
+	//hash list starts in the new particle array. 
+	while(temp4 < (9*numParticles)){
+		if(temp4 > cpuTargetHashIndex) break;
+		uint targetHash = CPUAdjacentHashes[temp4];
+		uint key = KeyFromHash(targetHash, numParticles); 
 		uint currIndex = SpatialOffsets[key];
 		uint isEmpty = 1;
-		CPUAdjacentHashOffsets[i] = (9 * numParticles) + 1; //if no particles in hash, offset points to end of hash list
+		CPUAdjacentHashOffsets[temp4] = (9 * numParticles) + 1; //if no particles in hash, offset points to end of hash list
 		while(currIndex < numParticles){
-			uint3 index = SpatialIndices[currIndex];
+			uint2 index = SpatialIndices[currIndex];
 			
-			if(index[2] != key) break;
+			if(index[1] != key) break;
 
-			if(index[1] != targetHash) continue;
+			if(index[0] != targetHash) continue;
 
 			if(Particles[currIndex].type == 0) continue;
 
 			if(isEmpty == 1){
-				CPUAdjacentHashOffsets[i] = cpuAdjacentIndex; //if particles in hash, offset points to hash's starting location in CPUParticles
+				CPUAdjacentHashOffsets[temp4] = cpuAdjacentIndex; //if particles in hash, offset points to hash's starting location in CPUParticles
 				isEmpty = 0;
 			}
 
@@ -1037,13 +1066,14 @@ void getCPUParticles(uint3 id : SV_DispatchThreadID){
 			currIndex++;
 			
 		}
+		temp4++;
 	}
 
 	// save the hash list sizes and particle size so that we can read ONLY that many items from the buffers.
 	// allows static allocation of buffer sizes.
 	CPUTargetParticleCount[0] = cpuTargetIndex;
 	CPUAdjacentParticleCount[0] = cpuAdjacentIndex;
-	CPUTargetHashCount[0] = cpuTargetHashIndex;
+	CPUTargetHashCount[0] = cpuTargetHashIndex;  
 	CPUAdjacentHashCount[0] = cpuAdjacentHashIndex;
 
 }

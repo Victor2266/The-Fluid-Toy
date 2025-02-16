@@ -282,18 +282,18 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
 
-        //CPU GPU
+        //CPU GPU 
         ComputeHelper.SetBuffer(compute, CPUTargetParticlesBuffer, "CPUTargetParticles", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUAdjacentParticlesBuffer, "CPUAdjacentParticles", mergeCPUParticlesKernel, getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUAdjacentParticlesBuffer, "CPUAdjacentParticles", getCPUParticles);
         ComputeHelper.SetBuffer(compute, CPUTargetParticleCount, "CPUTargetParticleCount", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUAdjacentParticleCount, "CPUAdjacentParticleCount", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUTargetHashBuffer, "CPUTargetHashes", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUAdjacentHashBuffer, "CPUAdjacentHashes", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUTargetHashOffsetsBuffer, "CPUTargetHashOffsets", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUAdjacentHashOffsetsBuffer, "CPUAdjacentHashOffsets", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUTargetHashCount, "CPUTargetHashCount", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUAdjacentHashCount, "CPUAdjacentHashCount", mergeCPUParticlesKernel, getCPUParticles);
-        ComputeHelper.SetBuffer(compute, CPUTargetIndicesForMergingBuffer, "CPUIndicesForMerging", mergeCPUParticlesKernel, getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUAdjacentParticleCount, "CPUAdjacentParticleCount", getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUTargetHashBuffer, "CPUTargetHashes", getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUAdjacentHashBuffer, "CPUAdjacentHashes", getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUTargetHashOffsetsBuffer, "CPUTargetHashOffsets", getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUAdjacentHashOffsetsBuffer, "CPUAdjacentHashOffsets", getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUTargetHashCount, "CPUTargetHashCount", getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUAdjacentHashCount, "CPUAdjacentHashCount", getCPUParticles);
+        ComputeHelper.SetBuffer(compute, CPUTargetIndicesForMergingBuffer, "CPUIndicesForMerging", getCPUParticles);
         ComputeHelper.SetBuffer(compute, keyarrbuffer, "keyarr", densityKernel, pressureKernel, viscosityKernel, mergeCPUParticlesKernel, getCPUParticles);
 
 
@@ -783,8 +783,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.offsets[7] = new int2(0, -1);
         CPUKernelAOS.offsets[8] = new int2(1, -1);
 
-        CPUKernelAOS.fluidParams = new FluidParam[Enum.GetValues(typeof(FluidType)).Length - 1];
-        CPUKernelAOS.scalingFactors = new ScalingFactors[Enum.GetValues(typeof(FluidType)).Length - 1];
+        CPUKernelAOS.fluidParams = new FluidParam[fluidParamArr.Length];
+        CPUKernelAOS.scalingFactors = new ScalingFactors[fluidParamArr.Length];
         CPUKernelAOS.maxSmoothingRadius = maxSmoothingRadius;
         fluidParamArr.CopyTo(CPUKernelAOS.fluidParams, 0);
         scalingFactorsArr.CopyTo(CPUKernelAOS.scalingFactors, 0);
@@ -800,11 +800,15 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         uint[] adjacentParticleCount = new uint[1];
         uint[] targetHashCount = new uint[1];
         uint[] adjacentHashCount = new uint[1];
-        CPUTargetParticleCount.GetData(targetParticleCount);
-        CPUAdjacentParticleCount.GetData(adjacentParticleCount);
-        CPUTargetHashCount.GetData(targetHashCount);
-        CPUAdjacentHashCount.GetData(adjacentHashCount);
-
+        CPUTargetParticleCount.GetData(targetParticleCount, 0, 0, 1);
+        
+        CPUAdjacentParticleCount.GetData(adjacentParticleCount, 0, 0, 1);
+        CPUTargetHashCount.GetData(targetHashCount, 0, 0, 1);
+        CPUAdjacentHashCount.GetData(adjacentHashCount, 0, 0, 1);
+        Debug.Log(targetParticleCount[0]);
+        Debug.Log(targetHashCount[0]);
+        Debug.Log(adjacentParticleCount[0]);
+        Debug.Log(adjacentHashCount[0]);
 
         CPUKernelAOS.CPUTargetParticles = new Particle[targetParticleCount[0]];
         CPUTargetParticlesBuffer.GetData(CPUKernelAOS.CPUTargetParticles, 0, 0, (int) targetParticleCount[0]);
@@ -828,7 +832,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
         CPUKernelAOS.CPUAdjacentHashOffsets = new uint[adjacentHashCount[0]];
         CPUAdjacentHashOffsetsBuffer.GetData(CPUKernelAOS.CPUAdjacentHashOffsets, 0, 0, (int) adjacentHashCount[0]);
-
+    
         NativeArray<Particle> CPUTargetParticles = new NativeArray<Particle>((int) targetParticleCount[0], Allocator.TempJob);
         NativeArray<Particle> CPUAdjacentParticles = new NativeArray<Particle>((int) adjacentParticleCount[0], Allocator.TempJob);
 
