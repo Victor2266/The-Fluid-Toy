@@ -76,7 +76,7 @@ public class Level2Manager : LevelManager
         sim = simObject.GetComponent<IFluidSimulation>();
         if (fluidDetector == null) // Auto-find references if not assigned in inspector on start
         {
-            fluidDetector = FindObjectOfType<FluidDetector>();
+            fluidDetector = FindFirstObjectByType<FluidDetector>();
             if (fluidDetector == null)
             {
                 Debug.LogError("No FluidDetector found in the scene!");

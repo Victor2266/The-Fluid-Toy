@@ -27,7 +27,7 @@ public class targetHitsDisplay : MonoBehaviour
         // Auto-find references if not set
         if (manager == null)
         {
-            manager = FindObjectOfType<LevelManager>();
+            manager = FindFirstObjectByType<LevelManager>();
             if (manager == null)
             {
                 Debug.LogError("No levelManager found in scene!");

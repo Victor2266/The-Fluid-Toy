@@ -138,9 +138,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
     [Header("CPU Computing")]
     //CPU Compute
-
-    public bool isCPUComputingEnabled = false;
-
+    
     public bool toggleCPUComputing = false;
 
     CPUParticleKernelAoS CPUKernelAOS;
@@ -360,20 +358,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
 
         // CPU-GPU flag
-        if (isCPUComputingEnabled)
+        if (toggleCPUComputing)
         {
-            if (toggleCPUComputing)
-            {
-                runCPUComputeTest();
-            }
-            else
-            {
-                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
-                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
-                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
-                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: temperatureKernel);
-                ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
-            }
+            runCPUComputeTest();
         }
         else
         {
@@ -459,7 +446,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         HandleMouseInput();
 
         // CPU compute keys
-        if (isCPUComputingEnabled)
+        if (toggleCPUComputing)
         {
             CPUKernelAOS.deltaTime = deltaTime;
             compute.SetInt("numCPUKeys", (int)numCPUKeys);
@@ -746,8 +733,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.offsets[7] = new int2(0, -1);
         CPUKernelAOS.offsets[8] = new int2(1, -1);
 
-        CPUKernelAOS.fluidParams = new FluidParam[Enum.GetValues(typeof(FluidType)).Length - 1];
-        CPUKernelAOS.scalingFactors = new ScalingFactors[Enum.GetValues(typeof(FluidType)).Length - 1];
+        CPUKernelAOS.fluidParams = new FluidParam[fluidParamArr.Length];
+        CPUKernelAOS.scalingFactors = new ScalingFactors[fluidParamArr.Length];
         CPUKernelAOS.maxSmoothingRadius = maxSmoothingRadius;
         CPUKernelAOS.boxCollidersData = new OrientedBox[boxColliders.Length];
         CPUKernelAOS.circleCollidersData = new Circle[circleColliders.Length];
@@ -809,8 +796,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         {
             numParticles = (uint)numParticles,
             maxSmoothingRadius = maxSmoothingRadius,
-            pressureOut = CPUKernelAOS.particleBuffer,
-            particles = CPUKernelAOS.particleResultBuffer,
+            pressureOut = CPUKernelAOS.particleResultBuffer,
+            particles = CPUKernelAOS.particleBuffer,
             spatialIndices = CPUKernelAOS.spatialIndicesBuffer,
             spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
             fluidPs = CPUKernelAOS.fluidParamBuffer,
