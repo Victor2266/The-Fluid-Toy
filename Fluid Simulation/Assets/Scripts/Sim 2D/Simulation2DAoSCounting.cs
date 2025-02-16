@@ -93,7 +93,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
-    private uint frameCounter;
+    private uint frameCounter; // This doesn't actually update each frame, just after it is used.
 
     // Private Variables 
     private OrientedBox[] boxColliderData;

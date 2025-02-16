@@ -90,7 +90,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
     // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
-    private uint uintCounter;
+    private uint frameCounter; // This doesn't actually update each frame, just after it is used.
 
     // Private Variables 
     private OrientedBox[] boxColliderData;
@@ -241,7 +241,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnData);
-        uint[] atomicCounter = { 0, uintCounter++ };
+        uint[] atomicCounter = { 0, frameCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
 
         // Init compute
@@ -283,7 +283,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // (it will be perfectly consistent down to 30fps)
         // ONLY ACTIVATE IF CONSISTENCY BETWEEN FRAMERATES IS IMPORTANT, non-fixed can be smoother looking above 120fps.
         // (skip running for first few frames as deltaTime can be disproportionaly large)
-        if (fixedTimeStep && Time.frameCount > 10)
+        if (fixedTimeStep && frameCounter > 10)
         {
             // Accumulate time, but cap it to prevent spiral of death
             accumulatedTime += Mathf.Min(Time.deltaTime, MAX_DELTA_TIME);
@@ -301,9 +301,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // The number of simulation steps varies depending on the framerate 
         // Tabbing out has been fixed so it won't cause issues
         // This seems to give smoother results than fixed timestep above 120fps.
-        else if (!fixedTimeStep && Time.frameCount > 10)  
+        else if (!fixedTimeStep && frameCounter > 10)  
         {
             RunSimulationFrame(Time.deltaTime);
+        }else{
+            // Use custom frame counter because Time.frameCount does not reset on reloads
+            frameCounter++;
         }
 
         if (pauseNextFrame)
@@ -445,7 +448,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
         if (sourceObjects.Length > 0)
         {
-            uint[] atomicCounter = { 0, uintCounter++ };
+            uint[] atomicCounter = { 0, frameCounter++ };
             atomicCounterBuffer.SetData(atomicCounter);
         }
 
@@ -507,7 +510,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             {
                 currInteractStrength = 1f;
                 if (sourceObjects.Length == 0){
-                    uint[] atomicCounter = { 0, uintCounter++ };
+                    uint[] atomicCounter = { 0, frameCounter++ };
                     atomicCounterBuffer.SetData(atomicCounter);
                 }
                 
