@@ -89,6 +89,10 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
 
+    [Header("Thermal Boxes (Box colliders with temperatures)")]
+    public ThermalBoxInitializer[] thermalBoxes;
+    private ComputeBuffer thermalBoxesBuffer;
+
     // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
     private uint frameCounter; // This doesn't actually update each frame, just after it is used.
@@ -96,9 +100,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     // Private Variables 
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
-
     private SourceObject[] sourceObjectData;
     private OrientedBox[] drainObjectData;
+    private ThermalBox[] thermalBoxData;
 
     [Header("Particle Data")]
     // Buffers
@@ -220,11 +224,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new SourceObject[sourceObjects.Length];
         drainObjectData = new OrientedBox[drainObjects.Length];
+        thermalBoxData = new ThermalBox[thermalBoxes.Length];
 
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
         sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
+        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
 
         atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
 
@@ -256,12 +262,14 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
         ComputeHelper.SetBuffer(compute, cpuparticlebuffer, "CPUParticles", mergeCPUParticlesKernel);
         ComputeHelper.SetBuffer(compute, keyarrbuffer, "keyarr", densityKernel, pressureKernel, viscosityKernel, mergeCPUParticlesKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
+        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("numParticles", numParticles);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
@@ -430,11 +438,25 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             drainObjectData[i].zLocal = (Vector2)(drain.right); // Use right vector for orientation  
         }
 
+        // Update thermal boxes
+        for (int i = 0; i < thermalBoxes.Length; i++)
+        {
+            ThermalBoxInitializer tBox = thermalBoxes[i];
+            Transform collider = tBox.transform;
+            // Modify properties directly
+            thermalBoxData[i].box.pos = collider.position;
+            thermalBoxData[i].box.size = collider.localScale;
+            thermalBoxData[i].box.zLocal = (Vector2)(collider.right); // Use right vector for orientation
+            thermalBoxData[i].temperature = tBox.temperature;
+            thermalBoxData[i].conductivity = tBox.conductivity;
+        }
+
         // Update buffers
         boxCollidersBuffer.SetData(boxColliderData);
         circleCollidersBuffer.SetData(circleColliderData);
         sourceObjectBuffer.SetData(sourceObjectData);
         drainObjectBuffer.SetData(drainObjectData);
+        thermalBoxesBuffer.SetData(thermalBoxData);
     }
 
     void UpdateSettings(float deltaTime)
@@ -445,6 +467,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
         compute.SetInt("numDrainObjs", drainObjects.Length);
+        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int) edgeType);
         compute.SetInt("spawnRate", (int) spawnRate);
@@ -597,6 +620,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         circleCollidersBuffer,
         sourceObjectBuffer,
         drainObjectBuffer,
+        thermalBoxesBuffer,
+        thermalBoxesBuffer,
         atomicCounterBuffer,
         cpuparticlebuffer,
         keyarrbuffer
@@ -631,6 +656,19 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
                 if (circleCollider != null)
                 {
                     Gizmos.DrawWireSphere(circleCollider.position, circleCollider.localScale.x * 0.5f);
+                }
+            }
+        }
+
+        // Draw thermal boxes
+        if (thermalBoxes != null)
+        {
+            foreach (ThermalBoxInitializer tBox in thermalBoxes)
+            {
+                Transform boxCollider = tBox.transform;
+                if (boxCollider != null)
+                {
+                    Gizmos.DrawWireCube(boxCollider.position, boxCollider.localScale);
                 }
             }
         }

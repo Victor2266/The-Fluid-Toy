@@ -69,6 +69,13 @@ struct OrientedBox //24 bytes total
     float2 zLocal;
 };
 
+struct ThermalBox
+{
+	OrientedBox box;
+	float temperature;
+	float conductivity;
+};
+
 struct ScalingFactors
 {
 	float Poly6;
@@ -90,6 +97,7 @@ RWStructuredBuffer<OrientedBox> BoxColliders;
 RWStructuredBuffer<Circle> CircleColliders;
 RWStructuredBuffer<SourceObj> SourceObjs;
 RWStructuredBuffer<OrientedBox> DrainObjs;
+RWStructuredBuffer<ThermalBox> ThermalBoxes;
 RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
 
 // Settings
@@ -105,6 +113,7 @@ int numBoxColliders;
 int numCircleColliders;
 int numSourceObjs;
 int numDrainObjs;
+int numThermalBoxes;
 int numFluidTypes;
 int brushType;
 int selectedFluidType;
@@ -453,6 +462,12 @@ void HandleCollisions(inout Particle particle)
 		for (int j = 0; j < numCircleColliders; j++)
 		{
 			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping, particleRadius);
+		}
+
+		// Handle tBox collisions
+		for (int i = 0; i < numThermalBoxes; i++)
+		{
+			HandleBoxCollision(pos, vel, ThermalBoxes[i].box, fluidData.collisionDamping, particleRadius);
 		}
 	}
 
@@ -824,6 +839,43 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, fluidIndex); // FIXME using viewpoint particle's smoothing radius
 		}
 
+	}
+
+	// Calculate thermal contribution of any nearby tBoxes
+	for (int i = 0; i < numThermalBoxes; i++)
+	{
+		ThermalBox tBox = ThermalBoxes[i];
+
+		// Create rotation matrix for local space transformation
+		float2 right = tBox.box.zLocal;
+		float2 up = float2(-tBox.box.zLocal.y, tBox.box.zLocal.x); // Precompute once
+
+		// Transform position to box's local space
+		float2 localPos = pos - tBox.box.pos;
+		// Transform to box's local space
+		float2 rotatedPos = float2(
+			dot(localPos, right),
+			dot(localPos, up)
+			);
+
+		// Calculate distance to box edges in local space
+		float2 boxHalfSize = tBox.box.size * 0.5;
+		float2 distanceFromCenter = abs(rotatedPos) - fluidData.smoothingRadius;
+
+		// Check if within range
+		float2 penetration = distanceFromCenter - boxHalfSize;
+
+		// Skip all calculations if no collision (combined comparison)
+		if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
+			return;
+
+		float2 closestPoint = float2(
+			clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
+			clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
+			);
+		float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
+
+		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
 	}
 
 	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;

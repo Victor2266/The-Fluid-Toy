@@ -56,3 +56,20 @@ public struct OrientedBox //24 bytes total
     public Vector2 size;
     public Vector2 zLocal;
 };
+
+[System.Serializable]
+public struct ThermalBoxInitializer //32 bytes total: This is for setting up source objects in the inspector
+{
+    public Transform transform; //24 bytes
+    public float temperature;
+    public float conductivity; // Somewhere between
+}
+
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 32)]
+public struct ThermalBox //32 bytes total
+{
+    public OrientedBox box;   // 24B
+    public float temperature;
+    public float conductivity;
+};
