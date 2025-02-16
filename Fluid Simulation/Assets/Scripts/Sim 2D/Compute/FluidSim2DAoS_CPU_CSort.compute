@@ -74,7 +74,6 @@ struct ThermalBox
 {
 	OrientedBox box;
 	float temperature;
-	float range;
 	float conductivity;
 };
 
@@ -882,7 +881,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 		float2 penetration = distanceFromCenter - boxHalfSize;
 
 		// Skip all calculations if no collision (combined comparison)
-		if (penetration.x >= tBox.range || penetration.y >= tBox.range)
+		if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
 			return;
 
 		float2 closestPoint = float2(

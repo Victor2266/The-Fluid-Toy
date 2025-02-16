@@ -409,7 +409,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             thermalBoxData[i].box.size = collider.localScale;
             thermalBoxData[i].box.zLocal = (Vector2)(collider.right); // Use right vector for orientation
             thermalBoxData[i].temperature = tBox.temperature;
-            thermalBoxData[i].range = tBox.range;
             thermalBoxData[i].conductivity = tBox.conductivity;
         }
 
