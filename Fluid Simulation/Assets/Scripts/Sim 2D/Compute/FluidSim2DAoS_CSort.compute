@@ -45,6 +45,8 @@ struct FluidData
 	float1 boilTemp;
 	int freezeState;
 	float1 freezeTemp;
+	int entropy;
+	float entropyTarget;
 };
 
 struct Circle //12 bytes total
@@ -108,6 +110,8 @@ const float2 interactionInputPoint;
 const float interactionInputStrength;
 const float interactionInputRadius;
 const float maxSmoothingRadius;
+const float globalEntropyRate;
+const float roomTemperature;
 
 int numBoxColliders;
 int numCircleColliders;
@@ -803,6 +807,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	float1 thermalDiffusivity = density > 0 ? fluidData.thermalDiffusivity / (density) : fluidData.thermalDiffusivity;
 	float1 deltaTemp = 0;
 
+	// Neighbour particle interactions
 	for (int i = 0; i < 9; i++)
 	{
 		uint hash = HashCell2D(originCell + offsets2D[i]);
@@ -878,6 +883,21 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
 	}
 
+	// Add entropy contribution
+	switch (fluidData.entropy)
+	{ 
+		case 0: // Disabled
+			break;
+		case 1: // Use scene roomTemperature
+			deltaTemp += (roomTemperature - temp) * globalEntropyRate;
+			break;
+		case 2: // Use FluidParam value
+			deltaTemp += (fluidData.entropyTarget - temp) * globalEntropyRate;
+			break;
+		default: // Default skip
+			break;
+	}
+
 	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;
 }
 
@@ -901,15 +921,24 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 
 	// Check if boil/freeze is possible for particle. If so, convert on temperature threshold
-	if (fluidData.boilState != 0 && particle.temperature > fluidData.boilTemp) 
+	if (fluidData.boilState != fluidData.fluidType && particle.temperature > fluidData.boilTemp) 
 	{
-		particle.type = GetFluidTypeIndexFromID(fluidData.boilState) + 1;
-		Particles[id.x] = particle; // Writeback
-
+		if (fluidData.boilState == 0) {
+			//DisableParticle(particle);
+			Particles[id.x] = particle; // Writeback
+		} else {
+			particle.type = GetFluidTypeIndexFromID(fluidData.boilState) + 1;
+			Particles[id.x] = particle; // Writeback
+		}
 	}
-	else if (fluidData.freezeState != 0 && particle.temperature <= fluidData.freezeTemp) 
+	else if (fluidData.freezeState != fluidData.fluidType && particle.temperature <= fluidData.freezeTemp)
 	{
-		particle.type = GetFluidTypeIndexFromID(fluidData.freezeState) + 1;
-		Particles[id.x] = particle; // Writeback
+		if (fluidData.freezeState == 0) {
+			//DisableParticle(particle);
+			Particles[id.x] = particle; // Writeback
+		} else {
+			particle.type = GetFluidTypeIndexFromID(fluidData.freezeState) + 1;
+			Particles[id.x] = particle; // Writeback
+		}
 	}
 }

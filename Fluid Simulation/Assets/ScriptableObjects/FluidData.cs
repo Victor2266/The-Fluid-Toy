@@ -7,7 +7,10 @@ public enum FluidType
     Water,
     Steam,
     Honey,
-    Lava
+    Lava,
+    Fire,
+    BouncyBall,
+    Beer
 }
 
 public enum VisualStyle
@@ -18,9 +21,17 @@ public enum VisualStyle
     Fuzzy
 }
 
+// Rate is directly proportional to thermalDiffusivity * global var. set by scene
+public enum Entropy
+{
+    Disabled, // Fluid temperture will not decrease on its own (without interaction with other particles)
+    Scene,    // Fluid temperature will adjust towards the temperature set by the scene in simulation (roomTemperature)
+    Fixed     // Fluid temperature will approach a fixed value in the FluidParam
+}
+
 // Struct for passing to compute shader.
 [System.Serializable]
-[StructLayout(LayoutKind.Sequential, Size = 36)]
+[StructLayout(LayoutKind.Sequential, Size = 64)]
 public struct FluidParam
 {
     public FluidType fluidType;
@@ -37,6 +48,8 @@ public struct FluidParam
     public float boilTemp;
     public FluidType freezeState;
     public float freezeTemp;
+    public Entropy entropy;
+    public float entropyTarget;
 };
 
 // These are calculated once based on the smoothing radius of each fluid
@@ -110,13 +123,17 @@ public class FluidData : ScriptableObject
     [Tooltip("Rate at which particles change temperature")]
     public float thermalDiffusivity = 0.143f;
     [Tooltip("Fluid to turn into on boil")]
-    public FluidType boilState = FluidType.Disabled;
+    public FluidType boilState = FluidType.Steam;
     [Tooltip("Temperature max before state change")]
     public float boilTemp = 100f;
     [Tooltip("Fluid to turn into on freeze")]
-    public FluidType freezeState = FluidType.Disabled;
+    public FluidType freezeState = FluidType.Water;
     [Tooltip("Temperature min before state change")]
     public float freezeTemp = 0f;
+    [Tooltip("Entropy; how temperature will change without any interaction")]
+    public Entropy entropy = Entropy.Disabled;
+    [Tooltip("Entropy target, target temperature for entropy (if fixed)")]
+    public float entropyTarget = 25f;
 
     [Header("Visual Properties")]
     [Tooltip("Setup the look of the fluid")]
@@ -149,7 +166,9 @@ public class FluidData : ScriptableObject
             boilState = boilState,
             boilTemp = boilTemp,
             freezeState = freezeState,
-            freezeTemp = freezeTemp
+            freezeTemp = freezeTemp,
+            entropy = entropy,
+            entropyTarget = entropyTarget
         };
         return fluidParams;
     }
