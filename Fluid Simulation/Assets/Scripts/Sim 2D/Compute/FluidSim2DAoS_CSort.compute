@@ -921,24 +921,21 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 
 	// Check if boil/freeze is possible for particle. If so, convert on temperature threshold
-	if (fluidData.boilState != fluidData.fluidType && particle.temperature > fluidData.boilTemp) 
+	if (fluidData.boilState != particle.type && particle.temperature > fluidData.boilTemp) 
 	{
 		if (fluidData.boilState == 0) {
-			//DisableParticle(particle);
-			Particles[id.x] = particle; // Writeback
+			DisableParticle(particle);
 		} else {
 			particle.type = GetFluidTypeIndexFromID(fluidData.boilState) + 1;
-			Particles[id.x] = particle; // Writeback
 		}
 	}
-	else if (fluidData.freezeState != fluidData.fluidType && particle.temperature <= fluidData.freezeTemp)
+	else if (fluidData.freezeState != particle.type && particle.temperature <= fluidData.freezeTemp)
 	{
 		if (fluidData.freezeState == 0) {
-			//DisableParticle(particle);
-			Particles[id.x] = particle; // Writeback
+			DisableParticle(particle);
 		} else {
 			particle.type = GetFluidTypeIndexFromID(fluidData.freezeState) + 1;
-			Particles[id.x] = particle; // Writeback
 		}
 	}
+	Particles[id.x] = particle; // Writeback
 }
