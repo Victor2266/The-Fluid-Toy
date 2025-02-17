@@ -7,7 +7,8 @@ public enum FluidType
     Water,
     Steam,
     Honey,
-    Lava
+    Lava,
+    Gravel
 }
 
 public enum VisualStyle
@@ -23,6 +24,7 @@ public enum VisualStyle
 [StructLayout(LayoutKind.Sequential, Size = 36)]
 public struct FluidParam
 {
+    public int isSolid; // bool not blittable
     public FluidType fluidType;
     public float gravity;
     public float collisionDamping;
@@ -37,6 +39,7 @@ public struct FluidParam
     public float boilTemp;
     public FluidType freezeState;
     public float freezeTemp;
+    public float frictionCoef;
 };
 
 // These are calculated once based on the smoothing radius of each fluid
@@ -122,6 +125,12 @@ public class FluidData : ScriptableObject
     [Tooltip("Setup the look of the fluid")]
     public VisualParameters visualParams;
 
+    [Header("Solid Particle Options")]
+    [Tooltip("Solid Particle Flag")]
+    public int isSolid = 0;
+    [Tooltip("Friction Coefficient")]
+    public float frictionCoef = 0.5f;
+
     // Validation method to ensure values stay within reasonable bounds
     private void OnValidate()
     {
@@ -149,7 +158,11 @@ public class FluidData : ScriptableObject
             boilState = boilState,
             boilTemp = boilTemp,
             freezeState = freezeState,
-            freezeTemp = freezeTemp
+            freezeTemp = freezeTemp,
+
+            // Solid stuff
+            isSolid = isSolid,
+            frictionCoef = frictionCoef
         };
         return fluidParams;
     }

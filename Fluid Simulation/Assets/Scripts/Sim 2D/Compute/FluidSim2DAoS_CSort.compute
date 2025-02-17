@@ -7,6 +7,7 @@
 #pragma kernel CalculatePressureForce
 #pragma kernel CalculateViscosity
 #pragma kernel CalculateTemperature
+#pragma kernel CalculateFriction
 #pragma kernel UpdatePositions
 #pragma kernel UpdateStates
 
@@ -31,6 +32,7 @@ struct Particle
 struct FluidData
 {
 	// Fluid properties
+	int isSolid;
 	int fluidType; // fluid type enum
 	float1 gravity;
 	float1 collisionDamping;
@@ -45,6 +47,7 @@ struct FluidData
 	float1 boilTemp;
 	int freezeState;
 	float1 freezeTemp;
+	float1 frictionCoef;
 };
 
 struct Circle //12 bytes total
@@ -727,7 +730,6 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 }
 
 
-
 [numthreads(NumThreads,1,1)]
 void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 {
@@ -737,7 +739,9 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
 	FluidData fluidData = FluidDataSet[fluidIndex];
-		
+	
+	if (fluidData.isSolid) return; // Skip for solid particles
+
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
@@ -879,6 +883,70 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	}
 
 	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;
+}
+
+[numthreads(NumThreads, 1, 1)]
+void CalculateFriction(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numParticles) return;
+	Particle particle = Particles[id.x];
+	if (particle.type == 0) return; // Skip disabled
+
+	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+	FluidData fluidData = FluidDataSet[fluidIndex];
+
+	if (!fluidData.isSolid) return; // Only for solid; skip liqid
+
+	float2 pos = Particles[id.x].predictedPosition;
+	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
+
+	float2 frictionForce = 0;
+	float2 velocity = Particles[id.x].velocity;
+
+	for (int i = 0; i < 9; i++)
+	{
+		uint hash = HashCell2D(originCell + offsets2D[i]);
+		uint key = KeyFromHash(hash, numParticles);
+		uint currIndex = SpatialOffsets[key];
+
+		while (currIndex < numParticles)
+		{
+			uint2 indexData = SpatialIndices[currIndex];
+			currIndex++;
+			// Exit if no longer looking at correct bin
+			if (indexData[1] != key) break;
+			// Skip if hash does not match
+			if (indexData[0] != hash) continue;
+
+			uint neighbourIndex = currIndex - 1;
+			// Skip if looking at self
+			if (neighbourIndex == id.x) continue;
+			Particle neighbourParticle = Particles[neighbourIndex];
+			if (neighbourParticle.type == 0) continue; // Skip disabled
+
+			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
+
+			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
+			float2 offsetToNeighbour = neighbourPos - pos;
+			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
+
+			// Skip if not within radius
+			if (sqrDstToNeighbour > sqrRadius) continue;
+
+			float dst = sqrt(sqrDstToNeighbour);
+			float2 neighbourVelocity = Particles[neighbourIndex].velocity;
+
+			// Solid particles suspended in liquid will behave kinda like fluids; but when there's many solids, they will be like powders
+			if (neighbourData.isSolid) {
+				frictionForce += (neighbourVelocity - velocity); //* fluidData.frictionCoef;
+			//} else {
+			//	frictionForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, GetFluidTypeIndexFromID(neighbourParticle.type)); // Using neighbour
+			}
+		}
+
+	}
+	Particles[id.x].velocity += frictionForce * fluidData.frictionCoef * deltaTime;
 }
 
 [numthreads(NumThreads,1,1)]
