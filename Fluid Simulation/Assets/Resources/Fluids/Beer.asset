@@ -22,10 +22,12 @@ MonoBehaviour:
   viscosityStrength: 0.06
   startTemperature: 22
   thermalDiffusivity: 0.143
-  boilState: 0
+  boilState: 7
   boilTemp: 100
-  freezeState: 0
+  freezeState: 7
   freezeTemp: 0
+  entropy: 0
+  entropyTarget: 25
   visualParams:
     style: 0
     colorGradient:
