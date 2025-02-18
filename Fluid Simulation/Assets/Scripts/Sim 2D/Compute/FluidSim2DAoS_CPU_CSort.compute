@@ -882,7 +882,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 
 		// Skip all calculations if no collision (combined comparison)
 		if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
-			return;
+			break;
 
 		float2 closestPoint = float2(
 			clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
