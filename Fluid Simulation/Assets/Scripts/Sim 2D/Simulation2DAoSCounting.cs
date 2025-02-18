@@ -93,7 +93,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
 
-    [Header("Thermal Boxes (Box colliders with temperatures)")]
+    [Header("Thermal Boxes (Particles in this box will be brought to the box temperature)")]
     public ThermalBoxInitializer[] thermalBoxes;
     private ComputeBuffer thermalBoxesBuffer;
 

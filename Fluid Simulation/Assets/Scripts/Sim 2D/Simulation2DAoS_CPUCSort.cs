@@ -89,7 +89,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
 
-    [Header("Thermal Boxes (Box colliders with temperatures)")]
+    [Header("Thermal Boxes (Particles in this box will be brought to the box temperature)")]
     public ThermalBoxInitializer[] thermalBoxes;
     private ComputeBuffer thermalBoxesBuffer;
 
@@ -263,7 +263,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel, updateStateKernel);
         ComputeHelper.SetBuffer(compute, cpuparticlebuffer, "CPUParticles", mergeCPUParticlesKernel);
         ComputeHelper.SetBuffer(compute, keyarrbuffer, "keyarr", densityKernel, pressureKernel, viscosityKernel, mergeCPUParticlesKernel);
 
