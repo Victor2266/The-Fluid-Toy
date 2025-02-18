@@ -884,6 +884,12 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 		if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
 			break;
 
+		// If the particle is fully inside the box then use full Temperature Kernel Value, no need to calculate distance
+		if (penetration.x <= 0 && penetration.y <= 0) {
+			deltaTemp += (tBox.temperature - temp) * tBox.conductivity;
+			break;
+		}
+
 		float2 closestPoint = float2(
 			clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
 			clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
