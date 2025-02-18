@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Fire
   m_EditorClassIdentifier: 
   fluidType: 5
-  gravity: 1
+  gravity: 11
   collisionDamping: 0.5
   smoothingRadius: 0.35
-  targetDensity: 36
-  pressureMultiplier: 200
-  nearPressureMultiplier: 18
+  targetDensity: 64
+  pressureMultiplier: 8
+  nearPressureMultiplier: 16
   viscosityStrength: 0
   startTemperature: 600
   thermalDiffusivity: 20
@@ -32,19 +32,19 @@ MonoBehaviour:
     style: 1
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.22427252, b: 0.1603772, a: 1}
-      key1: {r: 1, g: 0.4, b: 0, a: 1}
-      key2: {r: 1.0016174, g: 0.5882353, b: 0.043137256, a: 0}
-      key3: {r: 1, g: 0.914868, b: 0.5377357, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
+      key0: {r: 0, g: 0, b: 0, a: 1}
+      key1: {r: 1, g: 0.22427252, b: 0.1603772, a: 1}
+      key2: {r: 1, g: 0.4, b: 0, a: 0}
+      key3: {r: 1.0016174, g: 0.5882353, b: 0.043137256, a: 0}
+      key4: {r: 1, g: 0.914868, b: 0.5377357, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
-      ctime1: 19789
-      ctime2: 43819
-      ctime3: 65150
-      ctime4: 0
+      ctime1: 4241
+      ctime2: 19789
+      ctime3: 43819
+      ctime4: 65150
       ctime5: 0
       ctime6: 0
       ctime7: 0
@@ -58,7 +58,7 @@ MonoBehaviour:
       atime7: 0
       m_Mode: 2
       m_ColorSpace: -1
-      m_NumColorKeys: 4
+      m_NumColorKeys: 5
       m_NumAlphaKeys: 2
     visualScale: 0.35
     baseOpacity: 1
