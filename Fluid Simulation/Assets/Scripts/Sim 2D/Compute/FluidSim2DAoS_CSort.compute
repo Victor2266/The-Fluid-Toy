@@ -742,6 +742,8 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
 	FluidData fluidData = FluidDataSet[fluidIndex];
+
+	if (fluidData.viscosityStrength == 0) return; // Skip viscosity calculations for particles with 0 viscosity strength
 		
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
