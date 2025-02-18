@@ -481,6 +481,10 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
         int fluidIndex = GetFluidTypeIndexFromID((int)particleOut.type);
         FluidParam fParams = fluidPs[fluidIndex];
         ScalingFactors sFactors = scalingFacts[fluidIndex];
+
+        if (fParams.viscosityStrength == 0) // Skipping particles without viscosity
+            return;
+        
         //float2 pos = particleOut.predictedPosition;
 	    //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	    float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
