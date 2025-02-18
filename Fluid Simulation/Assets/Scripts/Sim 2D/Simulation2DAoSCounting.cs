@@ -17,7 +17,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
     public float globalEntropyRate = 1f;
-    public float roomTemperature = 25f;
+    public float roomTemperature = 22f;
 
     public Vector2 boundsSize;
     public Vector2 obstacleSize;

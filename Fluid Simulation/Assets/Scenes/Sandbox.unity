@@ -1852,7 +1852,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &981710268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1887,6 +1887,8 @@ MonoBehaviour:
   fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
+  globalEntropyRate: 1
+  roomTemperature: 22
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
@@ -1906,6 +1908,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
   - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
+  - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 981710268}
   boxColliders:
@@ -2717,7 +2720,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1430943822
 MonoBehaviour:
   m_ObjectHideFlags: 0

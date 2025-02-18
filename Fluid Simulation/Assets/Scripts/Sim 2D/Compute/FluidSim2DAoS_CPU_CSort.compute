@@ -46,6 +46,8 @@ struct FluidData
 	float1 boilTemp;
 	int freezeState;
 	float1 freezeTemp;
+	int entropy;
+	float entropyTarget;
 };
 
 struct Circle //12 bytes total
@@ -111,6 +113,8 @@ const float2 interactionInputPoint;
 const float interactionInputStrength;
 const float interactionInputRadius;
 const float maxSmoothingRadius;
+const float globalEntropyRate;
+const float roomTemperature;
 const uint numCPUKeys;
 
 int numBoxColliders;
@@ -135,40 +139,40 @@ int GetFluidTypeIndexFromID(int fluidID){
 	return -1; // fluid type not found
 }
 
-float DensityKernel(float dst, float radius, int type)
+float DensityKernel(float dst, float radius, int index)
 {
-	return SpikyKernelPow2(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow2);
+	return SpikyKernelPow2(dst, radius, ScalingFactorsBuffer[index].SpikyPow2);
 }
 
-float NearDensityKernel(float dst, float radius, int type)
+float NearDensityKernel(float dst, float radius, int index)
 {
-	return SpikyKernelPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3);
+	return SpikyKernelPow3(dst, radius, ScalingFactorsBuffer[index].SpikyPow3);
 }
 
-float DensityDerivative(float dst, float radius, int type)
+float DensityDerivative(float dst, float radius, int index)
 {
-	return DerivativeSpikyPow2(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow2Derivative);
+	return DerivativeSpikyPow2(dst, radius, ScalingFactorsBuffer[index].SpikyPow2Derivative);
 }
 
-float NearDensityDerivative(float dst, float radius, int type)
+float NearDensityDerivative(float dst, float radius, int index)
 {
-	return DerivativeSpikyPow3(dst, radius, ScalingFactorsBuffer[type - 1].SpikyPow3Derivative);
+	return DerivativeSpikyPow3(dst, radius, ScalingFactorsBuffer[index].SpikyPow3Derivative);
 }
 
-float ViscosityKernel(float dst, float radius, int type)
+float ViscosityKernel(float dst, float radius, int index)
 {
-	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6);
+	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[index].Poly6);
 }
 
-float TemperatureKernel(float dst, float radius, int type)
+float TemperatureKernel(float dst, float radius, int index)
 {
-	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[type - 1].Poly6); // TEMP kernel to test.
+	return SmoothingKernelPoly6(dst, radius, ScalingFactorsBuffer[index].Poly6); // TEMP kernel to test.
 }
 
 //get the maximum smoothing radius between two fluid types
-float GetMaxSmoothingRadius(int typeA, int typeB)
+float GetMaxSmoothingRadius(int indexA, int indexB)
 {
-    return max(FluidDataSet[typeA - 1].smoothingRadius, FluidDataSet[typeB - 1].smoothingRadius);
+    return max(FluidDataSet[indexA].smoothingRadius, FluidDataSet[indexB].smoothingRadius);
 }
 
 
@@ -923,6 +927,21 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
 	}
 
+	// Add entropy contribution
+	switch (fluidData.entropy)
+	{ 
+		case 0: // Disabled
+			break;
+		case 1: // Use scene roomTemperature
+			deltaTemp += (roomTemperature - temp) * globalEntropyRate;
+			break;
+		case 2: // Use FluidParam value
+			deltaTemp += (fluidData.entropyTarget - temp) * globalEntropyRate;
+			break;
+		default: // Default skip
+			break;
+	}
+	
 	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;
 }
 

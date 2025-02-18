@@ -18,6 +18,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
+    public float globalEntropyRate = 1f;
+    public float roomTemperature = 22f;
 
     public Vector2 boundsSize;
     public Vector2 obstacleSize;
@@ -197,7 +199,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             for (int i = 0; i < fluidDataArray.Length; i++)
             {
                 fluidParamArr[i] = fluidDataArray[i].getFluidParams();
-                fluidParamArr[i].fluidType = (FluidType)i + 1;
+                // fluidParamArr[i].fluidType = (FluidType)i + 1;
                 scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
             }
         }
@@ -274,6 +276,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetFloat("roomTemperature", roomTemperature);
+        compute.SetFloat("globalEntropyRate", globalEntropyRate);
         compute.SetInt("numCPUKeys", (int) numCPUKeys);
 
         // GPU Sort Init
@@ -339,7 +343,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     void RunSimulationFrame(float frameTime)
     {
         // Cap the maximum deltaTime to prevent instability when tabbing out
-        float cappedFrameTime = frameTime > 1f/30f ? 1f/30f : frameTime; // Cap at 30fps equivalent
+        float cappedFrameTime = frameTime > MAX_DELTA_TIME ? MAX_DELTA_TIME : frameTime; // Cap at 30fps equivalent
 
         if (!isPaused)
         {
@@ -472,6 +476,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int) edgeType);
         compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetFloat("roomTemperature", roomTemperature);
+        compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
         if (sourceObjects.Length > 0)
         {
