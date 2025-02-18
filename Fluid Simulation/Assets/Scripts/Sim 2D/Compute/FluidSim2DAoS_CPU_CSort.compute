@@ -457,7 +457,7 @@ void HandleCollisions(inout Particle particle)
 		// Handle tBox collisions
 		for (int k = 0; k < numThermalBoxes; k++)
 		{
-			HandleBoxCollision(pos, vel, ThermalBoxes[k].box, fluidData.collisionDamping, fluidData.smoothingRadius);
+			HandleBoxCollision(pos, vel, ThermalBoxes[k].box, fluidData.collisionDamping, particleRadius);
 		}
 	}
 

@@ -465,9 +465,9 @@ void HandleCollisions(inout Particle particle)
 		}
 
 		// Handle tBox collisions
-		for (int i = 0; i < numThermalBoxes; i++)
+		for (int k = 0; k < numThermalBoxes; k++)
 		{
-			HandleBoxCollision(pos, vel, ThermalBoxes[i].box, fluidData.collisionDamping, particleRadius);
+			HandleBoxCollision(pos, vel, ThermalBoxes[k].box, fluidData.collisionDamping, particleRadius);
 		}
 	}
 
@@ -842,9 +842,9 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	}
 
 	// Calculate thermal contribution of any nearby tBoxes
-	for (int i = 0; i < numThermalBoxes; i++)
+	for (int j = 0; j < numThermalBoxes; j++)
 	{
-		ThermalBox tBox = ThermalBoxes[i];
+		ThermalBox tBox = ThermalBoxes[j];
 
 		// Create rotation matrix for local space transformation
 		float2 right = tBox.box.zLocal;
