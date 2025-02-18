@@ -484,6 +484,9 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
 
         if (fParams.viscosityStrength == 0) // Skipping particles without viscosity
             return;
+
+        if(particleOut.density.x > fParams.targetDensity * 32f) // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
+            return;
         
         //float2 pos = particleOut.predictedPosition;
 	    //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
