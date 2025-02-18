@@ -13,21 +13,21 @@ MonoBehaviour:
   m_Name: Fire
   m_EditorClassIdentifier: 
   fluidType: 5
-  gravity: 5
+  gravity: 1
   collisionDamping: 0.5
   smoothingRadius: 0.35
-  targetDensity: 24
+  targetDensity: 36
   pressureMultiplier: 200
   nearPressureMultiplier: 18
   viscosityStrength: 0
-  startTemperature: 200
+  startTemperature: 600
   thermalDiffusivity: 20
   boilState: 5
-  boilTemp: 400
+  boilTemp: 1000
   freezeState: 0
-  freezeTemp: 100
-  entropy: 1
-  entropyTarget: 100
+  freezeTemp: 315
+  entropy: 2
+  entropyTarget: 0
   visualParams:
     style: 1
     colorGradient:
@@ -60,11 +60,11 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 4
       m_NumAlphaKeys: 2
-    visualScale: 0.32
+    visualScale: 0.35
     baseOpacity: 1
-    noiseScale: 0
+    noiseScale: 2.4
     timeScale: 1
-    glowIntensity: 50
-    glowFalloff: 50
-    minPropertyValue: 30
-    maxPropertyValue: 400
+    glowIntensity: 2.25
+    glowFalloff: 0.93
+    minPropertyValue: 315
+    maxPropertyValue: 900

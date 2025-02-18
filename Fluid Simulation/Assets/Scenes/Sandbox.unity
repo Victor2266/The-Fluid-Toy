@@ -2768,7 +2768,7 @@ MonoBehaviour:
   enableHotkeys: 1
   iterationsPerFrame: 3
   globalEntropyRate: 20
-  roomTemperature: 25
+  roomTemperature: 22
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
@@ -4105,6 +4105,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2109621059557760878, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -4339,6 +4351,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8044162319986093918, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8686710543586196017, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}

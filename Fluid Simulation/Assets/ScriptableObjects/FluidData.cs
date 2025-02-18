@@ -49,7 +49,7 @@ public struct FluidParam
     public FluidType freezeState;
     public float freezeTemp;
     public Entropy entropy;
-    public float entropyTarget;
+    public float entropyTarget; // You could remove this and pack the info into the entropy enum reserve values (0-8) for fixed behaviors and use the other values for entropyTargets
 };
 
 // These are calculated once based on the smoothing radius of each fluid
