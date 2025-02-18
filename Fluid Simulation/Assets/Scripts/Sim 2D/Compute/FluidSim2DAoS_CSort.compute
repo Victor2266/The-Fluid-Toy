@@ -744,6 +744,8 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 	FluidData fluidData = FluidDataSet[fluidIndex];
 
 	if (fluidData.viscosityStrength == 0) return; // Skip viscosity calculations for particles with 0 viscosity strength
+
+	if(particle.density.x > fluidData.targetDensity * 32) return; // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
 		
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
