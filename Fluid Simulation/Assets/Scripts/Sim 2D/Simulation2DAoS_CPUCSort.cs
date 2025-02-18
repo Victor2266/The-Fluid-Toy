@@ -785,8 +785,14 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.offsets[7] = new int2(0, -1);
         CPUKernelAOS.offsets[8] = new int2(1, -1);
 
-        CPUKernelAOS.fluidParams = new FluidParam[Enum.GetValues(typeof(FluidType)).Length - 1];
-        CPUKernelAOS.scalingFactors = new ScalingFactors[Enum.GetValues(typeof(FluidType)).Length - 1];
+        int numFluidTypes;
+        if (!manuallySelectFluidTypes)
+            numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
+        else 
+            numFluidTypes = fluidDataArray.Length;
+
+        CPUKernelAOS.fluidParams = new FluidParam[numFluidTypes];
+        CPUKernelAOS.scalingFactors = new ScalingFactors[numFluidTypes];
         CPUKernelAOS.maxSmoothingRadius = maxSmoothingRadius;
         CPUKernelAOS.boxCollidersData = new OrientedBox[boxColliders.Length];
         CPUKernelAOS.circleCollidersData = new Circle[circleColliders.Length];

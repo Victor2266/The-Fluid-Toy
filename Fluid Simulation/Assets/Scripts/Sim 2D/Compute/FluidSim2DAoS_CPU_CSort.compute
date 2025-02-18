@@ -223,7 +223,7 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int type)
 			Particle neighbourParticle = Particles[neighbourIndex];
 			int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
 
-			FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
+			// FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
 
 			if (neighbourParticle.type == 0) continue; // Skip disabled particles
 
@@ -800,7 +800,7 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 			Particle neighbourParticle = Particles[neighbourIndex];
 			if (neighbourParticle.type == 0) continue; // Skip disabled
 
-			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
+			// FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;
@@ -858,7 +858,7 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			Particle neighbourParticle = Particles[neighbourIndex];
 			if (neighbourParticle.type == 0) continue; // Skip disabled
 
-			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
+			// FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
 
 			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
 			float2 offsetToNeighbour = neighbourPos - pos;

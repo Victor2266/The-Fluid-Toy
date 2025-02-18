@@ -99,6 +99,18 @@ public struct CPUDensityCalcAoS : IJobParallelFor
     {
         return Math.Max(fluidPs[typeA - 1].smoothingRadius, fluidPs[typeB - 1].smoothingRadius);
     }
+
+    int GetFluidTypeIndexFromID(int fluidID){
+        for (int i = 0; i < fluidPs.Length; i++)
+        {
+            if ((int) fluidPs[i].fluidType == fluidID)
+            {
+                return i;
+            }
+        }
+        return -1; // fluid type not found
+    }
+
     public void Execute(int index)
     {
         
@@ -120,8 +132,9 @@ public struct CPUDensityCalcAoS : IJobParallelFor
         if(j == numCPUKeys){
             return;
         }
-        FluidParam fparams = fluidPs[((int) particleOut.type) - 1];
-        ScalingFactors sFactors = scalingFacts[((int) particleOut.type) - 1];
+        int fluidIndex = GetFluidTypeIndexFromID((int)particleOut.type);
+        FluidParam fparams = fluidPs[fluidIndex];
+        ScalingFactors sFactors = scalingFacts[fluidIndex];
 
         
         float sqrRadius = fparams.smoothingRadius * fparams.smoothingRadius;
@@ -148,7 +161,8 @@ public struct CPUDensityCalcAoS : IJobParallelFor
                 if (neighbourParticle.type == FluidType.Disabled){
                     continue;
                 }
-                FluidParam neighbourData = fluidPs[((int) neighbourParticle.type) - 1];
+                // int neighbourFluidIndex = GetFluidTypeIndexFromID((int)neighbourParticle.type);
+                // FluidParam neighbourData = fluidPs[neighbourFluidIndex];
                 float2 neighbourPos = neighbourParticle.predictedPosition;
                 float2 offsetToNeighbour;
                 offsetToNeighbour.x = neighbourPos.x - pos.x;
@@ -262,6 +276,18 @@ public struct CPUPressureCalcAoS : IJobParallelFor
 
 		return (A.x * B.x) + (A.y * B.y);
 	}
+
+    int GetFluidTypeIndexFromID(int fluidID){
+        for (int i = 0; i < fluidPs.Length; i++)
+        {
+            if ((int) fluidPs[i].fluidType == fluidID)
+            {
+                return i;
+            }
+        }
+        return -1; // fluid type not found
+    }
+
     public void Execute(int index)
     {
         Particle particleOut = particles[index];
@@ -281,8 +307,10 @@ public struct CPUPressureCalcAoS : IJobParallelFor
         if(j == numCPUKeys){
             return;
         }
-        FluidParam fParams = fluidPs[((int) particleOut.type) - 1];
-        ScalingFactors sFactors = scalingFacts[((int) particleOut.type) - 1];
+        int fluidIndex = GetFluidTypeIndexFromID((int)particleOut.type);
+        FluidParam fParams = fluidPs[fluidIndex];
+        ScalingFactors sFactors = scalingFacts[fluidIndex];
+
         float density = particles[index].density[0];
 	    float densityNear = particles[index].density[1];
 	    float pressure = PressureFromDensity(density, fParams.targetDensity, fParams.pressureMultiplier);
@@ -317,7 +345,7 @@ public struct CPUPressureCalcAoS : IJobParallelFor
                 if(neighbourParticle.type == FluidType.Disabled){
                     continue;
                 }
-                FluidParam neighbourParams = fluidPs[((int)neighbourParticle.type) - 1];
+                FluidParam neighbourParams = fluidPs[GetFluidTypeIndexFromID((int)neighbourParticle.type)];
 	    		float2 neighbourPos = particles[neighbourIndex].predictedPosition;
 	    		float2 offsetToNeighbour = neighbourPos - pos;
 	    		float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
@@ -420,6 +448,17 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
 
 		return (A.x * B.x) + (A.y * B.y);
 	}
+
+    int GetFluidTypeIndexFromID(int fluidID){
+        for (int i = 0; i < fluidPs.Length; i++)
+        {
+            if ((int) fluidPs[i].fluidType == fluidID)
+            {
+                return i;
+            }
+        }
+        return -1; // fluid type not found
+    }
     public void Execute(int index)
     {
         Particle particleOut = particles[index];
@@ -439,8 +478,9 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
         if(j == numCPUKeys){
             return;
         }
-        FluidParam fParams = fluidPs[((int) particleOut.type) - 1];
-        ScalingFactors sFactors = scalingFacts[((int) particleOut.type) - 1];
+        int fluidIndex = GetFluidTypeIndexFromID((int)particleOut.type);
+        FluidParam fParams = fluidPs[fluidIndex];
+        ScalingFactors sFactors = scalingFacts[fluidIndex];
         //float2 pos = particleOut.predictedPosition;
 	    //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	    float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
@@ -471,7 +511,7 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
                 if(neighbourParticle.type == FluidType.Disabled){
                     continue;
                 }
-                FluidParam neighbourParams = fluidPs[((int) neighbourParticle.type) - 1];
+                //FluidParam neighbourParams = fluidPs[((int) neighbourParticle.type) - 1];
 	    		float2 neighbourPos = particles[neighbourIndex].predictedPosition;
 	    		float2 offsetToNeighbour = neighbourPos - pos;
 	    		float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
