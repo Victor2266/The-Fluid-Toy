@@ -244,7 +244,7 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int fluidIndex)
 
 			// Calculate density and near density
 			float dst = sqrt(sqrDstToNeighbour);
-			density += DensityKernel(dst, smoothingRadius, fluidIndex); // NEW Kernel that uses type
+			density += DensityKernel(dst, smoothingRadius, fluidIndex); // NEW Kernel that uses index
 			nearDensity += NearDensityKernel(dst, smoothingRadius, fluidIndex);
 		}
 	}

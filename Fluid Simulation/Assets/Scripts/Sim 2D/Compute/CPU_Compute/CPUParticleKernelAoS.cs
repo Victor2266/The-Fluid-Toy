@@ -95,9 +95,9 @@ public struct CPUDensityCalcAoS : IJobParallelFor
 		return (A.x * B.x) + (A.y * B.y);
 	}
 
-    float GetMaxSmoothingRadius(int typeA, int typeB)
+    float GetMaxSmoothingRadius(int indexA, int indexB)
     {
-        return Math.Max(fluidPs[typeA - 1].smoothingRadius, fluidPs[typeB - 1].smoothingRadius);
+        return Math.Max(fluidPs[indexA].smoothingRadius, fluidPs[indexB].smoothingRadius);
     }
 
     int GetFluidTypeIndexFromID(int fluidID){
@@ -161,14 +161,14 @@ public struct CPUDensityCalcAoS : IJobParallelFor
                 if (neighbourParticle.type == FluidType.Disabled){
                     continue;
                 }
-                // int neighbourFluidIndex = GetFluidTypeIndexFromID((int)neighbourParticle.type);
+                int neighbourFluidIndex = GetFluidTypeIndexFromID((int)neighbourParticle.type);
                 // FluidParam neighbourData = fluidPs[neighbourFluidIndex];
                 float2 neighbourPos = neighbourParticle.predictedPosition;
                 float2 offsetToNeighbour;
                 offsetToNeighbour.x = neighbourPos.x - pos.x;
                 offsetToNeighbour.y = neighbourPos.y - pos.y;
                 float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
-                float interactionRadius = GetMaxSmoothingRadius((int) particleOut.type, (int) neighbourParticle.type);
+                float interactionRadius = GetMaxSmoothingRadius(fluidIndex, neighbourFluidIndex);
                 float interactionSquare = interactionRadius * interactionRadius;
                 // Skip if not within radius
 	    		if (sqrDstToNeighbour > interactionSquare) continue;
