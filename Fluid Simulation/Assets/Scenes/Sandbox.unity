@@ -1115,6 +1115,8 @@ MonoBehaviour:
   fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
+  globalEntropyRate: 1
+  roomTemperature: 25
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
@@ -1885,6 +1887,8 @@ MonoBehaviour:
   fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
+  globalEntropyRate: 1
+  roomTemperature: 22
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
@@ -1904,6 +1908,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
   - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
+  - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawner: {fileID: 981710268}
   boxColliders:
@@ -1911,6 +1916,8 @@ MonoBehaviour:
   - {fileID: 474748749}
   - {fileID: 1364603427}
   - {fileID: 228796735}
+  - {fileID: 720039256}
+  - {fileID: 2085101045}
   circleColliders: []
   sourceObjects:
   - transform: {fileID: 336022954}
@@ -1923,8 +1930,8 @@ MonoBehaviour:
   - transform: {fileID: 2085101045}
     temperature: 120
     conductivity: 5
-  isCPUComputingEnabled: 1
-  toggleCPUComputing: 1
+  isCPUComputingEnabled: 0
+  toggleCPUComputing: 0
   numCPUKeys: 5
 --- !u!4 &981710270
 Transform:
@@ -2728,7 +2735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleCount: 16384
+  particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 3.35, y: 0.51}
   spawnSize: {x: 7, y: 7}
@@ -2765,6 +2772,8 @@ MonoBehaviour:
   fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
+  globalEntropyRate: 1
+  roomTemperature: 22
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
@@ -2785,6 +2794,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
   - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
+  - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawner: {fileID: 1430943822}
   boxColliders:
@@ -2793,12 +2803,13 @@ MonoBehaviour:
   - {fileID: 1364603427}
   - {fileID: 228796735}
   - {fileID: 720039256}
+  - {fileID: 2085101045}
   circleColliders: []
   sourceObjects:
   - transform: {fileID: 336022954}
     velo: {x: 0, y: 0}
-    spawnRate: 1
-    fluidType: 1
+    spawnRate: 0
+    fluidType: 0
   drainObjects:
   - {fileID: 1812870175}
   thermalBoxes:
@@ -3538,10 +3549,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: -7, y: -2.5, z: 0}
-  - {x: -3, y: -2.5, z: 0}
-  - {x: -3, y: -1.5, z: 0}
-  - {x: -7, y: -1.5, z: 0}
+  - {x: -7, y: -4, z: 0}
+  - {x: -3, y: -4, z: 0}
+  - {x: -3, y: 0, z: 0}
+  - {x: -7, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -3702,7 +3713,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5, y: -2, z: 0}
-  m_LocalScale: {x: 4, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3954,6 +3965,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19118732087008230, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 86387447315247293, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 86387447315247293, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 86387447315247293, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 86387447315247293, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 86387447315247293, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 86387447315247293, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 848516528542983712, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
@@ -4334,6 +4369,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8686710543586196017, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8686710543586196017, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8686710543586196017, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8686710543586196017, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8686710543586196017, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8686710543586196017, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

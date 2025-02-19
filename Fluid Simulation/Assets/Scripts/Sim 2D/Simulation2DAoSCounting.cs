@@ -16,6 +16,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
+    public float globalEntropyRate = 1f;
+    public float roomTemperature = 22f;
 
     public Vector2 boundsSize;
     public Vector2 obstacleSize;
@@ -91,7 +93,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
 
-    [Header("Thermal Boxes (Box colliders with temperatures)")]
+    [Header("Thermal Boxes (Particles in this box will be brought to the box temperature)")]
     public ThermalBoxInitializer[] thermalBoxes;
     private ComputeBuffer thermalBoxesBuffer;
 
@@ -248,7 +250,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel, updateStateKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
@@ -257,6 +259,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetFloat("roomTemperature", roomTemperature);
+        compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
         gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1) );
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
@@ -432,6 +436,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int) edgeType);
         compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetFloat("roomTemperature", roomTemperature);
+        compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
         if (sourceObjects.Length > 0)
         {

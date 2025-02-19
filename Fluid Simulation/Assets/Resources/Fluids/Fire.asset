@@ -10,41 +10,41 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
-  m_Name: Lava
+  m_Name: Fire
   m_EditorClassIdentifier: 
-  fluidType: 4
-  gravity: -12
-  collisionDamping: 0.7
+  fluidType: 5
+  gravity: 11
+  collisionDamping: 0.5
   smoothingRadius: 0.35
-  targetDensity: 100
-  pressureMultiplier: 1000
-  nearPressureMultiplier: 50
-  viscosityStrength: 0.06
-  startTemperature: 1200
-  thermalDiffusivity: 0.143
-  boilState: 4
-  boilTemp: 100
-  freezeState: 4
-  freezeTemp: 0
-  entropy: 0
-  entropyTarget: 25
+  targetDensity: 64
+  pressureMultiplier: 8
+  nearPressureMultiplier: 16
+  viscosityStrength: 0
+  startTemperature: 600
+  thermalDiffusivity: 20
+  boilState: 5
+  boilTemp: 1000
+  freezeState: 0
+  freezeTemp: 315
+  entropy: 2
+  entropyTarget: 0
   visualParams:
     style: 1
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.9811321, g: 0.17314096, b: 0, a: 1}
-      key1: {r: 1, g: 0.4, b: 0, a: 1}
-      key2: {r: 1.0016174, g: 0.5882353, b: 0.043137256, a: 0}
-      key3: {r: 0.6698113, g: 0.39776942, b: 0.23696156, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
+      key0: {r: 0, g: 0, b: 0, a: 1}
+      key1: {r: 1, g: 0.22427252, b: 0.1603772, a: 1}
+      key2: {r: 1, g: 0.4, b: 0, a: 0}
+      key3: {r: 1.0016174, g: 0.5882353, b: 0.043137256, a: 0}
+      key4: {r: 1, g: 0.914868, b: 0.5377357, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 5590
-      ctime1: 25443
-      ctime2: 52235
-      ctime3: 65535
-      ctime4: 0
+      ctime0: 0
+      ctime1: 4241
+      ctime2: 19789
+      ctime3: 43819
+      ctime4: 65150
       ctime5: 0
       ctime6: 0
       ctime7: 0
@@ -58,13 +58,13 @@ MonoBehaviour:
       atime7: 0
       m_Mode: 2
       m_ColorSpace: -1
-      m_NumColorKeys: 4
+      m_NumColorKeys: 5
       m_NumAlphaKeys: 2
-    visualScale: 0.32
+    visualScale: 0.35
     baseOpacity: 1
-    noiseScale: 0
+    noiseScale: 2.4
     timeScale: 1
-    glowIntensity: 32
-    glowFalloff: 32
-    minPropertyValue: 800
-    maxPropertyValue: 1200
+    glowIntensity: 2.25
+    glowFalloff: 0.93
+    minPropertyValue: 315
+    maxPropertyValue: 900
