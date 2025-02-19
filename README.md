@@ -68,7 +68,10 @@
 ### 🎮 Game Systems  
 - **Fluid Density Detection**:  
   - AsyncGPUReadback for non-blocking particle position queries  
-  - Spatial density calculations for level event triggers  
+  - Spatial density calculations for level event triggers
+- **Temperature Detection**:  
+  - AsyncGPUReadback for non-blocking particle temp queries  
+  - Spatial temperature calculations for level event triggers  
 - **Audio System**:  
   - Dual-channel mixer with independent SFX/music control  
 - **Progression System**:  
