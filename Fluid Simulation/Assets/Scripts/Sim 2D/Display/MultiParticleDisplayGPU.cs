@@ -106,6 +106,24 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 			Destroy(gradientArray);
 	}
 
+	private void PartialReleaseBuffers(){
+		// Releases the buffers which are recreated each frame when updating the fluid array per frame for debugging
+		if (visualParamsBuffer != null)
+			ComputeHelper.Release(visualParamsBuffer);
+
+		if (gradientTextures != null)
+		{
+			foreach (var tex in gradientTextures.Values)
+			{
+				if (tex != null)
+					Destroy(tex);
+			}
+		}
+
+		if (gradientArray != null)
+			Destroy(gradientArray);
+	}
+
 	public void CreateAndSetupVisualParamsBuffer(FluidData[] fluidDataArray){
 		// Create and set up visual parameters buffer
         var visualParams = new FluidData.VisualParamBuffer[fluidDataArray.Length];
@@ -113,13 +131,13 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
         {
             visualParams[i] = fluidDataArray[i].GetVisualParams();
         }
-        
+		PartialReleaseBuffers();
         visualParamsBuffer = ComputeHelper.CreateStructuredBuffer<FluidData.VisualParamBuffer>(visualParams.Length);
         visualParamsBuffer.SetData(visualParams);
         material.SetBuffer("VisualParamsBuffer", visualParamsBuffer);
 
         // Set up gradient textures
-        gradientTextures = new Dictionary<FluidType, Texture2D>();
+        gradientTextures = new Dictionary<FluidType, Texture2D>(); // This is later used for destroying each individual texture
         gradientArray = new Texture2DArray(gradientResolution, 1, fluidDataArray.Length, TextureFormat.RGBA32, false);
         
         for (int i = 0; i < fluidDataArray.Length; i++)
