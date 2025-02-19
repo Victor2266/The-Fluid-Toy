@@ -1916,6 +1916,8 @@ MonoBehaviour:
   - {fileID: 474748749}
   - {fileID: 1364603427}
   - {fileID: 228796735}
+  - {fileID: 720039256}
+  - {fileID: 2085101045}
   circleColliders: []
   sourceObjects:
   - transform: {fileID: 336022954}
@@ -1928,8 +1930,8 @@ MonoBehaviour:
   - transform: {fileID: 2085101045}
     temperature: 120
     conductivity: 5
-  isCPUComputingEnabled: 1
-  toggleCPUComputing: 1
+  isCPUComputingEnabled: 0
+  toggleCPUComputing: 0
   numCPUKeys: 5
 --- !u!4 &981710270
 Transform:
@@ -2733,7 +2735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleCount: 16384
+  particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 3.35, y: 0.51}
   spawnSize: {x: 7, y: 7}
@@ -2770,7 +2772,7 @@ MonoBehaviour:
   fixedTimeStep: 0
   enableHotkeys: 1
   iterationsPerFrame: 3
-  globalEntropyRate: 2
+  globalEntropyRate: 1
   roomTemperature: 22
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}

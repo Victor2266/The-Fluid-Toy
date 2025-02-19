@@ -471,12 +471,6 @@ void HandleCollisions(inout Particle particle)
 		{
 			HandleCircleCollision(pos, vel, CircleColliders[j], fluidData.collisionDamping, particleRadius);
 		}
-
-		// Handle tBox collisions (Removed, just use the box collider system)
-		// for (int k = 0; k < numThermalBoxes; k++)
-		// {
-		// 	HandleBoxCollision(pos, vel, ThermalBoxes[k].box, fluidData.collisionDamping, particleRadius);
-		// }
 	}
 
 	// Update position and velocity in the particle struct
