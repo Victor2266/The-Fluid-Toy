@@ -37,7 +37,7 @@ public struct CPUDensityCalcAoS : IJobParallelFor
     public NativeArray<FluidParam> fluidPs;
     [ReadOnly]
     public NativeArray<ScalingFactors> scalingFacts;
-    
+
     [ReadOnly]
     public float maxSmoothingRadius;
     [ReadOnly]
@@ -46,64 +46,66 @@ public struct CPUDensityCalcAoS : IJobParallelFor
     // Constants used for hashing
     const uint hashK1 = 15823;
     const uint hashK2 = 9737333;
-    
+
     // Convert floating point position into an integer cell coordinate
     public int2 GetCell2D(float2 position, float radius)
     {
-    	int2 temp = new int2(0,0);
+        int2 temp = new int2(0, 0);
         temp[0] = (int)Math.Floor(position[0] / radius);
         temp[1] = (int)Math.Floor(position[1] / radius);
         return temp;
     }
-    
+
     // Hash cell coordinate to a single unsigned integer
     public uint HashCell2D(int2 cell)
     {
-    	cell = (int2)(uint2)cell;
-    	uint a = (uint)(cell.x * hashK1);
-    	uint b = (uint)(cell.y * hashK2);
-    	return (a + b);
+        cell = (int2)(uint2)cell;
+        uint a = (uint)(cell.x * hashK1);
+        uint b = (uint)(cell.y * hashK2);
+        return (a + b);
     }
-    
+
     public uint KeyFromHash(uint hash, uint tableSize)
     {
-    	return hash % tableSize;
+        return hash % tableSize;
     }
 
     public float SpikyKernelPow3(float dst, float radius, float val)
     {
-    	if (dst < radius)
-    	{
-    		float v = radius - dst;
-    		return v * v * v * val;
-    	}
-    	return 0;
+        if (dst < radius)
+        {
+            float v = radius - dst;
+            return v * v * v * val;
+        }
+        return 0;
     }
 
     public float SpikyKernelPow2(float dst, float radius, float val)
     {
-    	if (dst < radius)
-    	{
-    		float v = radius - dst;
-    		return v * v * val;
-    	}
-    	return 0;
+        if (dst < radius)
+        {
+            float v = radius - dst;
+            return v * v * val;
+        }
+        return 0;
     }
 
-    public float Dot(float2 A, float2 B){
+    public float Dot(float2 A, float2 B)
+    {
 
-		return (A.x * B.x) + (A.y * B.y);
-	}
+        return (A.x * B.x) + (A.y * B.y);
+    }
 
     float GetMaxSmoothingRadius(int indexA, int indexB)
     {
         return Math.Max(fluidPs[indexA].smoothingRadius, fluidPs[indexB].smoothingRadius);
     }
 
-    int GetFluidTypeIndexFromID(int fluidID){
+    int GetFluidTypeIndexFromID(int fluidID)
+    {
         for (int i = 0; i < fluidPs.Length; i++)
         {
-            if ((int) fluidPs[i].fluidType == fluidID)
+            if ((int)fluidPs[i].fluidType == fluidID)
             {
                 return i;
             }
@@ -113,30 +115,32 @@ public struct CPUDensityCalcAoS : IJobParallelFor
 
     public void Execute(int index)
     {
-        
-        
+
+
         Particle particleOut = particles[index];
-        if(particleOut.type == FluidType.Disabled){
-            return;
-        }
+        if (particleOut.type == FluidType.Disabled) return;
+        
         float2 pos = particles[index].predictedPosition;
         int2 originCell = GetCell2D(pos, maxSmoothingRadius);
         uint originHash = HashCell2D(originCell);
         uint originKey = KeyFromHash(originHash, numParticles);
-        int j=0;
-        for(j=0; j<numCPUKeys; j++){
-            if(originKey == keyarr[j]){
+        int j = 0;
+        for (j = 0; j < numCPUKeys; j++)
+        {
+            if (originKey == keyarr[j])
+            {
                 break;
             }
         }
-        if(j == numCPUKeys){
+        if (j == numCPUKeys)
+        {
             return;
         }
         int fluidIndex = GetFluidTypeIndexFromID((int)particleOut.type);
         FluidParam fparams = fluidPs[fluidIndex];
         ScalingFactors sFactors = scalingFacts[fluidIndex];
 
-        
+
         float sqrRadius = fparams.smoothingRadius * fparams.smoothingRadius;
         float density = 0;
         float nearDensity = 0;
@@ -146,21 +150,21 @@ public struct CPUDensityCalcAoS : IJobParallelFor
         {
             uint hash = HashCell2D(originCell + offsets2D[i]);
             uint key = KeyFromHash(hash, numParticles);
-            uint currIndex =spatialOffsets[(int) key];
+            uint currIndex = spatialOffsets[(int)key];
 
-            while (currIndex != numParticles){
-                uint2 spatialHashKey = spatialIndices[(int) currIndex];
+            while (currIndex != numParticles)
+            {
+                uint2 spatialHashKey = spatialIndices[(int)currIndex];
                 currIndex++;
                 // Exit if no longer looking at correct bin
                 if (spatialHashKey[1] != key) break;
                 // Skip if hash does not match
                 if (spatialHashKey[0] != hash) continue;
 
-                uint neighbourIndex = currIndex-1;
-                Particle neighbourParticle = particles[(int) neighbourIndex];
-                if (neighbourParticle.type == FluidType.Disabled){
-                    continue;
-                }
+                uint neighbourIndex = currIndex - 1;
+                Particle neighbourParticle = particles[(int)neighbourIndex];
+                if (neighbourParticle.type == FluidType.Disabled) continue;
+                
                 int neighbourFluidIndex = GetFluidTypeIndexFromID((int)neighbourParticle.type);
                 // FluidParam neighbourData = fluidPs[neighbourFluidIndex];
                 float2 neighbourPos = neighbourParticle.predictedPosition;
@@ -171,12 +175,12 @@ public struct CPUDensityCalcAoS : IJobParallelFor
                 float interactionRadius = GetMaxSmoothingRadius(fluidIndex, neighbourFluidIndex);
                 float interactionSquare = interactionRadius * interactionRadius;
                 // Skip if not within radius
-	    		if (sqrDstToNeighbour > interactionSquare) continue;
+                if (sqrDstToNeighbour > interactionSquare) continue;
 
-	    		// Calculate density and near density
-	    		float dst = (float)Math.Sqrt(sqrDstToNeighbour);
-	    		density += SpikyKernelPow2(dst, fparams.smoothingRadius, sFactors.SpikyPow2);
-	    		nearDensity += SpikyKernelPow3(dst, fparams.smoothingRadius, sFactors.SpikyPow3);
+                // Calculate density and near density
+                float dst = (float)Math.Sqrt(sqrDstToNeighbour);
+                density += SpikyKernelPow2(dst, fparams.smoothingRadius, sFactors.SpikyPow2);
+                nearDensity += SpikyKernelPow3(dst, fparams.smoothingRadius, sFactors.SpikyPow3);
             }
         }
 
@@ -210,77 +214,79 @@ public struct CPUPressureCalcAoS : IJobParallelFor
     public NativeArray<FluidParam> fluidPs;
     [ReadOnly]
     public NativeArray<ScalingFactors> scalingFacts;
-    
+
     [ReadOnly]
     public float maxSmoothingRadius;
     [ReadOnly]
     public NativeArray<int2> offsets2D;
-    
+
     // Constants used for hashing
     const uint hashK1 = 15823;
     const uint hashK2 = 9737333;
-    
+
     // Convert floating point position into an integer cell coordinate
     public int2 GetCell2D(float2 position, float radius)
     {
-    	int2 temp = new int2(0,0);
+        int2 temp = new int2(0, 0);
         temp[0] = (int)Math.Floor(position[0] / radius);
         temp[1] = (int)Math.Floor(position[1] / radius);
         return temp;
     }
-    
+
     // Hash cell coordinate to a single unsigned integer
     public uint HashCell2D(int2 cell)
     {
-    	cell = (int2)(uint2)cell;
-    	uint a = (uint)(cell.x * hashK1);
-    	uint b = (uint)(cell.y * hashK2);
-    	return (a + b);
+        cell = (int2)(uint2)cell;
+        uint a = (uint)(cell.x * hashK1);
+        uint b = (uint)(cell.y * hashK2);
+        return (a + b);
     }
-    
+
     public uint KeyFromHash(uint hash, uint tableSize)
     {
-    	return hash % tableSize;
+        return hash % tableSize;
     }
 
     public float DerivativeSpikyPow3(float dst, float radius, float val)
     {
-    	if (dst <= radius)
-    	{
-    		float v = radius - dst;
-    		return -v * v * val;
-    	}
-    	return 0;
+        if (dst <= radius)
+        {
+            float v = radius - dst;
+            return -v * v * val;
+        }
+        return 0;
     }
 
     public float DerivativeSpikyPow2(float dst, float radius, float val)
     {
-    	if (dst <= radius)
-    	{
-    		float v = radius - dst;
-    		return -v * val;
-    	}
-    	return 0;
+        if (dst <= radius)
+        {
+            float v = radius - dst;
+            return -v * val;
+        }
+        return 0;
     }
 
     float PressureFromDensity(float density, float targetDensity, float pressureMultiplier)
     {
-	    return (density - targetDensity) * pressureMultiplier;
+        return (density - targetDensity) * pressureMultiplier;
     }
 
     float NearPressureFromDensity(float nearDensity, float nearPressureMultiplier)
     {
-	    return nearPressureMultiplier * nearDensity;
+        return nearPressureMultiplier * nearDensity;
     }
-    public float Dot(float2 A, float2 B){
+    public float Dot(float2 A, float2 B)
+    {
 
-		return (A.x * B.x) + (A.y * B.y);
-	}
+        return (A.x * B.x) + (A.y * B.y);
+    }
 
-    int GetFluidTypeIndexFromID(int fluidID){
+    int GetFluidTypeIndexFromID(int fluidID)
+    {
         for (int i = 0; i < fluidPs.Length; i++)
         {
-            if ((int) fluidPs[i].fluidType == fluidID)
+            if ((int)fluidPs[i].fluidType == fluidID)
             {
                 return i;
             }
@@ -291,20 +297,22 @@ public struct CPUPressureCalcAoS : IJobParallelFor
     public void Execute(int index)
     {
         Particle particleOut = particles[index];
-        if(particleOut.type == FluidType.Disabled){
-            return;
-        }
+        if (particleOut.type == FluidType.Disabled) return;
+        
         float2 pos = particles[index].predictedPosition;
         int2 originCell = GetCell2D(pos, maxSmoothingRadius);
         uint originHash = HashCell2D(originCell);
         uint originKey = KeyFromHash(originHash, numParticles);
-        int j=0;
-        for(j=0; j<numCPUKeys; j++){
-            if(originKey == keyarr[j]){
+        int j = 0;
+        for (j = 0; j < numCPUKeys; j++)
+        {
+            if (originKey == keyarr[j])
+            {
                 break;
             }
         }
-        if(j == numCPUKeys){
+        if (j == numCPUKeys)
+        {
             return;
         }
         int fluidIndex = GetFluidTypeIndexFromID((int)particleOut.type);
@@ -312,66 +320,65 @@ public struct CPUPressureCalcAoS : IJobParallelFor
         ScalingFactors sFactors = scalingFacts[fluidIndex];
 
         float density = particles[index].density[0];
-	    float densityNear = particles[index].density[1];
-	    float pressure = PressureFromDensity(density, fParams.targetDensity, fParams.pressureMultiplier);
-	    float nearPressure = NearPressureFromDensity(densityNear, fParams.nearPressureMultiplier);
-	    float2 pressureForce = 0;
-    
-	    //float2 pos = particles[index].predictedPosition;
-	    //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-	    float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
+        float densityNear = particles[index].density[1];
+        float pressure = PressureFromDensity(density, fParams.targetDensity, fParams.pressureMultiplier);
+        float nearPressure = NearPressureFromDensity(densityNear, fParams.nearPressureMultiplier);
+        float2 pressureForce = 0;
 
-	    // Neighbour search
-	    for (int i = 0; i < 9; i ++)
-	    {
-	    	uint hash = HashCell2D(originCell + offsets2D[i]);
-	    	uint key = KeyFromHash(hash, numParticles);
-	    	uint currIndex = spatialOffsets[(int) key];
+        //float2 pos = particles[index].predictedPosition;
+        //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+        float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
 
-	    	while (currIndex < numParticles)
-	    	{
-	    		uint2 spatialHashKey = spatialIndices[(int) currIndex];
-	    		currIndex++;
-	    		// Exit if no longer looking at correct bin
-	    		if (spatialHashKey[1] != key) break;
-        		// Skip if hash does not match
+        // Neighbour search
+        for (int i = 0; i < 9; i++)
+        {
+            uint hash = HashCell2D(originCell + offsets2D[i]);
+            uint key = KeyFromHash(hash, numParticles);
+            uint currIndex = spatialOffsets[(int)key];
+
+            while (currIndex < numParticles)
+            {
+                uint2 spatialHashKey = spatialIndices[(int)currIndex];
+                currIndex++;
+                // Exit if no longer looking at correct bin
+                if (spatialHashKey[1] != key) break;
+                // Skip if hash does not match
                 if (spatialHashKey[0] != hash) continue;
 
-	    		int neighbourIndex = (int) currIndex-1;
-	    		// Skip if looking at self
-	    		if (neighbourIndex == index) continue;
+                int neighbourIndex = (int)currIndex - 1;
+                // Skip if looking at self
+                if (neighbourIndex == index) continue;
 
                 Particle neighbourParticle = particles[neighbourIndex];
-                if(neighbourParticle.type == FluidType.Disabled){
-                    continue;
-                }
+                if (neighbourParticle.type == FluidType.Disabled) continue;
+                
                 FluidParam neighbourParams = fluidPs[GetFluidTypeIndexFromID((int)neighbourParticle.type)];
-	    		float2 neighbourPos = particles[neighbourIndex].predictedPosition;
-	    		float2 offsetToNeighbour = neighbourPos - pos;
-	    		float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
+                float2 neighbourPos = particles[neighbourIndex].predictedPosition;
+                float2 offsetToNeighbour = neighbourPos - pos;
+                float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
 
-	    		// Skip if not within radius
-	    		if (sqrDstToNeighbour > sqrRadius) continue;
+                // Skip if not within radius
+                if (sqrDstToNeighbour > sqrRadius) continue;
 
-	    		// Calculate pressure force
-	    		float dst = (float)Math.Sqrt(sqrDstToNeighbour);
-	    		float2 dirToNeighbour = dst > 0 ? (offsetToNeighbour / dst) : new float2(0, 1);
+                // Calculate pressure force
+                float dst = (float)Math.Sqrt(sqrDstToNeighbour);
+                float2 dirToNeighbour = dst > 0 ? (offsetToNeighbour / dst) : new float2(0, 1);
 
-	    		float neighbourDensity = particles[neighbourIndex].density[0];
-	    		float neighbourNearDensity = particles[neighbourIndex].density[1];
-	    		float neighbourPressure = PressureFromDensity(neighbourDensity, neighbourParams.targetDensity, neighbourParams.pressureMultiplier);
-	    		float neighbourNearPressure = NearPressureFromDensity(neighbourNearDensity, neighbourParams.nearPressureMultiplier);
+                float neighbourDensity = particles[neighbourIndex].density[0];
+                float neighbourNearDensity = particles[neighbourIndex].density[1];
+                float neighbourPressure = PressureFromDensity(neighbourDensity, neighbourParams.targetDensity, neighbourParams.pressureMultiplier);
+                float neighbourNearPressure = NearPressureFromDensity(neighbourNearDensity, neighbourParams.nearPressureMultiplier);
 
-	    		float sharedPressure = (pressure + neighbourPressure) * 0.5F;
-	    		float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5F;
+                float sharedPressure = (pressure + neighbourPressure) * 0.5F;
+                float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5F;
 
-	    		pressureForce += dirToNeighbour * (DerivativeSpikyPow2(dst, fParams.smoothingRadius, sFactors.SpikyPow2Derivative) * sharedPressure / neighbourDensity);
-	    		pressureForce += dirToNeighbour * (DerivativeSpikyPow3(dst, fParams.smoothingRadius, sFactors.SpikyPow3Derivative) * sharedNearPressure / neighbourNearDensity);
-	    	}
-	    }
+                pressureForce += dirToNeighbour * (DerivativeSpikyPow2(dst, fParams.smoothingRadius, sFactors.SpikyPow2Derivative) * sharedPressure / neighbourDensity);
+                pressureForce += dirToNeighbour * (DerivativeSpikyPow3(dst, fParams.smoothingRadius, sFactors.SpikyPow3Derivative) * sharedNearPressure / neighbourNearDensity);
+            }
+        }
 
-	    float2 acceleration = pressureForce / density;
-	    particleOut.velocity.x += acceleration.x * deltaTime;
+        float2 acceleration = pressureForce / density;
+        particleOut.velocity.x += acceleration.x * deltaTime;
         particleOut.velocity.y += acceleration.y * deltaTime;
         pressureOut[index] = particleOut;
     }
@@ -401,58 +408,60 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
     public NativeArray<FluidParam> fluidPs;
     [ReadOnly]
     public NativeArray<ScalingFactors> scalingFacts;
-    
+
     [ReadOnly]
     public float maxSmoothingRadius;
     [ReadOnly]
     public NativeArray<int2> offsets2D;
-    
+
     // Constants used for hashing
     const uint hashK1 = 15823;
     const uint hashK2 = 9737333;
-    
+
     // Convert floating point position into an integer cell coordinate
     public int2 GetCell2D(float2 position, float radius)
     {
-    	int2 temp = new int2(0,0);
+        int2 temp = new int2(0, 0);
         temp[0] = (int)Math.Floor(position[0] / radius);
         temp[1] = (int)Math.Floor(position[1] / radius);
         return temp;
     }
-    
+
     // Hash cell coordinate to a single unsigned integer
     public uint HashCell2D(int2 cell)
     {
-    	cell = (int2)(uint2)cell;
-    	uint a = (uint)(cell.x * hashK1);
-    	uint b = (uint)(cell.y * hashK2);
-    	return (a + b);
+        cell = (int2)(uint2)cell;
+        uint a = (uint)(cell.x * hashK1);
+        uint b = (uint)(cell.y * hashK2);
+        return (a + b);
     }
-    
+
     public uint KeyFromHash(uint hash, uint tableSize)
     {
-    	return hash % tableSize;
+        return hash % tableSize;
     }
 
     public float SmoothingKernelPoly6(float dst, float radius, float val)
     {
-    	if (dst < radius)
-    	{
-    		float v = radius * radius - dst * dst;
-    		return v * v * v * val;
-    	}
-    	return 0;
+        if (dst < radius)
+        {
+            float v = radius * radius - dst * dst;
+            return v * v * v * val;
+        }
+        return 0;
     }
 
-    public float Dot(float2 A, float2 B){
+    public float Dot(float2 A, float2 B)
+    {
 
-		return (A.x * B.x) + (A.y * B.y);
-	}
+        return (A.x * B.x) + (A.y * B.y);
+    }
 
-    int GetFluidTypeIndexFromID(int fluidID){
+    int GetFluidTypeIndexFromID(int fluidID)
+    {
         for (int i = 0; i < fluidPs.Length; i++)
         {
-            if ((int) fluidPs[i].fluidType == fluidID)
+            if ((int)fluidPs[i].fluidType == fluidID)
             {
                 return i;
             }
@@ -462,20 +471,22 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
     public void Execute(int index)
     {
         Particle particleOut = particles[index];
-        if(particleOut.type == FluidType.Disabled){
-            return;
-        }
+        if (particleOut.type == FluidType.Disabled) return;
+        
         float2 pos = particles[index].predictedPosition;
         int2 originCell = GetCell2D(pos, maxSmoothingRadius);
         uint originHash = HashCell2D(originCell);
         uint originKey = KeyFromHash(originHash, numParticles);
-        int j=0;
-        for(j=0; j<numCPUKeys; j++){
-            if(originKey == keyarr[j]){
+        int j = 0;
+        for (j = 0; j < numCPUKeys; j++)
+        {
+            if (originKey == keyarr[j])
+            {
                 break;
             }
         }
-        if(j == numCPUKeys){
+        if (j == numCPUKeys)
+        {
             return;
         }
         int fluidIndex = GetFluidTypeIndexFromID((int)particleOut.type);
@@ -485,54 +496,53 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
         if (fParams.viscosityStrength == 0) // Skipping particles without viscosity
             return;
 
-        if(particleOut.density.x > fParams.targetDensity * 32f) // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
+        if (particleOut.density.x > fParams.targetDensity * 32f) // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
             return;
-        
+
         //float2 pos = particleOut.predictedPosition;
-	    //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-	    float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
+        //int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+        float sqrRadius = fParams.smoothingRadius * fParams.smoothingRadius;
 
-	    float2 viscosityForce = 0;
-	    float2 velocity = particleOut.velocity;
+        float2 viscosityForce = 0;
+        float2 velocity = particleOut.velocity;
 
-	    for (int i = 0; i < 9; i ++)
-	    {
-	    	uint hash = HashCell2D(originCell + offsets2D[i]);
-	    	int key = (int) KeyFromHash(hash, numParticles);
-	    	int currIndex = (int) spatialOffsets[key];
+        for (int i = 0; i < 9; i++)
+        {
+            uint hash = HashCell2D(originCell + offsets2D[i]);
+            int key = (int)KeyFromHash(hash, numParticles);
+            int currIndex = (int)spatialOffsets[key];
 
-	    	while (currIndex < numParticles)
-	    	{
-	    		uint2 spatialHashKey = spatialIndices[currIndex];
-	    		currIndex ++;
-	    		// Exit if no longer looking at correct bin
-	    		if (spatialHashKey[1] != key) break;
+            while (currIndex < numParticles)
+            {
+                uint2 spatialHashKey = spatialIndices[currIndex];
+                currIndex++;
+                // Exit if no longer looking at correct bin
+                if (spatialHashKey[1] != key) break;
                 // Skip if hash does not match
                 if (spatialHashKey[0] != hash) continue;
 
                 int neighbourIndex = (int)currIndex - 1;
-	    		// Skip if looking at self
-	    		if (neighbourIndex == index) continue;
+                // Skip if looking at self
+                if (neighbourIndex == index) continue;
 
                 Particle neighbourParticle = particles[neighbourIndex];
-                if(neighbourParticle.type == FluidType.Disabled){
-                    continue;
-                }
+                if (neighbourParticle.type == FluidType.Disabled) continue;
+                
                 //FluidParam neighbourParams = fluidPs[((int) neighbourParticle.type) - 1];
-	    		float2 neighbourPos = particles[neighbourIndex].predictedPosition;
-	    		float2 offsetToNeighbour = neighbourPos - pos;
-	    		float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
+                float2 neighbourPos = particles[neighbourIndex].predictedPosition;
+                float2 offsetToNeighbour = neighbourPos - pos;
+                float sqrDstToNeighbour = Dot(offsetToNeighbour, offsetToNeighbour);
 
-	    		// Skip if not within radius
-	    		if (sqrDstToNeighbour > sqrRadius) continue;
+                // Skip if not within radius
+                if (sqrDstToNeighbour > sqrRadius) continue;
 
-	    		float dst = (float) Math.Sqrt(sqrDstToNeighbour);
-	    		float2 neighbourVelocity = particles[neighbourIndex].velocity;
-	    		viscosityForce += (neighbourVelocity - velocity) * SmoothingKernelPoly6(dst, fParams.smoothingRadius, sFactors.Poly6);
-	    	}
+                float dst = (float)Math.Sqrt(sqrDstToNeighbour);
+                float2 neighbourVelocity = particles[neighbourIndex].velocity;
+                viscosityForce += (neighbourVelocity - velocity) * SmoothingKernelPoly6(dst, fParams.smoothingRadius, sFactors.Poly6);
+            }
 
-	    }
-	    particleOut.velocity.x += viscosityForce.x * fParams.viscosityStrength * deltaTime;
+        }
+        particleOut.velocity.x += viscosityForce.x * fParams.viscosityStrength * deltaTime;
         particleOut.velocity.y += viscosityForce.y * fParams.viscosityStrength * deltaTime;
         viscosityOut[index] = particleOut;
     }
@@ -571,7 +581,7 @@ public struct CPUViscosityCalcAoS : IJobParallelFor
 //     public NativeArray<float2> densitiesBuffer;
 //     public NativeArray<float2> velocitiesBuffer;
 //     public NativeArray<int2> offsets2DBuffer;
-    
+
 // }
 
 public class CPUParticleKernelAoS
