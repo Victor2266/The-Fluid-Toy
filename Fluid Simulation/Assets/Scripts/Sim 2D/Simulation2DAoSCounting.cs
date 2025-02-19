@@ -56,16 +56,16 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public bool enableScrolling = false;
     private float targetInteractionRadius;
     private float smoothVelocity;
-    
+
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
     // For the spatial subdivision to work we use the largest smoothing radius for the its grid
     // By manually selecting the fluid types you can finetune the grid size
-    [Tooltip("You should always manually select fluids types, otherwise it will grab all the fluids in the resources folder which is less efficient")] 
+    [Tooltip("You should always manually select fluids types, otherwise it will grab all the fluids in the resources folder which is less efficient")]
     [SerializeField] private bool manuallySelectFluidTypes;
 
-    [Tooltip("THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD")] 
+    [Tooltip("THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD")]
     [SerializeField] private bool updateFluidsEveryFrame = false; // THIS IS FOR DEBUGGING, MAKE SURE TO DISABLE IF NOT NEEDED, HAS PERFORMANCE OVERHEAD
     private bool updateFluidsNextFrame = false; // This can be used to trigger a fluid list update once
     private float maxSmoothingRadius = 0f;
@@ -258,16 +258,16 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numParticles", numParticles);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetInt("spawnRate", (int)spawnRate);
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
-        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1) );
+        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint)(spatialIndices.count - 1));
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
         display = GetComponent<IParticleDisplay>();
-        display.Init(this);  
+        display.Init(this);
     }
 
     void Update()
@@ -281,7 +281,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         {
             // Accumulate time, but cap it to prevent spiral of death
             accumulatedTime += Mathf.Min(Time.deltaTime, MAX_DELTA_TIME);
-            
+
             // Run as many fixed updates as necessary to catch up
             // When the FPS is low then it will run more times to catch up
             // When the FPS is high then it will run less times
@@ -290,15 +290,17 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 RunSimulationFrame(FIXED_TIME_STEP); // This way the simulation steps are consistent
                 accumulatedTime -= FIXED_TIME_STEP;
             }
-        } 
+        }
         // In variable timestep mode, the delta time can vary, which slightly effects physics consistency across framerates
         // The number of simulation steps varies depending on the framerate 
         // Tabbing out has been fixed so it won't cause issues
         // This seems to give smoother results than fixed timestep above 120fps.
-        else if (!fixedTimeStep && frameCounter > 10)  
+        else if (!fixedTimeStep && frameCounter > 10)
         {
             RunSimulationFrame(Time.deltaTime);
-        } else{
+        }
+        else
+        {
             // Use custom frame counter because Time.frameCount does not reset on reloads
             frameCounter++;
         }
@@ -310,14 +312,15 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
 
         UpdateColliderData();
-        
+
         if (enableScrolling)
             HandleScrollInput();
 
         if (enableHotkeys)
             HandleHotkeysInput();
 
-        if(updateFluidsNextFrame || updateFluidsEveryFrame){
+        if (updateFluidsNextFrame || updateFluidsEveryFrame)
+        {
             updateFluidsNextFrame = false;
             UpdateFluids();
         }
@@ -434,8 +437,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numDrainObjs", drainObjects.Length);
         compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("selectedFluidType", selectedFluid);
-        compute.SetInt("edgeType", (int) edgeType);
-        compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetInt("edgeType", (int)edgeType);
+        compute.SetInt("spawnRate", (int)spawnRate);
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
@@ -454,7 +457,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ApplySmoothing();
 
         float scrollDelta = Input.mouseScrollDelta.y;
-        
+
         if (scrollDelta != 0)
         {
             // Apply scroll input to target radius with exponential scaling
@@ -466,9 +469,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     void ApplySmoothing()
     {
         // Smoothly interpolate to the target radius
-        interactionRadius = Mathf.SmoothDamp(interactionRadius, 
-            targetInteractionRadius, 
-            ref smoothVelocity, 
+        interactionRadius = Mathf.SmoothDamp(interactionRadius,
+            targetInteractionRadius,
+            ref smoothVelocity,
             smoothingTime);
     }
 
@@ -479,7 +482,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         bool isPullInteraction = false;
         bool isPushInteraction = Input.GetMouseButton(1);
 
-        if (!EventSystem.current.IsPointerOverGameObject()){ // Checks for mouse click over UI
+        if (!EventSystem.current.IsPointerOverGameObject())
+        { // Checks for mouse click over UI
 
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit.collider == null) // Click wasn't over any game objects
@@ -503,11 +507,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                if (sourceObjects.Length == 0){
+                if (sourceObjects.Length == 0)
+                {
                     uint[] atomicCounter = { 0, frameCounter++ };
                     atomicCounterBuffer.SetData(atomicCounter);
                 }
-                
+
             }
             else if (isPushInteraction)
             {
@@ -515,7 +520,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             }
         }
 
-        compute.SetInt("brushType", (int) brushState);
+        compute.SetInt("brushType", (int)brushState);
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
         compute.SetFloat("interactionInputRadius", interactionRadius);
@@ -528,7 +533,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
-            Particle p = new Particle {
+            Particle p = new Particle
+            {
                 position = spawnData.positions[i],
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
@@ -568,7 +574,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
     }
 
-    void UpdateFluids(){
+    void UpdateFluids()
+    {
         for (int i = 0; i < fluidDataArray.Length; i++)
         {
             fluidParamArr[i] = fluidDataArray[i].getFluidParams();
@@ -602,14 +609,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public void ReleaseComputeBuffers()
     {
-        try 
+        try
         {
             ComputeHelper.Release(
                 fluidDataBuffer,
                 ScalingFactorsBuffer,
                 particleBuffer,
                 sortedParticleBuffer,
-                spatialIndices, 
+                spatialIndices,
                 spatialOffsets,
                 sortedIndices,
                 boxCollidersBuffer,
@@ -623,7 +630,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             if (gpuSort != null)
                 gpuSort.Release();
 
-            if(spatialOffsetsCalc != null)
+            if (spatialOffsetsCalc != null)
                 spatialOffsetsCalc = null;
         }
         catch (System.Exception e)
@@ -636,7 +643,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         Gizmos.color = new Color(0, 1, 0, 0.4f);
         Gizmos.DrawWireCube(Vector2.zero, boundsSize);
-        
+
         // Draw all box colliders
         if (boxColliders != null)
         {
@@ -693,11 +700,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     //
     //
 
-    public void setEdgeType(int edgeTypeIndex){
+    public void setEdgeType(int edgeTypeIndex)
+    {
         edgeType = (EdgeType)edgeTypeIndex;
     }
 
-    public void setSelectedFluid(int fluidTypeIndex){
+    public void setSelectedFluid(int fluidTypeIndex)
+    {
         selectedFluid = fluidTypeIndex;
     }
 
@@ -763,7 +772,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         for (int i = 0; i < numParticles; i++)
         {
-            types[i] = (FluidType) particleData[i].type;
+            types[i] = (FluidType)particleData[i].type;
         }
         return types;
     }
@@ -777,10 +786,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         return interactionRadius;
     }
 
-    public SourceObjectInitializer GetFirstSourceObject(){
+    public SourceObjectInitializer GetFirstSourceObject()
+    {
         return sourceObjects[0];
     }
-    public void SetFirstSourceObject(SourceObjectInitializer source){
+    public void SetFirstSourceObject(SourceObjectInitializer source)
+    {
         sourceObjects[0] = source;
     }
 }
