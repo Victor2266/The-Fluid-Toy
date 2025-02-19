@@ -56,3 +56,12 @@ public struct OrientedBox //24 bytes total
     public Vector2 size;
     public Vector2 zLocal;
 };
+
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 16)]
+public struct CPUParticleData{
+    public uint CPUTargetParticleCount; // 4
+    public uint CPUAdjacentParticleCount; // 4
+    public uint CPUTargetHashCount; // 4
+    public uint CPUAdjacentHashCount; // 4
+};
