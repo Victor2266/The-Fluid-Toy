@@ -9,13 +9,13 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 	ComputeBuffer argsBuffer;
 	Bounds bounds;
 	Texture2DArray gradientArray;
-    [SerializeField] private int gradientResolution = 64;
+	[SerializeField] private int gradientResolution = 64;
 	ComputeBuffer visualParamsBuffer;
-    public Dictionary<FluidType, Texture2D> gradientTextures;
+	public Dictionary<FluidType, Texture2D> gradientTextures;
 
 	public void Init(Simulation2DAoSCounting sim)
 	{
-        material = new Material(shader);
+		material = new Material(shader);
 		material.SetBuffer("Particles", sim.particleBuffer);
 
 		CreateAndSetupVisualParamsBuffer(sim.fluidDataArray);
@@ -26,10 +26,10 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 
 	public void Init(Simulation2DAoS_CPUCSort sim)
 	{
-        material = new Material(shader);
+		material = new Material(shader);
 		material.SetBuffer("Particles", sim.particleBuffer);
 
-        CreateAndSetupVisualParamsBuffer(sim.fluidDataArray);
+		CreateAndSetupVisualParamsBuffer(sim.fluidDataArray);
 
 		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
@@ -88,11 +88,11 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 
 	public void ReleaseBuffers()
 	{
-		if (material != null) 
+		if (material != null)
 			Destroy(material);
-		
+
 		ComputeHelper.Release(argsBuffer, visualParamsBuffer);
-		
+
 		if (gradientTextures != null)
 		{
 			foreach (var tex in gradientTextures.Values)
@@ -106,7 +106,8 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 			Destroy(gradientArray);
 	}
 
-	private void PartialReleaseBuffers(){
+	private void PartialReleaseBuffers()
+	{
 		// Releases the buffers which are recreated each frame when updating the fluid array per frame for debugging
 		if (visualParamsBuffer != null)
 			ComputeHelper.Release(visualParamsBuffer);
@@ -124,33 +125,34 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 			Destroy(gradientArray);
 	}
 
-	public void CreateAndSetupVisualParamsBuffer(FluidData[] fluidDataArray){
+	public void CreateAndSetupVisualParamsBuffer(FluidData[] fluidDataArray)
+	{
 		// Create and set up visual parameters buffer
-        var visualParams = new FluidData.VisualParamBuffer[fluidDataArray.Length];
-        for (int i = 0; i < fluidDataArray.Length; i++)
-        {
-            visualParams[i] = fluidDataArray[i].GetVisualParams();
-        }
+		var visualParams = new FluidData.VisualParamBuffer[fluidDataArray.Length];
+		for (int i = 0; i < fluidDataArray.Length; i++)
+		{
+			visualParams[i] = fluidDataArray[i].GetVisualParams();
+		}
 		PartialReleaseBuffers();
-        visualParamsBuffer = ComputeHelper.CreateStructuredBuffer<FluidData.VisualParamBuffer>(visualParams.Length);
-        visualParamsBuffer.SetData(visualParams);
-        material.SetBuffer("VisualParamsBuffer", visualParamsBuffer);
+		visualParamsBuffer = ComputeHelper.CreateStructuredBuffer<FluidData.VisualParamBuffer>(visualParams.Length);
+		visualParamsBuffer.SetData(visualParams);
+		material.SetBuffer("VisualParamsBuffer", visualParamsBuffer);
 
-        // Set up gradient textures
-        gradientTextures = new Dictionary<FluidType, Texture2D>(); // This is later used for destroying each individual texture
-        gradientArray = new Texture2DArray(gradientResolution, 1, fluidDataArray.Length, TextureFormat.RGBA32, false);
-        
-        for (int i = 0; i < fluidDataArray.Length; i++)
-        {
-            var fluidData = fluidDataArray[i];
-            var gradientTex = new Texture2D(gradientResolution, 1, TextureFormat.RGBA32, false);
-            TextureFromGradient(ref gradientTex, gradientResolution, fluidData.visualParams.colorGradient);
-            gradientTextures[fluidData.fluidType] = gradientTex;
-            
-            // Copy to texture array
-            Graphics.CopyTexture(gradientTex, 0, gradientArray, i);
-        }
-        
-        material.SetTexture("_GradientArray", gradientArray);
+		// Set up gradient textures
+		gradientTextures = new Dictionary<FluidType, Texture2D>(); // This is later used for destroying each individual texture
+		gradientArray = new Texture2DArray(gradientResolution, 1, fluidDataArray.Length, TextureFormat.RGBA32, false);
+
+		for (int i = 0; i < fluidDataArray.Length; i++)
+		{
+			var fluidData = fluidDataArray[i];
+			var gradientTex = new Texture2D(gradientResolution, 1, TextureFormat.RGBA32, false);
+			TextureFromGradient(ref gradientTex, gradientResolution, fluidData.visualParams.colorGradient);
+			gradientTextures[fluidData.fluidType] = gradientTex;
+
+			// Copy to texture array
+			Graphics.CopyTexture(gradientTex, 0, gradientArray, i);
+		}
+
+		material.SetTexture("_GradientArray", gradientArray);
 	}
 }
