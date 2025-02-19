@@ -395,8 +395,6 @@ void HandleDrainCollision(inout Particle particle, OrientedBox drain)
 
 void HandleCollisions(inout Particle particle)
 {
-	// if (particle.type == 0) return; // Skip disabled, this already gets checked in UpdatePositions()
-
     float2 pos = particle.position;
     float2 vel = particle.velocity;
 	FluidData fluidData = FluidDataSet[particle.type - 1];
@@ -885,12 +883,12 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 			);
 		float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
 		
-		//deltaTemp += (tBox.temperature - temp) * tBox.conductivity * minDistance / fluidData.smoothingRadius;  // This one is a linear relationship 0 to 1
+		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * minDistance / fluidData.smoothingRadius;  // This one is a linear relationship 0 to 1
 
 		// This TemperatureKernel leads to a slightly strange behavior where the outside of a thermal box will heat up faster than the inside
 		// This is because the TemperatureKernel returns a number between 0 and 10.39 for a smoothing radius of 0.35 (it's not 0 to 1)
 		// So for particles approaching the surface of the thermal box this acts as a conductivity amplifier 
-		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
+		//deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
 	}
 
 	// Add entropy contribution
