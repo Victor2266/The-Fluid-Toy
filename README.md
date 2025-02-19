@@ -60,7 +60,8 @@
   - Particles have individual temperatures
   - When close together particle temperatures will diffuse and reach equilibrium temp at a rate determined by the particle type's diffusivity
   - Certain particle types will lose temperature to the ambient environment based on entropy values
-  - Temperature is used for certain visual shaders
+  - Temperature is used for certain visual shaders such as for Lava and Fire.
+  - Thermal Boxes will heat/cool particles which touch them to a set temperature, the speed can be controlled by the box's thermal conductivity.
 - **State Change Behaviors**:
   - Particles can change states after reaching temperture thresholds
     
