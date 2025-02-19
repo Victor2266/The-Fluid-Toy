@@ -57,7 +57,10 @@
   - *Reversed*
   - *Zero*
 - **Temperature Simulation**:
-  - Particles have temperature which they use for visual shaders
+  - Particles have individual temperatures
+  - When close together particle temperatures will diffuse and reach equilibrium temp at a rate determined by the particle type's diffusivity
+  - Certain particle types will lose temperature to the ambient environment based on entropy values
+  - Temperature is used for certain visual shaders
 - **State Change Behaviors**:
   - Particles can change states after reaching temperture thresholds
     
