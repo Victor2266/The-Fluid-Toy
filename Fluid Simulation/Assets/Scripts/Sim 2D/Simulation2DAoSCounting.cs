@@ -189,6 +189,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 fluidParamArr[i] = fluidDataArray[i].getFluidParams();
                 //fluidParamArr[i].fluidType = (FluidType)i + 1;
                 scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
+                //Debug.Log((int) fluidParamArr[i].fluidType);
             }
         }
 

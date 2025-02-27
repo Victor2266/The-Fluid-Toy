@@ -11,8 +11,7 @@ public enum FluidType // This is the identifier (ID) for each fluid, Must match 
     Fire,
     BouncyBall,
     Beer,
-    Oil,
-    Oil2,
+    Oil
 }
 
 public enum VisualStyle
@@ -67,7 +66,7 @@ public struct ScalingFactors
 };
 
 [System.Serializable]
-public struct VisualParameters
+public struct VisualParameters //This is just for the inspector
 {
     public VisualStyle style;
     public Gradient colorGradient;
@@ -187,11 +186,12 @@ public class FluidData : ScriptableObject
         return scalingFactors;
     }
 
-    // Struct for passing visual data to compute shader
+    // Struct for passing visual data to visual shader
     [System.Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct VisualParamBuffer
     {
+        public int fluidType;
         public int visualStyle;
         public float visualScale;
         public float baseOpacity;
@@ -207,6 +207,7 @@ public class FluidData : ScriptableObject
     {
         return new VisualParamBuffer
         {
+            fluidType = (int) fluidType,
             visualStyle = (int)visualParams.style,
             visualScale = visualParams.visualScale,
             baseOpacity = visualParams.baseOpacity,

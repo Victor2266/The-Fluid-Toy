@@ -397,7 +397,8 @@ void HandleCollisions(inout Particle particle)
 {
     float2 pos = particle.position;
     float2 vel = particle.velocity;
-	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
+	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+	FluidData fluidData = FluidDataSet[fluidIndex];
 	float particleRadius = (fluidData.smoothingRadius) * 0.5;
 	bool particleDisabled = false;
 
@@ -582,7 +583,8 @@ void ExternalForces(uint3 id : SV_DispatchThreadID)
 		return;
 	}
 
-	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
+	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+	FluidData fluidData = FluidDataSet[fluidIndex];
 	
     // External forces (gravity and input interaction)
     particle.velocity += ExternalForces(particle.position, particle.velocity, fluidData.gravity) * deltaTime;
