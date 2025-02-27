@@ -147,7 +147,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     ComputeBuffer keyarrbuffer;
     public uint numCPUKeys = 10;
     private bool cpuflip = false;
-    private uint frameDelay = 50;
     void Start()
     {
         // Debug.Log(System.Runtime.InteropServices.Marshal.SizeOf(typeof(SourceObjectInitializer))); //This prints the size of the typeof(struct)
@@ -340,10 +339,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
             for (int i = 0; i < iterationsPerFrame; i++)
             {
-                if(frameDelay > 0){
-                    frameDelay--;
-                }
-                if(toggleCPUComputing && frameDelay == 0){
+                if(toggleCPUComputing){
                     if(!cpuflip){
                         cpuflip = true;
                         RunSimulationStepGPU();
@@ -354,9 +350,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
                 }else{
                     cpuflip = false;
                     RunSimulationStep();
-                    SimulationStepCompleted?.Invoke();
+                    
                 }
-                
+                SimulationStepCompleted?.Invoke();
             }
         }
     }
@@ -496,7 +492,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         if (toggleCPUComputing)
         {
             CPUKernelAOS.deltaTime = deltaTime;
-            compute.SetInt("numCPUKeys", (int)numCPUKeys);
+            if(cpuflip){
+                compute.SetInt("numCPUKeys", (int)numCPUKeys);
+            }else{
+                compute.SetInt("numCPUKeys", 0);
+            }
+            
         }
         else
         {
