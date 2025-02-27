@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public enum FluidType // This is the identifier (ID) for each fluid, Must match the file name exatly.
+public enum FluidType // This is the identifier (ID) for each fluid, Must match the file name exatly. Also check that the buttons set the correct ID #.
 {
     Disabled,
     Water,

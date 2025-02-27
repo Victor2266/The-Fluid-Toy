@@ -493,7 +493,7 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawn
 	particle.position = interactionInputPoint + offset;
 	int selectedFluidTypeIndex = GetFluidTypeIndexFromID(selectedFluidType);
 	particle.temperature = FluidDataSet[selectedFluidTypeIndex].startTemperature;
-	particle.type = selectedFluidTypeIndex + 1; // Reactivate the particle by setting it to non 0
+	particle.type = selectedFluidType; // Reactivate the particle by setting it to non 0, this should be set to the fluid type's ID
 }
 
 void HandleSourceObject(inout Particle particle){
@@ -532,7 +532,7 @@ void HandleSourceObject(inout Particle particle){
 	particle.position = spawnPos;
 	int sourceFluidTypeIndex = GetFluidTypeIndexFromID(source.fluidType);
 	particle.temperature = FluidDataSet[sourceFluidTypeIndex].startTemperature;
-	particle.type = sourceFluidTypeIndex + 1;
+	particle.type = source.fluidType;
 }
 
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
@@ -936,7 +936,7 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 		if (fluidData.boilState == 0) {
 			DisableParticle(particle);
 		} else {
-			particle.type = GetFluidTypeIndexFromID(fluidData.boilState) + 1;
+			particle.type = fluidData.boilState;
 		}
 	}
 	else if (fluidData.freezeState != particle.type && particle.temperature <= fluidData.freezeTemp)
@@ -944,7 +944,7 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 		if (fluidData.freezeState == 0) {
 			DisableParticle(particle);
 		} else {
-			particle.type = GetFluidTypeIndexFromID(fluidData.freezeState) + 1;
+			particle.type = fluidData.freezeState;
 		}
 	}
 	Particles[id.x] = particle; // Writeback
