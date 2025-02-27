@@ -937,6 +937,8 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 			DisableParticle(particle);
 		} else {
 			particle.type = fluidData.boilState;
+			FluidData boilTypeData = FluidDataSet[GetFluidTypeIndexFromID(fluidData.boilState)];
+			particle.temperature = boilTypeData.startTemperature;
 		}
 	}
 	else if (fluidData.freezeState != particle.type && particle.temperature <= fluidData.freezeTemp)
@@ -945,6 +947,8 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 			DisableParticle(particle);
 		} else {
 			particle.type = fluidData.freezeState;
+			FluidData freezeTypeData = FluidDataSet[GetFluidTypeIndexFromID(fluidData.freezeState)];
+			particle.temperature = freezeTypeData.startTemperature;
 		}
 	}
 	Particles[id.x] = particle; // Writeback
