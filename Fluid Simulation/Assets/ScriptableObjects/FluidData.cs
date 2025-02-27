@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public enum FluidType // This is the identifier (ID) for each fluid, don't change their orders randomly. Must match the file name exatly.
+public enum FluidType // This is the identifier (ID) for each fluid, Must match the file name exatly.
 {
     Disabled,
     Water,
@@ -10,7 +10,9 @@ public enum FluidType // This is the identifier (ID) for each fluid, don't chang
     Lava,
     Fire,
     BouncyBall,
-    Beer
+    Beer,
+    Oil,
+    Oil2,
 }
 
 public enum VisualStyle

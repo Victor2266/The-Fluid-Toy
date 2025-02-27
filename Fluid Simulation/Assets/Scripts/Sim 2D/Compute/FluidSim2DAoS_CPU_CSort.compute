@@ -401,7 +401,7 @@ void HandleCollisions(inout Particle particle)
 {
     float2 pos = particle.position;
     float2 vel = particle.velocity;
-	FluidData fluidData = FluidDataSet[particle.type - 1];
+	FluidData fluidData = FluidDataSet[GetFluidTypeIndexFromID(particle.type)];
 	float particleRadius = (fluidData.smoothingRadius) * 0.5;
 	bool particleDisabled = false;
 
