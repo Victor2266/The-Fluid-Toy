@@ -132,8 +132,7 @@ public class LevelManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 
-        // You can add level transition logic here
-        SceneManager.LoadScene("Main Menu", LoadSceneMode.Single); // Uncomment and modify as needed
+        SceneManager.LoadSceneAsync("Main Menu", LoadSceneMode.Single);
     }
 
     protected void OnGUI()

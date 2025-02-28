@@ -149,7 +149,7 @@ public class MainMenuManager : MonoBehaviour
         // Save current game state if needed
         PlayerPrefs.Save();
         // Load the level scene
-        SceneManager.LoadScene($"Level_{levelNumber}");
+        SceneManager.LoadSceneAsync($"Level_{levelNumber}");
     }
 
     public void LoadSandbox()
@@ -158,7 +158,7 @@ public class MainMenuManager : MonoBehaviour
         // Save current game state if needed
         PlayerPrefs.Save();
         // Load the level scene
-        SceneManager.LoadScene($"Sandbox");
+        SceneManager.LoadSceneAsync($"Sandbox");
     }
     
     public void QuitGame()
