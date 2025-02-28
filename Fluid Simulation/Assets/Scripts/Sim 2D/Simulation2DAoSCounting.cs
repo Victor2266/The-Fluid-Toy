@@ -215,6 +215,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new SourceObject[sourceObjects.Length];
         drainObjectData = new OrientedBox[drainObjects.Length];
+        if (thermalBoxes == null){
+            thermalBoxes = new ThermalBoxInitializer[0]; // I think .Length wasn't working on null object types?
+        }
         thermalBoxData = new ThermalBox[thermalBoxes.Length];
 
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
