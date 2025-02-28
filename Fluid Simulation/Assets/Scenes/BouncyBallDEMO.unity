@@ -2147,11 +2147,10 @@ PrefabInstance:
       propertyPath: m_text
       value: '<b>Demonstration Level</b>
 
-        This level is under construction
+        This level is used for benchmarking
 
 
-        <b>To
-        be continued...</b>'
+'
       objectReference: {fileID: 0}
     - target: {fileID: 4592926617858281530, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
@@ -2375,6 +2374,15 @@ PrefabInstance:
     - target: {fileID: 6741506092140033911, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6805873491615882965, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_text
+      value: '
+
+
+
+
+        GPU ONLY VS CPU-GPU'
       objectReference: {fileID: 0}
     - target: {fileID: 6805873491615882965, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
