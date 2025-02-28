@@ -5022,17 +5022,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259254636}
   m_CullTransparentMesh: 1
---- !u!114 &1273395972 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4244751922225421237, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
-  m_PrefabInstance: {fileID: 1514508575}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1279112962
 GameObject:
   m_ObjectHideFlags: 0
@@ -6318,10 +6307,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2319201124733936413, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
-      propertyPath: fadeBG
-      value: 
-      objectReference: {fileID: 1273395972}
     - target: {fileID: 2326675359637537668, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -6571,7 +6556,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6717680900708054078, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -6
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 6741506092140033911, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_IsActive
@@ -6581,10 +6566,7 @@ PrefabInstance:
       propertyPath: m_text
       value: '
 
-
-        Aim with your mouse!
-
-        Fill the left bar to win!'
+        Shoot the target!'
       objectReference: {fileID: 0}
     - target: {fileID: 6805873491615882965, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontSize
@@ -6600,15 +6582,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6857772092264931827, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 440
+      value: 560
       objectReference: {fileID: 0}
     - target: {fileID: 6857772092264931827, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 200
+      value: 185
       objectReference: {fileID: 0}
     - target: {fileID: 6857772092264931827, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7103300884715448159, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y

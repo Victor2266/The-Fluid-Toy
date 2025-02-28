@@ -156,9 +156,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpText: {fileID: 4592926617858281530}
   fadeBG: {fileID: 4244751922225421237}
-  fadeDuration: 0.25
+  fadeDuration: 0.5
   displayTime: 0.25
-  fadeImmediately: 0
+  fadeInOutImmediately: 0
+  FadeInOnStart: 1
+  moveBGOnStart: 1
+  moveDistance: 50
 --- !u!1 &3202040623482685304
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,9 +394,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmpText: {fileID: 6805873491615882965}
   fadeBG: {fileID: 4794217200824613676}
-  fadeDuration: 0.25
+  fadeDuration: 0.5
   displayTime: 0.25
-  fadeImmediately: 0
+  fadeInOutImmediately: 0
+  FadeInOnStart: 1
+  moveBGOnStart: 0
+  moveDistance: 50
 --- !u!1 &6741506092140033911
 GameObject:
   m_ObjectHideFlags: 0
