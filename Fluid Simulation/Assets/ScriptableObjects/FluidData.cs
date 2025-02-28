@@ -12,7 +12,8 @@ public enum FluidType // This is the identifier (ID) for each fluid, Must match 
     BouncyBall,
     Beer,
     Oil,
-    Alcohol
+    Alcohol,
+    Oil_Fire
 }
 
 public enum VisualStyle
