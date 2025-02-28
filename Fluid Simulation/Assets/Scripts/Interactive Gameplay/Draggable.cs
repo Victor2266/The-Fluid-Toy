@@ -27,7 +27,7 @@ public class Draggable : MonoBehaviour
     {
         isDragging = true;
         if (rb2d != null) {
-            rb2d.isKinematic = true;
+            rb2d.bodyType = RigidbodyType2D.Kinematic;
             rb2d.freezeRotation = true;
             rb2d.linearVelocity = Vector2.zero;
             rb2d.angularVelocity = 0f;
@@ -40,7 +40,7 @@ public class Draggable : MonoBehaviour
     {
         isDragging = false;
         if (rb2d != null) {
-            rb2d.isKinematic = false;
+            rb2d.bodyType = RigidbodyType2D.Kinematic;
             rb2d.freezeRotation = false;
         }
     }

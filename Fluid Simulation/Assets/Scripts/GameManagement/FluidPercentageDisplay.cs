@@ -26,7 +26,7 @@ public class FluidPercentageDisplay : MonoBehaviour
         // Auto-find references if not set
         if (fluidDetector == null)
         {
-            fluidDetector = FindObjectOfType<FluidDetector>();
+            fluidDetector = FindFirstObjectByType<FluidDetector>();
             if (fluidDetector == null)
             {
                 Debug.LogError("No FluidDetector found in scene!");
