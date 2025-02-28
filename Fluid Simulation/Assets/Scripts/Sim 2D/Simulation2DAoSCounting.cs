@@ -439,7 +439,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
         compute.SetInt("numDrainObjs", drainObjects.Length);
-        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
+        compute.SetInt("numThermalBoxes", Math.Max(thermalBoxes.Length, 0));
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int)edgeType);
         compute.SetInt("spawnRate", (int)spawnRate);
