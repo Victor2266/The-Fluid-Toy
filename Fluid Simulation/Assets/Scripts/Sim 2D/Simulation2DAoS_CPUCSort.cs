@@ -18,6 +18,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
     public bool enableHotkeys = false;
     public int iterationsPerFrame;
+    public float globalEntropyRate = 1f;
+    public float roomTemperature = 22f;
 
     public Vector2 boundsSize;
     public Vector2 obstacleSize;
@@ -89,6 +91,10 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     private ComputeBuffer sourceObjectBuffer;
     private ComputeBuffer drainObjectBuffer;
 
+    [Header("Thermal Boxes (Particles in this box will be brought to the box temperature)")]
+    public ThermalBoxInitializer[] thermalBoxes;
+    private ComputeBuffer thermalBoxesBuffer;
+
     // Counter Variables
     private ComputeBuffer atomicCounterBuffer;
     private uint frameCounter; // This doesn't actually update each frame, just after it is used.
@@ -96,9 +102,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     // Private Variables 
     private OrientedBox[] boxColliderData;
     private Circle[] circleColliderData;
-
     private SourceObject[] sourceObjectData;
     private OrientedBox[] drainObjectData;
+    private ThermalBox[] thermalBoxData;
 
     [Header("Particle Data")]
     // Buffers
@@ -192,7 +198,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             for (int i = 0; i < fluidDataArray.Length; i++)
             {
                 fluidParamArr[i] = fluidDataArray[i].getFluidParams();
-                fluidParamArr[i].fluidType = (FluidType)i + 1;
+                // fluidParamArr[i].fluidType = (FluidType)i + 1;
                 scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
             }
         }
@@ -219,11 +225,16 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new SourceObject[sourceObjects.Length];
         drainObjectData = new OrientedBox[drainObjects.Length];
+        if (thermalBoxes == null){
+            thermalBoxes = new ThermalBoxInitializer[0]; // I think .Length wasn't working on null object types?
+        }
+        thermalBoxData = new ThermalBox[thermalBoxes.Length];
 
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
         circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
         sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
+        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
 
         atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
 
@@ -255,24 +266,29 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
         ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
         ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel, updateStateKernel);
         ComputeHelper.SetBuffer(compute, cpuparticlebuffer, "CPUParticles", mergeCPUParticlesKernel);
         ComputeHelper.SetBuffer(compute, keyarrbuffer, "keyarr", densityKernel, pressureKernel, viscosityKernel, mergeCPUParticlesKernel);
 
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
+        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("numParticles", numParticles);
+        compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("spawnRate", (int) spawnRate);
-        compute.SetInt("numCPUKeys", (int) numCPUKeys);
+        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetFloat("roomTemperature", roomTemperature);
+        compute.SetFloat("globalEntropyRate", globalEntropyRate);
+        compute.SetInt("numCPUKeys", (int)numCPUKeys);
 
         // GPU Sort Init
-        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint) (spatialIndices.count - 1), keyarrbuffer );
+        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint)(spatialIndices.count - 1), keyarrbuffer);
         spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
 
         // Init display
         display = GetComponent<IParticleDisplay>();
-        display.Init(this);  
+        display.Init(this);
 
         //initialize local arrays
         initializeCPUKernelSettingsAoS();
@@ -289,7 +305,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         {
             // Accumulate time, but cap it to prevent spiral of death
             accumulatedTime += Mathf.Min(Time.deltaTime, MAX_DELTA_TIME);
-            
+
             // Run as many fixed updates as necessary to catch up
             // When the FPS is low then it will run more times to catch up
             // When the FPS is high then it will run less times
@@ -298,15 +314,17 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
                 RunSimulationFrame(FIXED_TIME_STEP); // This way the simulation steps are consistent
                 accumulatedTime -= FIXED_TIME_STEP;
             }
-        } 
+        }
         // In variable timestep mode, the delta time can vary, which slightly effects physics consistency across framerates
         // The number of simulation steps varies depending on the framerate 
         // Tabbing out has been fixed so it won't cause issues
         // This seems to give smoother results than fixed timestep above 120fps.
-        else if (!fixedTimeStep && frameCounter > 10)  
+        else if (!fixedTimeStep && frameCounter > 10)
         {
             RunSimulationFrame(Time.deltaTime);
-        }else{
+        }
+        else
+        {
             // Use custom frame counter because Time.frameCount does not reset on reloads
             frameCounter++;
         }
@@ -329,7 +347,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     void RunSimulationFrame(float frameTime)
     {
         // Cap the maximum deltaTime to prevent instability when tabbing out
-        float cappedFrameTime = frameTime > 1f/30f ? 1f/30f : frameTime; // Cap at 30fps equivalent
+        float cappedFrameTime = frameTime > MAX_DELTA_TIME ? MAX_DELTA_TIME : frameTime; // Cap at 30fps equivalent
 
         if (!isPaused)
         {
@@ -460,11 +478,25 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             drainObjectData[i].zLocal = (Vector2)(drain.right); // Use right vector for orientation  
         }
 
+        // Update thermal boxes
+        for (int i = 0; i < thermalBoxes.Length; i++)
+        {
+            ThermalBoxInitializer tBox = thermalBoxes[i];
+            Transform collider = tBox.transform;
+            // Modify properties directly
+            thermalBoxData[i].box.pos = collider.position;
+            thermalBoxData[i].box.size = collider.localScale;
+            thermalBoxData[i].box.zLocal = (Vector2)(collider.right); // Use right vector for orientation
+            thermalBoxData[i].temperature = tBox.temperature;
+            thermalBoxData[i].conductivity = tBox.conductivity;
+        }
+
         // Update buffers
         boxCollidersBuffer.SetData(boxColliderData);
         circleCollidersBuffer.SetData(circleColliderData);
         sourceObjectBuffer.SetData(sourceObjectData);
         drainObjectBuffer.SetData(drainObjectData);
+        thermalBoxesBuffer.SetData(thermalBoxData);
     }
 
     void UpdateSettings(float deltaTime)
@@ -475,9 +507,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
         compute.SetInt("numDrainObjs", drainObjects.Length);
+        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("selectedFluidType", selectedFluid);
-        compute.SetInt("edgeType", (int) edgeType);
-        compute.SetInt("spawnRate", (int) spawnRate);
+        compute.SetInt("edgeType", (int)edgeType);
+        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetFloat("roomTemperature", roomTemperature);
+        compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
         if (sourceObjects.Length > 0)
         {
@@ -509,7 +544,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ApplySmoothing();
 
         float scrollDelta = Input.mouseScrollDelta.y;
-        
+
         if (scrollDelta != 0)
         {
             // Apply scroll input to target radius with exponential scaling
@@ -521,9 +556,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     void ApplySmoothing()
     {
         // Smoothly interpolate to the target radius
-        interactionRadius = Mathf.SmoothDamp(interactionRadius, 
-            targetInteractionRadius, 
-            ref smoothVelocity, 
+        interactionRadius = Mathf.SmoothDamp(interactionRadius,
+            targetInteractionRadius,
+            ref smoothVelocity,
             smoothingTime);
     }
 
@@ -547,11 +582,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                if (sourceObjects.Length == 0){
+                if (sourceObjects.Length == 0)
+                {
                     uint[] atomicCounter = { 0, frameCounter++ };
                     atomicCounterBuffer.SetData(atomicCounter);
                 }
-                
+
             }
             else if (isPushInteraction)
             {
@@ -559,7 +595,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             }
         }
 
-        compute.SetInt("brushType", (int) brushState);
+        compute.SetInt("brushType", (int)brushState);
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
         compute.SetFloat("interactionInputRadius", interactionRadius);
@@ -572,7 +608,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
-            Particle p = new Particle {
+            Particle p = new Particle
+            {
                 position = spawnData.positions[i],
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
@@ -625,19 +662,20 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ScalingFactorsBuffer,
         particleBuffer,
         sortedParticleBuffer,
-        spatialIndices, 
+        spatialIndices,
         spatialOffsets,
         sortedIndices,
         boxCollidersBuffer,
         circleCollidersBuffer,
         sourceObjectBuffer,
         drainObjectBuffer,
+        thermalBoxesBuffer,
         atomicCounterBuffer,
         cpuparticlebuffer,
         keyarrbuffer
     );
 
-    gpuSort.Release();
+        gpuSort.Release();
     }
 
 
@@ -645,7 +683,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         Gizmos.color = new Color(0, 1, 0, 0.4f);
         Gizmos.DrawWireCube(Vector2.zero, boundsSize);
-        
+
         // Draw all box colliders
         if (boxColliders != null)
         {
@@ -670,6 +708,19 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             }
         }
 
+        // Draw thermal boxes
+        if (thermalBoxes != null)
+        {
+            foreach (ThermalBoxInitializer tBox in thermalBoxes)
+            {
+                Transform boxCollider = tBox.transform;
+                if (boxCollider != null)
+                {
+                    Gizmos.DrawWireCube(boxCollider.position, boxCollider.localScale);
+                }
+            }
+        }
+
         if (Application.isPlaying)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -689,11 +740,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     //
     //
 
-    public void setEdgeType(int edgeTypeIndex){
+    public void setEdgeType(int edgeTypeIndex)
+    {
         edgeType = (EdgeType)edgeTypeIndex;
     }
 
-    public void setSelectedFluid(int fluidTypeIndex){
+    public void setSelectedFluid(int fluidTypeIndex)
+    {
         selectedFluid = fluidTypeIndex;
     }
 
@@ -729,11 +782,10 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         return particleBuffer != null;
     }
-    public Particle[] GetParticles()
+    public ComputeBuffer GetParticleBuffer()
     {
-        particleBuffer.GetData(particleData);
 
-        return particleData;
+        return particleBuffer;
     }
     public float[] GetParticleTemps()
     {
@@ -781,8 +833,14 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.offsets[7] = new int2(0, -1);
         CPUKernelAOS.offsets[8] = new int2(1, -1);
 
-        CPUKernelAOS.fluidParams = new FluidParam[fluidParamArr.Length];
-        CPUKernelAOS.scalingFactors = new ScalingFactors[fluidParamArr.Length];
+        int numFluidTypes;
+        if (!manuallySelectFluidTypes)
+            numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
+        else
+            numFluidTypes = fluidDataArray.Length;
+
+        CPUKernelAOS.fluidParams = new FluidParam[numFluidTypes];
+        CPUKernelAOS.scalingFactors = new ScalingFactors[numFluidTypes];
         CPUKernelAOS.maxSmoothingRadius = maxSmoothingRadius;
         CPUKernelAOS.boxCollidersData = new OrientedBox[boxColliders.Length];
         CPUKernelAOS.circleCollidersData = new Circle[circleColliders.Length];
@@ -798,7 +856,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
     public void runCPUComputeTest()
     {
-        
+
 
         //Initialize all CPU buffers
         CPUKernelAOS.fluidParamBuffer = new NativeArray<FluidParam>(CPUKernelAOS.fluidParams.Length, Allocator.TempJob);
@@ -905,7 +963,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
         cpuparticlebuffer.SetData(CPUKernelAOS.particleResultBuffer);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: mergeCPUParticlesKernel);
-        
+
 
         CPUKernelAOS.fluidParamBuffer.Dispose();
         CPUKernelAOS.scalingFactorsBuffer.Dispose();
@@ -917,10 +975,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         CPUKernelAOS.keyarrbuffer.Dispose();
     }
 
-    public SourceObjectInitializer GetFirstSourceObject(){
+    public SourceObjectInitializer GetFirstSourceObject()
+    {
         return sourceObjects[0];
     }
-    public void SetFirstSourceObject(SourceObjectInitializer source){
+    public void SetFirstSourceObject(SourceObjectInitializer source)
+    {
         sourceObjects[0] = source;
     }
 

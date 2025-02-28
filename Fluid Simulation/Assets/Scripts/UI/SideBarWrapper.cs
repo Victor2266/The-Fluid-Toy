@@ -90,6 +90,7 @@ public class SideBarWrapper : MonoBehaviour
     {
         // Get current scene info
         Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.name);
+        // We should probably check to see that this async operation is done, but whatever.
+        SceneManager.LoadSceneAsync(currentScene.buildIndex);
     }
 }

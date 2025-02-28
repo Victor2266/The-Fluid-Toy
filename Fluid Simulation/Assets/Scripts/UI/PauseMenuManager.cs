@@ -89,7 +89,7 @@ public class PauseMenuManager : MonoBehaviour
     {
         Time.timeScale = 1f; // Ensure time scale is reset
         PlayButtonSound();
-        SceneManager.LoadScene("Main Menu"); // Make sure your main menu scene is named "MainMenu"
+        SceneManager.LoadSceneAsync("Main Menu"); // Make sure your main menu scene is named "MainMenu"
     }
 
     private void PlayButtonSound()

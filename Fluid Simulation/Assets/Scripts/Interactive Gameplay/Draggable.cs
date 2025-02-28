@@ -40,7 +40,7 @@ public class Draggable : MonoBehaviour
     {
         isDragging = false;
         if (rb2d != null) {
-            rb2d.bodyType = RigidbodyType2D.Static;
+            rb2d.bodyType = RigidbodyType2D.Dynamic;
             rb2d.freezeRotation = false;
         }
     }

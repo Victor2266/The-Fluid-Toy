@@ -14,7 +14,7 @@ Shader "Instanced/MultiFluidParticle2D"
         CGINCLUDE
         #pragma target 4.5  // Required for structured buffers
         #include "UnityCG.cginc"
-            
+        
         // Particle data structure matching the compute shader output
         struct Particle
         {
@@ -29,6 +29,7 @@ Shader "Instanced/MultiFluidParticle2D"
         // Visual parameters for different particle types
         struct VisualParams
         {
+            int fluidType;
             int visualStyle;       // 0: Velocity, 1: Temperature, 2: Glowing, 3: Fuzzy
             float visualScale;     // Size of the particle
             float baseOpacity;     // Base opacity before effects
@@ -45,6 +46,19 @@ Shader "Instanced/MultiFluidParticle2D"
         StructuredBuffer<VisualParams> VisualParamsBuffer;
         UNITY_DECLARE_TEX2DARRAY(_GradientArray);
         SamplerState linear_clamp_sampler;
+        int numFluidTypes;
+
+        // Get Index of visual param list from particle type
+        int GetFluidTypeIndexFromID (int fluidID){
+            for (int i = 0; i < numFluidTypes; i++)
+            {
+                if (VisualParamsBuffer[i].fluidType == fluidID)
+                {
+                    return i;
+                }
+            }
+            return -1; // fluid type not found
+        }
 
         // Vertex to fragment shader data
         struct v2f
@@ -156,7 +170,8 @@ Shader "Instanced/MultiFluidParticle2D"
                 return o;
             }
 
-            VisualParams visualData = VisualParamsBuffer[particle.type - 1];
+            int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+            VisualParams visualData = VisualParamsBuffer[fluidIndex];
             
             // Skip particles based on pass type
             bool isGlowingParticle = (visualData.visualStyle == 2 || visualData.visualStyle == 1);
@@ -181,7 +196,7 @@ Shader "Instanced/MultiFluidParticle2D"
 
             // Calculate gradient sampling parameters
             float mappedValue = GetMappedValue(particle, visualData);
-            o.gradientParams = float3(mappedValue, 0.5, particle.type - 1);
+            o.gradientParams = float3(mappedValue, 0.5, fluidIndex);
 
             o.uv = v.texcoord;
             o.pos = UnityObjectToClipPos(float4(worldVertPos, 1));
