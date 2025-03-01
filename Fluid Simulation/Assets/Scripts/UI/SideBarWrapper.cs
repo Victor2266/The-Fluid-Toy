@@ -17,6 +17,8 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] GameObject bottomBarParent;
     [SerializeField] AudioSource audioSource;
 
+    [SerializeField] TooltipTrigger HideBottomMenuTooltip;
+
     [SerializeField] Image PlayPauseSidebarIcon;
     [SerializeField] Image PlayPauseSidebarBG;
     [SerializeField] Image HideBottombarIcon;
@@ -127,6 +129,8 @@ public class SideBarWrapper : MonoBehaviour
             HideBottombarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
             HideBottombarIconRect.DORotate(new Vector3(0, 0, 180), 0.5f)
                 .SetEase(DG.Tweening.Ease.OutQuint);
+
+            HideBottomMenuTooltip.tooltipContent = "Show Bottom Bar";
         }
         else
         {
@@ -154,6 +158,8 @@ public class SideBarWrapper : MonoBehaviour
             HideBottombarBG.color = new Color(0f, 0f, 0f, 1f);
             HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
                 .SetEase(DG.Tweening.Ease.OutQuint);
+
+            HideBottomMenuTooltip.tooltipContent = "Hide Bottom Bar";
         }
     }
 

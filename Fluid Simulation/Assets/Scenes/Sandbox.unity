@@ -377,7 +377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipContent: Show 'Liquids' Menu
+  tooltipContent: '''Liquids'' Menu'
 --- !u!95 &136556397
 Animator:
   serializedVersion: 7
@@ -580,6 +580,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 205831514}
   m_CullTransparentMesh: 1
+--- !u!114 &211019081 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6381735503577173279, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+  m_PrefabInstance: {fileID: 5944562705301707792}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &228796734
 GameObject:
   m_ObjectHideFlags: 0
@@ -2522,7 +2533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipContent: Show 'All Fluids' Menu
+  tooltipContent: '''All Fluids'' Menu'
 --- !u!95 &1019966954
 Animator:
   serializedVersion: 7
@@ -4039,7 +4050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipContent: Show 'Brush Settings' Menu
+  tooltipContent: '''Brush Settings'' Menu'
 --- !u!95 &1530041847
 Animator:
   serializedVersion: 7
@@ -4288,7 +4299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipContent: Show 'Gases' Menu
+  tooltipContent: '''Gases'' Menu'
 --- !u!95 &1689697038
 Animator:
   serializedVersion: 7
@@ -4459,7 +4470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipContent: Show 'Powders' Menu
+  tooltipContent: '''Powders'' Menu'
 --- !u!95 &1806177849
 Animator:
   serializedVersion: 7
@@ -5829,6 +5840,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1542618765566493191, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: HideBottomMenuTooltip
+      value: 
+      objectReference: {fileID: 211019081}
     - target: {fileID: 1625284148993440885, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5984,6 +5999,10 @@ PrefabInstance:
     - target: {fileID: 5970111011558180506, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6381735503577173279, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: tooltipContent
+      value: Toggle Bottom Menu
       objectReference: {fileID: 0}
     - target: {fileID: 6712083048162740827, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y

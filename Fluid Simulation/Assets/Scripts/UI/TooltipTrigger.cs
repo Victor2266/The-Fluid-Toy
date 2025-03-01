@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [TextArea] [SerializeField] private string tooltipContent;
+    [TextArea] [SerializeField] public string tooltipContent;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
