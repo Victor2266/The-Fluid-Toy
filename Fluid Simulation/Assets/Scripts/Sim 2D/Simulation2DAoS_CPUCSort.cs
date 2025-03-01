@@ -334,6 +334,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         {
             isPaused = true;
             pauseNextFrame = false;
+            UpdateSideBarIcons();
         }
 
         UpdateColliderData();
@@ -593,15 +594,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         if (Input.GetKeyDown(KeyCode.Space))
         {
             togglePause();
-            GameObject sidebar = GameObject.FindGameObjectWithTag("Sidebar");
-            if (sidebar != null)
-            {
-                SideBarWrapper sideBarWrapper = sidebar.GetComponent<SideBarWrapper>();
-                if (sideBarWrapper != null)
-                {
-                    sideBarWrapper.UpdatePauseIcon();
-                }
-            }
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
@@ -613,7 +605,18 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             resetSimulation();
         }
     }
-
+    void UpdateSideBarIcons()
+    {
+        GameObject sidebar = GameObject.FindGameObjectWithTag("Sidebar");
+        if (sidebar != null)
+        {
+            SideBarWrapper sideBarWrapper = sidebar.GetComponent<SideBarWrapper>();
+            if (sideBarWrapper != null)
+            {
+                sideBarWrapper.UpdatePauseIcon();
+            }
+        }
+    }
 
     void OnDestroy()
     {
@@ -723,6 +726,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public void togglePause()
     {
         isPaused = !isPaused;
+        UpdateSideBarIcons();
     }
     public bool getPaused()
     {

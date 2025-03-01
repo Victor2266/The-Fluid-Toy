@@ -55,16 +55,9 @@ public class SideBarWrapper : MonoBehaviour
     }
     public void TogglePauseFluidSimulation(){
         simulation2DScript.togglePause();
-        audioSource.Play();
-
-        UpdatePauseIcon();
     }
     public void stepFluidSimulation(){
         simulation2DScript.stepSimulation();
-        audioSource.Play();
-
-        PlayPauseSidebarIcon.sprite = PlayIconImage;
-        PlayPauseSidebarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
     }
     public void resetFluidSimulation(){
         simulation2DScript.resetSimulation();
@@ -77,6 +70,7 @@ public class SideBarWrapper : MonoBehaviour
     }
 
     public void UpdatePauseIcon(){
+        audioSource.Play();
         if(simulation2DScript.getPaused()){
             PlayPauseSidebarIcon.sprite = PlayIconImage;
             PlayPauseSidebarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
@@ -93,4 +87,9 @@ public class SideBarWrapper : MonoBehaviour
         // We should probably check to see that this async operation is done, but whatever.
         SceneManager.LoadSceneAsync(currentScene.buildIndex);
     }
+
+    public void ToggleShowBottomBar(){
+
+    }
+
 }
