@@ -193,4 +193,13 @@ public class FadeText : MonoBehaviour
         if (fadeBG != null)
             Destroy(fadeBG.gameObject);
     }
+    void OnDestroy()
+    {
+        DOTween.Kill(transform);
+        DOTween.Kill(tmpText);
+        if(fadeBG != null){
+            DOTween.Kill(fadeBG);
+            DOTween.Kill(fadeBG.transform);
+        }
+    }
 }
