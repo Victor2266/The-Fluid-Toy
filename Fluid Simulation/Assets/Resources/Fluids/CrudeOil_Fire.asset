@@ -16,12 +16,12 @@ MonoBehaviour:
   gravity: 11
   collisionDamping: 0.5
   smoothingRadius: 0.35
-  targetDensity: 64
+  targetDensity: 32
   pressureMultiplier: 8
   nearPressureMultiplier: 16
-  viscosityStrength: 0.01
+  viscosityStrength: 0.1
   startTemperature: 960
-  thermalDiffusivity: 16
+  thermalDiffusivity: 10
   boilState: 13
   boilTemp: 1000
   freezeState: 11
