@@ -19,7 +19,8 @@ public enum FluidType {
     Oil_Fire,
     Smoke,
     CrudeOil,
-    CrudeOil_Fire
+    CrudeOil_Fire,
+    Cold_Fire
 }
 
 public enum VisualStyle
