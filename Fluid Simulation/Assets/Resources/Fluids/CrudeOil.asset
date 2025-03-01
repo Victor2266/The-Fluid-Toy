@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
-  m_Name: Oil
+  m_Name: CrudeOil
   m_EditorClassIdentifier: 
-  fluidType: 8
+  fluidType: 12
   gravity: -6
   collisionDamping: 0.8
   smoothingRadius: 0.3
@@ -22,9 +22,9 @@ MonoBehaviour:
   viscosityStrength: 0.12
   startTemperature: 22
   thermalDiffusivity: 16
-  boilState: 10
+  boilState: 13
   boilTemp: 176
-  freezeState: 8
+  freezeState: 12
   freezeTemp: 0
   entropy: 0
   entropyTarget: 25
@@ -32,9 +32,9 @@ MonoBehaviour:
     style: 0
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.4627451, g: 0.2509804, b: 0, a: 1}
-      key1: {r: 0.6226415, g: 0.3390479, b: 0.0029369951, a: 1}
-      key2: {r: 0.7075472, g: 0.42193753, b: 0.08343716, a: 0}
+      key0: {r: 0.3962264, g: 0.13880216, b: 0, a: 1}
+      key1: {r: 0.4528302, g: 0.15892866, b: 0, a: 1}
+      key2: {r: 0.6313726, g: 0.27529725, b: 0.13333331, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
