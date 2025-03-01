@@ -20,12 +20,12 @@ MonoBehaviour:
   pressureMultiplier: 8
   nearPressureMultiplier: 16
   viscosityStrength: 0.01
-  startTemperature: 1000
+  startTemperature: 1060
   thermalDiffusivity: 16
   boilState: 10
   boilTemp: 1000
   freezeState: 0
-  freezeTemp: 715
+  freezeTemp: 745
   entropy: 2
   entropyTarget: 600
   visualParams:
@@ -66,5 +66,5 @@ MonoBehaviour:
     timeScale: 1
     glowIntensity: 2.25
     glowFalloff: 0.93
-    minPropertyValue: 715
+    minPropertyValue: 745
     maxPropertyValue: 1000
