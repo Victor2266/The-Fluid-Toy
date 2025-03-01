@@ -17,8 +17,10 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] GameObject bottomBarParent;
     [SerializeField] AudioSource audioSource;
 
-    [SerializeField] UnityEngine.UI.Image PlayPauseSidebarIcon;
-    [SerializeField] UnityEngine.UI.Image PlayPauseSidebarBG;
+    [SerializeField] Image PlayPauseSidebarIcon;
+    [SerializeField] Image PlayPauseSidebarBG;
+    [SerializeField] Image HideBottombarIcon;
+    [SerializeField] Image HideBottombarBG;
     [SerializeField] Sprite PauseIconImage;
     [SerializeField] Sprite PlayIconImage;
 
@@ -107,6 +109,7 @@ public class SideBarWrapper : MonoBehaviour
         {
             // If bottom bar is visible, slide it down and deactivate
             RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+            RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
 
             // Calculate the distance to move (the height of the bottom bar)
             float slideDistance = bottomBarRect.rect.height;
@@ -119,6 +122,11 @@ public class SideBarWrapper : MonoBehaviour
                     // Deactivate the bottom bar after animation completes
                     bottomBarParent.SetActive(false);
                 });
+
+            // Animate the icon rotating
+            HideBottombarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
+            HideBottombarIconRect.DORotate(new Vector3(0, 0, 180), 0.5f)
+                .SetEase(DG.Tweening.Ease.OutQuint);
         }
         else
         {
@@ -126,6 +134,7 @@ public class SideBarWrapper : MonoBehaviour
             bottomBarParent.SetActive(true);
 
             RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+            RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
 
             // Get current position
             Vector2 currentPos = bottomBarRect.anchoredPosition;
@@ -140,6 +149,11 @@ public class SideBarWrapper : MonoBehaviour
             bottomBarRect.DOAnchorPosY(targetY, 0.25f)
                 .SetEase(DG.Tweening.Ease.OutBack) // Adds a slight bounce effect
                 .SetDelay(0.1f); // Small delay for better feel
+
+            // Animate the icon rotating
+            HideBottombarBG.color = new Color(0f, 0f, 0f, 1f);
+            HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
+                .SetEase(DG.Tweening.Ease.OutQuint);
         }
     }
 
