@@ -64,7 +64,7 @@ public class GPUCountSort
 	}
 	
 
-	public void Run()
+	public void RunKeyGen()
 	{
 		int count = sortedKBuffer.count;
 
@@ -76,7 +76,7 @@ public class GPUCountSort
 		ComputeHelper.Dispatch(cs, count, kernelIndex: CopyBackCPUKernel);
 	}
 
-	public void Run2()
+	public void Run()
 	{
 		int count = sortedKBuffer.count;
 

@@ -376,7 +376,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
 
         // Sort & offsets; copyback for memory coherency
-        gpuSort.Run2();
+        gpuSort.Run();
         spatialOffsetsCalc.Run(false);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
@@ -391,7 +391,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
 
         // Sort & offsets; copyback for memory coherency
-        gpuSort.Run();
+        gpuSort.RunKeyGen();
         spatialOffsetsCalc.Run(false);
         keyarrbuffer.GetData(CPUKernelAOS.keyarr);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
