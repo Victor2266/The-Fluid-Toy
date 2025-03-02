@@ -2,11 +2,13 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class TooltipManager : MonoBehaviour
 {
     public static TooltipManager Instance;
     
+    [Header("Bottom Right Tooltip Settings")]
     [SerializeField] private RectTransform tooltipPanel;
     [SerializeField] private TextMeshProUGUI tooltipText;
     [SerializeField] private float fadeTime = 0.25f;
@@ -18,6 +20,8 @@ public class TooltipManager : MonoBehaviour
 
     [SerializeField] private Image background;
     [SerializeField] private Vector2 padding = new Vector2(16, 2);
+
+    private String LastSelectedFluid;
 
     private void Awake()
     {
@@ -83,9 +87,18 @@ public class TooltipManager : MonoBehaviour
             .OnComplete(() => tooltipPanel.gameObject.SetActive(false));
     }
 
+    public void SetLastSelectedFluid(string fluidName){
+        LastSelectedFluid = fluidName;
+    }
+
     void OnDestroy(){
         // Kill any ongoing animations
         currentSequence?.Kill();
         canvasGroup.DOKill();
+    }
+
+    public string GetLastSelectedFluid()
+    {
+        return LastSelectedFluid;
     }
 }

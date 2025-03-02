@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Alcohol
   m_EditorClassIdentifier: 
   fluidType: 9
-  gravity: -8
+  gravity: -12
   collisionDamping: 0.8
   smoothingRadius: 0.35
   targetDensity: 55
@@ -60,8 +60,8 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    visualScale: 0.2
-    baseOpacity: 1
+    visualScale: 0.32
+    baseOpacity: 0.25
     noiseScale: 0
     timeScale: 0
     glowIntensity: 0

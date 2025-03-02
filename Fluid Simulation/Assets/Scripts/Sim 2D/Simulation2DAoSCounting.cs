@@ -37,17 +37,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
 
-    // Brush Settings + Enum type
-    public enum BrushType
-    {
-        DRAW,
-        GRAVITY,
-        NOTHING
-    }
-
     [Header("Brush Type")]
 
-    [SerializeField] private BrushType brushState = BrushType.GRAVITY;
+    [SerializeField] private BrushType brushState = BrushType.Gravity;
 
     [Header("Interaction Settings")]
     public float interactionRadius;
@@ -217,7 +209,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         circleColliderData = new Circle[circleColliders.Length];
         sourceObjectData = new SourceObject[sourceObjects.Length];
         drainObjectData = new OrientedBox[drainObjects.Length];
-        if (thermalBoxes == null){
+        if (thermalBoxes == null)
+        {
             thermalBoxes = new ThermalBoxInitializer[0]; // I think .Length wasn't working on null object types?
         }
         thermalBoxData = new ThermalBox[thermalBoxes.Length];
@@ -315,6 +308,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         {
             isPaused = true;
             pauseNextFrame = false;
+            UpdateSideBarIcons();
         }
 
         UpdateColliderData();
@@ -501,14 +495,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         float currInteractStrength = 0;
 
-        if (brushState == BrushType.GRAVITY)
+        if (brushState == BrushType.Gravity)
         {
             if (isPushInteraction || isPullInteraction)
             {
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
             }
         }
-        else if (brushState == BrushType.DRAW)
+        else if (brushState == BrushType.Draw)
         {
             if (isPullInteraction)
             {
@@ -559,15 +553,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         if (Input.GetKeyDown(KeyCode.Space))
         {
             togglePause();
-            GameObject sidebar = GameObject.FindGameObjectWithTag("Sidebar");
-            if (sidebar != null)
-            {
-                SideBarWrapper sideBarWrapper = sidebar.GetComponent<SideBarWrapper>();
-                if (sideBarWrapper != null)
-                {
-                    sideBarWrapper.UpdatePauseIcon();
-                }
-            }
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
@@ -577,6 +562,19 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         if (Input.GetKeyDown(KeyCode.R))
         {
             resetSimulation();
+        }
+    }
+
+    void UpdateSideBarIcons()
+    {
+        GameObject sidebar = GameObject.FindGameObjectWithTag("Sidebar");
+        if (sidebar != null)
+        {
+            SideBarWrapper sideBarWrapper = sidebar.GetComponent<SideBarWrapper>();
+            if (sideBarWrapper != null)
+            {
+                sideBarWrapper.UpdatePauseIcon();
+            }
         }
     }
 
@@ -730,6 +728,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         //    Debug.Log($"Particle {i}: Temp: {temps[i]}, Type: {types[i]}");
         //}
         isPaused = !isPaused;
+        UpdateSideBarIcons();
     }
     public bool getPaused()
     {

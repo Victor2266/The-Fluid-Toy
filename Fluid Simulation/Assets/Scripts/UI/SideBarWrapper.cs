@@ -4,23 +4,41 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Runtime.CompilerServices;
+using DG.Tweening;
 
 public class SideBarWrapper : MonoBehaviour
 {
     [Header("This script handles the references and function calls for each of the sidebar buttons.\n This reduces the amount of drag and drops needed for managing the UI.\n")]
 
+    [Header("Function References")]
     [SerializeField] PauseMenuManager pauseMenuManager;
-    [SerializeField] GameObject simSettingsPanel;
-    [SerializeField] GameObject simulation2DGameObject;
-    [SerializeField] GameObject informationPanel;
-
     [SerializeField] AudioSource audioSource;
 
-    [SerializeField] UnityEngine.UI.Image PlayPauseSidebarIcon;
-    [SerializeField] UnityEngine.UI.Image PlayPauseSidebarBG;
+    [Header("Panel References")]
+    [SerializeField] GameObject simSettingsPanel;
+    [SerializeField] GameObject informationPanel;
+    [SerializeField] GameObject bottomBarParent;
+
+    [Header("Tooltip and Icon References")]
+    [SerializeField] TooltipTrigger HideBottomMenuTooltip;
+    [SerializeField] Image PlayPauseSidebarIcon;
+    [SerializeField] Image PlayPauseSidebarBG;
+    [SerializeField] Image HideBottombarIcon;
+    [SerializeField] Image HideBottombarBG;
     [SerializeField] Sprite PauseIconImage;
     [SerializeField] Sprite PlayIconImage;
 
+    [Header("Menu References")]
+    [SerializeField] GameObject brushSettingsMenu;
+    [SerializeField] GameObject allFluidsMenu;
+    [SerializeField] GameObject ObstaclesMenu;
+    [SerializeField] GameObject GasMenu;
+    [SerializeField] GameObject LiquidMenu;
+    [SerializeField] GameObject PowderMenu;
+
+    private GameObject[] menuPanels = new GameObject[6];
+
+    private GameObject simulation2DGameObject;
     private IFluidSimulation simulation2DScript;
 
     void Awake()
@@ -43,44 +61,49 @@ public class SideBarWrapper : MonoBehaviour
         {
             Debug.LogError("Simulation object reference is missing!");
         }
+
+        menuPanels = new GameObject[] { brushSettingsMenu, allFluidsMenu, ObstaclesMenu, GasMenu, LiquidMenu, PowderMenu };
     }
 
     public void PauseGame()
     {
         pauseMenuManager.PauseGame();
     }
-    public void ShowSimulationSettings(){
+    public void ShowSimulationSettings()
+    {
         simSettingsPanel.SetActive(true);
         audioSource.Play();
     }
-    public void TogglePauseFluidSimulation(){
+    public void TogglePauseFluidSimulation()
+    {
         simulation2DScript.togglePause();
-        audioSource.Play();
-
-        UpdatePauseIcon();
     }
-    public void stepFluidSimulation(){
+    public void stepFluidSimulation()
+    {
         simulation2DScript.stepSimulation();
-        audioSource.Play();
-
-        PlayPauseSidebarIcon.sprite = PlayIconImage;
-        PlayPauseSidebarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
     }
-    public void resetFluidSimulation(){
+    public void resetFluidSimulation()
+    {
         simulation2DScript.resetSimulation();
         audioSource.Play();
         UpdatePauseIcon();
     }
-    public void ShowInformationPanel(){
+    public void ShowInformationPanel()
+    {
         informationPanel.SetActive(true);
         audioSource.Play();
     }
 
-    public void UpdatePauseIcon(){
-        if(simulation2DScript.getPaused()){
+    public void UpdatePauseIcon()
+    {
+        audioSource.Play();
+        if (simulation2DScript.getPaused())
+        {
             PlayPauseSidebarIcon.sprite = PlayIconImage;
             PlayPauseSidebarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
-        } else{
+        }
+        else
+        {
             PlayPauseSidebarIcon.sprite = PauseIconImage;
             PlayPauseSidebarBG.color = new Color(0, 0, 0, 255);
         }
@@ -92,5 +115,115 @@ public class SideBarWrapper : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         // We should probably check to see that this async operation is done, but whatever.
         SceneManager.LoadSceneAsync(currentScene.buildIndex);
+    }
+
+    public void ToggleShowBottomBar()
+    {
+        // Play audio feedback
+        audioSource.Play();
+
+        if (bottomBarParent.activeSelf)
+        {
+            HideBottomMenu();
+            HideBottomMenuTooltip.SetTooltipContent("Show Bottom Bar");
+        }
+        else
+        {
+            ShowBottomMenu();
+            HideBottomMenuTooltip.SetTooltipContent("Hide Bottom Bar");
+        }
+    }
+
+    void HideBottomMenu()
+    {
+        // If bottom bar is visible, slide it down and deactivate
+        RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+
+        // Calculate the distance to move (the height of the bottom bar)
+        float slideDistance = bottomBarRect.rect.height;
+
+        // Animate the bar sliding down
+        bottomBarRect.DOAnchorPosY(-slideDistance, 0.25f)
+            .SetEase(DG.Tweening.Ease.OutQuint)
+            .OnComplete(() =>
+            {
+                // Deactivate the bottom bar after animation completes
+                bottomBarParent.SetActive(false);
+            });
+
+        // Animate the icon rotating
+        HideBottombarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
+        HideBottombarIconRect.DORotate(new Vector3(0, 0, 180), 0.5f)
+            .SetEase(DG.Tweening.Ease.OutQuint);
+    }
+    void ShowBottomMenu()
+    {
+        // if (bottomBarParent.activeSelf) return; // Skips playing animation if the bar is already visible
+
+        // If bottom bar is hidden, activate it and slide it up
+        bottomBarParent.SetActive(true);
+
+        RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        CanvasGroup bottomBarCanvasGroup = bottomBarParent.GetComponent<CanvasGroup>();
+
+        // Kill exising animations
+        DOTween.Kill(bottomBarRect);
+        DOTween.Kill(HideBottombarIconRect);
+        DOTween.Kill(bottomBarCanvasGroup);
+
+
+        bottomBarCanvasGroup.alpha = 0f;
+
+        // Get current position
+        Vector2 currentPos = bottomBarRect.anchoredPosition;
+
+        // Calculate the target position (where the bar should end up)
+        float targetY = 0f;
+
+        // Set initial position off-screen (below view)
+        bottomBarRect.anchoredPosition = new Vector2(currentPos.x, -bottomBarRect.rect.height);
+
+        // Animate the bar sliding up
+        bottomBarRect.DOAnchorPosY(targetY, 0.25f)
+            .SetEase(Ease.OutBack) // Adds a slight bounce effect
+            .SetDelay(0.1f); // Small delay for better feel
+
+        // Animate the opacity
+        bottomBarCanvasGroup.DOFade(1f, 0.25f)
+            .SetEase(Ease.OutQuint)
+            .SetDelay(0.125f);
+
+        // Animate the icon rotating
+        HideBottombarBG.color = new Color(0f, 0f, 0f, 1f);
+        HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
+            .SetEase(Ease.OutQuint);
+
+    }
+
+    public void SelectBottomMenu(int index)
+    {
+        audioSource.Play();
+        foreach (GameObject menuPanel in menuPanels)
+        {
+            if (menuPanel != null)
+                menuPanel.SetActive(false);
+        }
+        if (menuPanels[index] != null)
+            menuPanels[index].SetActive(true);
+        ShowBottomMenu();
+    }
+
+    void OnDestroy()
+    {
+        RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        CanvasGroup bottomBarCanvasGroup = bottomBarParent.GetComponent<CanvasGroup>();
+
+        // Kill exising animations
+        DOTween.Kill(bottomBarRect);
+        DOTween.Kill(HideBottombarIconRect);
+        DOTween.Kill(bottomBarCanvasGroup);
     }
 }

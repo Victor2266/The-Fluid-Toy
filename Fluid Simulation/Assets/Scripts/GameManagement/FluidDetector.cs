@@ -68,6 +68,8 @@ public class FluidDetector : MonoBehaviour
             Debug.Log("GPU ASync Readback Error in Fluid Simulation Readback");
             return;
         }
+        if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid() || this == null)
+            return;
 
         Vector2 checkPosition = transform.position;
         float totalDensity = 0f;
@@ -140,5 +142,14 @@ public class FluidDetector : MonoBehaviour
         // Display the density value
         string densityText = $"Density: {currentDensity:F2}";
         GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 100, 20), densityText);
+    }
+
+    void OnDestroy()
+    {
+        if (isRequestMade)
+        {
+            AsyncGPUReadback.WaitAllRequests();
+        }
+
     }
 }

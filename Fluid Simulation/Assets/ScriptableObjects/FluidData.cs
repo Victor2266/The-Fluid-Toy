@@ -1,8 +1,11 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public enum FluidType // This is the identifier (ID) for each fluid, Must match the file name exatly. Also check that the buttons set the correct ID #.
-{
+ // This is the identifier (ID) for each fluid,
+ // match the file name exatly (for automatic scanning).
+ // Also check that the buttons set the correct ID Number. 
+ // Do NOT change the order of these as that will mess up all the IDs, add new IDs to the end
+public enum FluidType {
     Disabled,
     Water,
     Steam,
@@ -12,7 +15,12 @@ public enum FluidType // This is the identifier (ID) for each fluid, Must match 
     BouncyBall,
     Beer,
     Oil,
-    Alcohol
+    Alcohol,
+    Oil_Fire,
+    Smoke,
+    Crude_Oil,
+    CrudeOil_Fire,
+    Cold_Fire
 }
 
 public enum VisualStyle

@@ -7,8 +7,8 @@
 #pragma kernel UpdatePositions
 
 // Includes
-#include "./FluidMaths2D.hlsl"
-#include "./SpatialHash.hlsl"
+#include "../FluidMaths2D.hlsl"
+#include "../SpatialHash.hlsl"
 
 static const int NumThreads = 64;
 
