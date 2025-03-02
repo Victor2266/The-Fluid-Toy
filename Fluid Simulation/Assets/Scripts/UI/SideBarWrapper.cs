@@ -163,4 +163,10 @@ public class SideBarWrapper : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+        DOTween.Kill(bottomBarRect);
+        DOTween.Kill(HideBottombarIcon.GetComponent<RectTransform>());
+    }
 }
