@@ -12,7 +12,6 @@ public class SideBarWrapper : MonoBehaviour
 
     [Header("Function References")]
     [SerializeField] PauseMenuManager pauseMenuManager;
-    private GameObject simulation2DGameObject;
     [SerializeField] AudioSource audioSource;
 
     [Header("Panel References")]
@@ -29,6 +28,17 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] Sprite PauseIconImage;
     [SerializeField] Sprite PlayIconImage;
 
+    [Header("Menu References")]
+    [SerializeField] GameObject brushSettingsMenu;
+    [SerializeField] GameObject allFluidsMenu;
+    [SerializeField] GameObject ObstaclesMenu;
+    [SerializeField] GameObject GasMenu;
+    [SerializeField] GameObject LiquidMenu;
+    [SerializeField] GameObject PowderMenu;
+
+    private GameObject[] menuPanels = new GameObject[6];
+
+    private GameObject simulation2DGameObject;
     private IFluidSimulation simulation2DScript;
 
     void Awake()
@@ -51,6 +61,8 @@ public class SideBarWrapper : MonoBehaviour
         {
             Debug.LogError("Simulation object reference is missing!");
         }
+
+        menuPanels = new GameObject[] { brushSettingsMenu, allFluidsMenu, ObstaclesMenu, GasMenu, LiquidMenu, PowderMenu };
     }
 
     public void PauseGame()
@@ -112,58 +124,82 @@ public class SideBarWrapper : MonoBehaviour
 
         if (bottomBarParent.activeSelf)
         {
-            // If bottom bar is visible, slide it down and deactivate
-            RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
-            RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
-
-            // Calculate the distance to move (the height of the bottom bar)
-            float slideDistance = bottomBarRect.rect.height;
-
-            // Animate the bar sliding down
-            bottomBarRect.DOAnchorPosY(-slideDistance, 0.25f)
-                .SetEase(DG.Tweening.Ease.OutQuint)
-                .OnComplete(() =>
-                {
-                    // Deactivate the bottom bar after animation completes
-                    bottomBarParent.SetActive(false);
-                });
-
-            // Animate the icon rotating
-            HideBottombarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
-            HideBottombarIconRect.DORotate(new Vector3(0, 0, 180), 0.5f)
-                .SetEase(DG.Tweening.Ease.OutQuint);
-
-            HideBottomMenuTooltip.SetTooltipContent("Show Bottom Bar");
+            HideBottomMenu();
         }
         else
         {
-            // If bottom bar is hidden, activate it and slide it up
-            bottomBarParent.SetActive(true);
-
-            RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
-            RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
-
-            // Get current position
-            Vector2 currentPos = bottomBarRect.anchoredPosition;
-
-            // Calculate the target position (where the bar should end up)
-            float targetY = 0f;
-
-            // Set initial position off-screen (below view)
-            bottomBarRect.anchoredPosition = new Vector2(currentPos.x, -bottomBarRect.rect.height);
-
-            // Animate the bar sliding up
-            bottomBarRect.DOAnchorPosY(targetY, 0.25f)
-                .SetEase(DG.Tweening.Ease.OutBack) // Adds a slight bounce effect
-                .SetDelay(0.1f); // Small delay for better feel
-
-            // Animate the icon rotating
-            HideBottombarBG.color = new Color(0f, 0f, 0f, 1f);
-            HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
-                .SetEase(DG.Tweening.Ease.OutQuint);
-
-            HideBottomMenuTooltip.SetTooltipContent("Hide Bottom Bar");
+            ShowBottomMenu();
         }
+    }
+
+    void HideBottomMenu()
+    {
+        // If bottom bar is visible, slide it down and deactivate
+        RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+
+        // Calculate the distance to move (the height of the bottom bar)
+        float slideDistance = bottomBarRect.rect.height;
+
+        // Animate the bar sliding down
+        bottomBarRect.DOAnchorPosY(-slideDistance, 0.25f)
+            .SetEase(DG.Tweening.Ease.OutQuint)
+            .OnComplete(() =>
+            {
+                // Deactivate the bottom bar after animation completes
+                bottomBarParent.SetActive(false);
+            });
+
+        // Animate the icon rotating
+        HideBottombarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
+        HideBottombarIconRect.DORotate(new Vector3(0, 0, 180), 0.5f)
+            .SetEase(DG.Tweening.Ease.OutQuint);
+
+        HideBottomMenuTooltip.SetTooltipContent("Show Bottom Bar");
+    }
+    void ShowBottomMenu()
+    {
+        // if (bottomBarParent.activeSelf) return; // Skips playing animation if the bar is already visible
+        
+        // If bottom bar is hidden, activate it and slide it up
+        bottomBarParent.SetActive(true);
+
+        RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+
+        // Get current position
+        Vector2 currentPos = bottomBarRect.anchoredPosition;
+
+        // Calculate the target position (where the bar should end up)
+        float targetY = 0f;
+
+        // Set initial position off-screen (below view)
+        bottomBarRect.anchoredPosition = new Vector2(currentPos.x, -bottomBarRect.rect.height);
+
+        // Animate the bar sliding up
+        bottomBarRect.DOAnchorPosY(targetY, 0.25f)
+            .SetEase(DG.Tweening.Ease.OutBack) // Adds a slight bounce effect
+            .SetDelay(0.1f); // Small delay for better feel
+
+        // Animate the icon rotating
+        HideBottombarBG.color = new Color(0f, 0f, 0f, 1f);
+        HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
+            .SetEase(DG.Tweening.Ease.OutQuint);
+
+        HideBottomMenuTooltip.SetTooltipContent("Hide Bottom Bar");
+    }
+
+    public void SelectBottomMenu(int index)
+    {
+        audioSource.Play();
+        foreach (GameObject menuPanel in menuPanels)
+        {
+            if (menuPanel != null)
+                menuPanel.SetActive(false);
+        }
+        if (menuPanels[index] != null)
+            menuPanels[index].SetActive(true);
+        ShowBottomMenu();
     }
 
     void OnDestroy()

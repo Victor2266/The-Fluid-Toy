@@ -32,10 +32,15 @@ public class BottomBarWrapper : MonoBehaviour
         {
             Debug.LogError("Simulation object reference is missing!");
         }
+    }
 
-        FluidTypebuttons = GameObject.FindGameObjectsWithTag("FluidTypeButton")
-            .Select(go => go.GetComponent<Button>())
+    void OnEnable()
+    {
+        FluidTypebuttons = gameObject.GetComponentsInChildren<Button>(true)
+            .Where(b => b.gameObject.tag == "FluidTypeButton")
             .ToArray();
+
+        resetButtonStates();
     }
 
     public void setSelectedFluid(int fluidTypeIndex)
@@ -53,7 +58,8 @@ public class BottomBarWrapper : MonoBehaviour
         resetButtonStates();
     }
 
-    private void resetButtonStates(){
+    private void resetButtonStates()
+    {
         foreach (Button button in FluidTypebuttons)
         {
             button.interactable = true;
