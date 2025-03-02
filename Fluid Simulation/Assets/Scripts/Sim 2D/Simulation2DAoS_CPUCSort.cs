@@ -400,18 +400,17 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // Sort & offsets; copyback for memory coherency
         gpuSort.Run();
         spatialOffsetsCalc.Run(false);
+        keyarrbuffer.GetData(CPUKernelAOS.keyarr);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
+        spatialOffsets.GetData(CPUKernelAOS.spatialOffsets);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: densityKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
+        spatialIndices.GetData(CPUKernelAOS.spatialIndices);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: temperatureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
-
-        keyarrbuffer.GetData(CPUKernelAOS.keyarr);
-        spatialOffsets.GetData(CPUKernelAOS.spatialOffsets);
-        spatialIndices.GetData(CPUKernelAOS.spatialIndices);
         particleBuffer.GetData(CPUKernelAOS.particles);
         
     }
@@ -942,9 +941,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         //data transfers required to merge CPU and GPU data
         cpuparticlebuffer.SetData(CPUKernelAOS.particleResultBuffer);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: mergeCPUParticlesKernel);
-        particleBuffer.GetData(CPUKernelAOS.particles);
-        CPUKernelAOS.particleResultBuffer.CopyFrom(CPUKernelAOS.particles); 
-        CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.particles);
+        // particleBuffer.GetData(CPUKernelAOS.particles);
+        // CPUKernelAOS.particleResultBuffer.CopyFrom(CPUKernelAOS.particles); 
+        // CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.particles);
 
         JobHandle pressure = pressureCalc.Schedule(numParticles, Mathf.Max(numParticles / (workerThreads * 2), 1));
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
@@ -952,9 +951,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
         cpuparticlebuffer.SetData(CPUKernelAOS.particleResultBuffer);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: mergeCPUParticlesKernel);
-        particleBuffer.GetData(CPUKernelAOS.particles);
-        CPUKernelAOS.particleResultBuffer.CopyFrom(CPUKernelAOS.particles);
-        CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.particles);
+        // particleBuffer.GetData(CPUKernelAOS.particles);
+        // CPUKernelAOS.particleResultBuffer.CopyFrom(CPUKernelAOS.particles);
+        // CPUKernelAOS.particleBuffer.CopyFrom(CPUKernelAOS.particles);
 
         JobHandle viscosity = viscosityCalc.Schedule(numParticles, Mathf.Max(numParticles / (workerThreads * 2), 1));
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
