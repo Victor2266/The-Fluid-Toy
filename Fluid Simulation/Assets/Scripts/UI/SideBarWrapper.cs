@@ -166,6 +166,15 @@ public class SideBarWrapper : MonoBehaviour
 
         RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
         RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        CanvasGroup bottomBarCanvasGroup = bottomBarParent.GetComponent<CanvasGroup>();
+
+        // Kill exising animations
+        DOTween.Kill(bottomBarRect);
+        DOTween.Kill(HideBottombarIconRect);
+        DOTween.Kill(bottomBarCanvasGroup);
+
+
+        bottomBarCanvasGroup.alpha = 0f;
 
         // Get current position
         Vector2 currentPos = bottomBarRect.anchoredPosition;
@@ -180,6 +189,11 @@ public class SideBarWrapper : MonoBehaviour
         bottomBarRect.DOAnchorPosY(targetY, 0.25f)
             .SetEase(DG.Tweening.Ease.OutBack) // Adds a slight bounce effect
             .SetDelay(0.1f); // Small delay for better feel
+
+        // Animate the opacity
+        bottomBarCanvasGroup.DOFade(1f, 0.25f)
+            .SetEase(DG.Tweening.Ease.OutQuint)
+            .SetDelay(0.1f);
 
         // Animate the icon rotating
         HideBottombarBG.color = new Color(0f, 0f, 0f, 1f);
@@ -204,7 +218,12 @@ public class SideBarWrapper : MonoBehaviour
     void OnDestroy()
     {
         RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        CanvasGroup bottomBarCanvasGroup = bottomBarParent.GetComponent<CanvasGroup>();
+
+        // Kill exising animations
         DOTween.Kill(bottomBarRect);
-        DOTween.Kill(HideBottombarIcon.GetComponent<RectTransform>());
+        DOTween.Kill(HideBottombarIconRect);
+        DOTween.Kill(bottomBarCanvasGroup);
     }
 }
