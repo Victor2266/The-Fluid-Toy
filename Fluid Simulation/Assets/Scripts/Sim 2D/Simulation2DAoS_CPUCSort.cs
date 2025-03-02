@@ -898,8 +898,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         {
             numParticles = (uint)numParticles,
             maxSmoothingRadius = maxSmoothingRadius,
-            pressureOut = CPUKernelAOS.particleResultBuffer,
-            particles = CPUKernelAOS.particleBuffer,
+            pressureOut = CPUKernelAOS.particleBuffer,
+            particles = CPUKernelAOS.particleResultBuffer,
             spatialIndices = CPUKernelAOS.spatialIndicesBuffer,
             spatialOffsets = CPUKernelAOS.spatialOffsetsBuffer,
             fluidPs = CPUKernelAOS.fluidParamBuffer,
