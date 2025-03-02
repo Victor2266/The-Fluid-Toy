@@ -1802,6 +1802,7 @@ GameObject:
   - component: {fileID: 6133767561056285039}
   - component: {fileID: 6566445260152764442}
   - component: {fileID: 6479989645582010267}
+  - component: {fileID: 2646795504644362499}
   m_Layer: 5
   m_Name: Liquids
   m_TagString: Untagged
@@ -1959,6 +1960,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipContent: '''Liquids'' Menu'
+--- !u!114 &2646795504644362499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3828853639042225007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e53bffb74d6d54b91d04bfc7a67b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuIndex: 4
+  sideBarWrapper: {fileID: 5733238267923218540}
 --- !u!1 &3899047854369323596
 GameObject:
   m_ObjectHideFlags: 0
@@ -2294,6 +2309,7 @@ GameObject:
   - component: {fileID: 9126686295363288080}
   - component: {fileID: 3848990601280085998}
   - component: {fileID: 2812870398328723252}
+  - component: {fileID: 8381673223115234659}
   m_Layer: 5
   m_Name: Obstacles
   m_TagString: Untagged
@@ -2451,6 +2467,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipContent: '''Obstacles'' Menu'
+--- !u!114 &8381673223115234659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4706589567216152359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e53bffb74d6d54b91d04bfc7a67b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuIndex: 2
+  sideBarWrapper: {fileID: 5733238267923218540}
 --- !u!1 &4724203130578514226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2987,6 +3017,7 @@ GameObject:
   - component: {fileID: 6812188552536381959}
   - component: {fileID: 5550978367733568005}
   - component: {fileID: 6102783343636951150}
+  - component: {fileID: 8726776271898325581}
   m_Layer: 5
   m_Name: Brush Settings
   m_TagString: Untagged
@@ -3144,6 +3175,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipContent: '''Brush Settings'' Menu'
+--- !u!114 &8726776271898325581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5487449149403759977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e53bffb74d6d54b91d04bfc7a67b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuIndex: 0
+  sideBarWrapper: {fileID: 5733238267923218540}
 --- !u!1 &6036913400567299466
 GameObject:
   m_ObjectHideFlags: 0
@@ -4004,6 +4049,7 @@ GameObject:
   - component: {fileID: 2960425373627306647}
   - component: {fileID: 7509943268548766499}
   - component: {fileID: 64779601859891541}
+  - component: {fileID: 6579775660106434813}
   m_Layer: 5
   m_Name: Gases
   m_TagString: Untagged
@@ -4161,6 +4207,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipContent: '''Gases'' Menu'
+--- !u!114 &6579775660106434813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7975701309762289968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e53bffb74d6d54b91d04bfc7a67b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuIndex: 3
+  sideBarWrapper: {fileID: 5733238267923218540}
 --- !u!1 &8386454198691579705
 GameObject:
   m_ObjectHideFlags: 0
@@ -4496,6 +4556,7 @@ GameObject:
   - component: {fileID: 3135424881267892169}
   - component: {fileID: 5564412368647760420}
   - component: {fileID: 7537421144049962197}
+  - component: {fileID: 3772933756550652181}
   m_Layer: 5
   m_Name: All Fluids
   m_TagString: Untagged
@@ -4653,6 +4714,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipContent: '''Everything'' Menu'
+--- !u!114 &3772933756550652181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8962852834689201753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e53bffb74d6d54b91d04bfc7a67b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuIndex: 1
+  sideBarWrapper: {fileID: 5733238267923218540}
 --- !u!1 &9120568879239739985
 GameObject:
   m_ObjectHideFlags: 0
@@ -4817,6 +4892,7 @@ GameObject:
   - component: {fileID: 3295243650864128076}
   - component: {fileID: 8601189632105788620}
   - component: {fileID: 5677863926216034045}
+  - component: {fileID: 8780534268262843063}
   m_Layer: 5
   m_Name: Powders
   m_TagString: Untagged
@@ -4974,6 +5050,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipContent: '''Powders'' Menu'
+--- !u!114 &8780534268262843063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9149825180110221362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e53bffb74d6d54b91d04bfc7a67b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuIndex: 5
+  sideBarWrapper: {fileID: 5733238267923218540}
 --- !u!1 &9214844266068484810
 GameObject:
   m_ObjectHideFlags: 0
