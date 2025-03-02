@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [TextArea] [SerializeField] public string tooltipContent;
+    [TextArea] [SerializeField] private string tooltipContent;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -13,5 +13,10 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerExit(PointerEventData eventData)
     {
         TooltipManager.Instance.HideTooltip();
+    }
+
+    public void SetTooltipContent(string content){
+        tooltipContent = content;
+        TooltipManager.Instance.ShowTooltip(tooltipContent);
     }
 }

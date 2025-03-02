@@ -130,7 +130,7 @@ public class SideBarWrapper : MonoBehaviour
             HideBottombarIconRect.DORotate(new Vector3(0, 0, 180), 0.5f)
                 .SetEase(DG.Tweening.Ease.OutQuint);
 
-            HideBottomMenuTooltip.tooltipContent = "Show Bottom Bar";
+            HideBottomMenuTooltip.SetTooltipContent("Show Bottom Bar");
         }
         else
         {
@@ -159,7 +159,7 @@ public class SideBarWrapper : MonoBehaviour
             HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
                 .SetEase(DG.Tweening.Ease.OutQuint);
 
-            HideBottomMenuTooltip.tooltipContent = "Hide Bottom Bar";
+            HideBottomMenuTooltip.SetTooltipContent("Hide Bottom Bar");
         }
     }
 
