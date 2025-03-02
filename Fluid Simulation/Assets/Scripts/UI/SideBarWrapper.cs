@@ -10,15 +10,18 @@ public class SideBarWrapper : MonoBehaviour
 {
     [Header("This script handles the references and function calls for each of the sidebar buttons.\n This reduces the amount of drag and drops needed for managing the UI.\n")]
 
+    [Header("Function References")]
     [SerializeField] PauseMenuManager pauseMenuManager;
-    [SerializeField] GameObject simSettingsPanel;
-    [SerializeField] GameObject simulation2DGameObject;
-    [SerializeField] GameObject informationPanel;
-    [SerializeField] GameObject bottomBarParent;
+    private GameObject simulation2DGameObject;
     [SerializeField] AudioSource audioSource;
 
-    [SerializeField] TooltipTrigger HideBottomMenuTooltip;
+    [Header("Panel References")]
+    [SerializeField] GameObject simSettingsPanel;
+    [SerializeField] GameObject informationPanel;
+    [SerializeField] GameObject bottomBarParent;
 
+    [Header("Tooltip and Icon References")]
+    [SerializeField] TooltipTrigger HideBottomMenuTooltip;
     [SerializeField] Image PlayPauseSidebarIcon;
     [SerializeField] Image PlayPauseSidebarBG;
     [SerializeField] Image HideBottombarIcon;
