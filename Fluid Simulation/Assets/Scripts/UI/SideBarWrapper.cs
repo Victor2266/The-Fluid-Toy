@@ -187,18 +187,18 @@ public class SideBarWrapper : MonoBehaviour
 
         // Animate the bar sliding up
         bottomBarRect.DOAnchorPosY(targetY, 0.25f)
-            .SetEase(DG.Tweening.Ease.OutBack) // Adds a slight bounce effect
+            .SetEase(Ease.OutBack) // Adds a slight bounce effect
             .SetDelay(0.1f); // Small delay for better feel
 
         // Animate the opacity
         bottomBarCanvasGroup.DOFade(1f, 0.25f)
-            .SetEase(DG.Tweening.Ease.OutQuint)
-            .SetDelay(0.1f);
+            .SetEase(Ease.OutQuint)
+            .SetDelay(0.125f);
 
         // Animate the icon rotating
         HideBottombarBG.color = new Color(0f, 0f, 0f, 1f);
         HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
-            .SetEase(DG.Tweening.Ease.OutQuint);
+            .SetEase(Ease.OutQuint);
 
     }
 
