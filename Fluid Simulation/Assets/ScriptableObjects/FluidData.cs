@@ -18,7 +18,7 @@ public enum FluidType {
     Alcohol,
     Oil_Fire,
     Smoke,
-    CrudeOil,
+    Crude_Oil,
     CrudeOil_Fire,
     Cold_Fire
 }

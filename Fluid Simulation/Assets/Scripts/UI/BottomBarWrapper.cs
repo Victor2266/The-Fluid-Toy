@@ -12,6 +12,8 @@ public class BottomBarWrapper : MonoBehaviour
 
     [SerializeField] Button[] FluidTypebuttons;
 
+
+
     void Awake()
     {
         // if the simulation object reference is not set, try to get it by tag
@@ -32,6 +34,10 @@ public class BottomBarWrapper : MonoBehaviour
         {
             Debug.LogError("Simulation object reference is missing!");
         }
+
+        FluidTypebuttons = gameObject.GetComponentsInChildren<Button>(true)
+            .Where(b => b.gameObject.tag == "FluidTypeButton")
+            .ToArray();
     }
 
     void OnEnable()
@@ -48,6 +54,7 @@ public class BottomBarWrapper : MonoBehaviour
         simulation2DScript.setSelectedFluid(fluidTypeIndex);
         simulation2DScript.SetBrushType(0);
         audioSource.Play();
+        TooltipManager.Instance.SetLastSelectedFluid(((FluidType)fluidTypeIndex).ToString());
         resetButtonStates();
     }
 
@@ -55,6 +62,7 @@ public class BottomBarWrapper : MonoBehaviour
     {
         simulation2DScript.SetBrushType(brushTypeIndex);
         audioSource.Play();
+        TooltipManager.Instance.SetLastSelectedFluid(((BrushType)brushTypeIndex).ToString());
         resetButtonStates();
     }
 
@@ -62,7 +70,19 @@ public class BottomBarWrapper : MonoBehaviour
     {
         foreach (Button button in FluidTypebuttons)
         {
-            button.interactable = true;
+            if (TooltipManager.Instance.GetLastSelectedFluid() == null){ // At the start of level the last selected fluid is null
+                button.interactable = true;
+                return;
+            }
+
+            if (button.name == TooltipManager.Instance.GetLastSelectedFluid().Replace('_', ' '))
+            {
+                button.interactable = false;
+            }
+            else
+            {
+                button.interactable = true;
+            }
         }
     }
 }

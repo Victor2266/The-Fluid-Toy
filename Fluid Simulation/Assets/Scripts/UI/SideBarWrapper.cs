@@ -125,10 +125,12 @@ public class SideBarWrapper : MonoBehaviour
         if (bottomBarParent.activeSelf)
         {
             HideBottomMenu();
+            HideBottomMenuTooltip.SetTooltipContent("Show Bottom Bar");
         }
         else
         {
             ShowBottomMenu();
+            HideBottomMenuTooltip.SetTooltipContent("Hide Bottom Bar");
         }
     }
 
@@ -154,13 +156,11 @@ public class SideBarWrapper : MonoBehaviour
         HideBottombarBG.color = new Color(0.7058824f, 0.624576f, 0.1215686f);
         HideBottombarIconRect.DORotate(new Vector3(0, 0, 180), 0.5f)
             .SetEase(DG.Tweening.Ease.OutQuint);
-
-        HideBottomMenuTooltip.SetTooltipContent("Show Bottom Bar");
     }
     void ShowBottomMenu()
     {
         // if (bottomBarParent.activeSelf) return; // Skips playing animation if the bar is already visible
-        
+
         // If bottom bar is hidden, activate it and slide it up
         bottomBarParent.SetActive(true);
 
@@ -186,7 +186,6 @@ public class SideBarWrapper : MonoBehaviour
         HideBottombarIconRect.DORotate(new Vector3(0, 0, 0), 0.5f)
             .SetEase(DG.Tweening.Ease.OutQuint);
 
-        HideBottomMenuTooltip.SetTooltipContent("Hide Bottom Bar");
     }
 
     public void SelectBottomMenu(int index)

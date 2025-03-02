@@ -37,17 +37,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
 
-    // Brush Settings + Enum type
-    public enum BrushType
-    {
-        DRAW,
-        GRAVITY,
-        NOTHING
-    }
-
     [Header("Brush Type")]
 
-    [SerializeField] private BrushType brushState = BrushType.GRAVITY;
+    [SerializeField] private BrushType brushState = BrushType.Gravity;
 
     [Header("Interaction Settings")]
     public float interactionRadius;
@@ -536,14 +528,14 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         bool isPushInteraction = Input.GetMouseButton(1);
         float currInteractStrength = 0;
 
-        if (brushState == BrushType.GRAVITY)
+        if (brushState == BrushType.Gravity)
         {
             if (isPushInteraction || isPullInteraction)
             {
                 currInteractStrength = isPushInteraction ? -interactionStrength : interactionStrength;
             }
         }
-        else if (brushState == BrushType.DRAW)
+        else if (brushState == BrushType.Draw)
         {
             if (isPullInteraction)
             {
