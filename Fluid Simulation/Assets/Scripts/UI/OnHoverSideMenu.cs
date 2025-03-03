@@ -12,9 +12,11 @@ public class OnHoverSideMenu : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerEnter(PointerEventData eventData)
     {
         // Debug.Log("Mouse hover entered");
-        if (sideBarWrapper.IsBottomMenuVisible())
+        if (sideBarWrapper.IsBottomMenuVisible()) 
+        {   // Only play the sound effect and activate the menu on hover if it is not being hidden
             sideBarWrapper.SelectBottomMenu(menuIndex);
-        sideBarWrapper.playHoverSound();
+            sideBarWrapper.playHoverSound();
+        }
     }
     
     // Called when the pointer exits the button area
