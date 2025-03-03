@@ -12,7 +12,8 @@ public class SideBarWrapper : MonoBehaviour
 
     [Header("Function References")]
     [SerializeField] PauseMenuManager pauseMenuManager;
-    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioSource audioSource; // This is for clicking sound
+    [SerializeField] AudioSource audioSource2; // This is for hovering sound
 
     [Header("Panel References")]
     [SerializeField] GameObject simSettingsPanel;
@@ -202,9 +203,16 @@ public class SideBarWrapper : MonoBehaviour
 
     }
 
+    public void playClickSound(){
+        audioSource.Play();
+    }
+
+    public void playHoverSound(){
+        audioSource2.Play();
+    }
+
     public void SelectBottomMenu(int index)
     {
-        audioSource.Play();
         foreach (GameObject menuPanel in menuPanels)
         {
             if (menuPanel != null)
@@ -213,6 +221,11 @@ public class SideBarWrapper : MonoBehaviour
         if (menuPanels[index] != null)
             menuPanels[index].SetActive(true);
         ShowBottomMenu();
+    }
+
+    public bool IsBottomMenuVisible()
+    {
+        return bottomBarParent.activeSelf;
     }
 
     void OnDestroy()
