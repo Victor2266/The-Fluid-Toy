@@ -2,5 +2,6 @@
   pkgs.mkShell {
     # nativeBuildInputs is usually what you want -- tools you need to run
     nativeBuildInputs = with pkgs.buildPackages; [ 
-      unityhub ];
+      unityhub
+      python3 ];
 }
