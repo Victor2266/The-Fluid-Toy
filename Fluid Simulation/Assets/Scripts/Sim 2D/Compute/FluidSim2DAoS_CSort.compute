@@ -669,6 +669,8 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
 
+	int numNeighbours = 0;
+
 	// Neighbour search
 	for (int i = 0; i < 9; i ++)
 	{
@@ -699,6 +701,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 
 			// Skip if not within radius
 			if (sqrDstToNeighbour > sqrRadius) continue;
+			numNeighbours ++;
 
 			// Calculate pressure force
 			float dst = sqrt(sqrDstToNeighbour);
@@ -722,6 +725,12 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	}
 
 	float2 acceleration = pressureForce / density;
+
+	// If there are less than X neighbours, limit the pressure force to prevent unstability due to high pressure multipliers
+	if (numNeighbours < 4 && length(acceleration) > abs(fluidData.targetDensity)) {
+		acceleration = normalize(acceleration) * fluidData.targetDensity;
+	}
+
 	Particles[id.x].velocity += acceleration * deltaTime;//
 }
 
