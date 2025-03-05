@@ -21,6 +21,8 @@ public class ContinuousEdgeScroll : MonoBehaviour
     private RectTransform viewportRectTransform;
     private RectTransform contentRectTransform;
 
+    private bool isOnMobile = false;
+
     private void Start()
     {
         // Validate scroll rect reference
@@ -36,9 +38,21 @@ public class ContinuousEdgeScroll : MonoBehaviour
             return;
         }
 
-        // Ensure horizontal scrolling is enabled
-        scrollRect.horizontal = false;
-        scrollRect.vertical = false;
+        isOnMobile = Application.isMobilePlatform;
+
+        if (isOnMobile)
+        {
+            // Ensure horizontal scrolling is enabled
+            scrollRect.horizontal = true;
+            scrollRect.vertical = false;
+        }
+        else
+        {
+            // Ensure horizontal scrolling is disabled
+            scrollRect.horizontal = false;
+            scrollRect.vertical = false;
+        }
+
 
         // Cache rect transforms for performance
         viewportRectTransform = scrollRect.viewport;
@@ -47,6 +61,11 @@ public class ContinuousEdgeScroll : MonoBehaviour
 
     private void Update()
     {
+        if (isOnMobile)
+        {
+            return;
+        }
+        
         // Only scroll if content is wider than viewport
         if (contentRectTransform.rect.width <= viewportRectTransform.rect.width)
             return;
@@ -83,8 +102,8 @@ public class ContinuousEdgeScroll : MonoBehaviour
 
             // Smoothly update scroll position
             scrollRect.horizontalNormalizedPosition = Mathf.Lerp(
-                scrollRect.horizontalNormalizedPosition, 
-                scrollValue, 
+                scrollRect.horizontalNormalizedPosition,
+                scrollValue,
                 scrollSpeed * Time.deltaTime
             );
         }
