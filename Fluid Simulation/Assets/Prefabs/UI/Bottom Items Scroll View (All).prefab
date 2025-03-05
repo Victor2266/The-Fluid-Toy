@@ -303,6 +303,7 @@ GameObject:
   - component: {fileID: 3236837702022583222}
   - component: {fileID: 2172686652758077390}
   - component: {fileID: 7741581685545149440}
+  - component: {fileID: 4497720422058347654}
   m_Layer: 5
   m_Name: Bottom Items Scroll View (All)
   m_TagString: Untagged
@@ -382,13 +383,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 8161505247863047272}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 0
   m_MovementType: 1
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: -24
+  m_ScrollSensitivity: 0
   m_Viewport: {fileID: 3958741888185008394}
   m_HorizontalScrollbar: {fileID: 3628922035406112942}
   m_VerticalScrollbar: {fileID: 0}
@@ -511,6 +512,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4497720422058347654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5948230455770635270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53db15a37f8ea3b4a80840df87312d5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollRect: {fileID: 0}
+  edgeDetectionWidth: 96
+  scrollSpeed: 20
+  rightEdgeOffset: 40
 --- !u!1 &6279101590907548227
 GameObject:
   m_ObjectHideFlags: 0
@@ -1518,6 +1535,10 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4292993535
       objectReference: {fileID: 0}
+    - target: {fileID: 5772074398013544668, guid: d40c87f91358c084d85edcd80aa6096d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2172686652758077390}
     - target: {fileID: 5772074398013544668, guid: d40c87f91358c084d85edcd80aa6096d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetBrushType
