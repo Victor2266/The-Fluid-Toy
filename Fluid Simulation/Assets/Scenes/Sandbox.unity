@@ -768,11 +768,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothingSpeed: 0.2
   enableSmoothing: 1
-  resizable: 0
+  resizable: 1
   uniformScaling: 1
   scaleSpeed: 0.1
-  minScale: 0.1
-  maxScale: 5
+  minScale: 1
+  maxScale: 8
 --- !u!58 &336022956
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -968,7 +968,7 @@ MonoBehaviour:
   resizable: 1
   uniformScaling: 0
   scaleSpeed: 0.1
-  minScale: 1
+  minScale: 0.4
   maxScale: 18
 --- !u!50 &474748747
 Rigidbody2D:
@@ -1447,8 +1447,8 @@ MonoBehaviour:
   resizable: 1
   uniformScaling: 0
   scaleSpeed: 0.1
-  minScale: 1
-  maxScale: 12
+  minScale: 0.4
+  maxScale: 18
 --- !u!61 &720039255
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2164,7 +2164,7 @@ MonoBehaviour:
   resizable: 1
   uniformScaling: 0
   scaleSpeed: 0.1
-  minScale: 1
+  minScale: 0.4
   maxScale: 18
 --- !u!50 &1163845347
 Rigidbody2D:
@@ -3264,8 +3264,8 @@ MonoBehaviour:
   resizable: 1
   uniformScaling: 0
   scaleSpeed: 0.1
-  minScale: 0.1
-  maxScale: 5
+  minScale: 0.4
+  maxScale: 18
 --- !u!50 &1812870173
 Rigidbody2D:
   serializedVersion: 5
@@ -3679,8 +3679,8 @@ MonoBehaviour:
   resizable: 1
   uniformScaling: 0
   scaleSpeed: 0.1
-  minScale: 0.1
-  maxScale: 5
+  minScale: 0.4
+  maxScale: 18
 --- !u!50 &2085101043
 Rigidbody2D:
   serializedVersion: 5
@@ -4388,6 +4388,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4769959029165411561, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 4800245696705824153, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -4435,6 +4439,10 @@ PrefabInstance:
     - target: {fileID: 5033988754621790227, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346412169051069752, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_Name
+      value: 20 width spacer
       objectReference: {fileID: 0}
     - target: {fileID: 5970111011558180506, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
