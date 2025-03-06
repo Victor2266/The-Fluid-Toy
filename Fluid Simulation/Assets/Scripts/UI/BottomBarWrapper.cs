@@ -19,6 +19,8 @@ public class BottomBarWrapper : MonoBehaviour
 
     [SerializeField] Button[] FluidTypebuttons;
 
+    private float lastBrushSizePercent = -1f;
+    private float lastBrushStrengthPercent = -1f;
 
 
     void Awake()
@@ -110,12 +112,21 @@ public class BottomBarWrapper : MonoBehaviour
         if (brushSizeSlider != null && brushStrengthSlider != null)
         {
             float brushSizePercent = simulation2DScript.getBrushSizePercent();
-            brushSizeSlider.value = brushSizePercent;
-            brushSizeText.text = (brushSizePercent * 100f).ToString("F0") + "%";
+            if (brushSizePercent != lastBrushSizePercent)
+            {
+                lastBrushSizePercent = brushSizePercent;
+                brushSizeSlider.value = brushSizePercent;
+                brushSizeText.text = (brushSizePercent * 100f).ToString("F0") + "%";
+            }
 
             float brushStrengthPercent = simulation2DScript.getBrushStrengthPercent();
-            brushStrengthSlider.value = brushStrengthPercent;
-            brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
+            if (brushStrengthPercent != lastBrushStrengthPercent)
+            {
+                lastBrushStrengthPercent = brushStrengthPercent;
+                brushStrengthSlider.value = brushStrengthPercent;
+                brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
+            }
         } 
     }
 }
+
