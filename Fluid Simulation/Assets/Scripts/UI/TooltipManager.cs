@@ -21,7 +21,7 @@ public class TooltipManager : MonoBehaviour
     [SerializeField] private Image background;
     [SerializeField] private Vector2 padding = new Vector2(16, 2);
 
-    private String LastSelectedFluid;
+    private string LastSelectedFluid;
 
     private void Awake()
     {
@@ -95,6 +95,7 @@ public class TooltipManager : MonoBehaviour
         // Kill any ongoing animations
         currentSequence?.Kill();
         canvasGroup.DOKill();
+        LastSelectedFluid = null;
     }
 
     public string GetLastSelectedFluid()

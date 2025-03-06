@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,7 +9,7 @@ public class Level2Manager : LevelManager
     [Header("Level References")]
     public FluidDetector fluidDetector;
     public GameObject sourceObjectParent;
-
+    public Transform targetTransform;
     public GameObject tableObject;
 
     private IFluidSimulation sim;
@@ -107,6 +108,8 @@ public class Level2Manager : LevelManager
             if (Time.time - timeOfLastHit > hitTimeOffset)
             {
                 targetHits += 1;
+                // Shake for 0.05 seconds with strength of 0.1
+                targetTransform.DOShakePosition(0.025f, 0.075f, fadeOut: true);
                 targetAudioSource.PlayOneShot(targetAudioSource.clip, 1f);
                 timeOfLastHit = Time.time;
                 timeOfLastDecay = 0;
@@ -293,5 +296,10 @@ public class Level2Manager : LevelManager
         }
 
         return randomClip;
+    }
+
+    void OnDestroy()
+    {
+        targetTransform.DOKill();
     }
 }

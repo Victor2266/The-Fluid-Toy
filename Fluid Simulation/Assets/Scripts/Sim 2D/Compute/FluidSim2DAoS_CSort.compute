@@ -661,13 +661,16 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 
 	float density = Particles[id.x].density[0];
 	float densityNear = Particles[id.x].density[1];
-	float pressure = PressureFromDensity(density, fluidData.targetDensity, fluidData.pressureMultiplier);
+	float pressureMultiplier = fluidData.pressureMultiplier;
+	float pressure = PressureFromDensity(density, fluidData.targetDensity, pressureMultiplier);
 	float nearPressure = NearPressureFromDensity(densityNear, fluidData.nearPressureMultiplier);
 	float2 pressureForce = 0;
 
 	float2 pos = Particles[id.x].predictedPosition;
 	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
 	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
+
+	int numNeighbours = 0;
 
 	// Neighbour search
 	for (int i = 0; i < 9; i ++)
@@ -699,6 +702,7 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 
 			// Skip if not within radius
 			if (sqrDstToNeighbour > sqrRadius) continue;
+			numNeighbours ++;
 
 			// Calculate pressure force
 			float dst = sqrt(sqrDstToNeighbour);
@@ -722,6 +726,15 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 	}
 
 	float2 acceleration = pressureForce / density;
+
+	if (pressureMultiplier > 512) {
+		// If there are less than X neighbours, limit the pressure force to prevent unstability due to high pressure multipliers
+		// Only do this for particles with high pressure multipliers (greater than 512)
+		if (numNeighbours < round(pressureMultiplier / 64.0) && length(acceleration) > 100) {
+			acceleration = normalize(acceleration) * 100;
+		}
+	}
+
 	Particles[id.x].velocity += acceleration * deltaTime;//
 }
 
