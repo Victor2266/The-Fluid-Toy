@@ -104,7 +104,10 @@ public class BottomBarWrapper : MonoBehaviour
     
     public void setBrushStrengthPercent()
     {
-        simulation2DScript.setInteractionStrengthPercent(brushStrengthSlider.value);
+        if (brushStrengthSlider.value != simulation2DScript.getBrushStrengthPercent())
+        {
+            simulation2DScript.setInteractionStrengthPercent(brushStrengthSlider.value);
+        }   
     }
 
     private void updateBrushSettingSliders()
