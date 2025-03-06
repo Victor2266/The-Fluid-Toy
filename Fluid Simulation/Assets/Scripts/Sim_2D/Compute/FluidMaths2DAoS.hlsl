@@ -1,5 +1,4 @@
 
-
 float SmoothingKernelPoly6(float dst, float radius, float val)
 {
 	if (dst < radius)
