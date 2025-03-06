@@ -11,7 +11,7 @@
 #pragma kernel UpdateStates
 
 // Includes
-#include "./FluidMaths2DAoS.hlsl"
+#include "./FluidMaths2DAoS.hlsl" 
 #include "./SpatialHash.hlsl"
 
 static const int NumThreads = 64;
