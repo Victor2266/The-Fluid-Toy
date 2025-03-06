@@ -59,7 +59,11 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
 
     [Header("Interaction Settings")]
     public float interactionRadius;
+    public float minRadius = 0.25f;
+    public float maxRadius = 24f;
     public float interactionStrength;
+    public float minStrength = 36f;
+    public float maxStrength = 720f;
 
     // Brush Settings + Enum type
     public enum BrushType
@@ -476,9 +480,33 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     {
         return numParticles;
     }
-    public float GetInteractionRadius()
+    public float getInteractionRadius()
     {
         return interactionRadius;
+    }
+    public float getInteractionStrength()
+    {
+        return interactionStrength;
+    }
+
+    public float getBrushSizePercent()
+    {
+        return (interactionRadius - minRadius) / (maxRadius - minRadius);
+    }
+
+    public float getBrushStrengthPercent()
+    {
+        return (interactionStrength - minStrength) / (maxStrength - minStrength);
+    }
+
+    public void setInteractionRadiusPercent(float radius) // This takes a value between 0 and 1
+    {
+        interactionRadius = Mathf.Lerp(minRadius, maxRadius, Mathf.Clamp01(radius));
+    }
+
+    public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
+    {
+        interactionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
 
     public SourceObjectInitializer GetFirstSourceObject(){

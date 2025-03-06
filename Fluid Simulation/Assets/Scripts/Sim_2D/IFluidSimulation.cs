@@ -59,7 +59,12 @@ public interface IFluidSimulation
     /// <summary>
     /// Get interaction radius
     /// </summary>
-    float GetInteractionRadius();
+    float getInteractionRadius();
+    float getInteractionStrength();
+    float getBrushSizePercent();
+    float getBrushStrengthPercent();
+    void setInteractionRadiusPercent(float radius);
+    void setInteractionStrengthPercent(float strength);
 
     SourceObjectInitializer GetFirstSourceObject();
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,12 @@ public class BottomBarWrapper : MonoBehaviour
     [SerializeField] GameObject simulation2DGameObject;
     [SerializeField] AudioSource audioSource;
     private IFluidSimulation simulation2DScript;
+
+    [SerializeField] Slider brushSizeSlider;
+    [SerializeField] TMP_Text brushSizeText;
+
+    [SerializeField] Slider brushStrengthSlider;
+    [SerializeField] TMP_Text brushStrengthText;
 
     [SerializeField] Button[] FluidTypebuttons;
 
@@ -34,10 +41,6 @@ public class BottomBarWrapper : MonoBehaviour
         {
             Debug.LogError("Simulation object reference is missing!");
         }
-
-        FluidTypebuttons = gameObject.GetComponentsInChildren<Button>(true)
-            .Where(b => b.gameObject.tag == "FluidTypeButton")
-            .ToArray();
     }
 
     void OnEnable()
@@ -47,6 +50,12 @@ public class BottomBarWrapper : MonoBehaviour
             .ToArray();
 
         resetButtonStates();
+        updateBrushSettingSliders();
+    }
+
+    void Update()
+    {
+        updateBrushSettingSliders();
     }
 
     public void setSelectedFluid(int fluidTypeIndex)
@@ -84,5 +93,29 @@ public class BottomBarWrapper : MonoBehaviour
                 button.interactable = true;
             }
         }
+    }
+
+    public void setBrushSizePercent()
+    {
+        simulation2DScript.setInteractionRadiusPercent(brushSizeSlider.value);
+    }
+    
+    public void setBrushStrengthPercent()
+    {
+        simulation2DScript.setInteractionStrengthPercent(brushStrengthSlider.value);
+    }
+
+    private void updateBrushSettingSliders()
+    {
+        if (brushSizeSlider != null && brushStrengthSlider != null)
+        {
+            float brushSizePercent = simulation2DScript.getBrushSizePercent();
+            brushSizeSlider.value = brushSizePercent;
+            brushSizeText.text = (brushSizePercent * 100f).ToString("F0") + "%";
+
+            float brushStrengthPercent = simulation2DScript.getBrushStrengthPercent();
+            brushStrengthSlider.value = brushStrengthPercent;
+            brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
+        } 
     }
 }

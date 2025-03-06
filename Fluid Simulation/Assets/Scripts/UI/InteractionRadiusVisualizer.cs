@@ -97,7 +97,7 @@ public class InteractionRadiusVisualizer : MonoBehaviour
     void UpdateCirclePositionsIfNeeded()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float currentRadius = simulation.GetInteractionRadius();
+        float currentRadius = simulation.getInteractionRadius();
 
         if (currentRadius != lastRadius || mousePosition != lastMousePosition)
         {

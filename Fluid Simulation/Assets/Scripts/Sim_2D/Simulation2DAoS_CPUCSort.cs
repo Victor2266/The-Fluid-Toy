@@ -43,9 +43,11 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
     [Header("Interaction Settings")]
     public float interactionRadius;
-    public float interactionStrength;
     public float minRadius = 0.25f;
     public float maxRadius = 24f;
+    public float interactionStrength;
+    public float minStrength = 36f;
+    public float maxStrength = 720f;
     public float smoothingTime = 0.04f;
     public bool enableScrolling = false;
     private float targetInteractionRadius;
@@ -839,9 +841,33 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         return numParticles;
     }
-    public float GetInteractionRadius()
+    public float getInteractionRadius()
     {
         return interactionRadius;
+    }
+    public float getInteractionStrength()
+    {
+        return interactionStrength;
+    }
+
+    public float getBrushSizePercent()
+    {
+        return (targetInteractionRadius - minRadius) / (maxRadius - minRadius);
+    }
+
+    public float getBrushStrengthPercent()
+    {
+        return (targetInteractionRadius - minStrength) / (maxStrength - minStrength);
+    }
+
+    public void setInteractionRadiusPercent(float radius) // This takes a value between 0 and 1
+    {
+        targetInteractionRadius = Mathf.Lerp(minRadius, maxRadius, Mathf.Clamp01(radius));
+    }
+
+    public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
+    {
+        targetInteractionRadius = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
 
     void initializeCPUKernelSettingsAoS()
