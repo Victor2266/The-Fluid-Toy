@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(LineRenderer))]
 public class InteractionStrengthVisualizer : MonoBehaviour
@@ -12,6 +13,11 @@ public class InteractionStrengthVisualizer : MonoBehaviour
     [SerializeField] private bool alwaysShow = true;
     [SerializeField] [Range(8, 64)] private int segments = 32;
     
+    [Header("Strength Text")]
+    [SerializeField] private GameObject strengthTextPrefab;
+    [SerializeField] private Color textColor = Color.white;
+    [SerializeField] private Vector2 textOffset = new Vector2(0, 30f);
+    
     private LineRenderer lineRenderer;
     private Vector3[] circlePositions;
     private float lastRadius;
@@ -23,6 +29,10 @@ public class InteractionStrengthVisualizer : MonoBehaviour
 
     private float fadeProgress = 0f;
     private float fadeOutTime = 0.15f;
+    
+    // Text component references
+    private GameObject strengthTextObject;
+    private TextMeshProUGUI strengthText;
 
     void Start()
     {
@@ -30,6 +40,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         simulation = simulationGameObject.GetComponent<IFluidSimulation>();
         InitializeLineRenderer();
         PrecalculateCircle();
+        SetupStrengthText();
     }
 
     void Update()
@@ -39,11 +50,12 @@ public class InteractionStrengthVisualizer : MonoBehaviour
             currentStrength = simulation.getBrushStrengthPercent();
             UpdateVisualizationState();
             UpdateCirclePositionsIfNeeded();
+            UpdateStrengthText();
         }
         else {
             lineRenderer.enabled = false;
+            strengthTextObject.SetActive(false);
         }
-
     }
 
     void InitializeLineRenderer()
@@ -75,6 +87,47 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         }
     }
 
+    void SetupStrengthText()
+    {
+        // If a prefab is provided, instantiate it
+        if (strengthTextPrefab != null)
+        {
+            strengthTextObject = Instantiate(strengthTextPrefab, transform);
+        }
+        // Otherwise create a new TextMeshPro object
+        else
+        {
+            strengthTextObject = new GameObject("StrengthText");
+            strengthTextObject.transform.SetParent(transform);
+            
+            // Add TextMeshPro component
+            strengthText = strengthTextObject.AddComponent<TextMeshProUGUI>();
+            
+            // Setup text properties
+            strengthText.fontSize = 2;
+            strengthText.alignment = TextAlignmentOptions.Center;
+            strengthText.color = textColor;
+            
+            // Make sure it renders on top
+            Canvas canvas = strengthTextObject.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.sortingOrder = 10;
+            
+            // Add a RectTransform and set its properties
+            RectTransform rectTransform = strengthText.GetComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(10, 3);
+        }
+        
+        // Get the TextMeshPro component if we didn't create it above
+        if (strengthText == null)
+        {
+            strengthText = strengthTextObject.GetComponentInChildren<TextMeshProUGUI>();
+        }
+        
+        // Hide initially if not always shown
+        strengthTextObject.SetActive(alwaysShow);
+    }
+
     void UpdateVisualizationState()
     {
         if (currentStrength != lastStrength)
@@ -86,14 +139,10 @@ public class InteractionStrengthVisualizer : MonoBehaviour
             fadeProgress += Time.deltaTime;
         }
         
-        if (alwaysShow)
-        {
-            lineRenderer.enabled = true;
-        }
-        else
-        {
-            lineRenderer.enabled = fadeProgress < fadeOutTime;
-        }
+        bool shouldShow = alwaysShow || fadeProgress < fadeOutTime;
+        
+        lineRenderer.enabled = shouldShow;
+        strengthTextObject.SetActive(shouldShow);
 
         SetLineColor(circleColor);
     }
@@ -102,7 +151,6 @@ public class InteractionStrengthVisualizer : MonoBehaviour
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         
-
         if (currentRadius != lastRadius || mousePosition != lastMousePosition)
         {
             UpdateCirclePositions(mousePosition, currentRadius);
@@ -117,6 +165,21 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         {
             lineRenderer.SetPosition(i, center + (Vector2)(circlePositions[i] * radius));
         }
+    }
+
+    void UpdateStrengthText()
+    {
+        // Update text content - show percentage
+        strengthText.text = $"{Mathf.Round(currentStrength * 100)}%";
+        
+        // Update color with same fade as circle
+        Color fadeTextColor = textColor;
+        fadeTextColor.a = Mathf.Lerp(1f, 0f, fadeProgress / fadeOutTime);
+        strengthText.color = fadeTextColor;
+        
+        // Position text above the circle
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        strengthTextObject.transform.position = new Vector3(mousePosition.x + textOffset.x, mousePosition.y + textOffset.y, 0);
     }
 
     void SetLineColor(Color color)
