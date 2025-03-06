@@ -51,7 +51,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public float smoothingTime = 0.04f;
     public bool enableScrolling = false;
     private float targetInteractionRadius;
-    private float smoothVelocity;
+    private float targetInteractionStrength;
+    private float smoothRadiusVelocity;
+    private float smoothStrengthVelocity;
 
 
 
@@ -155,6 +157,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         Debug.Log("This level is using the CPU CSort");
         CPUKernelAOS = new CPUParticleKernelAoS();
         targetInteractionRadius = interactionRadius;
+        targetInteractionStrength = interactionStrength;
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
 
@@ -572,10 +575,19 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
         if (scrollDelta != 0)
         {
-            // Apply scroll input to target radius with exponential scaling
-            float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
-            targetInteractionRadius *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
-            targetInteractionRadius = Mathf.Clamp(targetInteractionRadius, minRadius, maxRadius);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                // Apply scroll input to target strength with exponential scaling
+                float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
+                targetInteractionStrength *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
+                targetInteractionStrength = Mathf.Clamp(targetInteractionStrength, minStrength, maxStrength);
+            }
+            else{
+                // Apply scroll input to target radius with exponential scaling
+                float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
+                targetInteractionRadius *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
+                targetInteractionRadius = Mathf.Clamp(targetInteractionRadius, minRadius, maxRadius);
+            }
         }
     }
     void ApplySmoothing()
@@ -583,7 +595,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // Smoothly interpolate to the target radius
         interactionRadius = Mathf.SmoothDamp(interactionRadius,
             targetInteractionRadius,
-            ref smoothVelocity,
+            ref smoothRadiusVelocity,
+            smoothingTime);
+
+        // Smoothly interpolate to the target strength
+        interactionStrength = Mathf.SmoothDamp(interactionStrength,
+            targetInteractionStrength,
+            ref smoothStrengthVelocity,
             smoothingTime);
     }
 
@@ -852,22 +870,22 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
 
     public float getBrushSizePercent()
     {
-        return (targetInteractionRadius - minRadius) / (maxRadius - minRadius);
+        return Mathf.Clamp01((interactionRadius - minRadius) / (maxRadius - minRadius));
     }
 
     public float getBrushStrengthPercent()
     {
-        return (targetInteractionRadius - minStrength) / (maxStrength - minStrength);
+        return Mathf.Clamp01((interactionStrength - minStrength) / (maxStrength - minStrength));
     }
 
-    public void setInteractionRadiusPercent(float radius) // This takes a value between 0 and 1
+    public void setInteractionRadiusPercent(float val) // This takes a value between 0 and 1
     {
-        targetInteractionRadius = Mathf.Lerp(minRadius, maxRadius, Mathf.Clamp01(radius));
+        targetInteractionRadius = Mathf.Lerp(minRadius, maxRadius, Mathf.Clamp01(val));
     }
 
     public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
     {
-        targetInteractionRadius = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
+        targetInteractionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
 
     void initializeCPUKernelSettingsAoS()

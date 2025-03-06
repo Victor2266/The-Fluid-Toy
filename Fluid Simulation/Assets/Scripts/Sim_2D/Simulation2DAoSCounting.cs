@@ -146,6 +146,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         Debug.Log("Controls: Space = Play/Pause, R = Reset, LMB = Attract, RMB = Repel");
 
         targetInteractionRadius = interactionRadius;
+        targetInteractionStrength = interactionStrength;
         spawnData = spawner.GetSpawnData();
         numParticles = spawnData.positions.Length;
 
@@ -463,10 +464,19 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         if (scrollDelta != 0)
         {
-            // Apply scroll input to target radius with exponential scaling
-            float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
-            targetInteractionRadius *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
-            targetInteractionRadius = Mathf.Clamp(targetInteractionRadius, minRadius, maxRadius);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                // Apply scroll input to target strength with exponential scaling
+                float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
+                targetInteractionStrength *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
+                targetInteractionStrength = Mathf.Clamp(targetInteractionStrength, minStrength, maxStrength);
+            }
+            else{
+                // Apply scroll input to target radius with exponential scaling
+                float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
+                targetInteractionRadius *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
+                targetInteractionRadius = Mathf.Clamp(targetInteractionRadius, minRadius, maxRadius);
+            }
         }
     }
     void ApplySmoothing()
@@ -475,6 +485,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         interactionRadius = Mathf.SmoothDamp(interactionRadius,
             targetInteractionRadius,
             ref smoothRadiusVelocity,
+            smoothingTime);
+
+        // Smoothly interpolate to the target strength
+        interactionStrength = Mathf.SmoothDamp(interactionStrength,
+            targetInteractionStrength,
+            ref smoothStrengthVelocity,
             smoothingTime);
     }
 
