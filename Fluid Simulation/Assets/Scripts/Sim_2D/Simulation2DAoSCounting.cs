@@ -51,8 +51,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public float smoothingTime = 0.04f;
     public bool enableScrolling = false;
     private float targetInteractionRadius;
-    private float smoothVelocity;
-
+    private float targetInteractionStrength;
+    private float smoothRadiusVelocity;
+    private float smoothStrengthVelocity;
 
     // Fluid data array and buffer (to serialize then pass to GPU)
     [Header("Fluid Data Types")]
@@ -473,7 +474,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Smoothly interpolate to the target radius
         interactionRadius = Mathf.SmoothDamp(interactionRadius,
             targetInteractionRadius,
-            ref smoothVelocity,
+            ref smoothRadiusVelocity,
             smoothingTime);
     }
 
@@ -798,22 +799,22 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public float getBrushSizePercent()
     {
-        return (targetInteractionRadius - minRadius) / (maxRadius - minRadius);
+        return Mathf.Clamp01((targetInteractionRadius - minRadius) / (maxRadius - minRadius));
     }
 
     public float getBrushStrengthPercent()
     {
-        return (targetInteractionRadius - minStrength) / (maxStrength - minStrength);
+        return Mathf.Clamp01((targetInteractionRadius - minStrength) / (maxStrength - minStrength));
     }
 
-    public void setInteractionRadiusPercent(float radius) // This takes a value between 0 and 1
+    public void setInteractionRadiusPercent(float val) // This takes a value between 0 and 1
     {
-        targetInteractionRadius = Mathf.Lerp(minRadius, maxRadius, Mathf.Clamp01(radius));
+        targetInteractionRadius = Mathf.Lerp(minRadius, maxRadius, Mathf.Clamp01(val));
     }
 
     public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
     {
-        targetInteractionRadius = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
+        targetInteractionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
 
     public SourceObjectInitializer GetFirstSourceObject()

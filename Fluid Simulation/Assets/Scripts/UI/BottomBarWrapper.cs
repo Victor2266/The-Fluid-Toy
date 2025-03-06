@@ -19,10 +19,6 @@ public class BottomBarWrapper : MonoBehaviour
 
     [SerializeField] Button[] FluidTypebuttons;
 
-    private float lastBrushSizePercent = -1f;
-    private float lastBrushStrengthPercent = -1f;
-
-
     void Awake()
     {
         // if the simulation object reference is not set, try to get it by tag
@@ -99,7 +95,11 @@ public class BottomBarWrapper : MonoBehaviour
 
     public void setBrushSizePercent()
     {
-        simulation2DScript.setInteractionRadiusPercent(brushSizeSlider.value);
+        if(brushSizeSlider.value != simulation2DScript.getBrushSizePercent())
+        {
+            simulation2DScript.setInteractionRadiusPercent(brushSizeSlider.value);
+        }
+        
     }
     
     public void setBrushStrengthPercent()
@@ -115,17 +115,15 @@ public class BottomBarWrapper : MonoBehaviour
         }
 
         float brushSizePercent = simulation2DScript.getBrushSizePercent();
-        if (brushSizePercent != lastBrushSizePercent)
+        if (brushSizePercent != brushSizeSlider.value)
         {
-            lastBrushSizePercent = brushSizePercent;
             brushSizeSlider.value = brushSizePercent;
             brushSizeText.text = (brushSizePercent * 100f).ToString("F0") + "%";
         }
 
         float brushStrengthPercent = simulation2DScript.getBrushStrengthPercent();
-        if (brushStrengthPercent != lastBrushStrengthPercent)
+        if (brushStrengthPercent != brushStrengthSlider.value)
         {
-            lastBrushStrengthPercent = brushStrengthPercent;
             brushStrengthSlider.value = brushStrengthPercent;
             brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
         }
