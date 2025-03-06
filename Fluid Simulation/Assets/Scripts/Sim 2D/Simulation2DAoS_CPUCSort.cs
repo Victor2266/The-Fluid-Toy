@@ -138,6 +138,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     //CPU Compute
     
     public bool toggleCPUComputing = false;
+    public bool runCPUGPUEveryFrame = false;
 
     CPUParticleKernelAoS CPUKernelAOS;
 
@@ -351,12 +352,17 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             for (int i = 0; i < iterationsPerFrame; i++)
             {
                 if(toggleCPUComputing){
-                    if(!cpuflip){
-                        cpuflip = true;
-                        RunSimulationStepGPU();
-                    }else{
+                    if(runCPUGPUEveryFrame){
                         cpuflip = false;
-                        RunSimulationStepCPU();
+                        RunSimulationStepCPUGPUEveryFrame();
+                    }else{
+                        if(!cpuflip){
+                            cpuflip = true;
+                            RunSimulationStepGPU();
+                        }else{
+                            cpuflip = false;
+                            RunSimulationStepCPU();
+                        }
                     }
                 }else{
                     cpuflip = false;
@@ -381,6 +387,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
         runCPUComputeTest();
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: temperatureKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
 
     }
     void RunSimulationStepGPU()
@@ -406,6 +415,28 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
         particleBuffer.GetData(CPUKernelAOS.particles);
         
+    }
+
+    void RunSimulationStepCPUGPUEveryFrame()
+    {
+         // Init + ext forces
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: SpawnParticlesKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: externalForcesKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: spatialHashKernel);
+
+        // Sort & offsets; copyback for memory coherency
+        gpuSort.Run();
+        spatialOffsetsCalc.Run(false);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: reorderCopybackKernel);
+        keyarrbuffer.GetData(CPUKernelAOS.keyarr);
+        spatialOffsets.GetData(CPUKernelAOS.spatialOffsets);
+        spatialIndices.GetData(CPUKernelAOS.spatialIndices);
+        particleBuffer.GetData(CPUKernelAOS.particles);
+        runCPUComputeTest();
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: temperatureKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
     }
     void RunSimulationStep()
     {
