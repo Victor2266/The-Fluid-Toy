@@ -28,7 +28,6 @@ public class targetHitsDisplay : MonoBehaviour
         if (manager == null)
         {
             manager = FindFirstObjectByType<LevelManager>();
-            
             if (manager == null)
             {
                 Debug.LogError("No levelManager found in scene!");

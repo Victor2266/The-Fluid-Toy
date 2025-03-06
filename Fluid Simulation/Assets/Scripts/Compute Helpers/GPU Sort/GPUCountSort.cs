@@ -17,6 +17,7 @@ public class GPUCountSort
 	const int CountKernel = 1;
 	const int ScatterOutputsKernel = 2;
 	const int CopyBackKernel = 3;
+	const int CopyBackCPUKernel = 4;
 
 	// Original Function
 	public GPUCountSort(ComputeBuffer keyBuffer, ComputeBuffer valueBuffer, uint maxValue)
@@ -49,19 +50,31 @@ public class GPUCountSort
 		cntBuffer = ComputeHelper.CreateStructuredBuffer<uint>( (int) maxValue + 1 );
 
 		// Input buffers
-		ComputeHelper.SetBuffer(cs, keyBuffer, "InputKeys", CountKernel, ScatterOutputsKernel, CopyBackKernel);
-		ComputeHelper.SetBuffer(cs, valueBuffer, "InputValues", ScatterOutputsKernel, CopyBackKernel);
+		ComputeHelper.SetBuffer(cs, keyBuffer, "InputKeys", CountKernel, ScatterOutputsKernel, CopyBackKernel, CopyBackCPUKernel);
+		ComputeHelper.SetBuffer(cs, valueBuffer, "InputValues", ScatterOutputsKernel, CopyBackKernel, CopyBackCPUKernel);
 
 		// Outputs + internal counts
-		ComputeHelper.SetBuffer(cs, sortedKBuffer, "SortedKeys", ScatterOutputsKernel, CopyBackKernel);
-		ComputeHelper.SetBuffer(cs, sortedVBuffer, "SortedValues", ScatterOutputsKernel, CopyBackKernel);
+		ComputeHelper.SetBuffer(cs, sortedKBuffer, "SortedKeys", ScatterOutputsKernel, CopyBackKernel, CopyBackCPUKernel);
+		ComputeHelper.SetBuffer(cs, sortedVBuffer, "SortedValues", ScatterOutputsKernel, CopyBackKernel, CopyBackCPUKernel);
 		ComputeHelper.SetBuffer(cs, cntBuffer, "Counts", ClearCountsKernel, CountKernel, ScatterOutputsKernel);
 
-		ComputeHelper.SetBuffer(cs, keyArr, "KeyArr", CopyBackKernel);
+		ComputeHelper.SetBuffer(cs, keyArr, "KeyArr", CopyBackCPUKernel);
 
 		cs.SetInt("numInputs", count);
 	}
 	
+
+	public void RunKeyGen()
+	{
+		int count = sortedKBuffer.count;
+
+		ComputeHelper.Dispatch(cs, count, kernelIndex: ClearCountsKernel);
+		ComputeHelper.Dispatch(cs, count, kernelIndex: CountKernel);
+
+		scan.Run(cntBuffer);
+		ComputeHelper.Dispatch(cs, count, kernelIndex: ScatterOutputsKernel);
+		ComputeHelper.Dispatch(cs, count, kernelIndex: CopyBackCPUKernel);
+	}
 
 	public void Run()
 	{

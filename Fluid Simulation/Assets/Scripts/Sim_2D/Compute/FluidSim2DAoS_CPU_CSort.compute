@@ -989,14 +989,14 @@ void UpdateStates(uint3 id : SV_DispatchThreadID)
 void mergeCPUParticles(uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numParticles) return;
-	Particle particle = Particles[id.x];
+	Particle particle = CPUParticles[id.x];
 	if (particle.type == 0) return; // Skip disabled
 	int2 cell2 = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
 	uint hash2 = HashCell2D(cell2);
 	uint key2 = KeyFromHash(hash2, numParticles);
 	for (uint j = 0; j < numCPUKeys; j++) {
 		if (key2 == keyarr[j]) {
-			Particles[id.x] = CPUParticles[id.x];
+			Particles[id.x] = particle;
 		}
 	}
 }

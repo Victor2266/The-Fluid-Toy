@@ -2,7 +2,7 @@
 #pragma kernel CalculateCounts
 #pragma kernel ScatterOutput
 #pragma kernel CopyBack
-
+#pragma kernel CopyBackCPU
 struct Entry
 {
 	uint hash;
@@ -58,6 +58,15 @@ void ScatterOutput(uint3 id : SV_DispatchThreadID)
 
 [numthreads(GroupSize, 1, 1)]
 void CopyBack(uint3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numInputs) return;
+
+	InputKeys[id.x] = SortedKeys[id.x];
+	InputValues[id.x] = SortedValues[id.x];
+}
+
+[numthreads(GroupSize, 1, 1)]
+void CopyBackCPU(uint3 id : SV_DispatchThreadID)
 {
 	if (id.x >= numInputs) return;
 
