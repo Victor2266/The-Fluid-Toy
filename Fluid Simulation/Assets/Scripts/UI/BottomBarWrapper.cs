@@ -109,24 +109,26 @@ public class BottomBarWrapper : MonoBehaviour
 
     private void updateBrushSettingSliders()
     {
-        if (brushSizeSlider != null && brushStrengthSlider != null)
+        if (brushSizeSlider == null || brushStrengthSlider == null)
         {
-            float brushSizePercent = simulation2DScript.getBrushSizePercent();
-            if (brushSizePercent != lastBrushSizePercent)
-            {
-                lastBrushSizePercent = brushSizePercent;
-                brushSizeSlider.value = brushSizePercent;
-                brushSizeText.text = (brushSizePercent * 100f).ToString("F0") + "%";
-            }
+            return;
+        }
 
-            float brushStrengthPercent = simulation2DScript.getBrushStrengthPercent();
-            if (brushStrengthPercent != lastBrushStrengthPercent)
-            {
-                lastBrushStrengthPercent = brushStrengthPercent;
-                brushStrengthSlider.value = brushStrengthPercent;
-                brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
-            }
-        } 
+        float brushSizePercent = simulation2DScript.getBrushSizePercent();
+        if (brushSizePercent != lastBrushSizePercent)
+        {
+            lastBrushSizePercent = brushSizePercent;
+            brushSizeSlider.value = brushSizePercent;
+            brushSizeText.text = (brushSizePercent * 100f).ToString("F0") + "%";
+        }
+
+        float brushStrengthPercent = simulation2DScript.getBrushStrengthPercent();
+        if (brushStrengthPercent != lastBrushStrengthPercent)
+        {
+            lastBrushStrengthPercent = brushStrengthPercent;
+            brushStrengthSlider.value = brushStrengthPercent;
+            brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
+        }
     }
 }
 
