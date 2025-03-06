@@ -799,12 +799,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public float getBrushSizePercent()
     {
-        return Mathf.Clamp01((targetInteractionRadius - minRadius) / (maxRadius - minRadius));
+        return Mathf.Clamp01((interactionRadius - minRadius) / (maxRadius - minRadius));
     }
 
     public float getBrushStrengthPercent()
     {
-        return Mathf.Clamp01((targetInteractionRadius - minStrength) / (maxStrength - minStrength));
+        return Mathf.Clamp01((interactionStrength - minStrength) / (maxStrength - minStrength));
     }
 
     public void setInteractionRadiusPercent(float val) // This takes a value between 0 and 1
