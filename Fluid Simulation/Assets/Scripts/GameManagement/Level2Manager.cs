@@ -102,7 +102,7 @@ public class Level2Manager : LevelManager
         timeOfLastDecay += Time.deltaTime;
 
         // Check if fluid detector is above threshold (HIT CONDITION)
-        if (fluidDetector.isFluidPresent)
+        if (fluidDetector.throwEvent)
         {
             // only update hit count after hitTimeOffset delay from last hit
             if (Time.time - timeOfLastHit > hitTimeOffset)

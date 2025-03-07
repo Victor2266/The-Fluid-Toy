@@ -45,7 +45,7 @@ public class Level1Manager : LevelManager
         }
 
         // Check if fluid detector is above threshold (WIN CONDITION)
-        if (fluidDetector.isFluidPresent)
+        if (fluidDetector.throwEvent)
         {
             if (!isHolding) // This is used to show the holding timer at the top once fluid is detected
             {

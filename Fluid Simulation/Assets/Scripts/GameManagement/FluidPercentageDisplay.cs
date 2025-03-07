@@ -52,7 +52,7 @@ public class FluidPercentageDisplay : MonoBehaviour
         if (fluidDetector == null || displayText == null) return;
         
         // Calculate percentage based on current density and threshold
-        float targetPercentage = (fluidDetector.currentDensity / fluidDetector.densityThreshold) * 100f;
+        float targetPercentage = (fluidDetector.currentValue / fluidDetector.propertyThreshold) * 100f;
         targetPercentage = Mathf.Min(targetPercentage, 100f); // Cap at 100%
         
         // Smooth the display value
@@ -62,7 +62,7 @@ public class FluidPercentageDisplay : MonoBehaviour
         string percentageText = currentDisplayValue.ToString($"F{decimalPlaces}");
         
         // Update text and color based on threshold
-        if (!fluidDetector.isFluidPresent)
+        if (!fluidDetector.throwEvent)
         {
             // Update text
             displayText.text = $"{prefix}{percentageText}{suffix}";

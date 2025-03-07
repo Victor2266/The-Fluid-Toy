@@ -1,81 +1,33 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class FluidDetector : MonoBehaviour 
-// This only works for the regular simulation and not the AoS version right now because it accesses the buffers like positionBuffer,
-// which we replaced with the particle struct buffer
+public class FluidDetector : FluidPropertySensor
 {
-    [Header("Detection Settings")]
-    [Tooltip("The density threshold above which fluid is considered present")]
-    public float densityThreshold = 0.5f;
-    
-    [Tooltip("How often to check for fluid presence (in seconds)")]
-    public float checkInterval = 0.1f;
-    
-    [Tooltip("Size of the detection area")]
-    public float detectionRadius = 2f;
-
-    [Header("Debug")]
-    public bool showDebugGizmos = true;
-    public bool showDebugLogs = true;
-    public bool showDensityValue = true;
-    [SerializeField] private Vector2 densityDisplayOffset = new Vector2(0, 30f);
-    public bool isFluidPresent { get; private set; }
-    public float currentDensity { get; private set; }
-
-    private GameObject simulationGameobject;
-    private IFluidSimulation fluidSimulation;
-    private float nextCheckTime;
-
-    private bool isRequestMade = false;
-
-    void Start()
+    protected override void Start()
     {
-        simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
-        // Find the fluid simulation in the scene
-        fluidSimulation = simulationGameobject.GetComponent<IFluidSimulation>();
-        if (fluidSimulation == null)
-        {
-            Debug.LogError("No Simulation2D found in the scene!");
-            enabled = false;
-            return;
-        }
+        base.Start();
+        // Meta settings (For printouts, debug)
+        sensorName = "Fluid Detector";
+        propertyName = "Density";
+        // Sensor settings
+        propertyThreshold = 0.5f;
+        checkInterval = 0.1f;
+        detectionRadius = 2f;
+        eventTrigger = SensorEvent.GreaterThan;
+        continuousThrow = false; // If true, will continously execute "throwEvent" on event trigger
+        percentMargin = 0f; // For threshold; only useful for "Equals"
+
+        // Debug
+        showDebugGizmos = true;
+        showDebugLogs = true;
+        showPropertyValue = true;
     }
 
-    void Update()
+    // Function executes asynchronously, contents must be threadsafe or program may crash
+    protected override bool PerformCheck(Particle[] particles)
     {
-        if (Time.time >= nextCheckTime)
-        {
-            // CheckFluidDensity();
-            //sends async data request to GPU after each check time.
-            if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid())
-                return;
-            if(!isRequestMade){
-                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), CheckFluidDensity);
-                isRequestMade = true;
-            }
-                
-
-            nextCheckTime = Time.time + checkInterval;
-        }
-    }
-
-    
-    // Performs fluid check as callback to async read
-    void CheckFluidDensity(AsyncGPUReadbackRequest request)
-    {
-        if(request.hasError){
-            Debug.Log("GPU ASync Readback Error in Fluid Simulation Readback");
-            return;
-        }
-        if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid() || this == null)
-            return;
-
         Vector2 checkPosition = transform.position;
         float totalDensity = 0f;
-        
-        // Create temporary array to get particle positions
-        Particle[] particles = request.GetData<Particle>().ToArray();
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
@@ -98,58 +50,17 @@ public class FluidDetector : MonoBehaviour
         }
 
         // Update fluid presence flag
-        bool previousState = isFluidPresent;
-        currentDensity = totalDensity;
-        isFluidPresent = totalDensity > densityThreshold;
+        currentValue = totalDensity;
+        throwEvent = doCompare(totalDensity, propertyThreshold);
 
-        // Notify if state changed
-        if (previousState != isFluidPresent)
-        {
-            OnFluidPresenceChanged();
-        }
-
-        isRequestMade = false;
+        return throwEvent;
     }
 
-    void OnFluidPresenceChanged()
+    // Function executes asynchronously, contents must be threadsafe or program may crash
+    protected override void ThrowEvent()
     {
         // You can add custom events or UnityEvents here to notify other scripts
         if (showDebugLogs)
-            Debug.Log($"Fluid presence changed to: {isFluidPresent} at {gameObject.name}");
-    }
-
-    void OnDrawGizmos()
-    {
-        if (!showDebugGizmos) return;
-
-        // Draw detection radius
-        Gizmos.color = isFluidPresent ? Color.blue : Color.white;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
-    }
-
-    void OnGUI()
-    {
-        if (!showDensityValue) return;
-
-        // Convert world position to screen position
-        Vector3 worldPosition = transform.position;
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPosition);
-        
-        // Adjust for GUI coordinate system and offset
-        screenPos.y = Screen.height - screenPos.y; // Flip Y coordinate
-        Vector2 displayPos = new Vector2(screenPos.x + densityDisplayOffset.x, screenPos.y + densityDisplayOffset.y);
-
-        // Display the density value
-        string densityText = $"Density: {currentDensity:F2}";
-        GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 100, 20), densityText);
-    }
-
-    void OnDestroy()
-    {
-        if (isRequestMade)
-        {
-            AsyncGPUReadback.WaitAllRequests();
-        }
-
+            Debug.Log($"Fluid presence changed to: {throwEvent} at {gameObject.name}");
     }
 }
