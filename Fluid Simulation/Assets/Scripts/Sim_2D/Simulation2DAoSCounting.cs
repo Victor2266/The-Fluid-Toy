@@ -689,6 +689,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             sourceObjects[i] = sourceObjectGameObjects[i].GetComponent<SourceObjectInitData>().sourceInitData;
         }
         sourceObjectData = new SourceObject[sourceObjectGameObjects.Length];
+
+        ComputeHelper.Release(sourceObjectBuffer);
+        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
+        UpdateSourceObjectData();
+        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
     }
     public void UpdateDrainObjects()
     {
