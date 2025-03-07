@@ -545,7 +545,37 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     }
 
     public void UpdateBoxColliders(){
-        
+        boxColliders = GameObject.FindGameObjectsWithTag("BoxCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox")
+                .Select(go => go.GetComponent<Transform>()))
+            .ToArray();
+
+        boxColliderData = new OrientedBox[boxColliders.Length];
+    }
+    public void UpdateCircleColliders()
+    {
+        circleColliders = GameObject.FindGameObjectsWithTag("CircleCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+
+        circleColliderData = new Circle[circleColliders.Length];
+    }
+    public void UpdateSourceObjects()
+    {
+
+    }
+    public void UpdateDrainObjects()
+    {
+        drainObjects = GameObject.FindGameObjectsWithTag("DrainObject")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+
+        drainObjectData = new OrientedBox[drainObjects.Length];
+    }
+    public void UpdateThermalBoxes()
+    {
+
     }
 
 

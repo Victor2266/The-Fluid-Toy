@@ -752,9 +752,10 @@ GameObject:
   - component: {fileID: 336022953}
   - component: {fileID: 336022955}
   - component: {fileID: 336022956}
+  - component: {fileID: 336022957}
   m_Layer: 0
   m_Name: Source Object
-  m_TagString: Untagged
+  m_TagString: SourceObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -845,8 +846,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 1
-  deletable: 0
-  objectType: 0
+  deletable: 1
+  objectType: 4
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 8
@@ -886,6 +887,23 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.4
+--- !u!114 &336022957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336022952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33614e95906241b458e7495c2fc999e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceInitData:
+    transform: {fileID: 336022954}
+    velo: {x: 0, y: 0}
+    spawnRate: 1
+    fluidType: 1
 --- !u!1 &474748743
 GameObject:
   m_ObjectHideFlags: 0
@@ -3428,7 +3446,7 @@ GameObject:
   - component: {fileID: 1812870170}
   m_Layer: 0
   m_Name: Red Drain Box
-  m_TagString: Untagged
+  m_TagString: DrainObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3570,8 +3588,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
-  deletable: 0
-  objectType: 0
+  deletable: 1
+  objectType: 5
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -4077,6 +4095,7 @@ GameObject:
   - component: {fileID: 2085101041}
   - component: {fileID: 2085101040}
   - component: {fileID: 2085101046}
+  - component: {fileID: 2085101047}
   m_Layer: 0
   m_Name: Thermal Box
   m_TagString: SolidThermalBox
@@ -4222,7 +4241,7 @@ MonoBehaviour:
   resizable: 1
   uniformScaling: 0
   deletable: 1
-  objectType: 0
+  objectType: 1
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -4357,6 +4376,22 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   cycleDuration: 1.75
+--- !u!114 &2085101047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085101039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 496f94b66e61dca4981cf9973f5ae2eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thermalBoxInitData:
+    transform: {fileID: 2085101045}
+    temperature: 120
+    conductivity: 16
 --- !u!1 &2107056131
 GameObject:
   m_ObjectHideFlags: 0

@@ -42,10 +42,8 @@ public class Draggable : MonoBehaviour
             offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
-        if (Input.GetMouseButtonDown(1) && deletable && (objectType == ObjectType.BoxCollider || objectType == ObjectType.SolidThermalBox)) 
-        {
-            DestroyImmediate(gameObject);
-            fluidSimulationScript.UpdateBoxColliders();
+        if (Input.GetMouseButtonDown(1) && deletable) {
+            Destroy(gameObject);
         }
     }
 
@@ -119,6 +117,30 @@ public class Draggable : MonoBehaviour
                 newScaleY = Mathf.Clamp(newScaleY, minScale, maxScale);
                 targetScale = new Vector3(targetScale.x, newScaleY, targetScale.z);
             }
+        }
+    }
+
+    void OnDestroy()
+    {
+        if ((objectType == ObjectType.BoxCollider)) 
+        {
+            fluidSimulationScript.UpdateBoxColliders();
+        }
+        else if ((objectType == ObjectType.SolidThermalBox)){
+            fluidSimulationScript.UpdateBoxColliders();
+            fluidSimulationScript.UpdateThermalBoxes();
+        }
+        else if ((objectType == ObjectType.ThermalBox)){
+            fluidSimulationScript.UpdateThermalBoxes();
+        }
+        else if ((objectType == ObjectType.CircleCollider)){
+            fluidSimulationScript.UpdateCircleColliders();
+        }
+        else if ((objectType == ObjectType.SourceObject)){
+            fluidSimulationScript.UpdateSourceObjects();
+        }
+        else if ((objectType == ObjectType.DrainObject)){
+            fluidSimulationScript.UpdateDrainObjects();
         }
     }
 }

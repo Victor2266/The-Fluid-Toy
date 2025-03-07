@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using System.Runtime.InteropServices;
 using System;
+using System.Linq;
 
 //Defining Structs
 /*[System.Serializable]
@@ -334,8 +335,34 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
             resetSimulation();
         }
     }
-    public void UpdateBoxColliders(){
-        
+     public void UpdateBoxColliders(){
+        boxColliders = GameObject.FindGameObjectsWithTag("BoxCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox")
+                .Select(go => go.GetComponent<Transform>()))
+            .ToArray();
+
+        boxColliderData = new OrientedBox[boxColliders.Length];
+    }
+    public void UpdateCircleColliders()
+    {
+        circleColliders = GameObject.FindGameObjectsWithTag("CircleCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+
+        circleColliderData = new Circle[circleColliders.Length];
+    }
+    public void UpdateSourceObjects()
+    {
+
+    }
+    public void UpdateDrainObjects()
+    {
+
+    }
+    public void UpdateThermalBoxes()
+    {
+
     }
     void OnDestroy()
     {

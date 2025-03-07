@@ -66,6 +66,10 @@ public interface IFluidSimulation
     void setInteractionRadiusPercent(float radius);
     void setInteractionStrengthPercent(float strength);
     void UpdateBoxColliders();
+    void UpdateCircleColliders();
+    void UpdateSourceObjects();
+    void UpdateDrainObjects();
+    void UpdateThermalBoxes();
 
     SourceObjectInitializer GetFirstSourceObject();
 

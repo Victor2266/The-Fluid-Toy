@@ -709,7 +709,53 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public void UpdateBoxColliders(){
         boxColliders = GameObject.FindGameObjectsWithTag("BoxCollider")
             .Select(go => go.GetComponent<Transform>())
+            .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox")
+                .Select(go => go.GetComponent<Transform>()))
             .ToArray();
+
+        boxColliderData = new OrientedBox[boxColliders.Length];
+    }
+    public void UpdateCircleColliders()
+    {
+        circleColliders = GameObject.FindGameObjectsWithTag("CircleCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+
+        circleColliderData = new Circle[circleColliders.Length];
+    }
+    public void UpdateSourceObjects()
+    {
+        GameObject[] sourceObjectGameObjects = GameObject.FindGameObjectsWithTag("SourceObject");
+        sourceObjects = new SourceObjectInitializer[sourceObjectGameObjects.Length];
+
+        // Update source objects
+        for (int i = 0; i < sourceObjectGameObjects.Length; i++)
+        {
+            sourceObjects[i] = sourceObjectGameObjects[i].GetComponent<SourceObjectInitData>().sourceInitData;
+        }
+
+        sourceObjectData = new SourceObject[sourceObjectGameObjects.Length];
+    }
+    public void UpdateDrainObjects()
+    {
+        drainObjects = GameObject.FindGameObjectsWithTag("DrainObject")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+
+        drainObjectData = new OrientedBox[drainObjects.Length];
+    }
+    public void UpdateThermalBoxes()
+    {
+        GameObject[] thermalBoxGameObjects = GameObject.FindGameObjectsWithTag("ThermalBox");
+        thermalBoxes = new ThermalBoxInitializer[thermalBoxGameObjects.Length];
+
+        // Update thermal boxes
+        for (int i = 0; i < thermalBoxGameObjects.Length; i++)
+        {
+            thermalBoxes[i] = thermalBoxGameObjects[i].GetComponent<ThermalBoxInitData>().thermalBoxInitData;
+        }
+
+        thermalBoxData = new ThermalBox[thermalBoxGameObjects.Length];
     }
 
     void OnDestroy()
