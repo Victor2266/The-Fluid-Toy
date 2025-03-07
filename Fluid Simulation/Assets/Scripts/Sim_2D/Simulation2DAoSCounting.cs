@@ -364,9 +364,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
     }
 
-    void UpdateColliderData()
+    void UpdateBoxColliderData()
     {
-        // Update box colliders
+        // Update data array
         for (int i = 0; i < boxColliders.Length; i++)
         {
             Transform collider = boxColliders[i];
@@ -375,8 +375,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             boxColliderData[i].size = collider.localScale;
             boxColliderData[i].zLocal = (Vector2)(collider.right); // Use right vector for orientation
         }
+        // Update buffer
+        boxCollidersBuffer.SetData(boxColliderData);
+    }
 
-        // Update circle colliders
+    void UpdateCircleColliderData()
+    {
+        // Update data array
         for (int i = 0; i < circleColliders.Length; i++)
         {
             Transform collider = circleColliders[i];
@@ -384,8 +389,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             circleColliderData[i].pos = collider.position;
             circleColliderData[i].radius = collider.localScale.x * 0.5f; // Assuming uniform scale
         }
+        // Update buffer
+        circleCollidersBuffer.SetData(circleColliderData);
+    }
 
-        // Update source objects
+    void UpdateSourceObjectData()
+    {
+        // Update data array
         for (int i = 0; i < sourceObjects.Length; i++)
         {
             Transform source = sourceObjects[i].transform;
@@ -396,8 +406,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             sourceObjectData[i].spawnRate = sourceObjects[i].spawnRate;
             sourceObjectData[i].fluidType = sourceObjects[i].fluidType;
         }
+        // Update buffer
+        sourceObjectBuffer.SetData(sourceObjectData);
+    }
 
-        // Update drain objects
+    void UpdateDrainObjectData()
+    {
+        // Update data array
         for (int i = 0; i < drainObjects.Length; i++)
         {
             Transform drain = drainObjects[i];
@@ -406,8 +421,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             drainObjectData[i].size = drain.localScale;
             drainObjectData[i].zLocal = (Vector2)(drain.right); // Use right vector for orientation  
         }
+        // Update buffer
+        drainObjectBuffer.SetData(drainObjectData);
+    }
 
-        // Update thermal boxes
+    void UpdateThermalBoxData()
+    {
+        // Update data array
         for (int i = 0; i < thermalBoxes.Length; i++)
         {
             ThermalBoxInitializer tBox = thermalBoxes[i];
@@ -419,13 +439,17 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             thermalBoxData[i].temperature = tBox.temperature;
             thermalBoxData[i].conductivity = tBox.conductivity;
         }
-
-        // Update buffers
-        boxCollidersBuffer.SetData(boxColliderData);
-        circleCollidersBuffer.SetData(circleColliderData);
-        sourceObjectBuffer.SetData(sourceObjectData);
-        drainObjectBuffer.SetData(drainObjectData);
+        // Update buffer
         thermalBoxesBuffer.SetData(thermalBoxData);
+    }
+
+    void UpdateColliderData()
+    {
+        UpdateBoxColliderData();
+        UpdateCircleColliderData();
+        UpdateSourceObjectData();
+        UpdateDrainObjectData();
+        UpdateThermalBoxData();
     }
 
     void UpdateSettings(float deltaTime)
@@ -635,11 +659,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             .ToArray();
         
         boxColliderData = new OrientedBox[boxColliders.Length];
-        /*
+        
         ComputeHelper.Release(boxCollidersBuffer);
         boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
-        boxCollidersBuffer.SetData(boxColliderData);
-        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);*/
+        UpdateBoxColliderData();
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
     }
     public void UpdateCircleColliders()
     {
