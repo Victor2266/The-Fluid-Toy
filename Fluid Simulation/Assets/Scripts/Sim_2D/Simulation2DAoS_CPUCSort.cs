@@ -459,10 +459,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
     }
-
-    void UpdateColliderData()
+    void UpdateBoxColliderData()
     {
-        // Update box colliders
+        // Update data array
         for (int i = 0; i < boxColliders.Length; i++)
         {
             Transform collider = boxColliders[i];
@@ -471,8 +470,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             boxColliderData[i].size = collider.localScale;
             boxColliderData[i].zLocal = (Vector2)(collider.right); // Use right vector for orientation
         }
+        // Update buffer
+        boxCollidersBuffer.SetData(boxColliderData);
+    }
 
-        // Update circle colliders
+    void UpdateCircleColliderData()
+    {
+        // Update data array
         for (int i = 0; i < circleColliders.Length; i++)
         {
             Transform collider = circleColliders[i];
@@ -480,8 +484,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             circleColliderData[i].pos = collider.position;
             circleColliderData[i].radius = collider.localScale.x * 0.5f; // Assuming uniform scale
         }
+        // Update buffer
+        circleCollidersBuffer.SetData(circleColliderData);
+    }
 
-        // Update source objects
+    void UpdateSourceObjectData()
+    {
+        // Update data array
         for (int i = 0; i < sourceObjects.Length; i++)
         {
             Transform source = sourceObjects[i].transform;
@@ -492,8 +501,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             sourceObjectData[i].spawnRate = sourceObjects[i].spawnRate;
             sourceObjectData[i].fluidType = sourceObjects[i].fluidType;
         }
+        // Update buffer
+        sourceObjectBuffer.SetData(sourceObjectData);
+    }
 
-        // Update drain objects
+    void UpdateDrainObjectData()
+    {
+        // Update data array
         for (int i = 0; i < drainObjects.Length; i++)
         {
             Transform drain = drainObjects[i];
@@ -502,8 +516,13 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             drainObjectData[i].size = drain.localScale;
             drainObjectData[i].zLocal = (Vector2)(drain.right); // Use right vector for orientation  
         }
+        // Update buffer
+        drainObjectBuffer.SetData(drainObjectData);
+    }
 
-        // Update thermal boxes
+    void UpdateThermalBoxData()
+    {
+        // Update data array
         for (int i = 0; i < thermalBoxes.Length; i++)
         {
             ThermalBoxInitializer tBox = thermalBoxes[i];
@@ -515,14 +534,19 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             thermalBoxData[i].temperature = tBox.temperature;
             thermalBoxData[i].conductivity = tBox.conductivity;
         }
-
-        // Update buffers
-        boxCollidersBuffer.SetData(boxColliderData);
-        circleCollidersBuffer.SetData(circleColliderData);
-        sourceObjectBuffer.SetData(sourceObjectData);
-        drainObjectBuffer.SetData(drainObjectData);
+        // Update buffer
         thermalBoxesBuffer.SetData(thermalBoxData);
     }
+
+    void UpdateColliderData()
+    {
+        UpdateBoxColliderData();
+        UpdateCircleColliderData();
+        UpdateSourceObjectData();
+        UpdateDrainObjectData();
+        UpdateThermalBoxData();
+    }
+
 
     void UpdateSettings(float deltaTime)
     {
