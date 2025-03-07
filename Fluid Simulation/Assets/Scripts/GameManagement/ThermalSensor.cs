@@ -5,8 +5,9 @@ public class ThermalSensor : MonoBehaviour
 {
     public enum DetectionType
     {
-        Greaterthan,
-        Lessthan,
+        Disabled,
+        GreaterThan,
+        LessThan,
         Equals
     }
 
@@ -15,7 +16,7 @@ public class ThermalSensor : MonoBehaviour
     public float temperatureThreshold = 100f;
 
     [Tooltip("Detection Type")]
-    DetectionType detectType = DetectionType.Greaterthan;
+    DetectionType detectType = DetectionType.GreaterThan;
 
     [Tooltip("How often to check temperature")]
     public float checkInterval = 0.1f;
@@ -114,27 +115,46 @@ public class ThermalSensor : MonoBehaviour
         // Update fluid presence flag
         bool previousState = metThreshold;
         currentTemperature = totalTemp/particleCount;
-
-        switch (detectType)
-        {
-            case 
-        }
-        isFluidPresent = totalDensity > densityThreshold;
+        metThreshold = doCompare(currentTemperature);
 
         // Notify if state changed
-        if (previousState != isFluidPresent)
+        if (previousState != metThreshold)
         {
-            OnFluidPresenceChanged();
+            OnTempThresholdMet();
         }
 
         isRequestMade = false;
     }
 
-    void OnFluidPresenceChanged()
+    bool doCompare(float currentValue)
+    {
+        bool toReturn;
+        switch (detectType)
+        {
+            case DetectionType.GreaterThan:
+                toReturn = currentValue > (temperatureThreshold * (1 + errorMargin));
+                break;
+            case DetectionType.LessThan:
+                toReturn = currentValue < (temperatureThreshold * (1 + errorMargin));
+                break;
+            case DetectionType.Equals:
+                toReturn = Mathf.Abs(currentValue - temperatureThreshold) < (errorMargin * temperatureThreshold);
+                break;
+            case DetectionType.Disabled:
+                toReturn = false;
+                break;
+            default:
+                toReturn = false;
+                break;
+        }
+        return toReturn;
+    }
+
+    void OnTempThresholdMet()
     {
         // You can add custom events or UnityEvents here to notify other scripts
         if (showDebugLogs)
-            Debug.Log($"Fluid presence changed to: {isFluidPresent} at {gameObject.name}");
+            Debug.Log($"Temperature threshold condition changed to: {metThreshold} at {gameObject.name}");
     }
 
     void OnDrawGizmos()
@@ -142,7 +162,7 @@ public class ThermalSensor : MonoBehaviour
         if (!showDebugGizmos) return;
 
         // Draw detection radius
-        Gizmos.color = isFluidPresent ? Color.blue : Color.white;
+        Gizmos.color = metThreshold ? Color.blue : Color.white;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 
@@ -156,10 +176,10 @@ public class ThermalSensor : MonoBehaviour
 
         // Adjust for GUI coordinate system and offset
         screenPos.y = Screen.height - screenPos.y; // Flip Y coordinate
-        Vector2 displayPos = new Vector2(screenPos.x + densityDisplayOffset.x, screenPos.y + densityDisplayOffset.y);
+        Vector2 displayPos = new Vector2(screenPos.x + displayOffset.x, screenPos.y + displayOffset.y);
 
         // Display the density value
-        string densityText = $"Density: {currentDensity:F2}";
+        string densityText = $"Temperature: {currentTemperature:F2}";
         GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 100, 20), densityText);
     }
 
