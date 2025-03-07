@@ -155,16 +155,10 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         // Calculate text offset
         float mouseY = mousePosition.y;
         float halfScreenHeight = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0)).y + Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0)).y;
-        if (mouseY > halfScreenHeight)
+        textOffset = new Vector2(0, (mouseY > halfScreenHeight ? -1 : 1) * (simulation.getInteractionRadius() + 0.85f) );
+        if (simulation.getInteractionRadius() > 5f)
         {
-            textOffset = new Vector2(0, -(simulation.getInteractionRadius() + 1f));
-        }
-        else
-        {
-            textOffset = new Vector2(0, simulation.getInteractionRadius() + 1f);
-        }
-        if (simulation.getInteractionRadius() > 6.5f){
-            textOffset = new Vector2(0, 0);
+            textOffset = Vector2.zero;
         }
         
 
