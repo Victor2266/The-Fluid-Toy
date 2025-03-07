@@ -168,6 +168,9 @@ Shader "Instanced/MultiFluidParticle2D"
             {
                 o.pos = float4(100000, 100000, 100000, 1);
                 return o;
+
+                // FOR DEBUG:
+                //particle.type = 1;
             }
 
             int fluidIndex = GetFluidTypeIndexFromID(particle.type);
