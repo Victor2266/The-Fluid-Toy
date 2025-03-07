@@ -126,6 +126,18 @@ int edgeType;
 uint spawnRate;
 
 int GetFluidTypeIndexFromID(int fluidID){
+
+	// This is just a for loop that goes through the FluidDataSet array
+	// and returns the index of the fluid type with the matching fluidID which is O(N) time.
+
+	// In the future when you have dozens of fluid types, you can use a hash table
+	// where the key is the fluidID and the value is the index
+
+	// Another simple way to optimize is to make the size of the FluidDataSet array to be the largest fluid type ID + 1
+	// Then you can set each entry to be the fluid type with the corresponding fluid ID
+	// You would pad the FluidDataSet array with empty entries for unused fluid types
+	// Then you can just return the fluidID as the index which is O(1) time
+	// However this will make empty entries in the array for unused fluid types so it's less memory efficient
 	for (int i = 0; i < numFluidTypes; i++)
 	{
 		if (FluidDataSet[i].fluidType == fluidID)
