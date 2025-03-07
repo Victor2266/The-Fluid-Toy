@@ -589,6 +589,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
                 targetInteractionRadius = Mathf.Clamp(targetInteractionRadius, minRadius, maxRadius);
             }
         }
+        
+        if (Input.GetMouseButtonDown(2))
+        {
+            setInteractionStrengthPercent(0.5f);
+            targetInteractionRadius = 3f;
+        }
     }
     void ApplySmoothing()
     {
