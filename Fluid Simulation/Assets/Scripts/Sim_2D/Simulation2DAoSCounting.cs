@@ -255,9 +255,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel, updateStateKernel);
 
-        compute.SetInt("numBoxColliders", boxColliders.Length);
-        compute.SetInt("numCircleColliders", circleColliders.Length);
-        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("numParticles", numParticles);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
@@ -643,8 +640,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox")
                 .Select(go => go.GetComponent<Transform>()))
             .ToArray();
-
+        
         boxColliderData = new OrientedBox[boxColliders.Length];
+        /*
+        ComputeHelper.Release(boxCollidersBuffer);
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        boxCollidersBuffer.SetData(boxColliderData);
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);*/
     }
     public void UpdateCircleColliders()
     {
@@ -664,7 +666,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         {
             sourceObjects[i] = sourceObjectGameObjects[i].GetComponent<SourceObjectInitData>().sourceInitData;
         }
-
         sourceObjectData = new SourceObject[sourceObjectGameObjects.Length];
     }
     public void UpdateDrainObjects()

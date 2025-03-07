@@ -269,9 +269,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, cpuparticlebuffer, "CPUParticles", mergeCPUParticlesKernel);
         ComputeHelper.SetBuffer(compute, keyarrbuffer, "keyarr", densityKernel, pressureKernel, viscosityKernel, mergeCPUParticlesKernel);
 
-        compute.SetInt("numBoxColliders", boxColliders.Length);
-        compute.SetInt("numCircleColliders", circleColliders.Length);
-        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
         compute.SetInt("numParticles", numParticles);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);

@@ -122,6 +122,8 @@ public class Draggable : MonoBehaviour
 
     void OnDestroy()
     {
+        if (!Input.GetMouseButton(1)) return;
+        
         if ((objectType == ObjectType.BoxCollider)) 
         {
             fluidSimulationScript.UpdateBoxColliders();
