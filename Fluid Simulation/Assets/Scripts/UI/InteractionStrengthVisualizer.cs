@@ -104,7 +104,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
             strengthText = strengthTextObject.AddComponent<TextMeshProUGUI>();
             
             // Setup text properties
-            strengthText.fontSize = 2;
+            strengthText.fontSize = 1;
             strengthText.alignment = TextAlignmentOptions.Center;
             strengthText.color = textColor;
             
@@ -115,7 +115,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
             
             // Add a RectTransform and set its properties
             RectTransform rectTransform = strengthText.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(10, 3);
+            rectTransform.sizeDelta = new Vector2(3, 2);
         }
         
         // Get the TextMeshPro component if we didn't create it above
@@ -142,6 +142,8 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         bool shouldShow = alwaysShow || fadeProgress < fadeOutTime;
         
         lineRenderer.enabled = shouldShow;
+        Cursor.visible = !shouldShow;
+
         strengthTextObject.SetActive(shouldShow);
 
         SetLineColor(circleColor);
@@ -150,7 +152,22 @@ public class InteractionStrengthVisualizer : MonoBehaviour
     void UpdateCirclePositionsIfNeeded()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // Calculate text offset
+        float mouseY = mousePosition.y;
+        float halfScreenHeight = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0)).y + Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0)).y;
+        if (mouseY > halfScreenHeight)
+        {
+            textOffset = new Vector2(0, -(simulation.getInteractionRadius() + 1f));
+        }
+        else
+        {
+            textOffset = new Vector2(0, simulation.getInteractionRadius() + 1f);
+        }
+        if (simulation.getInteractionRadius() > 6.5f){
+            textOffset = new Vector2(0, 0);
+        }
         
+
         if (currentRadius != lastRadius || mousePosition != lastMousePosition)
         {
             UpdateCirclePositions(mousePosition, currentRadius);
@@ -176,7 +193,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         Color fadeTextColor = textColor;
         fadeTextColor.a = Mathf.Lerp(1f, 0f, fadeProgress / fadeOutTime);
         strengthText.color = fadeTextColor;
-        
+
         // Position text above the circle
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         strengthTextObject.transform.position = new Vector3(mousePosition.x + textOffset.x, mousePosition.y + textOffset.y, 0);
