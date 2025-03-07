@@ -15,7 +15,7 @@ public class Draggable : MonoBehaviour
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
-    private Vector3 targetScale;
+    public Vector3 targetScale;
     private Rigidbody2D rb2d;
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulationScript;
