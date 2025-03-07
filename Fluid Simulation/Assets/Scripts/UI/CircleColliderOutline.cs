@@ -1,15 +1,16 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(LineRenderer))]
 [ExecuteInEditMode] // This makes it run in editor
 public class CircleColliderOutline : MonoBehaviour
 {
     private LineRenderer lineRenderer;
-    private int segments = 50;
+    [SerializeField] private int segments = 50;
 
     private Vector3[] circlePositions;
     
-    void Start()
+    void OnEnable()
     {
         // Setup Line Renderer
         PrecalculateCircle();
