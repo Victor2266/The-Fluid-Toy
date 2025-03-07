@@ -443,11 +443,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
-        if (sourceObjects.Length > 0)
-        {
-            uint[] atomicCounter = { 0, frameCounter++ };
-            atomicCounterBuffer.SetData(atomicCounter);
-        }
+      
+        uint[] atomicCounter = { 0, frameCounter++ };
+        atomicCounterBuffer.SetData(atomicCounter);
+        
 
         // Mouse interaction settings:
         HandleMouseInput();
@@ -529,12 +528,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                if (sourceObjects.Length == 0)
-                {
-                    uint[] atomicCounter = { 0, frameCounter++ };
-                    atomicCounterBuffer.SetData(atomicCounter);
-                }
-
             }
             else if (isPushInteraction)
             {

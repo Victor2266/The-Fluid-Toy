@@ -358,7 +358,7 @@ void HandleCircleCollision(inout float2 pos, inout float2 vel, Circle circle, fl
 
 void DisableParticle(inout Particle particle){
 	// Create a random seed based on particle position and current tick
-	uint randomState = (uint)(particle.position.x * 1000) + (uint)(particle.position.y * 1000) + atomicCounter[1] * 982451653;
+	uint randomState = (uint)((particle.position.x + atomicCounter[1]) * 1000) + (uint)((particle.position.y + atomicCounter[1]) * 1000) + atomicCounter[1] * 982451653;
 
 	// Randomize position within bounds before disabling
 	float2 halfSize = boundsSize * 0.5;
