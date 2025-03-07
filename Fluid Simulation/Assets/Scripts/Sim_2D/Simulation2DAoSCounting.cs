@@ -702,6 +702,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             .ToArray();
 
         drainObjectData = new OrientedBox[drainObjects.Length];
+
+        ComputeHelper.Release(drainObjectBuffer);
+        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
+        UpdateDrainObjectData();
+        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
     }
     public void UpdateThermalBoxes()
     {
@@ -715,6 +720,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
 
         thermalBoxData = new ThermalBox[thermalBoxGameObjects.Length];
+
+        ComputeHelper.Release(thermalBoxesBuffer);
+        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
+        UpdateThermalBoxData();
+        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
     }
 
     void OnDestroy()
