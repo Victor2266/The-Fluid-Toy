@@ -672,6 +672,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             .ToArray();
 
         circleColliderData = new Circle[circleColliders.Length];
+
+        ComputeHelper.Release(circleCollidersBuffer);
+        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
+        UpdateCircleColliderData();
+        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
     }
     public void UpdateSourceObjects()
     {
