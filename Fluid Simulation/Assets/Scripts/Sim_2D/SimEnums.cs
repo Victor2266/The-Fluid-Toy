@@ -3,7 +3,8 @@ public enum BrushType
 {
     Draw,
     Gravity,
-    Nothing
+    Nothing,
+    Eraser
 }
 
 // The Fluid Type Enums is in FluidData.cs

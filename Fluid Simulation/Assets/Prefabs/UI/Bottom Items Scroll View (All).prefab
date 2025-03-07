@@ -414,6 +414,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   simulation2DGameObject: {fileID: 0}
   audioSource: {fileID: 7741581685545149440}
+  brushSizeSlider: {fileID: 0}
+  brushSizeText: {fileID: 0}
+  brushStrengthSlider: {fileID: 0}
+  brushStrengthText: {fileID: 0}
   FluidTypebuttons: []
 --- !u!82 &7741581685545149440
 AudioSource:
@@ -1545,7 +1549,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5772074398013544668, guid: d40c87f91358c084d85edcd80aa6096d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6253558637799023235, guid: d40c87f91358c084d85edcd80aa6096d, type: 3}
       propertyPath: m_Pivot.x

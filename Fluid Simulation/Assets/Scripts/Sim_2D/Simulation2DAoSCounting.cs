@@ -544,6 +544,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 currInteractStrength = -1f;
             }
         }
+        else if (brushState == BrushType.Eraser){
+            if (isPushInteraction || isPullInteraction)
+            {
+                currInteractStrength = -1f;
+            }
+        }
 
         compute.SetInt("brushType", (int)brushState);
         compute.SetVector("interactionInputPoint", mousePos);
