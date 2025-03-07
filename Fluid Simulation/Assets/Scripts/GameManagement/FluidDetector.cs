@@ -3,6 +3,8 @@ using UnityEngine.Rendering;
 
 public class FluidDetector : FluidPropertySensor
 {
+    // Made into a subclass of FluidPropertySensor.
+    // Behaviour and settings should be identical to original.
     protected override void Start()
     {
         base.Start();
