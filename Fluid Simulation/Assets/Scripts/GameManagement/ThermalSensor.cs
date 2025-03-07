@@ -31,15 +31,16 @@ public class ThermalSensor : MonoBehaviour
     public bool showDebugGizmos = true;
     public bool showDebugLogs = true;
     public bool showDensityValue = true;
+    public bool isManagedSensor = false;
     [SerializeField] private Vector2 displayOffset = new Vector2(0, 30f);
-    public bool metThreshold { get; private set; }
-    public float currentTemperature { get; private set; }
+    public bool metThreshold { get; set; }
+    public float currentTemperature { get; set; }
 
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
 
-    private bool isRequestMade = false;
+    public bool isRequestMade = false;
 
     void Start()
     {
@@ -56,7 +57,7 @@ public class ThermalSensor : MonoBehaviour
 
     void Update()
     {
-        if (Time.time >= nextCheckTime)
+        if (!isManagedSensor && Time.time >= nextCheckTime)
         {
             // CheckFluidDensity();
             //sends async data request to GPU after each check time.
@@ -67,8 +68,6 @@ public class ThermalSensor : MonoBehaviour
                 AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), CheckTemperature);
                 isRequestMade = true;
             }
-
-
             nextCheckTime = Time.time + checkInterval;
         }
     }
@@ -126,7 +125,7 @@ public class ThermalSensor : MonoBehaviour
         isRequestMade = false;
     }
 
-    bool doCompare(float currentValue)
+    public bool doCompare(float currentValue)
     {
         bool toReturn;
         switch (detectType)
@@ -150,7 +149,7 @@ public class ThermalSensor : MonoBehaviour
         return toReturn;
     }
 
-    void OnTempThresholdMet()
+    public void OnTempThresholdMet()
     {
         // You can add custom events or UnityEvents here to notify other scripts
         if (showDebugLogs)
