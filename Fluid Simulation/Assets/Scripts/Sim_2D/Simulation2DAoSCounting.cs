@@ -637,6 +637,16 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         }
     }
 
+    public void UpdateBoxColliders(){
+        boxColliders = GameObject.FindGameObjectsWithTag("BoxCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox")
+                .Select(go => go.GetComponent<Transform>()))
+            .ToArray();
+
+        boxColliderData = new OrientedBox[boxColliders.Length];
+    }
+
     void OnDestroy()
     {
         ReleaseComputeBuffers();

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
+    enum ObjectType { BoxCollider, SolidThermalBox, ThermalBox, CircleCollider, SourceObject, DrainObject};
     private bool isDragging = false;
     private Vector3 offset;
 
@@ -9,31 +10,43 @@ public class Draggable : MonoBehaviour
     public bool enableSmoothing = true; // Boolean to enable/disable smoothing
     public bool resizable = false; // Controls whether the object can be resized
     public bool uniformScaling = false; // Controls whether the object scales uniformly
+    public bool deletable = false;
+    [SerializeField] private ObjectType objectType = ObjectType.BoxCollider;
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
-
     private Vector3 targetScale;
-
     private Rigidbody2D rb2d;
+    private GameObject simulationGameobject;
+    private IFluidSimulation fluidSimulationScript;
 
     void Start()
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
+        simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
+        fluidSimulationScript = simulationGameobject.GetComponent<IFluidSimulation>();
     }
 
-    void OnMouseDown()
+    void OnMouseOver()
     {
-        isDragging = true;
-        if (rb2d != null) {
-            rb2d.bodyType = RigidbodyType2D.Kinematic;
-            rb2d.freezeRotation = true;
-            rb2d.linearVelocity = Vector2.zero;
-            rb2d.angularVelocity = 0f;
+        if (Input.GetMouseButtonDown(0)){
+            isDragging = true;
+            if (rb2d != null) {
+                rb2d.bodyType = RigidbodyType2D.Kinematic;
+                rb2d.freezeRotation = true;
+                rb2d.linearVelocity = Vector2.zero;
+                rb2d.angularVelocity = 0f;
+            }
+
+            offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
-        offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (Input.GetMouseButtonDown(1) && deletable && (objectType == ObjectType.BoxCollider || objectType == ObjectType.SolidThermalBox)) 
+        {
+            DestroyImmediate(gameObject);
+            fluidSimulationScript.UpdateBoxColliders();
+        }
     }
 
     void OnMouseUp()

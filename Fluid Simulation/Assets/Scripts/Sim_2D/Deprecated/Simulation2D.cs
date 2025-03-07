@@ -334,8 +334,9 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
             resetSimulation();
         }
     }
-
-
+    public void UpdateBoxColliders(){
+        
+    }
     void OnDestroy()
     {
         ReleaseComputeBuffers();

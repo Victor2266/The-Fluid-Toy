@@ -65,6 +65,7 @@ public interface IFluidSimulation
     float getBrushStrengthPercent();
     void setInteractionRadiusPercent(float radius);
     void setInteractionStrengthPercent(float strength);
+    void UpdateBoxColliders();
 
     SourceObjectInitializer GetFirstSourceObject();
 

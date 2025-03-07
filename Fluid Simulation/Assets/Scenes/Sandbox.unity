@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 228796739}
   m_Layer: 0
   m_Name: Box Obstacle (3)
-  m_TagString: Untagged
+  m_TagString: BoxCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -845,6 +845,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 1
+  deletable: 0
+  objectType: 0
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 8
@@ -900,7 +902,7 @@ GameObject:
   - component: {fileID: 474748744}
   m_Layer: 0
   m_Name: Box Obstacle (1)
-  m_TagString: Untagged
+  m_TagString: BoxCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1042,6 +1044,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
+  deletable: 1
+  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -1381,7 +1385,7 @@ GameObject:
   - component: {fileID: 720039251}
   m_Layer: 0
   m_Name: Static Box Obstacle
-  m_TagString: Untagged
+  m_TagString: BoxCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1523,6 +1527,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
+  deletable: 1
+  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -1689,6 +1695,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 0
   uniformScaling: 0
+  deletable: 1
+  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.1
   maxScale: 5
@@ -2225,7 +2233,7 @@ GameObject:
   - component: {fileID: 1163845350}
   m_Layer: 0
   m_Name: Box Obstacle
-  m_TagString: Untagged
+  m_TagString: BoxCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2246,6 +2254,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
+  deletable: 1
+  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -2683,7 +2693,7 @@ GameObject:
   - component: {fileID: 1364603431}
   m_Layer: 0
   m_Name: Box Obstacle (2)
-  m_TagString: Untagged
+  m_TagString: BoxCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3560,6 +3570,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
+  deletable: 0
+  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -4067,7 +4079,7 @@ GameObject:
   - component: {fileID: 2085101046}
   m_Layer: 0
   m_Name: Thermal Box
-  m_TagString: Untagged
+  m_TagString: SolidThermalBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4209,6 +4221,8 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
+  deletable: 1
+  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -4811,6 +4825,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2109621059557760878, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -5189,6 +5215,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8219755447583522226, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8468455024000708786, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}

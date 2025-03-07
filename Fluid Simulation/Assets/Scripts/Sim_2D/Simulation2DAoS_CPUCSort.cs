@@ -706,6 +706,11 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             }
         }
     }
+    public void UpdateBoxColliders(){
+        boxColliders = GameObject.FindGameObjectsWithTag("BoxCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+    }
 
     void OnDestroy()
     {

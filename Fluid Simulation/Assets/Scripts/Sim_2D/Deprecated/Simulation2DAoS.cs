@@ -544,6 +544,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
         }
     }
 
+    public void UpdateBoxColliders(){
+        
+    }
+
 
     void OnDestroy()
     {
