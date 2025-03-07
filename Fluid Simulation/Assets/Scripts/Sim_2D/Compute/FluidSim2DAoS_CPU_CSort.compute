@@ -541,7 +541,7 @@ void HandleSourceObject(inout Particle particle){
 
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
 	// Input interactions to remove particles
-	if (brushType == 0 && interactionInputStrength == -1) {
+	if ((brushType == 0 || brushType == 3) && interactionInputStrength == -1) {
 		float2 inputPointOffset = interactionInputPoint - particle.position;
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)
