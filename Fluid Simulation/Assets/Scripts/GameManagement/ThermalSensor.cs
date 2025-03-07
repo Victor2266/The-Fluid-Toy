@@ -16,7 +16,7 @@ public class ThermalSensor : MonoBehaviour
     public float temperatureThreshold = 100f;
 
     [Tooltip("Detection Type")]
-    DetectionType detectType = DetectionType.GreaterThan;
+    public DetectionType detectType = DetectionType.GreaterThan;
 
     [Tooltip("How often to check temperature")]
     public float checkInterval = 0.1f;
@@ -30,7 +30,7 @@ public class ThermalSensor : MonoBehaviour
     [Header("Debug")]
     public bool showDebugGizmos = true;
     public bool showDebugLogs = true;
-    public bool showDensityValue = true;
+    public bool showTempValue = true;
     public bool isManagedSensor = false;
     [SerializeField] private Vector2 displayOffset = new Vector2(0, 30f);
     public bool metThreshold { get; set; }
@@ -40,7 +40,7 @@ public class ThermalSensor : MonoBehaviour
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
 
-    public bool isRequestMade = false;
+    public bool isRequestMade { get; set; } = false;
 
     void Start()
     {
@@ -113,7 +113,7 @@ public class ThermalSensor : MonoBehaviour
 
         // Update fluid presence flag
         bool previousState = metThreshold;
-        currentTemperature = totalTemp/particleCount;
+        currentTemperature = particleCount == 0 ? 0 : totalTemp/particleCount;
         metThreshold = doCompare(currentTemperature);
 
         // Notify if state changed
@@ -121,6 +121,9 @@ public class ThermalSensor : MonoBehaviour
         {
             OnTempThresholdMet();
         }
+
+        if (showDebugLogs)
+            Debug.Log($"Avg Tmp is: {currentTemperature} at {gameObject.name}");
 
         isRequestMade = false;
     }
@@ -167,7 +170,7 @@ public class ThermalSensor : MonoBehaviour
 
     void OnGUI()
     {
-        if (!showDensityValue) return;
+        if (!showTempValue) return;
 
         // Convert world position to screen position
         Vector3 worldPosition = transform.position;
@@ -178,8 +181,8 @@ public class ThermalSensor : MonoBehaviour
         Vector2 displayPos = new Vector2(screenPos.x + displayOffset.x, screenPos.y + displayOffset.y);
 
         // Display the density value
-        string densityText = $"Temperature: {currentTemperature:F2}";
-        GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 100, 20), densityText);
+        string text = $"Temperature: {currentTemperature:F2}";
+        GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 100, 20), text);
     }
 
     void OnDestroy()
