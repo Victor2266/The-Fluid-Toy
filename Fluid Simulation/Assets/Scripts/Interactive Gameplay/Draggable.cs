@@ -110,6 +110,12 @@ public class Draggable : MonoBehaviour
     }
 
     public void setTargetScale(Vector3 newScale) {
+        if (uniformScaling)
+        {
+            float maxScale = Mathf.Max(newScale.x, newScale.y);
+            newScale.x = maxScale;
+            newScale.y = maxScale;
+        }
         if (resizable)
         {
             newScale.x = Mathf.Clamp(newScale.x, minScale, maxScale);

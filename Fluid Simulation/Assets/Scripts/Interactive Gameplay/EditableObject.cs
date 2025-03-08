@@ -8,6 +8,8 @@ public class EditableObject : MonoBehaviour
     enum ChildObjectType { None, BoxCollider, SolidThermalBox, ThermalBox, CircleCollider, SourceObject, DrainObject };
     // Prefab references
     public GameObject contextMenuPrefab;
+
+    [SerializeField] private string contextMenuHeading = "Edit Menu";
     [SerializeField] private ChildObjectType childObjectType = ChildObjectType.None;
 
     // Internal references
@@ -119,6 +121,7 @@ public class EditableObject : MonoBehaviour
     protected virtual void SetupMenuControls()
     {
         // Find controls in the menu
+        Transform heading = activeContextMenu.transform.Find("Heading Text");
         Transform closeButton = activeContextMenu.transform.Find("CloseButton");
         Transform scrollView = activeContextMenu.transform.Find("Scroll View");
         Transform content = scrollView.Find("Viewport").Find("Content");
@@ -129,21 +132,23 @@ public class EditableObject : MonoBehaviour
         Transform yScaleInput = content.transform.Find("YScaleInput");
         Transform zRotationInput = content.transform.Find("ZRotationInput");
 
+        // Set Heading Text
+        if (heading != null)
+        {
+            TextMeshProUGUI headingText = heading.GetComponent<TextMeshProUGUI>();
+            headingText.text = "    " + contextMenuHeading;
+        }
+
         // Add event listeners
         closeButton.GetComponent<Button>().onClick.AddListener(CloseContextMenu);
         deleteButton.GetComponent<Button>().onClick.AddListener(DeleteObject);
         duplicateButton.GetComponent<Button>().onClick.AddListener(DuplicateObject);
 
         // Initialize input fields with current values
-        if (xScaleInput != null && yScaleInput != null && zRotationInput != null)
+        if (xScaleInput != null)
         {
             TMP_InputField xScaleField = xScaleInput.GetComponentInChildren<TMP_InputField>();
-            TMP_InputField yScaleField = yScaleInput.GetComponentInChildren<TMP_InputField>();
-            TMP_InputField zRotationField = zRotationInput.GetComponentInChildren<TMP_InputField>();
-
             xScaleField.text = transform.localScale.x.ToString("F2");
-            yScaleField.text = transform.localScale.y.ToString("F2");
-            zRotationField.text = transform.rotation.eulerAngles.z.ToString("F2");
 
             // Add event listeners for input changes
             xScaleField.onEndEdit.AddListener((value) =>
@@ -155,7 +160,14 @@ public class EditableObject : MonoBehaviour
                     draggableScript.setTargetScale(newScale);
                 }
             });
+        }
 
+        if (yScaleInput != null)
+        {
+            TMP_InputField yScaleField = yScaleInput.GetComponentInChildren<TMP_InputField>();
+            yScaleField.text = transform.localScale.y.ToString("F2");
+
+            // Add event listeners for input changes
             yScaleField.onEndEdit.AddListener((value) =>
             {
                 if (float.TryParse(value, out float newYScale))
@@ -165,7 +177,14 @@ public class EditableObject : MonoBehaviour
                     draggableScript.setTargetScale(newScale);
                 }
             });
+        }
 
+        if (zRotationInput != null)
+        {
+            TMP_InputField zRotationField = zRotationInput.GetComponentInChildren<TMP_InputField>();
+            zRotationField.text = transform.rotation.eulerAngles.z.ToString("F2");
+
+            // Add event listeners for input changes
             zRotationField.onEndEdit.AddListener((value) =>
             {
                 if (float.TryParse(value, out float newZRotation))
