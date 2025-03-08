@@ -16,7 +16,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Simulation Settings")]
     public float timeScale = 1;
     public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
-    public bool enableHotkeys = false;
+    [Tooltip("Disable this to manually add obstacles to the simulation. If enabled, the obstacles will scanned via tags")]
+    public bool scanForObstaclesOnStart = true;
     public int iterationsPerFrame;
     public float globalEntropyRate = 1f;
     public float roomTemperature = 22f;
@@ -50,6 +51,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public float maxStrength = 720f;
     public float smoothingTime = 0.04f;
     public bool enableScrolling = false;
+    public bool enableHotkeys = false;
     private float targetInteractionRadius;
     private float targetInteractionStrength;
     private float smoothRadiusVelocity;
@@ -268,7 +270,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Init display
         display = GetComponent<IParticleDisplay>();
         display.Init(this);
-        ScanForAllObstaclesLists();
+        if (scanForObstaclesOnStart) ScanForAllObstaclesLists();
     }
 
     void Update()

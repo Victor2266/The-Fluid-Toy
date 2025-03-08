@@ -390,11 +390,7 @@ MonoBehaviour:
   compute: {fileID: 7200000, guid: 1c77ce8de78fddb419ed2d15cae41af0, type: 3}
   spawner: {fileID: 271053320}
   display: {fileID: 271053323}
-  boxColliders:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  boxColliders: []
   circleColliders: []
 --- !u!114 &271053320
 MonoBehaviour:
@@ -1239,17 +1235,11 @@ MonoBehaviour:
   compute: {fileID: 7200000, guid: c4e04fbd8b42e9e49be8bbd01966b4da, type: 3}
   spawner: {fileID: 1080519536}
   display: {fileID: 1080519535}
-  boxColliders:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  boxColliders: []
   circleColliders: []
-  sourceObjects:
-  - {fileID: 0}
+  sourceObjects: []
   sourceObjectsWIP: []
-  drainObjects:
-  - {fileID: 0}
+  drainObjects: []
   isCPUComputingEnabled: 1
   toggleCPUComputing: 1
   ThreadBatchSize: 1000
