@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
-    enum ObjectType { BoxCollider, SolidThermalBox, ThermalBox, CircleCollider, SourceObject, DrainObject};
     private bool isDragging = false;
     private Vector3 offset;
 
@@ -10,22 +9,16 @@ public class Draggable : MonoBehaviour
     public bool enableSmoothing = true; // Boolean to enable/disable smoothing
     public bool resizable = false; // Controls whether the object can be resized
     public bool uniformScaling = false; // Controls whether the object scales uniformly
-    public bool deletable = false;
-    [SerializeField] private ObjectType objectType = ObjectType.BoxCollider;
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
     public Vector3 targetScale;
     private Rigidbody2D rb2d;
-    private GameObject simulationGameobject;
-    private IFluidSimulation fluidSimulationScript;
 
     void Start()
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
-        simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
-        fluidSimulationScript = simulationGameobject.GetComponent<IFluidSimulation>();
     }
 
     void OnMouseOver()
@@ -40,10 +33,6 @@ public class Draggable : MonoBehaviour
             }
 
             offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
-
-        if (Input.GetMouseButtonDown(1) && deletable) {
-            Destroy(gameObject);
         }
     }
 
@@ -117,32 +106,6 @@ public class Draggable : MonoBehaviour
                 newScaleY = Mathf.Clamp(newScaleY, minScale, maxScale);
                 targetScale = new Vector3(targetScale.x, newScaleY, targetScale.z);
             }
-        }
-    }
-
-    void OnDestroy()
-    {
-        if (!Input.GetMouseButton(1)) return;
-        
-        if ((objectType == ObjectType.BoxCollider)) 
-        {
-            fluidSimulationScript.UpdateBoxColliders();
-        }
-        else if ((objectType == ObjectType.SolidThermalBox)){
-            fluidSimulationScript.UpdateBoxColliders();
-            fluidSimulationScript.UpdateThermalBoxes();
-        }
-        else if ((objectType == ObjectType.ThermalBox)){
-            fluidSimulationScript.UpdateThermalBoxes();
-        }
-        else if ((objectType == ObjectType.CircleCollider)){
-            fluidSimulationScript.UpdateCircleColliders();
-        }
-        else if ((objectType == ObjectType.SourceObject)){
-            fluidSimulationScript.UpdateSourceObjects();
-        }
-        else if ((objectType == ObjectType.DrainObject)){
-            fluidSimulationScript.UpdateDrainObjects();
         }
     }
 }

@@ -846,8 +846,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 1
-  deletable: 1
-  objectType: 4
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 8
@@ -1064,8 +1062,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
-  deletable: 1
-  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -1170,7 +1166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contextMenuPrefab: {fileID: 2927264504356737522, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: c9e6d849b5c9088419d97b88d2532cd2, type: 3}
+  childObjectType: 0
 --- !u!1 &489172451
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,6 +1414,7 @@ GameObject:
   - component: {fileID: 720039253}
   - component: {fileID: 720039252}
   - component: {fileID: 720039251}
+  - component: {fileID: 720039257}
   m_Layer: 0
   m_Name: Static Box Obstacle
   m_TagString: BoxCollider
@@ -1561,8 +1559,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
-  deletable: 1
-  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -1628,6 +1624,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &720039257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720039250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: c9e6d849b5c9088419d97b88d2532cd2, type: 3}
+  childObjectType: 0
 --- !u!1 &738685443
 GameObject:
   m_ObjectHideFlags: 0
@@ -1688,6 +1698,7 @@ GameObject:
   - component: {fileID: 797593689}
   - component: {fileID: 797593690}
   - component: {fileID: 797593691}
+  - component: {fileID: 797593692}
   m_Layer: 0
   m_Name: Propeller
   m_TagString: Untagged
@@ -1730,8 +1741,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 0
   uniformScaling: 0
-  deletable: 1
-  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.1
   maxScale: 5
@@ -1785,6 +1794,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1.75
+--- !u!114 &797593692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797593687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: c9e6d849b5c9088419d97b88d2532cd2, type: 3}
+  childObjectType: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2291,8 +2314,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
-  deletable: 0
-  objectType: 0
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -2518,7 +2539,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contextMenuPrefab: {fileID: 2927264504356737522, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: c9e6d849b5c9088419d97b88d2532cd2, type: 3}
+  childObjectType: 0
 --- !u!1 &1174773964
 GameObject:
   m_ObjectHideFlags: 0
@@ -3478,6 +3500,7 @@ GameObject:
   - component: {fileID: 1812870172}
   - component: {fileID: 1812870171}
   - component: {fileID: 1812870170}
+  - component: {fileID: 1812870176}
   m_Layer: 0
   m_Name: Red Drain Box
   m_TagString: DrainObject
@@ -3622,8 +3645,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
-  deletable: 1
-  objectType: 5
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -3716,6 +3737,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1812870176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812870169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: c9e6d849b5c9088419d97b88d2532cd2, type: 3}
+  childObjectType: 0
 --- !u!1 &1878462204
 GameObject:
   m_ObjectHideFlags: 0
@@ -4129,6 +4164,7 @@ GameObject:
   - component: {fileID: 1979314071}
   - component: {fileID: 1979314075}
   - component: {fileID: 1979314077}
+  - component: {fileID: 1979314078}
   m_Layer: 0
   m_Name: Circle Object
   m_TagString: CircleCollider
@@ -4188,8 +4224,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 1
-  deletable: 1
-  objectType: 3
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 16
@@ -4386,6 +4420,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1979314078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979314070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: c9e6d849b5c9088419d97b88d2532cd2, type: 3}
+  childObjectType: 0
 --- !u!1 &2085101039
 GameObject:
   m_ObjectHideFlags: 0
@@ -4402,6 +4450,7 @@ GameObject:
   - component: {fileID: 2085101040}
   - component: {fileID: 2085101046}
   - component: {fileID: 2085101047}
+  - component: {fileID: 2085101048}
   m_Layer: 0
   m_Name: Thermal Box
   m_TagString: SolidThermalBox
@@ -4546,8 +4595,6 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
-  deletable: 1
-  objectType: 1
   scaleSpeed: 0.1
   minScale: 0.4
   maxScale: 18
@@ -4699,6 +4746,20 @@ MonoBehaviour:
     transform: {fileID: 2085101045}
     temperature: 120
     conductivity: 16
+--- !u!114 &2085101048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085101039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: c9e6d849b5c9088419d97b88d2532cd2, type: 3}
+  childObjectType: 0
 --- !u!1 &2107056131
 GameObject:
   m_ObjectHideFlags: 0

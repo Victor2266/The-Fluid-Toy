@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 public class EditableObject : MonoBehaviour
 {
+    enum ChildObjectType { None, BoxCollider, SolidThermalBox, ThermalBox, CircleCollider, SourceObject, DrainObject };
     // Prefab references
     public GameObject contextMenuPrefab;
+    [SerializeField] private ChildObjectType childObjectType = ChildObjectType.None;
 
     // Internal references
     protected GameObject activeContextMenu;
@@ -15,7 +17,10 @@ public class EditableObject : MonoBehaviour
 
     protected Draggable draggableScript;
     protected Canvas canvas;
-    
+
+    protected GameObject simulationGameobject;
+    protected IFluidSimulation fluidSimulationScript;
+
     protected virtual void Start()
     {
         // Find or create canvas for UI elements
@@ -29,6 +34,8 @@ public class EditableObject : MonoBehaviour
             canvasObject.AddComponent<GraphicRaycaster>();
         }
         draggableScript = GetComponent<Draggable>();
+        simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
+        fluidSimulationScript = simulationGameobject.GetComponent<IFluidSimulation>();
     }
 
     protected virtual void Update()
@@ -78,34 +85,34 @@ public class EditableObject : MonoBehaviour
         // Get screen boundaries
         Vector2 screenSize = new Vector2(Screen.width, Screen.height);
         Vector2 menuSize = menuRectTransform.sizeDelta * canvas.scaleFactor;
-        
+
         // Calculate position
         Vector3 menuPosition = menuRectTransform.position;
-        
+
         // Check right edge
-        if (menuPosition.x + menuSize.x/2 > screenSize.x)
+        if (menuPosition.x + menuSize.x / 2 > screenSize.x)
         {
-            menuPosition.x = screenSize.x - menuSize.x/2;
+            menuPosition.x = screenSize.x - menuSize.x / 2;
         }
-        
+
         // Check left edge
-        if (menuPosition.x - menuSize.x/2 < 0)
+        if (menuPosition.x - menuSize.x / 2 < 0)
         {
-            menuPosition.x = menuSize.x/2;
+            menuPosition.x = menuSize.x / 2;
         }
-        
+
         // Check top edge
-        if (menuPosition.y + menuSize.y/2 > screenSize.y)
+        if (menuPosition.y + menuSize.y / 2 > screenSize.y)
         {
-            menuPosition.y = screenSize.y - menuSize.y/2;
+            menuPosition.y = screenSize.y - menuSize.y / 2;
         }
-        
+
         // Check bottom edge
-        if (menuPosition.y - menuSize.y/2 < 0)
+        if (menuPosition.y - menuSize.y / 2 < 0)
         {
-            menuPosition.y = menuSize.y/2;
+            menuPosition.y = menuSize.y / 2;
         }
-        
+
         menuRectTransform.position = menuPosition;
     }
 
@@ -136,7 +143,8 @@ public class EditableObject : MonoBehaviour
         zRotationField.text = transform.rotation.eulerAngles.z.ToString("F2");
 
         // Add event listeners for input changes
-        xScaleField.onEndEdit.AddListener((value) => {
+        xScaleField.onEndEdit.AddListener((value) =>
+        {
             if (float.TryParse(value, out float newXScale))
             {
                 Vector3 newScale = transform.localScale;
@@ -145,7 +153,8 @@ public class EditableObject : MonoBehaviour
             }
         });
 
-        yScaleField.onEndEdit.AddListener((value) => {
+        yScaleField.onEndEdit.AddListener((value) =>
+        {
             if (float.TryParse(value, out float newYScale))
             {
                 Vector3 newScale = transform.localScale;
@@ -154,7 +163,8 @@ public class EditableObject : MonoBehaviour
             }
         });
 
-        zRotationField.onEndEdit.AddListener((value) => {
+        zRotationField.onEndEdit.AddListener((value) =>
+        {
             if (float.TryParse(value, out float newZRotation))
             {
                 Vector3 rotation = transform.rotation.eulerAngles;
@@ -183,6 +193,70 @@ public class EditableObject : MonoBehaviour
     {
         GameObject duplicate = Instantiate(gameObject, transform.position + new Vector3(0.5f, 0.5f, 0), transform.rotation);
         CloseContextMenu();
+    }
+    void OnDestroy()
+    {
+        if (fluidSimulationScript == null) return;
+
+        if (childObjectType == ChildObjectType.None)
+        {
+            string tagName = gameObject.tag;
+
+            if (tagName == "BoxCollider")
+            {
+                fluidSimulationScript.UpdateBoxColliders();
+            }
+            else if (tagName == "SolidThermalBox")
+            {
+                fluidSimulationScript.UpdateBoxColliders();
+                fluidSimulationScript.UpdateThermalBoxes();
+            }
+            else if (tagName == "ThermalBox")
+            {
+                fluidSimulationScript.UpdateThermalBoxes();
+            }
+            else if (tagName == "CircleCollider")
+            {
+                fluidSimulationScript.UpdateCircleColliders();
+            }
+            else if (tagName == "SourceObject")
+            {
+                fluidSimulationScript.UpdateSourceObjects();
+            }
+            else if (tagName == "DrainObject")
+            {
+                fluidSimulationScript.UpdateDrainObjects();
+            }
+        }
+        else
+        {
+            if (childObjectType == ChildObjectType.BoxCollider)
+            {
+                fluidSimulationScript.UpdateBoxColliders();
+            }
+            else if (childObjectType == ChildObjectType.SolidThermalBox)
+            {
+                fluidSimulationScript.UpdateBoxColliders();
+                fluidSimulationScript.UpdateThermalBoxes();
+            }
+            else if (childObjectType == ChildObjectType.ThermalBox)
+            {
+                fluidSimulationScript.UpdateThermalBoxes();
+            }
+            else if (childObjectType == ChildObjectType.CircleCollider)
+            {
+                fluidSimulationScript.UpdateCircleColliders();
+            }
+            else if (childObjectType == ChildObjectType.SourceObject)
+            {
+                fluidSimulationScript.UpdateSourceObjects();
+            }
+            else if (childObjectType == ChildObjectType.DrainObject)
+            {
+                fluidSimulationScript.UpdateDrainObjects();
+            }
+        }
+
     }
 
     // Add any additional common functionality here
