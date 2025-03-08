@@ -178,7 +178,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2927264504356737522, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
       propertyPath: m_Name
-      value: ContextMenuPrefab Variant
+      value: ContextMenuPrefab_Unscalable_Unrotateable
       objectReference: {fileID: 0}
     - target: {fileID: 2986662638740278487, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
       propertyPath: m_AnchorMax.y
@@ -268,6 +268,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6636001293897039643, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6636001293897039643, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6636001293897039643, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7878545506672323021, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -323,6 +335,7 @@ PrefabInstance:
     - {fileID: 7351979285375471237, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
     - {fileID: 6852583514926677697, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
     - {fileID: 3033920289886537490, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
+    - {fileID: 6416902218019188284, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
