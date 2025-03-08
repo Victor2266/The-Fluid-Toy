@@ -188,7 +188,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &105816474
 Transform:
   m_ObjectHideFlags: 0
@@ -352,7 +352,7 @@ MonoBehaviour:
   timer: 0
   threeStarTime: 15
   twoStarTime: 20
-  fluidDetector: {fileID: 0}
+  fluidDetector: {fileID: 405819622}
 --- !u!1 &147882112
 GameObject:
   m_ObjectHideFlags: 0
@@ -6009,7 +6009,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -8.23, y: -10.56, z: 0.032038912}
-  m_LocalScale: {x: 15, y: 2.51, z: 1}
+  m_LocalScale: {x: 15.33, y: 2.51, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 906050035}
@@ -7299,7 +7299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4592926617858281530, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: '<b>Level 1</b>
+      value: '<b>Level 3</b>
 
 
 '
@@ -7512,7 +7512,7 @@ PrefabInstance:
       propertyPath: m_text
       value: '
 
-        Get The Man A Drink!'
+        Get to the End (placeholder)'
       objectReference: {fileID: 0}
     - target: {fileID: 6805873491615882965, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontSize
