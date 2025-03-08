@@ -14,6 +14,7 @@ public class SettingsManager : MonoBehaviour
     [Header("Resolution Settings")]
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private Toggle fullscreenToggle;
+    [SerializeField] private Toggle uncappedFpsToggle;
     
     [Header("Audio Mixer Settings")]
     [SerializeField] private AudioMixer bgmMixer;
@@ -32,6 +33,7 @@ public class SettingsManager : MonoBehaviour
     private const string SFX_VOLUME_KEY = "SFXVolume";
     private const string FULLSCREEN_KEY = "Fullscreen";
     private const string RESOLUTION_KEY = "Resolution";
+    private const string TARGET_FPS_KEY = "TargetFPS";
 
     private void Start()
     {
@@ -41,6 +43,7 @@ public class SettingsManager : MonoBehaviour
     public void Initialize(){
         InitializeResolutionDropdown();
         InitializeFullscreenToggle();
+        InitializeUncappedFPSToggle();
         InitializeVolumeSliders();
         LoadSavedSettings();
     }
@@ -79,8 +82,12 @@ public class SettingsManager : MonoBehaviour
 
     private void InitializeFullscreenToggle()
     {
-        fullscreenToggle.isOn = Screen.fullScreen;
         fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
+    }
+
+    private void InitializeUncappedFPSToggle()
+    {
+        uncappedFpsToggle.onValueChanged.AddListener(OnFPSUncappedChanged);
     }
 
     private void InitializeVolumeSliders()
@@ -118,6 +125,10 @@ public class SettingsManager : MonoBehaviour
         int savedResolutionIndex = PlayerPrefs.GetInt(RESOLUTION_KEY, currentResolutionIndex);
         resolutionDropdown.value = savedResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+
+        // Load and apply target FPS
+        int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, (int)resolutions[savedResolutionIndex].refreshRateRatio.value); // The Default FPS is the refresh rate of the selected resolution
+        uncappedFpsToggle.isOn = savedTargetFPS == -1;
     }
 
     private void OnResolutionChanged(int index)
@@ -126,7 +137,32 @@ public class SettingsManager : MonoBehaviour
         Resolution resolution = resolutions[index];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
+        if (PlayerPrefs.GetInt("TargetFPS", (int) resolution.refreshRateRatio.value) != -1){
+            SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
+        }
         PlayerPrefs.Save();
+    }
+
+    private void SetAndApplyTargetFPS(int targetFPS)
+    {
+        PlayerPrefs.SetInt(TARGET_FPS_KEY, targetFPS);
+        PlayerPrefs.Save();
+        Application.targetFrameRate = targetFPS;
+    }
+
+    private void OnFPSUncappedChanged(bool isUncapped)
+    {
+        if (isUncapped)
+        {
+            SetAndApplyTargetFPS(-1);
+        }
+        else
+        {
+            int resolutionIndex = PlayerPrefs.GetInt(RESOLUTION_KEY);
+            Resolution resolution = resolutions[resolutionIndex];
+            SetAndApplyTargetFPS((int)resolution.refreshRateRatio.value);
+        }
+        Debug.Log($"Target FPS changed to {(isUncapped ? "Uncapped" : PlayerPrefs.GetInt("TargetFPS", -1))}");
     }
 
     private void OnFullscreenChanged(bool isFullscreen)

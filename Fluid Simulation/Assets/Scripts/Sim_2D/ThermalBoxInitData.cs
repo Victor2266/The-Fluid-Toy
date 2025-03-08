@@ -4,7 +4,7 @@ public class ThermalBoxInitData : MonoBehaviour
 {
     public ThermalBoxInitializer thermalBoxInitData;
 
-    public Transform transform
+    public new Transform transform
     {
         get { return thermalBoxInitData.transform; }
         set { thermalBoxInitData.transform = value; }

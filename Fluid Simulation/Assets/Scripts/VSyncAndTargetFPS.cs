@@ -24,6 +24,6 @@ public class VSyncAndTargetFPS : MonoBehaviour
         //          Android and iOS: Content is rendered at fixed 30 fps to conserve battery power, independent of the native refresh rate of the display.
 
         QualitySettings.vSyncCount = vsyncCount; // Set vSyncCount to 0 so that using .targetFrameRate is enabled.
-        Application.targetFrameRate = targetFrameRate;
+        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFPS", targetFrameRate); //USES THE PLAYER PREF TARGET FPS if it exists
     }
 }
