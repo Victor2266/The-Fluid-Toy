@@ -1017,7 +1017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  particleCount: 16384
+  particleCount: 16000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: 500}
   spawnSize: {x: 7, y: 7}
@@ -2024,6 +2024,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 1
+  maxParticles: 16000
   scanForObstaclesOnStart: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
@@ -5943,6 +5944,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
+  maxParticles: 16000
   scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
@@ -5965,7 +5967,7 @@ MonoBehaviour:
   enableHotkeys: 1
   manuallySelectFluidTypes: 1
   fluidDataArray:
-  - {fileID: 11400000, guid: 423f11e3028cd9f41a43da9a7715b357, type: 2}
+  - {fileID: 11400000, guid: c32291ce16f51cf448f73f38171e1ddc, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
   spawners:
   - {fileID: 171782988}
