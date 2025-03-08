@@ -585,6 +585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
+  maxParticles: 0
   scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
@@ -828,7 +829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  particleCount: 16384
+  particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: 0}
   spawnSize: {x: 13, y: 6}
@@ -1124,6 +1125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 1
+  maxParticles: 0
   scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
@@ -1755,6 +1757,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
+  maxParticles: 16000
   scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
