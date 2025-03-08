@@ -17,10 +17,11 @@ public class Draggable : MonoBehaviour
     private Rigidbody2D rb2d;
 
     public bool isGate = false;
+    public bool openDirection = false;
     public bool returnsToOriginalPosition = false;
     private Vector3 OriginalPosition;
     public float returningSmoothingSpeed = 0.005F;
-    public float maxOffset = 50F;
+    public float maxOffset = 2.5F;
 
     void Start()
     {
@@ -60,7 +61,7 @@ public class Draggable : MonoBehaviour
         HandleResizing();
 
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
-        if(returnsToOriginalPosition){
+        if(!isDragging && returnsToOriginalPosition){
             transform.position = Vector3.Lerp(transform.position, OriginalPosition, returningSmoothingSpeed);
         }
     }
@@ -72,19 +73,27 @@ public class Draggable : MonoBehaviour
             if(isGate){
                 Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3 dirtoMouse = mousePosition - transform.position;
-
+                if(openDirection == false){
+                    dirtoMouse.x = Mathf.Min(0, dirtoMouse.x);
+                    dirtoMouse.y = Mathf.Min(0, dirtoMouse.y);
+                }else{
+                    dirtoMouse.x = Mathf.Max(0, dirtoMouse.x);
+                    dirtoMouse.y = Mathf.Max(0, dirtoMouse.y);
+                }
                 Vector3 targetPosition = transform.position;
                 targetPosition.x += dirtoMouse.x * Mathf.Cos(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
                 targetPosition.y += dirtoMouse.y * Mathf.Sin(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
+                if((targetPosition - OriginalPosition).magnitude < maxOffset){
+                    if (enableSmoothing)
+                    {
+                        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
+                    }
+                    else
+                    {
+                        transform.position = targetPosition;
+                    }
+                }
                 
-                if (enableSmoothing)
-                {
-                    transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
-                }
-                else
-                {
-                    transform.position = targetPosition;
-                }
             }else{
                 Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3 targetPosition = mousePosition + offset;
