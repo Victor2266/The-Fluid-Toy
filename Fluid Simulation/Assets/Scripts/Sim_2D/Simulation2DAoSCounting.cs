@@ -152,6 +152,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         targetInteractionStrength = interactionStrength;
         numParticles = maxParticles;
         spawnDataArr = new ParticleSpawner.ParticleSpawnData[spawners.Length];
+        if (spawners == null || spawners.Length == 0)
+        {
+            Debug.LogWarning("No particle spawners assigned. If this is unintended, please add at least one spawner in the inspector.");
+            return;
+        }
         for (int k = 0; k<spawners.Length; k++)
         {
             spawnDataArr[k] = spawners[k].GetSpawnData();
