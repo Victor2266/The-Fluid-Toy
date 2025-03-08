@@ -3,17 +3,22 @@ using Unity.Mathematics;
 
 public class ParticleSpawner : MonoBehaviour
 {
+    [Header("Spawner Settings")]
+    public FluidType type;
     public int particleCount;
-
     public Vector2 initialVelocity;
     public Vector2 spawnCentre;
     public Vector2 spawnSize;
     public float jitterStr;
+    public float temperature;
+
+    [Header("Debug")]
     public bool showSpawnBoundsGizmos;
+    public Color wireFrameColor = new(1, 1, 0, 0.5f);
 
     public ParticleSpawnData GetSpawnData()
     {
-        ParticleSpawnData data = new ParticleSpawnData(particleCount);
+        ParticleSpawnData data = new ParticleSpawnData(type, particleCount, temperature);
         var rng = new Unity.Mathematics.Random(42);
 
         float2 s = spawnSize;
@@ -42,24 +47,36 @@ public class ParticleSpawner : MonoBehaviour
         return data;
     }
 
+    // Only defines fluid data. Spawn position and size of spawn area determined by ParticleSpawner.
     public struct ParticleSpawnData
     {
+        public FluidType type;
         public float2[] positions;
         public float2[] velocities;
+        public float temperature;
 
-        public ParticleSpawnData(int num)
+        public ParticleSpawnData(int num) // Old call, for compatibility
         {
+            this.type = FluidType.Water;
             positions = new float2[num];
             velocities = new float2[num];
+            this.temperature = 22f;
+        }
+
+        public ParticleSpawnData(FluidType type, int num, float temperature)
+        {
+            this.type = type;
+            positions = new float2[num];
+            velocities = new float2[num];
+            this.temperature = temperature;
         }
     }
 
     void OnDrawGizmos()
     {
-        if (showSpawnBoundsGizmos && !Application.isPlaying)
-        {
-            Gizmos.color = new Color(1, 1, 0, 0.5f);
-            Gizmos.DrawWireCube(spawnCentre, Vector2.one * spawnSize);
-        }
+        if (!showSpawnBoundsGizmos || Application.isPlaying) return;
+
+        Gizmos.color = this.wireFrameColor;
+        Gizmos.DrawWireCube(spawnCentre, Vector2.one * spawnSize);
     }
 }

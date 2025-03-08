@@ -736,12 +736,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: -6.02}
   spawnSize: {x: 30, y: 5}
   jitterStr: 0.025
+  temperature: 0
   showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &271053323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2706,12 +2709,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: -6.02}
   spawnSize: {x: 30, y: 5}
   jitterStr: 0.025
+  temperature: 0
   showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &1173401525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2727,7 +2733,6 @@ MonoBehaviour:
   timeScale: 1
   fixedTimeStep: 0
   scanForObstaclesOnStart: 1
-  enableHotkeys: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -2746,6 +2751,7 @@ MonoBehaviour:
   maxStrength: 720
   smoothingTime: 0.04
   enableScrolling: 1
+  enableHotkeys: 1
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: 423f11e3028cd9f41a43da9a7715b357, type: 2}
@@ -3019,12 +3025,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 7
   particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: -6.02}
   spawnSize: {x: 30, y: 5}
   jitterStr: 0.025
+  temperature: 10
   showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &1396291943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3040,7 +3049,6 @@ MonoBehaviour:
   timeScale: 1
   fixedTimeStep: 1
   scanForObstaclesOnStart: 0
-  enableHotkeys: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -3059,6 +3067,7 @@ MonoBehaviour:
   maxStrength: 720
   smoothingTime: 0.04
   enableScrolling: 1
+  enableHotkeys: 0
   manuallySelectFluidTypes: 1
   updateFluidsEveryFrame: 0
   fluidDataArray:

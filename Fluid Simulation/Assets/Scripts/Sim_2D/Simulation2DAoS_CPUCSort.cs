@@ -676,7 +676,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         Particle[] allPoints = new Particle[spawnData.positions.Length];
 
-        // FIXME defaulting some values
         for (int i = 0; i < spawnData.positions.Length; i++)
         {
             Particle p = new Particle
@@ -685,8 +684,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
                 predictedPosition = spawnData.positions[i],
                 velocity = spawnData.velocities[i],
                 density = new float2(0, 0),
-                temperature = 22.0f,
-                type = FluidType.Water // Or whatever default type you want};
+                temperature = spawnData.temperature,
+                type = spawnData.type
             };
             allPoints[i] = p;
         }
