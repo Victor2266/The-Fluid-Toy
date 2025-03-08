@@ -284,6 +284,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // Init display
         display = GetComponent<IParticleDisplay>();
         display.Init(this);
+        ScanForAllObstaclesLists();
 
         //initialize local arrays
         initializeCPUKernelSettingsAoS();
@@ -719,14 +720,29 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             }
         }
     }
+
+    private void ScanForAllObstaclesLists()
+    {
+        UpdateBoxColliders();
+        UpdateCircleColliders();
+        UpdateSourceObjects();
+        UpdateDrainObjects();
+        UpdateThermalBoxes();
+    }
+
     public void UpdateBoxColliders(){
         boxColliders = GameObject.FindGameObjectsWithTag("BoxCollider")
             .Select(go => go.GetComponent<Transform>())
             .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox")
                 .Select(go => go.GetComponent<Transform>()))
             .ToArray();
-
+        
         boxColliderData = new OrientedBox[boxColliders.Length];
+        
+        ComputeHelper.Release(boxCollidersBuffer);
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        UpdateBoxColliderData();
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
     }
     public void UpdateCircleColliders()
     {
@@ -735,6 +751,11 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             .ToArray();
 
         circleColliderData = new Circle[circleColliders.Length];
+
+        ComputeHelper.Release(circleCollidersBuffer);
+        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
+        UpdateCircleColliderData();
+        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
     }
     public void UpdateSourceObjects()
     {
@@ -746,8 +767,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         {
             sourceObjects[i] = sourceObjectGameObjects[i].GetComponent<SourceObjectInitData>().sourceInitData;
         }
-
         sourceObjectData = new SourceObject[sourceObjectGameObjects.Length];
+
+        ComputeHelper.Release(sourceObjectBuffer);
+        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
+        UpdateSourceObjectData();
+        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
     }
     public void UpdateDrainObjects()
     {
@@ -756,6 +781,11 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
             .ToArray();
 
         drainObjectData = new OrientedBox[drainObjects.Length];
+
+        ComputeHelper.Release(drainObjectBuffer);
+        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
+        UpdateDrainObjectData();
+        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
     }
     public void UpdateThermalBoxes()
     {
@@ -769,6 +799,11 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         }
 
         thermalBoxData = new ThermalBox[thermalBoxGameObjects.Length];
+
+        ComputeHelper.Release(thermalBoxesBuffer);
+        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
+        UpdateThermalBoxData();
+        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
     }
 
     void OnDestroy()

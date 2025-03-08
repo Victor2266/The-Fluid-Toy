@@ -268,6 +268,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Init display
         display = GetComponent<IParticleDisplay>();
         display.Init(this);
+        ScanForAllObstaclesLists();
     }
 
     void Update()
@@ -649,6 +650,15 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         {
             multiParticleDisplay2D.CreateAndSetupVisualParamsBuffer(fluidDataArray);
         }
+    }
+
+    private void ScanForAllObstaclesLists()
+    {
+        UpdateBoxColliders();
+        UpdateCircleColliders();
+        UpdateSourceObjects();
+        UpdateDrainObjects();
+        UpdateThermalBoxes();
     }
 
     public void UpdateBoxColliders(){

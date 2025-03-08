@@ -23,7 +23,7 @@ public class EditableObject : MonoBehaviour
     protected GameObject simulationGameobject;
     protected IFluidSimulation fluidSimulationScript;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         // Find or create canvas for UI elements
         canvas = FindFirstObjectByType<Canvas>();
@@ -215,11 +215,21 @@ public class EditableObject : MonoBehaviour
     protected virtual void DuplicateObject()
     {
         GameObject duplicate = Instantiate(gameObject, transform.position + new Vector3(0.5f, 0.5f, 0), transform.rotation);
+        EditableObject duplicateScript = duplicate.GetComponent<EditableObject>(); // Get the EditableObject script from the duplicate
+        duplicateScript.RescanForObstacles();
         CloseContextMenu();
     }
     void OnDestroy()
     {
+        RescanForObstacles();
+    }
+
+    public void RescanForObstacles()
+    {
         if (fluidSimulationScript == null) return;
+        if (simulationGameobject == null) return;
+
+        Debug.Log("Rescanning for obstacles...");
 
         if (childObjectType == ChildObjectType.None)
         {
@@ -279,7 +289,6 @@ public class EditableObject : MonoBehaviour
                 fluidSimulationScript.UpdateDrainObjects();
             }
         }
-
     }
 
     // Add any additional common functionality here
