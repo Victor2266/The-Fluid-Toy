@@ -16,6 +16,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Simulation Settings")]
     public float timeScale = 1;
     public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
+    public int maxParticles;
     [Tooltip("Disable this to manually add obstacles to the simulation. If enabled, the obstacles will scanned via tags")]
     public bool scanForObstaclesOnStart = true;
     public int iterationsPerFrame;
@@ -149,12 +150,11 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         targetInteractionRadius = interactionRadius;
         targetInteractionStrength = interactionStrength;
-        numParticles = 0;
+        numParticles = maxParticles;
         spawnDataArr = new ParticleSpawner.ParticleSpawnData[spawners.Length];
         for (int k = 0; k<spawners.Length; k++)
         {
             spawnDataArr[k] = spawners[k].GetSpawnData();
-            numParticles += spawnDataArr[k].positions.Length;
         }
 
         if (!manuallySelectFluidTypes)
@@ -581,19 +581,25 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     void SetInitialBufferData(ParticleSpawner.ParticleSpawnData[] spawnData)
     {
-        int numP = 0;
         for (int k = 0; k < spawners.Length; k++)
         {
             spawnDataArr[k] = spawners[k].GetSpawnData();
-            numP += spawnDataArr[k].positions.Length;
         }
-        Particle[] allPoints = new Particle[numP];
+        Particle[] allPoints = new Particle[maxParticles];
         int idx = 0;
+        int spawnerIdx = 0;
 
         foreach (ParticleSpawner.ParticleSpawnData spawnD in spawnData)
         {
             for (int i = 0; i < spawnD.positions.Length; i++)
             {
+                // Early exit if we break max particle limit
+                if (idx + i >= maxParticles)
+                {
+                    Debug.LogWarning($"Particle Spawner: Hit max particle count! Current spawner index: {spawnerIdx}, Spawner particle offset: {i}");
+                    particleBuffer.SetData(allPoints);
+                    return;
+                }
                 Particle p = new Particle
                 {
                     position = spawnD.positions[i],
@@ -606,6 +612,35 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 allPoints[idx + i] = p;
             }
             idx += spawnD.positions.Length;
+            spawnerIdx++;
+        }
+        
+        // Fill empty space with disabled particles
+        if (idx+1 < maxParticles)
+        {
+            Debug.Log($"Particle Spawner: maxParticles < numParticles to spawn; filling scene with disabled particles. maxParticles: {maxParticles}, numParticles: {idx+1}");
+            int numFill = maxParticles - idx - 1;
+            ParticleSpawner.ParticleSpawnData spawnD = ParticleSpawner.GetSceneFill(numFill, boundsSize);
+            for (int i = 0; i < spawnD.positions.Length; i++)
+            {
+                // Early exit if we break max particle limit, shouldn't happen
+                if (idx + i >= maxParticles)
+                {
+                    Debug.LogWarning($"Particle Spawner: Hit max particle count during fill! Spawner particle offset: {i}");
+                    particleBuffer.SetData(allPoints);
+                    return;
+                }
+                Particle p = new Particle
+                {
+                    position = spawnD.positions[i],
+                    predictedPosition = spawnD.positions[i],
+                    velocity = spawnD.velocities[i],
+                    density = new float2(0, 0),
+                    temperature = spawnD.temperature,
+                    type = spawnD.type
+                };
+                allPoints[idx + i] = p;
+            }
         }
 
         particleBuffer.SetData(allPoints);
