@@ -1,9 +1,7 @@
 # The Fluid Toy
 **CPU-GPU Fluid Simulation in Unity: Optimizing Collision Detection with GPU Acceleration for Real-Time Particle-Based Fluid Simulations**  
 
-
 https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
-
 
 
 ## 👥 Team Members
@@ -13,7 +11,9 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 - JJ Marr  
 
 ## 🕹 Download Here (Coming Soon):
-- Itch.io
+- [Itch.io](https://awasete.itch.io/the-fluid-toy)
+
+## 🖥️💻 Supported platforms
 - Windows
 - Mac
 - Linux
