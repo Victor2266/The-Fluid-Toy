@@ -182,7 +182,7 @@ public class ThermalSensor : MonoBehaviour
 
         // Display the density value
         string text = $"Temperature: {currentTemperature:F2}";
-        GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 100, 20), text);
+        GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 150, 20), text);
     }
 
     void OnDestroy()
