@@ -9,14 +9,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7839490814578578491}
+  - component: {fileID: 7153128058712216576}
+  - component: {fileID: 8687240001053093381}
+  - component: {fileID: 7018377920120125929}
   - component: {fileID: 1195860800424768462}
   - component: {fileID: 6153897593643621082}
-  - component: {fileID: 7018377920120125929}
   - component: {fileID: 7058341487985514049}
   - component: {fileID: 1566809673345709431}
   - component: {fileID: 8753954417414598425}
-  - component: {fileID: 7153128058712216576}
-  - component: {fileID: 1717546734608370659}
   m_Layer: 0
   m_Name: Thermal Box
   m_TagString: SolidThermalBox
@@ -39,6 +39,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7153128058712216576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7005036492308619237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 496f94b66e61dca4981cf9973f5ae2eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thermalBoxInitData:
+    transform: {fileID: 7839490814578578491}
+    temperature: 120
+    conductivity: 16
+--- !u!114 &8687240001053093381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7005036492308619237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c5cac0cd324254188d10e1cd58b6a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 2709232170528168518, guid: e6b6a6333f1a4e0498686973c678ada7, type: 3}
+  contextMenuHeading: Edit Thermal Box
+  childObjectType: 0
+--- !u!114 &7018377920120125929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7005036492308619237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smoothingSpeed: 0.2
+  enableSmoothing: 1
+  resizable: 1
+  uniformScaling: 0
+  scaleSpeed: 0.1
+  minScale: 0.4
+  maxScale: 18
+  targetScale: {x: 0, y: 0, z: 0}
 --- !u!61 &1195860800424768462
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -112,26 +163,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &7018377920120125929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7005036492308619237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  smoothingSpeed: 0.2
-  enableSmoothing: 1
-  resizable: 1
-  uniformScaling: 0
-  scaleSpeed: 0.1
-  minScale: 0.4
-  maxScale: 18
-  targetScale: {x: 0, y: 0, z: 0}
 --- !u!120 &7058341487985514049
 LineRenderer:
   serializedVersion: 2
@@ -178,10 +209,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: -7, y: -4, z: 0}
-  - {x: -3, y: -4, z: 0}
-  - {x: -3, y: 0, z: 0}
-  - {x: -7, y: 0, z: 0}
+  - {x: -2, y: -2, z: 0}
+  - {x: 2, y: -2, z: 0}
+  - {x: 2, y: 2, z: 0}
+  - {x: -2, y: 2, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -296,35 +327,3 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   cycleDuration: 1.75
---- !u!114 &7153128058712216576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7005036492308619237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 496f94b66e61dca4981cf9973f5ae2eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thermalBoxInitData:
-    transform: {fileID: 7839490814578578491}
-    temperature: 120
-    conductivity: 16
---- !u!114 &1717546734608370659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7005036492308619237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contextMenuPrefab: {fileID: 4341401936970538196, guid: fa0bf94ad4f016f498f27dedf36e38f3, type: 3}
-  contextMenuHeading: Edit Thermal Box
-  childObjectType: 0
-  startsInScene: 0

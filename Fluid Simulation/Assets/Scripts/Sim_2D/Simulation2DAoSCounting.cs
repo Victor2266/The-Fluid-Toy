@@ -720,7 +720,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     }
     public void UpdateThermalBoxes()
     {
-        GameObject[] thermalBoxGameObjects = GameObject.FindGameObjectsWithTag("ThermalBox");
+        GameObject[] thermalBoxGameObjects = GameObject.FindGameObjectsWithTag("ThermalBox")
+            .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox"))
+            .ToArray();
+
         thermalBoxes = new ThermalBoxInitializer[thermalBoxGameObjects.Length];
 
         // Update thermal boxes

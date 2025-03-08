@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7839490814578578491}
   - component: {fileID: 7153128058712216576}
-  - component: {fileID: 1717546734608370659}
+  - component: {fileID: 4357929923221989096}
   - component: {fileID: 7018377920120125929}
   - component: {fileID: 1195860800424768462}
   - component: {fileID: 7058341487985514049}
@@ -54,7 +54,7 @@ MonoBehaviour:
     transform: {fileID: 7839490814578578491}
     temperature: 120
     conductivity: 16
---- !u!114 &1717546734608370659
+--- !u!114 &4357929923221989096
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,10 +63,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7005036492308619237}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Script: {fileID: 11500000, guid: e7c5cac0cd324254188d10e1cd58b6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contextMenuPrefab: {fileID: 4341401936970538196, guid: fa0bf94ad4f016f498f27dedf36e38f3, type: 3}
+  contextMenuPrefab: {fileID: 2709232170528168518, guid: e6b6a6333f1a4e0498686973c678ada7, type: 3}
   contextMenuHeading: Edit Thermal Box
   childObjectType: 0
 --- !u!114 &7018377920120125929

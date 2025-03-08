@@ -22,6 +22,7 @@ public class EditableObject : MonoBehaviour
 
     protected GameObject simulationGameobject;
     protected IFluidSimulation fluidSimulationScript;
+    protected Transform content;
 
     protected virtual void Awake()
     {
@@ -124,7 +125,7 @@ public class EditableObject : MonoBehaviour
         Transform heading = activeContextMenu.transform.Find("Heading Text");
         Transform closeButton = activeContextMenu.transform.Find("CloseButton");
         Transform scrollView = activeContextMenu.transform.Find("Scroll View");
-        Transform content = scrollView.Find("Viewport").Find("Content");
+        content = scrollView.Find("Viewport").Find("Content");
         Transform deleteButton = content.transform.Find("DeleteButton");
         Transform duplicateButton = content.transform.Find("DuplicateButton");
 
