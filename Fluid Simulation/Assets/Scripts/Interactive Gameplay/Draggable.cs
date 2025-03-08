@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Draggable : MonoBehaviour
@@ -15,10 +16,17 @@ public class Draggable : MonoBehaviour
     public Vector3 targetScale;
     private Rigidbody2D rb2d;
 
+    public bool isGate = false;
+    public bool returnsToOriginalPosition = false;
+    private Vector3 OriginalPosition;
+    public float returningSmoothingSpeed = 0.005F;
+    public float maxOffset = 50F;
+
     void Start()
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
+        OriginalPosition = transform.position;
     }
 
     void OnMouseOver()
@@ -43,6 +51,7 @@ public class Draggable : MonoBehaviour
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             rb2d.freezeRotation = false;
         }
+        
     }
 
     void Update()
@@ -51,23 +60,45 @@ public class Draggable : MonoBehaviour
         HandleResizing();
 
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
+        if(returnsToOriginalPosition){
+            transform.position = Vector3.Lerp(transform.position, OriginalPosition, returningSmoothingSpeed);
+        }
     }
 
     private void HandleDragging()
     {
         if (isDragging)
         {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 targetPosition = mousePosition + offset;
+            if(isGate){
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 dirtoMouse = mousePosition - transform.position;
 
-            if (enableSmoothing)
-            {
-                transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
+                Vector3 targetPosition = transform.position;
+                targetPosition.x += dirtoMouse.x * Mathf.Cos(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
+                targetPosition.y += dirtoMouse.y * Mathf.Sin(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
+                
+                if (enableSmoothing)
+                {
+                    transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
+                }
+                else
+                {
+                    transform.position = targetPosition;
+                }
+            }else{
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 targetPosition = mousePosition + offset;
+
+                if (enableSmoothing)
+                {
+                    transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
+                }
+                else
+                {
+                    transform.position = targetPosition;
+                }
             }
-            else
-            {
-                transform.position = targetPosition;
-            }
+            
         }
     }
 
