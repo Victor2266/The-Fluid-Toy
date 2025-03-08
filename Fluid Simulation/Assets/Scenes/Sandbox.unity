@@ -919,6 +919,7 @@ GameObject:
   - component: {fileID: 474748746}
   - component: {fileID: 474748745}
   - component: {fileID: 474748744}
+  - component: {fileID: 474748750}
   m_Layer: 0
   m_Name: Box Obstacle (1)
   m_TagString: BoxCollider
@@ -1157,6 +1158,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &474748750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 474748743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 2927264504356737522, guid: 734c2e2b6fd6eeb4b9c40219634c3cf1, type: 3}
 --- !u!1 &489172451
 GameObject:
   m_ObjectHideFlags: 0
