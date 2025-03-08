@@ -82,6 +82,7 @@ public class SettingsManager : MonoBehaviour
 
     private void InitializeFullscreenToggle()
     {
+        fullscreenToggle.isOn = Screen.fullScreen;
         fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
     }
 
