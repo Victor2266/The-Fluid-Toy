@@ -16,8 +16,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Simulation Settings")]
     public float timeScale = 1;
     public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
+    public int maxParticles;
     [Tooltip("Disable this to manually add obstacles to the simulation. If enabled, the obstacles will scanned via tags")]
     public bool scanForObstaclesOnStart = true;
+    public bool scanForParticleSpawnersOnStart = true;
     public int iterationsPerFrame;
     public float globalEntropyRate = 1f;
     public float roomTemperature = 22f;
@@ -77,7 +79,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     [Header("References")]
     public ComputeShader compute;
-    public ParticleSpawner spawner;
+    public ParticleSpawner[] spawners;
     public IParticleDisplay display;
 
     [Header("Obstacle Colliders")]
@@ -133,7 +135,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // State
     bool isPaused;
-    ParticleSpawner.ParticleSpawnData spawnData;
+    ParticleSpawner.ParticleSpawnData[] spawnDataArr;
     bool pauseNextFrame;
 
     public int numParticles { get; private set; }
@@ -149,8 +151,21 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         targetInteractionRadius = interactionRadius;
         targetInteractionStrength = interactionStrength;
-        spawnData = spawner.GetSpawnData();
-        numParticles = spawnData.positions.Length;
+        numParticles = maxParticles;
+
+        if (scanForParticleSpawnersOnStart){
+            spawners = FindObjectsByType<ParticleSpawner>(FindObjectsSortMode.None);
+        }
+        spawnDataArr = new ParticleSpawner.ParticleSpawnData[spawners.Length];
+        if (spawners == null || spawners.Length == 0)
+        {
+            Debug.LogWarning("No particle spawners assigned. If this is unintended, please add at least one spawner in the inspector or enable the 'Scan for Particle Spawners on Start' option.");
+            return;
+        }
+        for (int k = 0; k<spawners.Length; k++)
+        {
+            spawnDataArr[k] = spawners[k].GetSpawnData();
+        }
 
         if (!manuallySelectFluidTypes)
         {
@@ -237,7 +252,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Set buffer data
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
         uint[] atomicCounter = { 0, frameCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
 
@@ -574,23 +589,68 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("interactionInputRadius", interactionRadius);
     }
 
-    void SetInitialBufferData(ParticleSpawner.ParticleSpawnData spawnData)
+    void SetInitialBufferData(ParticleSpawner.ParticleSpawnData[] spawnData)
     {
-        Particle[] allPoints = new Particle[spawnData.positions.Length];
-
-        // FIXME defaulting some values
-        for (int i = 0; i < spawnData.positions.Length; i++)
+        for (int k = 0; k < spawners.Length; k++)
         {
-            Particle p = new Particle
+            spawnDataArr[k] = spawners[k].GetSpawnData();
+        }
+        Particle[] allPoints = new Particle[maxParticles];
+        int idx = 0;
+        int spawnerIdx = 0;
+
+        foreach (ParticleSpawner.ParticleSpawnData spawnD in spawnData)
+        {
+            for (int i = 0; i < spawnD.positions.Length; i++)
             {
-                position = spawnData.positions[i],
-                predictedPosition = spawnData.positions[i],
-                velocity = spawnData.velocities[i],
-                density = new float2(0, 0),
-                temperature = 22.0f,
-                type = FluidType.Water // Or whatever default type you want};
-            };
-            allPoints[i] = p;
+                // Early exit if we break max particle limit
+                if (idx + i >= maxParticles)
+                {
+                    Debug.LogWarning($"Particle Spawner: Hit max particle count! Current spawner index: {spawnerIdx}, Spawner particle offset: {i}");
+                    particleBuffer.SetData(allPoints);
+                    return;
+                }
+                Particle p = new Particle
+                {
+                    position = spawnD.positions[i],
+                    predictedPosition = spawnD.positions[i],
+                    velocity = spawnD.velocities[i],
+                    density = new float2(0, 0),
+                    temperature = spawnD.temperature,
+                    type = spawnD.type
+                };
+                allPoints[idx + i] = p;
+            }
+            idx += spawnD.positions.Length;
+            spawnerIdx++;
+        }
+
+        // Fill empty space with disabled particles
+        if (idx < maxParticles)
+        {
+            Debug.Log($"Particle Spawner: maxParticles > numParticles to spawn; filling scene with disabled particles. maxParticles: {maxParticles}, numParticles: {idx}");
+            int numFill = maxParticles - idx - 1;
+            ParticleSpawner.ParticleSpawnData spawnD = ParticleSpawner.GetSceneFill(numFill, boundsSize);
+            for (int i = 0; i < spawnD.positions.Length; i++)
+            {
+                // Early exit if we break max particle limit, shouldn't happen
+                if (idx + i >= maxParticles)
+                {
+                    Debug.LogWarning($"Particle Spawner: Hit max particle count during fill! Spawner particle offset: {i}");
+                    particleBuffer.SetData(allPoints);
+                    return;
+                }
+                Particle p = new Particle
+                {
+                    position = spawnD.positions[i],
+                    predictedPosition = spawnD.positions[i],
+                    velocity = spawnD.velocities[i],
+                    density = new float2(0, 0),
+                    temperature = spawnD.temperature,
+                    type = spawnD.type
+                };
+                allPoints[idx + i] = p;
+            }
         }
 
         particleBuffer.SetData(allPoints);
@@ -821,6 +881,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             }
         }
 
+        if (spawners != null)
+        {
+            foreach (ParticleSpawner pSpawn in spawners)
+            {
+                pSpawn.OnDrawGizmos();
+            }
+        }
+
         if (Application.isPlaying)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -879,9 +947,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         isPaused = true;
         // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
         RunSimulationStep();
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
     }
 
     // These functions are for the fluid detector
