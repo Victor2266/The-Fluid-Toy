@@ -19,6 +19,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public int maxParticles;
     [Tooltip("Disable this to manually add obstacles to the simulation. If enabled, the obstacles will scanned via tags")]
     public bool scanForObstaclesOnStart = true;
+    public bool scanForParticleSpawnersOnStart = true;
     public int iterationsPerFrame;
     public float globalEntropyRate = 1f;
     public float roomTemperature = 22f;
@@ -162,6 +163,10 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         targetInteractionRadius = interactionRadius;
         targetInteractionStrength = interactionStrength;
         numParticles = 0;
+
+        if (scanForParticleSpawnersOnStart){
+            spawners = FindObjectsByType<ParticleSpawner>(FindObjectsSortMode.None);
+        }
         spawnDataArr = new ParticleSpawner.ParticleSpawnData[spawners.Length];
         if (spawners == null || spawners.Length == 0)
         {
