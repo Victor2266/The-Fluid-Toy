@@ -11,12 +11,16 @@ public class BottomBarWrapper : MonoBehaviour
     [SerializeField] AudioSource audioSource;
     private IFluidSimulation simulation2DScript;
 
+    [Header("References for Brush Settings")]
     [SerializeField] Slider brushSizeSlider;
     [SerializeField] TMP_Text brushSizeText;
-
     [SerializeField] Slider brushStrengthSlider;
     [SerializeField] TMP_Text brushStrengthText;
 
+    [Header("References to Obstacles (for spawning them)")]
+    [SerializeField] GameObject[] obstaclePrefabs;
+
+    [Header("References to Fluid Type Buttons (for disabling them)")]
     [SerializeField] Button[] FluidTypebuttons;
 
     void Awake()
