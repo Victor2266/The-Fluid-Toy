@@ -14,6 +14,7 @@ public class SettingsManager : MonoBehaviour
     [Header("Resolution Settings")]
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private Toggle fullscreenToggle;
+    [SerializeField] private Toggle uncapFpsToggle;
     
     [Header("Audio Mixer Settings")]
     [SerializeField] private AudioMixer bgmMixer;
@@ -41,6 +42,7 @@ public class SettingsManager : MonoBehaviour
     public void Initialize(){
         InitializeResolutionDropdown();
         InitializeFullscreenToggle();
+        InitializeFpsToggle();
         InitializeVolumeSliders();
         LoadSavedSettings();
     }
@@ -81,6 +83,11 @@ public class SettingsManager : MonoBehaviour
     {
         fullscreenToggle.isOn = Screen.fullScreen;
         fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
+    }
+
+    private void InitializeFpsToggle(){
+        uncapFpsToggle.isOn = PlayerPrefs.GetInt($"FPS_UNCAP", 0) == 0 ? false : true;
+        uncapFpsToggle.onValueChanged.AddListener(onUncapFPSChanged);
     }
 
     private void InitializeVolumeSliders()
@@ -136,6 +143,18 @@ public class SettingsManager : MonoBehaviour
         Screen.fullScreen = isFullscreen;
         PlayerPrefs.SetInt(FULLSCREEN_KEY, isFullscreen ? 1 : 0);
         PlayerPrefs.Save();
+    }
+
+    private void onUncapFPSChanged(bool isFpsUncapped){
+        if(isFpsUncapped){
+            Application.targetFrameRate = -1;
+            PlayerPrefs.SetInt($"FPS_UNCAP", 1);
+        }else{
+            Application.targetFrameRate = (int) Screen.currentResolution.refreshRateRatio.value;
+            PlayerPrefs.SetInt($"FPS_UNCAP", 0);
+        }
+        PlayerPrefs.Save();
+        
     }
 
     private void OnBGMVolumeChanged(float volume)
