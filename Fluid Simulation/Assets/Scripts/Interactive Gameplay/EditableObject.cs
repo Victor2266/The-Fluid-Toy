@@ -124,6 +124,7 @@ public class EditableObject : MonoBehaviour
         Transform content = scrollView.Find("Viewport").Find("Content");
         Transform deleteButton = content.transform.Find("DeleteButton");
         Transform duplicateButton = content.transform.Find("DuplicateButton");
+
         Transform xScaleInput = content.transform.Find("XScaleInput");
         Transform yScaleInput = content.transform.Find("YScaleInput");
         Transform zRotationInput = content.transform.Find("ZRotationInput");
@@ -134,44 +135,47 @@ public class EditableObject : MonoBehaviour
         duplicateButton.GetComponent<Button>().onClick.AddListener(DuplicateObject);
 
         // Initialize input fields with current values
-        TMP_InputField xScaleField = xScaleInput.GetComponentInChildren<TMP_InputField>();
-        TMP_InputField yScaleField = yScaleInput.GetComponentInChildren<TMP_InputField>();
-        TMP_InputField zRotationField = zRotationInput.GetComponentInChildren<TMP_InputField>();
-
-        xScaleField.text = transform.localScale.x.ToString("F2");
-        yScaleField.text = transform.localScale.y.ToString("F2");
-        zRotationField.text = transform.rotation.eulerAngles.z.ToString("F2");
-
-        // Add event listeners for input changes
-        xScaleField.onEndEdit.AddListener((value) =>
+        if (xScaleInput != null && yScaleInput != null && zRotationInput != null)
         {
-            if (float.TryParse(value, out float newXScale))
-            {
-                Vector3 newScale = transform.localScale;
-                newScale.x = newXScale;
-                draggableScript.targetScale = newScale;
-            }
-        });
+            TMP_InputField xScaleField = xScaleInput.GetComponentInChildren<TMP_InputField>();
+            TMP_InputField yScaleField = yScaleInput.GetComponentInChildren<TMP_InputField>();
+            TMP_InputField zRotationField = zRotationInput.GetComponentInChildren<TMP_InputField>();
 
-        yScaleField.onEndEdit.AddListener((value) =>
-        {
-            if (float.TryParse(value, out float newYScale))
-            {
-                Vector3 newScale = transform.localScale;
-                newScale.y = newYScale;
-                draggableScript.targetScale = newScale;
-            }
-        });
+            xScaleField.text = transform.localScale.x.ToString("F2");
+            yScaleField.text = transform.localScale.y.ToString("F2");
+            zRotationField.text = transform.rotation.eulerAngles.z.ToString("F2");
 
-        zRotationField.onEndEdit.AddListener((value) =>
-        {
-            if (float.TryParse(value, out float newZRotation))
+            // Add event listeners for input changes
+            xScaleField.onEndEdit.AddListener((value) =>
             {
-                Vector3 rotation = transform.rotation.eulerAngles;
-                rotation.z = newZRotation;
-                transform.rotation = Quaternion.Euler(rotation);
-            }
-        });
+                if (float.TryParse(value, out float newXScale))
+                {
+                    Vector3 newScale = transform.localScale;
+                    newScale.x = newXScale;
+                    draggableScript.setTargetScale(newScale);
+                }
+            });
+
+            yScaleField.onEndEdit.AddListener((value) =>
+            {
+                if (float.TryParse(value, out float newYScale))
+                {
+                    Vector3 newScale = transform.localScale;
+                    newScale.y = newYScale;
+                    draggableScript.setTargetScale(newScale);
+                }
+            });
+
+            zRotationField.onEndEdit.AddListener((value) =>
+            {
+                if (float.TryParse(value, out float newZRotation))
+                {
+                    Vector3 rotation = transform.rotation.eulerAngles;
+                    rotation.z = newZRotation;
+                    transform.rotation = Quaternion.Euler(rotation);
+                }
+            });
+        }
     }
 
     protected virtual void CloseContextMenu()

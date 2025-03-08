@@ -108,4 +108,13 @@ public class Draggable : MonoBehaviour
             }
         }
     }
+
+    public void setTargetScale(Vector3 newScale) {
+        if (resizable)
+        {
+            newScale.x = Mathf.Clamp(newScale.x, minScale, maxScale);
+            newScale.y = Mathf.Clamp(newScale.y, minScale, maxScale);
+            targetScale = newScale;
+        }
+    }
 }
