@@ -9,6 +9,7 @@ public class ThermalSensorManager : MonoBehaviour
 
     [Tooltip("How often to check temperature (overrides sensors)")]
     public float checkInterval = 0.1f;
+    public bool scanForSensorsOnStart = true;
 
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
@@ -26,6 +27,14 @@ public class ThermalSensorManager : MonoBehaviour
             Debug.LogError("No Simulation2D found in the scene!");
             enabled = false;
             return;
+        }
+        if (scanForSensorsOnStart)
+        {
+            thermalSensors = FindObjectsByType<ThermalSensor>(FindObjectsSortMode.None);
+            foreach (ThermalSensor tSense in thermalSensors)
+            {
+                tSense.isManagedSensor = true;
+            }
         }
     }
 
