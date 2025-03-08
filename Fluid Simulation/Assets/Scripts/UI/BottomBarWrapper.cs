@@ -135,5 +135,12 @@ public class BottomBarWrapper : MonoBehaviour
             brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
         }
     }
+
+    public void spawnObstacle(int obstacleType)
+    {
+        GameObject spawnedObject = Instantiate(obstaclePrefabs[obstacleType], Vector3.zero, Quaternion.identity);
+        EditableObject objectScript = spawnedObject.GetComponent<EditableObject>(); // Get the EditableObject script from the duplicate
+        objectScript.RescanForObstacles();
+    }
 }
 
