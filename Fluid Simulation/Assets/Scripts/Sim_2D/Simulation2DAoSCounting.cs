@@ -167,55 +167,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             spawnDataArr[k] = spawners[k].GetSpawnData();
         }
 
-        if (!manuallySelectFluidTypes)
-        {
-            // Get the number of fluid types (excluding Disabled)
-            int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
-            // Initialize arrays
-            fluidDataArray = new FluidData[numFluidTypes];
-            fluidParamArr = new FluidParam[numFluidTypes];
-            scalingFactorsArr = new ScalingFactors[numFluidTypes];
-
-            // Load each fluid type in order
-            for (int i = 1; i < numFluidTypes + 1; i++)
-            {
-                string fluidName = Enum.GetName(typeof(FluidType), i);
-                FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
-                fluidData.fluidType = (FluidType)i;
-
-                if (fluidData == null)
-                {
-                    Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
-                    continue;
-                }
-
-                // Assign to array at index-1 (since we skip Disabled which is 0)
-                fluidDataArray[i - 1] = fluidData;
-                fluidParamArr[i - 1] = fluidData.getFluidParams();
-                scalingFactorsArr[i - 1] = fluidData.getScalingFactors();
-            }
-        }
-        else
-        {
-            fluidParamArr = new FluidParam[fluidDataArray.Length];
-            scalingFactorsArr = new ScalingFactors[fluidDataArray.Length];
-            for (int i = 0; i < fluidDataArray.Length; i++)
-            {
-                fluidParamArr[i] = fluidDataArray[i].getFluidParams();
-                //fluidParamArr[i].fluidType = (FluidType)i + 1;
-                scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
-                //Debug.Log((int) fluidParamArr[i].fluidType);
-            }
-        }
-
-        maxSmoothingRadius = 0f;
-        for (int i = 0; i < fluidDataArray.Length; i++)
-        {
-            if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
-            {
-                maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
-            }
-        }
+        SetupFluidTypeList();
 
         // Create buffers
         // init buffer
@@ -286,6 +238,58 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         display = GetComponent<IParticleDisplay>();
         display.Init(this);
         if (scanForObstaclesOnStart) ScanForAllObstaclesLists();
+    }
+
+    private void SetupFluidTypeList(){
+        if (!manuallySelectFluidTypes)
+        {
+            // Get the number of fluid types (excluding Disabled)
+            int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
+            // Initialize arrays
+            fluidDataArray = new FluidData[numFluidTypes];
+            fluidParamArr = new FluidParam[numFluidTypes];
+            scalingFactorsArr = new ScalingFactors[numFluidTypes];
+
+            // Load each fluid type in order
+            for (int i = 1; i < numFluidTypes + 1; i++)
+            {
+                string fluidName = Enum.GetName(typeof(FluidType), i);
+                FluidData fluidData = Resources.Load<FluidData>($"Fluids/{fluidName}");
+                fluidData.fluidType = (FluidType)i;
+
+                if (fluidData == null)
+                {
+                    Debug.LogError($"Failed to load fluid data for {fluidName}. Ensure the scriptable object exists at Resources/Fluids/{fluidName}");
+                    continue;
+                }
+
+                // Assign to array at index-1 (since we skip Disabled which is 0)
+                fluidDataArray[i - 1] = fluidData;
+                fluidParamArr[i - 1] = fluidData.getFluidParams();
+                scalingFactorsArr[i - 1] = fluidData.getScalingFactors();
+            }
+        }
+        else
+        {
+            fluidParamArr = new FluidParam[fluidDataArray.Length];
+            scalingFactorsArr = new ScalingFactors[fluidDataArray.Length];
+            for (int i = 0; i < fluidDataArray.Length; i++)
+            {
+                fluidParamArr[i] = fluidDataArray[i].getFluidParams();
+                //fluidParamArr[i].fluidType = (FluidType)i + 1;
+                scalingFactorsArr[i] = fluidDataArray[i].getScalingFactors();
+                //Debug.Log((int) fluidParamArr[i].fluidType);
+            }
+        }
+
+        maxSmoothingRadius = 0f;
+        for (int i = 0; i < fluidDataArray.Length; i++)
+        {
+            if (fluidDataArray[i].smoothingRadius > maxSmoothingRadius)
+            {
+                maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
+            }
+        }
     }
 
     void Update()
