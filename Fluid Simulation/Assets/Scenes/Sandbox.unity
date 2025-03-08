@@ -830,7 +830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  particleCount: 1
+  particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: 0}
   spawnSize: {x: 13, y: 6}
@@ -883,7 +883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  particleCount: 1
+  particleCount: 5000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 10, y: 0}
   spawnSize: {x: 5, y: 5}
@@ -1128,6 +1128,7 @@ MonoBehaviour:
   fixedTimeStep: 1
   maxParticles: 16000
   scanForObstaclesOnStart: 1
+  scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -1417,6 +1418,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1174773964}
   m_CullTransparentMesh: 1
+--- !u!1 &1200216423
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1200216425}
+  - component: {fileID: 1200216424}
+  m_Layer: 0
+  m_Name: Thermal Sensor Mgr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1200216424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200216423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 147a514b4fb568848a501d1522a48057, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thermalSensors:
+  - {fileID: 1506282429}
+  - {fileID: 1498428951}
+  checkInterval: 0.1
+--- !u!4 &1200216425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200216423}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1265688830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1946,6 +1995,114 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1498428950
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1498428952}
+  - component: {fileID: 1498428951}
+  m_Layer: 0
+  m_Name: Thermal Sensor 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1498428951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498428950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02409c6db89f04c4d911760107d807e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temperatureThreshold: 100
+  detectType: 1
+  checkInterval: 0.1
+  detectionRadius: 2
+  errorMargin: 0.01
+  showDebugGizmos: 1
+  showDebugLogs: 1
+  showTempValue: 1
+  isManagedSensor: 1
+  displayOffset: {x: 0, y: 30}
+--- !u!4 &1498428952
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498428950}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5, y: 7, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1506282428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1506282430}
+  - component: {fileID: 1506282429}
+  m_Layer: 0
+  m_Name: Thermal Sensor 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1506282429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1506282428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02409c6db89f04c4d911760107d807e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temperatureThreshold: 100
+  detectType: 1
+  checkInterval: 0.1
+  detectionRadius: 2
+  errorMargin: 0.01
+  showDebugGizmos: 1
+  showDebugLogs: 1
+  showTempValue: 1
+  isManagedSensor: 1
+  displayOffset: {x: 0, y: 30}
+--- !u!4 &1506282430
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1506282428}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5, y: -6, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1526596366
 GameObject:
   m_ObjectHideFlags: 0
@@ -2397,7 +2554,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vsyncCount: 0
-  targetFrameRate: -1
 --- !u!4 &2107056133
 Transform:
   m_ObjectHideFlags: 0
@@ -3366,3 +3522,6 @@ SceneRoots:
   - {fileID: 638810972}
   - {fileID: 849118681}
   - {fileID: 929574467}
+  - {fileID: 1200216425}
+  - {fileID: 1506282430}
+  - {fileID: 1498428952}
