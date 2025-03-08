@@ -618,7 +618,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Fill empty space with disabled particles
         if (idx < maxParticles)
         {
-            Debug.Log($"Particle Spawner: maxParticles < numParticles to spawn; filling scene with disabled particles. maxParticles: {maxParticles}, numParticles: {idx}");
+            Debug.Log($"Particle Spawner: maxParticles > numParticles to spawn; filling scene with disabled particles. maxParticles: {maxParticles}, numParticles: {idx}");
             int numFill = maxParticles - idx - 1;
             ParticleSpawner.ParticleSpawnData spawnD = ParticleSpawner.GetSceneFill(numFill, boundsSize);
             for (int i = 0; i < spawnD.positions.Length; i++)

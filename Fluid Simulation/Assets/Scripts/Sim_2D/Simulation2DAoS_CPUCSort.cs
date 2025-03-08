@@ -695,7 +695,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
                 // Early exit if we break max particle limit
                 if (idx + i >= maxParticles)
                 {
-                    Debug.LogWarning($"Particle Spawner: Hit max particle count! Current spawner index: {spawnerIdx}, Spawner particle offset: {i}");
+                    Debug.LogWarning($"Particle Spawner: Hit max particle count! Current spawner index: {spawnerIdx}; Spawner particle offset: {i}");
                     particleBuffer.SetData(allPoints);
                     return;
                 }
@@ -717,7 +717,7 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         // Fill empty space with disabled particles
         if (idx < maxParticles)
         {
-            Debug.Log($"Particle Spawner: maxParticles < numParticles to spawn; filling scene with disabled particles. maxParticles: {maxParticles}, numParticles: {idx}");
+            Debug.Log($"Particle Spawner: maxParticles > numParticles to spawn; filling scene with disabled particles. maxParticles: {maxParticles}, numParticles: {idx}");
             int numFill = maxParticles - idx - 1;
             ParticleSpawner.ParticleSpawnData spawnD = ParticleSpawner.GetSceneFill(numFill, boundsSize);
             for (int i = 0; i < spawnD.positions.Length; i++)
