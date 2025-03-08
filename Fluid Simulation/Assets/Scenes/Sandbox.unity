@@ -587,6 +587,7 @@ MonoBehaviour:
   fixedTimeStep: 0
   maxParticles: 16000
   scanForObstaclesOnStart: 1
+  scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 25
@@ -1759,6 +1760,7 @@ MonoBehaviour:
   fixedTimeStep: 0
   maxParticles: 16000
   scanForObstaclesOnStart: 1
+  scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -1794,9 +1796,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
   - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawners:
-  - {fileID: 849118680}
-  - {fileID: 929574466}
+  spawners: []
   boxColliders: []
   circleColliders: []
   sourceObjects: []
