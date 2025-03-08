@@ -548,7 +548,6 @@ GameObject:
   m_Component:
   - component: {fileID: 489172455}
   - component: {fileID: 489172454}
-  - component: {fileID: 489172453}
   - component: {fileID: 489172452}
   m_Layer: 0
   m_Name: SimulationAoSCounting w SinglePass Shader
@@ -572,27 +571,6 @@ MonoBehaviour:
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   shader: {fileID: 4800000, guid: bfa6cbae1ccaae443a7d284803c09d26, type: 3}
   gradientResolution: 64
---- !u!114 &489172453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489172451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 3.35, y: 0.51}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  temperature: 0
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &489172454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -635,7 +613,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawner: {fileID: 489172453}
+  spawners:
+  - {fileID: 849118680}
+  - {fileID: 929574466}
   boxColliders: []
   circleColliders: []
   sourceObjects: []
@@ -813,6 +793,112 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &849118679
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 849118681}
+  - component: {fileID: 849118680}
+  m_Layer: 0
+  m_Name: Water Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &849118680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849118679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  particleCount: 16384
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 0, y: 0}
+  spawnSize: {x: 13, y: 6}
+  jitterStr: 0.025
+  temperature: 22
+  showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
+--- !u!4 &849118681
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849118679}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &929574465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 929574467}
+  - component: {fileID: 929574466}
+  m_Layer: 0
+  m_Name: Steam Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &929574466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929574465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  particleCount: 5000
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 10, y: 0}
+  spawnSize: {x: 5, y: 5}
+  jitterStr: 0.025
+  temperature: 200
+  showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
+--- !u!4 &929574467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929574465}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1016,7 +1102,6 @@ GameObject:
   m_Component:
   - component: {fileID: 981710270}
   - component: {fileID: 981710269}
-  - component: {fileID: 981710268}
   - component: {fileID: 981710271}
   m_Layer: 0
   m_Name: SimulationAoSCounting with CPU
@@ -1025,27 +1110,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &981710268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981710266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  particleCount: 16384
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 3.35, y: 0.51}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  temperature: 22
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &981710269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1088,7 +1152,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
-  spawner: {fileID: 981710268}
+  spawners:
+  - {fileID: 849118680}
+  - {fileID: 929574466}
   boxColliders: []
   circleColliders: []
   sourceObjects: []
@@ -1652,7 +1718,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1430943824}
   - component: {fileID: 1430943825}
-  - component: {fileID: 1430943822}
   - component: {fileID: 1430943826}
   m_Layer: 0
   m_Name: SimulationAoSCounting
@@ -1661,27 +1726,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1430943822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  particleCount: 16384
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0, y: 0}
-  spawnSize: {x: 13, y: 6}
-  jitterStr: 0.025
-  temperature: 22
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!4 &1430943824
 Transform:
   m_ObjectHideFlags: 0
@@ -1747,7 +1791,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
   - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawner: {fileID: 1430943822}
+  spawners:
+  - {fileID: 849118680}
+  - {fileID: 929574466}
   boxColliders: []
   circleColliders: []
   sourceObjects: []
@@ -2699,6 +2745,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003720409719654229, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2109621059557760878, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -3079,6 +3137,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255019471513744908, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8468455024000708786, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3207,3 +3277,5 @@ SceneRoots:
   - {fileID: 1497315419}
   - {fileID: 1526596367}
   - {fileID: 638810972}
+  - {fileID: 849118681}
+  - {fileID: 929574467}

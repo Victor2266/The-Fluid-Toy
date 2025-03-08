@@ -1292,6 +1292,59 @@ MonoBehaviour:
   easeType: 27
   animateOnEnable: 0
   delayAfterSceneLoad: 0.1
+--- !u!1 &784062419
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 784062421}
+  - component: {fileID: 784062420}
+  m_Layer: 0
+  m_Name: WaterSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &784062420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784062419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  particleCount: 10000
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 0, y: 0.51}
+  spawnSize: {x: 7, y: 7}
+  jitterStr: 0.025
+  temperature: 22
+  showSpawnBoundsGizmos: 0
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
+--- !u!4 &784062421
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784062419}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &854230216
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4183,7 +4236,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2070748597}
   - component: {fileID: 2070748596}
-  - component: {fileID: 2070748595}
   - component: {fileID: 2070748598}
   m_Layer: 0
   m_Name: SimulationAoSCounting w CPU
@@ -4192,27 +4244,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2070748595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2070748593}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0, y: 0.51}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  temperature: 22
-  showSpawnBoundsGizmos: 0
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &2070748596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4251,7 +4282,8 @@ MonoBehaviour:
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
-  spawner: {fileID: 2070748595}
+  spawners:
+  - {fileID: 784062420}
   boxColliders: []
   circleColliders: []
   sourceObjects: []
@@ -4760,3 +4792,4 @@ SceneRoots:
   - {fileID: 1773495312}
   - {fileID: 69762892}
   - {fileID: 1973671213}
+  - {fileID: 784062421}
