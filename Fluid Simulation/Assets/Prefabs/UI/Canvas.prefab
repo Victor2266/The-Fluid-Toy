@@ -3213,6 +3213,7 @@ PrefabInstance:
     - target: {fileID: 7075117062414912365, guid: d40c87f91358c084d85edcd80aa6096d, type: 3}
       propertyPath: tooltipContent
       value: Thermal Box. Any particles touching the box will heat up / cool down.
+        (You can set negative temperatures)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5772,7 +5773,7 @@ PrefabInstance:
     - target: {fileID: 7075117062414912365, guid: d40c87f91358c084d85edcd80aa6096d, type: 3}
       propertyPath: tooltipContent
       value: Static Thermal Box. Any particles within or touching the box will heat
-        up / cool down.
+        up / cool down. (You can set negative temperatures)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

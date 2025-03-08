@@ -7,6 +7,10 @@ public class ThermalBoxContextMenu : EditableObject
     // Thermal properties
     private ThermalBoxInitData thermalData;
 
+    [Tooltip("Gradients representing the color transitions.")]
+    public Gradient hotColorGradient;
+    public Gradient coldColorGradient;
+
     protected override void Awake()
     {
         base.Awake();
@@ -44,6 +48,11 @@ public class ThermalBoxContextMenu : EditableObject
                 if (float.TryParse(value, out float newTemperature))
                 {
                     thermalData.temperature = newTemperature;
+                    if (newTemperature > 22f){
+                        GetComponent<LineRendererColorTransition>().colorGradient = hotColorGradient;
+                    } else {
+                        GetComponent<LineRendererColorTransition>().colorGradient = coldColorGradient;
+                    }
                     RescanForObstacles();
                 }
             });
