@@ -77,7 +77,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     [Header("References")]
     public ComputeShader compute;
-    public ParticleSpawner spawner;
+    public ParticleSpawner[] spawners;
     public IParticleDisplay display;
 
     [Header("Obstacle Colliders")]
@@ -133,7 +133,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // State
     bool isPaused;
-    ParticleSpawner.ParticleSpawnData spawnData;
+    ParticleSpawner.ParticleSpawnData[] spawnDataArr;
     bool pauseNextFrame;
 
     public int numParticles { get; private set; }
@@ -149,8 +149,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         targetInteractionRadius = interactionRadius;
         targetInteractionStrength = interactionStrength;
-        spawnData = spawner.GetSpawnData();
-        numParticles = spawnData.positions.Length;
+        numParticles = 0;
+        spawnDataArr = new ParticleSpawner.ParticleSpawnData[spawners.Length];
+        for (int k = 0; k<spawners.Length; k++)
+        {
+            spawnDataArr[k] = spawners[k].GetSpawnData();
+            numParticles += spawnDataArr[k].positions.Length;
+        }
 
         if (!manuallySelectFluidTypes)
         {
@@ -237,7 +242,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         // Set buffer data
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
         uint[] atomicCounter = { 0, frameCounter++ };
         atomicCounterBuffer.SetData(atomicCounter);
 
@@ -574,22 +579,33 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("interactionInputRadius", interactionRadius);
     }
 
-    void SetInitialBufferData(ParticleSpawner.ParticleSpawnData spawnData)
+    void SetInitialBufferData(ParticleSpawner.ParticleSpawnData[] spawnData)
     {
-        Particle[] allPoints = new Particle[spawnData.positions.Length];
-
-        for (int i = 0; i < spawnData.positions.Length; i++)
+        int numP = 0;
+        for (int k = 0; k < spawners.Length; k++)
         {
-            Particle p = new Particle
+            spawnDataArr[k] = spawners[k].GetSpawnData();
+            numP += spawnDataArr[k].positions.Length;
+        }
+        Particle[] allPoints = new Particle[numP];
+        int idx = 0;
+
+        foreach (ParticleSpawner.ParticleSpawnData spawnD in spawnData)
+        {
+            for (int i = 0; i < spawnD.positions.Length; i++)
             {
-                position = spawnData.positions[i],
-                predictedPosition = spawnData.positions[i],
-                velocity = spawnData.velocities[i],
-                density = new float2(0, 0),
-                temperature = spawnData.temperature,
-                type = spawnData.type
-            };
-            allPoints[i] = p;
+                Particle p = new Particle
+                {
+                    position = spawnD.positions[i],
+                    predictedPosition = spawnD.positions[i],
+                    velocity = spawnD.velocities[i],
+                    density = new float2(0, 0),
+                    temperature = spawnD.temperature,
+                    type = spawnD.type
+                };
+                allPoints[idx + i] = p;
+            }
+            idx += spawnD.positions.Length;
         }
 
         particleBuffer.SetData(allPoints);
@@ -820,6 +836,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             }
         }
 
+        if (spawners != null)
+        {
+            foreach (ParticleSpawner pSpawn in spawners)
+            {
+                pSpawn.OnDrawGizmos();
+            }
+        }
+
         if (Application.isPlaying)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -878,9 +902,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         isPaused = true;
         // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
         RunSimulationStep();
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
     }
 
     // These functions are for the fluid detector

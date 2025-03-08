@@ -358,6 +358,7 @@ MonoBehaviour:
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 18
+  targetScale: {x: 0, y: 0, z: 0}
 --- !u!50 &338494979
 Rigidbody2D:
   serializedVersion: 5
@@ -618,6 +619,7 @@ MonoBehaviour:
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 18
+  targetScale: {x: 0, y: 0, z: 0}
 --- !u!50 &560968173
 Rigidbody2D:
   serializedVersion: 5
@@ -752,12 +754,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
   particleCount: 10240
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0.3, y: -0.2}
   spawnSize: {x: 7, y: 7}
   jitterStr: 0.025
+  temperature: 0
   showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &762013222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -772,7 +777,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 1
-  enableHotkeys: 1
+  scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -784,11 +789,14 @@ MonoBehaviour:
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
-  interactionStrength: 360
   minRadius: 0.25
   maxRadius: 24
+  interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
   smoothingTime: 0.04
   enableScrolling: 1
+  enableHotkeys: 1
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
@@ -800,6 +808,7 @@ MonoBehaviour:
   drainObjects: []
   thermalBoxes: []
   toggleCPUComputing: 0
+  runCPUGPUEveryFrame: 0
   numCPUKeys: 10
 --- !u!4 &762013223
 Transform:
@@ -1362,12 +1371,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 3.35, y: 0.51}
   spawnSize: {x: 7, y: 7}
   jitterStr: 0.025
+  temperature: 0
   showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!4 &1430943824
 Transform:
   m_ObjectHideFlags: 0
@@ -1397,7 +1409,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 1
-  enableHotkeys: 1
+  scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -1409,11 +1421,14 @@ MonoBehaviour:
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
-  interactionStrength: 360
   minRadius: 0.25
   maxRadius: 24
+  interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
   smoothingTime: 0.04
   enableScrolling: 0
+  enableHotkeys: 1
   manuallySelectFluidTypes: 1
   updateFluidsEveryFrame: 0
   fluidDataArray:
@@ -1485,6 +1500,7 @@ MonoBehaviour:
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 18
+  targetScale: {x: 0, y: 0, z: 0}
 --- !u!50 &1466571976
 Rigidbody2D:
   serializedVersion: 5
@@ -1575,6 +1591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12e0ae21360f174a9bbc5a497634589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  segments: 50
 --- !u!120 &1466571980
 LineRenderer:
   serializedVersion: 2
@@ -2220,6 +2237,7 @@ MonoBehaviour:
   scaleSpeed: 0.1
   minScale: 1
   maxScale: 18
+  targetScale: {x: 0, y: 0, z: 0}
 --- !u!50 &2137391895
 Rigidbody2D:
   serializedVersion: 5
@@ -2274,6 +2292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12e0ae21360f174a9bbc5a497634589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  segments: 50
 --- !u!120 &2137391899
 LineRenderer:
   serializedVersion: 2
@@ -2839,6 +2858,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2543386145689813042, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3273066276391849151, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3273066276391849151, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3273066276391849151, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3273066276391849151, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3273066276391849151, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3273066276391849151, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3576416761000970758, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}

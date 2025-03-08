@@ -2124,12 +2124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
   particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: 0.51}
   spawnSize: {x: 7, y: 7}
   jitterStr: 0.025
+  temperature: 22
   showSpawnBoundsGizmos: 0
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &992768939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2157,7 +2160,11 @@ MonoBehaviour:
   nearPressureMultiplier: 18
   viscosityStrength: 0.06
   interactionRadius: 3
+  minRadius: 0.25
+  maxRadius: 24
   interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
   brushState: 1
   currentFluid: {fileID: 0}
   compute: {fileID: 7200000, guid: 1c77ce8de78fddb419ed2d15cae41af0, type: 3}
@@ -4197,12 +4204,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
   particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: 0.51}
   spawnSize: {x: 7, y: 7}
   jitterStr: 0.025
+  temperature: 22
   showSpawnBoundsGizmos: 0
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &2070748596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4217,7 +4227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
-  enableHotkeys: 0
+  scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -4229,11 +4239,14 @@ MonoBehaviour:
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
-  interactionStrength: 360
   minRadius: 0.25
   maxRadius: 24
+  interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
   smoothingTime: 0.04
   enableScrolling: 0
+  enableHotkeys: 0
   manuallySelectFluidTypes: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
@@ -4244,8 +4257,8 @@ MonoBehaviour:
   sourceObjects: []
   drainObjects: []
   thermalBoxes: []
-  isCPUComputingEnabled: 0
   toggleCPUComputing: 0
+  runCPUGPUEveryFrame: 0
   numCPUKeys: 10
 --- !u!4 &2070748597
 Transform:

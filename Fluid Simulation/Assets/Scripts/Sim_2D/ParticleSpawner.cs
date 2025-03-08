@@ -72,7 +72,7 @@ public class ParticleSpawner : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
+    public void OnDrawGizmos()
     {
         if (!showSpawnBoundsGizmos || Application.isPlaying) return;
 

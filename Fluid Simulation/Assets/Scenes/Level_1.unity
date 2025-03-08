@@ -2688,7 +2688,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1173401526}
   - component: {fileID: 1173401525}
-  - component: {fileID: 1173401524}
   - component: {fileID: 1173401528}
   m_Layer: 0
   m_Name: SimulationAoSCounting CPU
@@ -2697,27 +2696,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &1173401524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173401522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0, y: -6.02}
-  spawnSize: {x: 30, y: 5}
-  jitterStr: 0.025
-  temperature: 0
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &1173401525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2756,7 +2734,8 @@ MonoBehaviour:
   fluidDataArray:
   - {fileID: 11400000, guid: 423f11e3028cd9f41a43da9a7715b357, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
-  spawner: {fileID: 1173401524}
+  spawners:
+  - {fileID: 1540588521}
   boxColliders:
   - {fileID: 1163845349}
   - {fileID: 2123023228}
@@ -2989,7 +2968,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1396291944}
   - component: {fileID: 1396291943}
-  - component: {fileID: 1396291942}
   - component: {fileID: 1396291941}
   m_Layer: 0
   m_Name: SimulationAoSCounting
@@ -3013,27 +2991,6 @@ MonoBehaviour:
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
   gradientResolution: 64
---- !u!114 &1396291942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1396291940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 7
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0, y: -6.02}
-  spawnSize: {x: 30, y: 5}
-  jitterStr: 0.025
-  temperature: 10
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &1396291943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3073,7 +3030,8 @@ MonoBehaviour:
   fluidDataArray:
   - {fileID: 11400000, guid: 423f11e3028cd9f41a43da9a7715b357, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawner: {fileID: 1396291942}
+  spawners:
+  - {fileID: 1540588521}
   boxColliders:
   - {fileID: 1163845349}
   - {fileID: 2123023228}
@@ -3974,6 +3932,59 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+--- !u!1 &1540588520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1540588522}
+  - component: {fileID: 1540588521}
+  m_Layer: 0
+  m_Name: Beer Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &1540588521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540588520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 7
+  particleCount: 10000
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 0, y: -6.02}
+  spawnSize: {x: 30, y: 5}
+  jitterStr: 0.025
+  temperature: 10
+  showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
+--- !u!4 &1540588522
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540588520}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1545461170
 GameObject:
   m_ObjectHideFlags: 0
@@ -5223,3 +5234,4 @@ SceneRoots:
   - {fileID: 2003172739}
   - {fileID: 914899443}
   - {fileID: 791139166}
+  - {fileID: 1540588522}
