@@ -5,7 +5,7 @@ using UnityEngine;
 public class VSyncAndTargetFPS : MonoBehaviour
 {
     [SerializeField] private int vsyncCount = 0;
-    [SerializeField] private int targetFrameRate = 144;
+    //[SerializeField] private int targetFrameRate = 144;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +24,6 @@ public class VSyncAndTargetFPS : MonoBehaviour
         //          Android and iOS: Content is rendered at fixed 30 fps to conserve battery power, independent of the native refresh rate of the display.
 
         QualitySettings.vSyncCount = vsyncCount; // Set vSyncCount to 0 so that using .targetFrameRate is enabled.
-        Application.targetFrameRate = targetFrameRate;
+        //Application.targetFrameRate = PlayerPrefs.GetInt("TargetFPS", targetFrameRate); //USES THE PLAYER PREF TARGET FPS if it exists // (the settings manager handles target fps now.)
     }
 }

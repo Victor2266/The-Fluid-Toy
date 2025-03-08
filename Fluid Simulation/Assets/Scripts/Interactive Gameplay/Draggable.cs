@@ -12,9 +12,7 @@ public class Draggable : MonoBehaviour
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
-
-    private Vector3 targetScale;
-
+    public Vector3 targetScale;
     private Rigidbody2D rb2d;
 
     void Start()
@@ -23,17 +21,19 @@ public class Draggable : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
     }
 
-    void OnMouseDown()
+    void OnMouseOver()
     {
-        isDragging = true;
-        if (rb2d != null) {
-            rb2d.bodyType = RigidbodyType2D.Kinematic;
-            rb2d.freezeRotation = true;
-            rb2d.linearVelocity = Vector2.zero;
-            rb2d.angularVelocity = 0f;
-        }
+        if (Input.GetMouseButtonDown(0)){
+            isDragging = true;
+            if (rb2d != null) {
+                rb2d.bodyType = RigidbodyType2D.Kinematic;
+                rb2d.freezeRotation = true;
+                rb2d.linearVelocity = Vector2.zero;
+                rb2d.angularVelocity = 0f;
+            }
 
-        offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
     }
 
     void OnMouseUp()
@@ -106,6 +106,21 @@ public class Draggable : MonoBehaviour
                 newScaleY = Mathf.Clamp(newScaleY, minScale, maxScale);
                 targetScale = new Vector3(targetScale.x, newScaleY, targetScale.z);
             }
+        }
+    }
+
+    public void setTargetScale(Vector3 newScale) {
+        if (uniformScaling)
+        {
+            float maxScale = Mathf.Max(newScale.x, newScale.y);
+            newScale.x = maxScale;
+            newScale.y = maxScale;
+        }
+        if (resizable)
+        {
+            newScale.x = Mathf.Clamp(newScale.x, minScale, maxScale);
+            newScale.y = Mathf.Clamp(newScale.y, minScale, maxScale);
+            targetScale = newScale;
         }
     }
 }

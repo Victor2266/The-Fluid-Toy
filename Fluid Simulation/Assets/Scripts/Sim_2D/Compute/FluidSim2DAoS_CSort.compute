@@ -126,6 +126,18 @@ int edgeType;
 uint spawnRate;
 
 int GetFluidTypeIndexFromID(int fluidID){
+
+	// This is just a for loop that goes through the FluidDataSet array
+	// and returns the index of the fluid type with the matching fluidID which is O(N) time.
+
+	// In the future when you have dozens of fluid types, you can use a hash table
+	// where the key is the fluidID and the value is the index
+
+	// Another simple way to optimize is to make the size of the FluidDataSet array to be the largest fluid type ID + 1
+	// Then you can set each entry to be the fluid type with the corresponding fluid ID
+	// You would pad the FluidDataSet array with empty entries for unused fluid types
+	// Then you can just return the fluidID as the index which is O(1) time
+	// However this will make empty entries in the array for unused fluid types so it's less memory efficient
 	for (int i = 0; i < numFluidTypes; i++)
 	{
 		if (FluidDataSet[i].fluidType == fluidID)
@@ -358,7 +370,7 @@ void HandleCircleCollision(inout float2 pos, inout float2 vel, Circle circle, fl
 
 void DisableParticle(inout Particle particle){
 	// Create a random seed based on particle position and current tick
-	uint randomState = (uint)(particle.position.x * 1000) + (uint)(particle.position.y * 1000) + atomicCounter[1] * 982451653;
+	uint randomState = (uint)((particle.position.x + atomicCounter[1]) * 1000) + (uint)((particle.position.y + atomicCounter[1]) * 1000) + atomicCounter[1] * 982451653;
 
 	// Randomize position within bounds before disabling
 	float2 halfSize = boundsSize * 0.5;
@@ -538,7 +550,7 @@ void HandleSourceObject(inout Particle particle){
 
 void HandleRightMouseInput(inout Particle particle){ // TODO: Make this more efficient
 	// Input interactions to remove particles
-	if (brushType == 0 && interactionInputStrength == -1) {
+	if ((brushType == 0 || brushType == 3) && interactionInputStrength == -1) {
 		float2 inputPointOffset = interactionInputPoint - particle.position;
 		float sqrDst = dot(inputPointOffset, inputPointOffset);
 		if (sqrDst < interactionInputRadius * interactionInputRadius)

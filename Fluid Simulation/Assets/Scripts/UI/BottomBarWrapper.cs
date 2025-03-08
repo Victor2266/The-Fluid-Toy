@@ -11,12 +11,16 @@ public class BottomBarWrapper : MonoBehaviour
     [SerializeField] AudioSource audioSource;
     private IFluidSimulation simulation2DScript;
 
+    [Header("References for Brush Settings")]
     [SerializeField] Slider brushSizeSlider;
     [SerializeField] TMP_Text brushSizeText;
-
     [SerializeField] Slider brushStrengthSlider;
     [SerializeField] TMP_Text brushStrengthText;
 
+    [Header("References to Obstacles (for spawning them)")]
+    [SerializeField] GameObject[] obstaclePrefabs;
+
+    [Header("References to Fluid Type Buttons (for disabling them)")]
     [SerializeField] Button[] FluidTypebuttons;
 
     void Awake()
@@ -130,6 +134,13 @@ public class BottomBarWrapper : MonoBehaviour
             brushStrengthSlider.value = brushStrengthPercent;
             brushStrengthText.text = (brushStrengthPercent * 100f).ToString("F0") + "%";
         }
+    }
+
+    public void spawnObstacle(int obstacleType)
+    {
+        GameObject spawnedObject = Instantiate(obstaclePrefabs[obstacleType], Vector3.zero, Quaternion.identity);
+        EditableObject objectScript = spawnedObject.GetComponent<EditableObject>(); // Get the EditableObject script from the duplicate
+        objectScript.RescanForObstacles();
     }
 }
 

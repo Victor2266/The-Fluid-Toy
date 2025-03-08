@@ -987,6 +987,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &171782987
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 171782989}
+  - component: {fileID: 171782988}
+  m_Layer: 0
+  m_Name: Particle Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &171782988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171782987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  particleCount: 16000
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 0, y: 500}
+  spawnSize: {x: 7, y: 7}
+  jitterStr: 0.025
+  temperature: 0
+  showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
+--- !u!4 &171782989
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171782987}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &208621299
 GameObject:
   m_ObjectHideFlags: 0
@@ -1605,7 +1658,11 @@ MonoBehaviour:
   nearPressureMultiplier: 18
   viscosityStrength: 0.06
   interactionRadius: 3
+  minRadius: 0.25
+  maxRadius: 24
   interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
   brushState: 1
   currentFluid: {fileID: 0}
   compute: {fileID: 7200000, guid: 1c77ce8de78fddb419ed2d15cae41af0, type: 3}
@@ -1632,12 +1689,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   particleCount: 10000
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0, y: -6.02}
   spawnSize: {x: 30, y: 5}
   jitterStr: 0.025
+  temperature: 0
   showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!114 &271053323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1927,7 +1987,6 @@ GameObject:
   m_Component:
   - component: {fileID: 402679193}
   - component: {fileID: 402679192}
-  - component: {fileID: 402679191}
   - component: {fileID: 402679190}
   m_Layer: 0
   m_Name: SimulationAoSCounting
@@ -1951,24 +2010,6 @@ MonoBehaviour:
   mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
   gradientResolution: 64
---- !u!114 &402679191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 402679189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleCount: 16384
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0, y: 500}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  showSpawnBoundsGizmos: 1
 --- !u!114 &402679192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1983,7 +2024,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 1
-  enableHotkeys: 0
+  maxParticles: 16000
+  scanForObstaclesOnStart: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -1995,17 +2037,21 @@ MonoBehaviour:
   selectedFluid: 0
   brushState: 2
   interactionRadius: 3
-  interactionStrength: 360
   minRadius: 0.25
   maxRadius: 24
+  interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
   smoothingTime: 0.04
   enableScrolling: 0
+  enableHotkeys: 0
   manuallySelectFluidTypes: 1
   updateFluidsEveryFrame: 0
   fluidDataArray:
   - {fileID: 11400000, guid: c32291ce16f51cf448f73f38171e1ddc, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawner: {fileID: 402679191}
+  spawners:
+  - {fileID: 171782988}
   boxColliders:
   - {fileID: 1090131025}
   - {fileID: 468671236}
@@ -5564,54 +5610,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1041404596
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1041404598}
-  - component: {fileID: 1041404597}
-  m_Layer: 0
-  m_Name: Benchmark
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1041404597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1041404596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2766ddcf012b3194594f288c30336db9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  benchmarkDuration: 10
-  logDetailedStats: 1
-  visualizeInEditor: 1
-  startBenchmarkKey: 98
---- !u!4 &1041404598
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1041404596}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1089645944
 GameObject:
   m_ObjectHideFlags: 0
@@ -5924,7 +5922,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1173401526}
   - component: {fileID: 1173401525}
-  - component: {fileID: 1173401524}
   - component: {fileID: 1173401528}
   m_Layer: 0
   m_Name: SimulationAoSCounting CPU
@@ -5933,24 +5930,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &1173401524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173401522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0, y: -6.02}
-  spawnSize: {x: 30, y: 5}
-  jitterStr: 0.025
-  showSpawnBoundsGizmos: 1
 --- !u!114 &1173401525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5965,7 +5944,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
-  enableHotkeys: 1
+  maxParticles: 16000
+  scanForObstaclesOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -5977,16 +5957,20 @@ MonoBehaviour:
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
-  interactionStrength: 360
   minRadius: 0.25
   maxRadius: 5
+  interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
   smoothingTime: 0.04
   enableScrolling: 1
+  enableHotkeys: 1
   manuallySelectFluidTypes: 1
   fluidDataArray:
-  - {fileID: 11400000, guid: 423f11e3028cd9f41a43da9a7715b357, type: 2}
+  - {fileID: 11400000, guid: c32291ce16f51cf448f73f38171e1ddc, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
-  spawner: {fileID: 1173401524}
+  spawners:
+  - {fileID: 171782988}
   boxColliders:
   - {fileID: 0}
   - {fileID: 0}
@@ -5999,8 +5983,8 @@ MonoBehaviour:
   sourceObjects: []
   drainObjects: []
   thermalBoxes: []
-  isCPUComputingEnabled: 0
   toggleCPUComputing: 0
+  runCPUGPUEveryFrame: 0
   numCPUKeys: 10
 --- !u!4 &1173401526
 Transform:
@@ -12009,4 +11993,4 @@ SceneRoots:
   - {fileID: 609287617}
   - {fileID: 797937581}
   - {fileID: 1844744036}
-  - {fileID: 1041404598}
+  - {fileID: 171782989}

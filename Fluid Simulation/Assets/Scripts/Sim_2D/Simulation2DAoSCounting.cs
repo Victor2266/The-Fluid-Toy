@@ -16,7 +16,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     [Header("Simulation Settings")]
     public float timeScale = 1;
     public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
-    public bool enableHotkeys = false;
+    public int maxParticles;
+    [Tooltip("Disable this to manually add obstacles to the simulation. If enabled, the obstacles will scanned via tags")]
+    public bool scanForObstaclesOnStart = true;
+    public bool scanForParticleSpawnersOnStart = true;
     public int iterationsPerFrame;
     public float globalEntropyRate = 1f;
     public float roomTemperature = 22f;
@@ -50,6 +53,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public float maxStrength = 720f;
     public float smoothingTime = 0.04f;
     public bool enableScrolling = false;
+    public bool enableHotkeys = false;
     private float targetInteractionRadius;
     private float targetInteractionStrength;
     private float smoothRadiusVelocity;
@@ -75,7 +79,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     [Header("References")]
     public ComputeShader compute;
-    public ParticleSpawner spawner;
+    public ParticleSpawner[] spawners;
     public IParticleDisplay display;
 
     [Header("Obstacle Colliders")]
@@ -131,7 +135,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     // State
     bool isPaused;
-    ParticleSpawner.ParticleSpawnData spawnData;
+    ParticleSpawner.ParticleSpawnData[] spawnDataArr;
     bool pauseNextFrame;
 
     public int numParticles { get; private set; }
@@ -147,9 +151,96 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         targetInteractionRadius = interactionRadius;
         targetInteractionStrength = interactionStrength;
-        spawnData = spawner.GetSpawnData();
-        numParticles = spawnData.positions.Length;
+        numParticles = maxParticles;
 
+        if (scanForParticleSpawnersOnStart){
+            spawners = FindObjectsByType<ParticleSpawner>(FindObjectsSortMode.None);
+        }
+        spawnDataArr = new ParticleSpawner.ParticleSpawnData[spawners.Length];
+        if (spawners == null || spawners.Length == 0)
+        {
+            Debug.LogWarning("No particle spawners assigned. If this is unintended, please add at least one spawner in the inspector or enable the 'Scan for Particle Spawners on Start' option.");
+            return;
+        }
+        for (int k = 0; k<spawners.Length; k++)
+        {
+            spawnDataArr[k] = spawners[k].GetSpawnData();
+        }
+
+        SetupFluidTypeList();
+
+        // Create buffers
+        // init buffer
+        fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(fluidDataArray.Length);
+        ScalingFactorsBuffer = ComputeHelper.CreateStructuredBuffer<ScalingFactors>(fluidDataArray.Length); //why does it say this leaks?
+
+        particleData = new Particle[numParticles];
+        particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
+        sortedParticleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
+
+        boxColliderData = new OrientedBox[boxColliders.Length];
+        circleColliderData = new Circle[circleColliders.Length];
+        sourceObjectData = new SourceObject[sourceObjects.Length];
+        drainObjectData = new OrientedBox[drainObjects.Length];
+        if (thermalBoxes == null)
+        {
+            thermalBoxes = new ThermalBoxInitializer[0]; // I think .Length wasn't working on null object types?
+        }
+        thermalBoxData = new ThermalBox[thermalBoxes.Length];
+
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
+        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
+        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
+        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
+
+        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
+
+
+        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint2>(numParticles);
+        spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
+        sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
+
+        // Set buffer data
+        fluidDataBuffer.SetData(fluidParamArr);
+        ScalingFactorsBuffer.SetData(scalingFactorsArr);
+        SetInitialBufferData(spawnDataArr);
+        uint[] atomicCounter = { 0, frameCounter++ };
+        atomicCounterBuffer.SetData(atomicCounter);
+
+
+        // Init compute
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
+        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
+        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
+        ComputeHelper.SetBuffer(compute, sortedParticleBuffer, "SortedParticles", reorderKernel, reorderCopybackKernel);
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
+        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
+        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel, updateStateKernel);
+
+        compute.SetInt("numParticles", numParticles);
+        compute.SetInt("numFluidTypes", fluidDataArray.Length);
+        compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
+        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetFloat("roomTemperature", roomTemperature);
+        compute.SetFloat("globalEntropyRate", globalEntropyRate);
+
+        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint)(spatialIndices.count - 1));
+        spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
+
+        // Init display
+        display = GetComponent<IParticleDisplay>();
+        display.Init(this);
+        if (scanForObstaclesOnStart) ScanForAllObstaclesLists();
+    }
+
+    private void SetupFluidTypeList(){
         if (!manuallySelectFluidTypes)
         {
             // Get the number of fluid types (excluding Disabled)
@@ -199,78 +290,6 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 maxSmoothingRadius = fluidDataArray[i].smoothingRadius;
             }
         }
-
-        // Create buffers
-        // init buffer
-        fluidDataBuffer = ComputeHelper.CreateStructuredBuffer<FluidParam>(fluidDataArray.Length);
-        ScalingFactorsBuffer = ComputeHelper.CreateStructuredBuffer<ScalingFactors>(fluidDataArray.Length); //why does it say this leaks?
-
-        particleData = new Particle[numParticles];
-        particleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
-        sortedParticleBuffer = ComputeHelper.CreateStructuredBuffer<Particle>(numParticles);
-
-        boxColliderData = new OrientedBox[boxColliders.Length];
-        circleColliderData = new Circle[circleColliders.Length];
-        sourceObjectData = new SourceObject[sourceObjects.Length];
-        drainObjectData = new OrientedBox[drainObjects.Length];
-        if (thermalBoxes == null)
-        {
-            thermalBoxes = new ThermalBoxInitializer[0]; // I think .Length wasn't working on null object types?
-        }
-        thermalBoxData = new ThermalBox[thermalBoxes.Length];
-
-        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
-        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
-        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
-        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
-        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
-
-        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
-
-
-        spatialIndices = ComputeHelper.CreateStructuredBuffer<uint2>(numParticles);
-        spatialOffsets = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
-        sortedIndices = ComputeHelper.CreateStructuredBuffer<uint>(numParticles);
-
-        // Set buffer data
-        fluidDataBuffer.SetData(fluidParamArr);
-        ScalingFactorsBuffer.SetData(scalingFactorsArr);
-        SetInitialBufferData(spawnData);
-        uint[] atomicCounter = { 0, frameCounter++ };
-        atomicCounterBuffer.SetData(atomicCounter);
-
-
-        // Init compute
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
-        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
-        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
-        ComputeHelper.SetBuffer(compute, sortedParticleBuffer, "SortedParticles", reorderKernel, reorderCopybackKernel);
-        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
-        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
-        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel, updateStateKernel);
-
-        compute.SetInt("numBoxColliders", boxColliders.Length);
-        compute.SetInt("numCircleColliders", circleColliders.Length);
-        compute.SetInt("numThermalBoxes", thermalBoxes.Length);
-        compute.SetInt("numParticles", numParticles);
-        compute.SetInt("numFluidTypes", fluidDataArray.Length);
-        compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("spawnRate", (int)spawnRate);
-        compute.SetFloat("roomTemperature", roomTemperature);
-        compute.SetFloat("globalEntropyRate", globalEntropyRate);
-
-        gpuSort = new GPUCountSort(spatialIndices, sortedIndices, (uint)(spatialIndices.count - 1));
-        spatialOffsetsCalc = new SpatialOffsetCalculator(spatialIndices, spatialOffsets);
-
-        // Init display
-        display = GetComponent<IParticleDisplay>();
-        display.Init(this);
     }
 
     void Update()
@@ -367,9 +386,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
     }
 
-    void UpdateColliderData()
+    void UpdateBoxColliderData()
     {
-        // Update box colliders
+        // Update data array
         for (int i = 0; i < boxColliders.Length; i++)
         {
             Transform collider = boxColliders[i];
@@ -378,8 +397,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             boxColliderData[i].size = collider.localScale;
             boxColliderData[i].zLocal = (Vector2)(collider.right); // Use right vector for orientation
         }
+        // Update buffer
+        boxCollidersBuffer.SetData(boxColliderData);
+    }
 
-        // Update circle colliders
+    void UpdateCircleColliderData()
+    {
+        // Update data array
         for (int i = 0; i < circleColliders.Length; i++)
         {
             Transform collider = circleColliders[i];
@@ -387,8 +411,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             circleColliderData[i].pos = collider.position;
             circleColliderData[i].radius = collider.localScale.x * 0.5f; // Assuming uniform scale
         }
+        // Update buffer
+        circleCollidersBuffer.SetData(circleColliderData);
+    }
 
-        // Update source objects
+    void UpdateSourceObjectData()
+    {
+        // Update data array
         for (int i = 0; i < sourceObjects.Length; i++)
         {
             Transform source = sourceObjects[i].transform;
@@ -399,8 +428,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             sourceObjectData[i].spawnRate = sourceObjects[i].spawnRate;
             sourceObjectData[i].fluidType = sourceObjects[i].fluidType;
         }
+        // Update buffer
+        sourceObjectBuffer.SetData(sourceObjectData);
+    }
 
-        // Update drain objects
+    void UpdateDrainObjectData()
+    {
+        // Update data array
         for (int i = 0; i < drainObjects.Length; i++)
         {
             Transform drain = drainObjects[i];
@@ -409,8 +443,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             drainObjectData[i].size = drain.localScale;
             drainObjectData[i].zLocal = (Vector2)(drain.right); // Use right vector for orientation  
         }
+        // Update buffer
+        drainObjectBuffer.SetData(drainObjectData);
+    }
 
-        // Update thermal boxes
+    void UpdateThermalBoxData()
+    {
+        // Update data array
         for (int i = 0; i < thermalBoxes.Length; i++)
         {
             ThermalBoxInitializer tBox = thermalBoxes[i];
@@ -422,13 +461,17 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             thermalBoxData[i].temperature = tBox.temperature;
             thermalBoxData[i].conductivity = tBox.conductivity;
         }
-
-        // Update buffers
-        boxCollidersBuffer.SetData(boxColliderData);
-        circleCollidersBuffer.SetData(circleColliderData);
-        sourceObjectBuffer.SetData(sourceObjectData);
-        drainObjectBuffer.SetData(drainObjectData);
+        // Update buffer
         thermalBoxesBuffer.SetData(thermalBoxData);
+    }
+
+    void UpdateColliderData()
+    {
+        UpdateBoxColliderData();
+        UpdateCircleColliderData();
+        UpdateSourceObjectData();
+        UpdateDrainObjectData();
+        UpdateThermalBoxData();
     }
 
     void UpdateSettings(float deltaTime)
@@ -446,11 +489,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
-        if (sourceObjects.Length > 0)
-        {
-            uint[] atomicCounter = { 0, frameCounter++ };
-            atomicCounterBuffer.SetData(atomicCounter);
-        }
+      
+        uint[] atomicCounter = { 0, frameCounter++ };
+        atomicCounterBuffer.SetData(atomicCounter);
+        
 
         // Mouse interaction settings:
         HandleMouseInput();
@@ -477,6 +519,12 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 targetInteractionRadius *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
                 targetInteractionRadius = Mathf.Clamp(targetInteractionRadius, minRadius, maxRadius);
             }
+        }
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            setInteractionStrengthPercent(0.5f);
+            targetInteractionRadius = 3f;
         }
     }
     void ApplySmoothing()
@@ -526,14 +574,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             if (isPullInteraction)
             {
                 currInteractStrength = 1f;
-                if (sourceObjects.Length == 0)
-                {
-                    uint[] atomicCounter = { 0, frameCounter++ };
-                    atomicCounterBuffer.SetData(atomicCounter);
-                }
-
             }
             else if (isPushInteraction)
+            {
+                currInteractStrength = -1f;
+            }
+        }
+        else if (brushState == BrushType.Eraser){
+            if (isPushInteraction || isPullInteraction)
             {
                 currInteractStrength = -1f;
             }
@@ -545,23 +593,68 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetFloat("interactionInputRadius", interactionRadius);
     }
 
-    void SetInitialBufferData(ParticleSpawner.ParticleSpawnData spawnData)
+    void SetInitialBufferData(ParticleSpawner.ParticleSpawnData[] spawnData)
     {
-        Particle[] allPoints = new Particle[spawnData.positions.Length];
-
-        // FIXME defaulting some values
-        for (int i = 0; i < spawnData.positions.Length; i++)
+        for (int k = 0; k < spawners.Length; k++)
         {
-            Particle p = new Particle
+            spawnDataArr[k] = spawners[k].GetSpawnData();
+        }
+        Particle[] allPoints = new Particle[maxParticles];
+        int idx = 0;
+        int spawnerIdx = 0;
+
+        foreach (ParticleSpawner.ParticleSpawnData spawnD in spawnData)
+        {
+            for (int i = 0; i < spawnD.positions.Length; i++)
             {
-                position = spawnData.positions[i],
-                predictedPosition = spawnData.positions[i],
-                velocity = spawnData.velocities[i],
-                density = new float2(0, 0),
-                temperature = 22.0f,
-                type = FluidType.Water // Or whatever default type you want};
-            };
-            allPoints[i] = p;
+                // Early exit if we break max particle limit
+                if (idx + i >= maxParticles)
+                {
+                    Debug.LogWarning($"Particle Spawner: Hit max particle count! Current spawner index: {spawnerIdx}, Spawner particle offset: {i}");
+                    particleBuffer.SetData(allPoints);
+                    return;
+                }
+                Particle p = new Particle
+                {
+                    position = spawnD.positions[i],
+                    predictedPosition = spawnD.positions[i],
+                    velocity = spawnD.velocities[i],
+                    density = new float2(0, 0),
+                    temperature = spawnD.temperature,
+                    type = spawnD.type
+                };
+                allPoints[idx + i] = p;
+            }
+            idx += spawnD.positions.Length;
+            spawnerIdx++;
+        }
+
+        // Fill empty space with disabled particles
+        if (idx < maxParticles)
+        {
+            Debug.Log($"Particle Spawner: maxParticles > numParticles to spawn; filling scene with disabled particles. maxParticles: {maxParticles}, numParticles: {idx}");
+            int numFill = maxParticles - idx - 1;
+            ParticleSpawner.ParticleSpawnData spawnD = ParticleSpawner.GetSceneFill(numFill, boundsSize);
+            for (int i = 0; i < spawnD.positions.Length; i++)
+            {
+                // Early exit if we break max particle limit, shouldn't happen
+                if (idx + i >= maxParticles)
+                {
+                    Debug.LogWarning($"Particle Spawner: Hit max particle count during fill! Spawner particle offset: {i}");
+                    particleBuffer.SetData(allPoints);
+                    return;
+                }
+                Particle p = new Particle
+                {
+                    position = spawnD.positions[i],
+                    predictedPosition = spawnD.positions[i],
+                    velocity = spawnD.velocities[i],
+                    density = new float2(0, 0),
+                    temperature = spawnD.temperature,
+                    type = spawnD.type
+                };
+                allPoints[idx + i] = p;
+            }
         }
 
         particleBuffer.SetData(allPoints);
@@ -623,6 +716,94 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         {
             multiParticleDisplay2D.CreateAndSetupVisualParamsBuffer(fluidDataArray);
         }
+    }
+
+    private void ScanForAllObstaclesLists()
+    {
+        UpdateBoxColliders();
+        UpdateCircleColliders();
+        UpdateSourceObjects();
+        UpdateDrainObjects();
+        UpdateThermalBoxes();
+    }
+
+    public void UpdateBoxColliders(){
+        boxColliders = GameObject.FindGameObjectsWithTag("BoxCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox")
+                .Select(go => go.GetComponent<Transform>()))
+            .ToArray();
+        
+        boxColliderData = new OrientedBox[boxColliders.Length];
+        
+        ComputeHelper.Release(boxCollidersBuffer);
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        UpdateBoxColliderData();
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
+    }
+    public void UpdateCircleColliders()
+    {
+        circleColliders = GameObject.FindGameObjectsWithTag("CircleCollider")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+
+        circleColliderData = new Circle[circleColliders.Length];
+
+        ComputeHelper.Release(circleCollidersBuffer);
+        circleCollidersBuffer = ComputeHelper.CreateStructuredBuffer<Circle>(Mathf.Max(circleColliders.Length, 1));
+        UpdateCircleColliderData();
+        ComputeHelper.SetBuffer(compute, circleCollidersBuffer, "CircleColliders", updatePositionKernel);
+    }
+    public void UpdateSourceObjects()
+    {
+        GameObject[] sourceObjectGameObjects = GameObject.FindGameObjectsWithTag("SourceObject");
+        sourceObjects = new SourceObjectInitializer[sourceObjectGameObjects.Length];
+
+        // Update source objects
+        for (int i = 0; i < sourceObjectGameObjects.Length; i++)
+        {
+            sourceObjects[i] = sourceObjectGameObjects[i].GetComponent<SourceObjectInitData>().sourceInitData;
+        }
+        sourceObjectData = new SourceObject[sourceObjectGameObjects.Length];
+
+        ComputeHelper.Release(sourceObjectBuffer);
+        sourceObjectBuffer = ComputeHelper.CreateStructuredBuffer<SourceObject>(Mathf.Max(sourceObjects.Length, 1));
+        UpdateSourceObjectData();
+        ComputeHelper.SetBuffer(compute, sourceObjectBuffer, "SourceObjs", SpawnParticlesKernel);
+    }
+    public void UpdateDrainObjects()
+    {
+        drainObjects = GameObject.FindGameObjectsWithTag("DrainObject")
+            .Select(go => go.GetComponent<Transform>())
+            .ToArray();
+
+        drainObjectData = new OrientedBox[drainObjects.Length];
+
+        ComputeHelper.Release(drainObjectBuffer);
+        drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
+        UpdateDrainObjectData();
+        ComputeHelper.SetBuffer(compute, drainObjectBuffer, "DrainObjs", updatePositionKernel);
+    }
+    public void UpdateThermalBoxes()
+    {
+        GameObject[] thermalBoxGameObjects = GameObject.FindGameObjectsWithTag("ThermalBox")
+            .Concat(GameObject.FindGameObjectsWithTag("SolidThermalBox"))
+            .ToArray();
+
+        thermalBoxes = new ThermalBoxInitializer[thermalBoxGameObjects.Length];
+
+        // Update thermal boxes
+        for (int i = 0; i < thermalBoxGameObjects.Length; i++)
+        {
+            thermalBoxes[i] = thermalBoxGameObjects[i].GetComponent<ThermalBoxInitData>().thermalBoxInitData;
+        }
+
+        thermalBoxData = new ThermalBox[thermalBoxGameObjects.Length];
+
+        ComputeHelper.Release(thermalBoxesBuffer);
+        thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
+        UpdateThermalBoxData();
+        ComputeHelper.SetBuffer(compute, thermalBoxesBuffer, "ThermalBoxes", updatePositionKernel, temperatureKernel);
     }
 
     void OnDestroy()
@@ -704,6 +885,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
             }
         }
 
+        if (spawners != null)
+        {
+            foreach (ParticleSpawner pSpawn in spawners)
+            {
+                pSpawn.OnDrawGizmos();
+            }
+        }
+
         if (Application.isPlaying)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -762,9 +951,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         isPaused = true;
         // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
         RunSimulationStep();
-        SetInitialBufferData(spawnData);
+        SetInitialBufferData(spawnDataArr);
     }
 
     // These functions are for the fluid detector

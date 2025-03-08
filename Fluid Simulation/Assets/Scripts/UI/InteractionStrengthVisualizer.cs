@@ -14,7 +14,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
     [SerializeField] [Range(8, 64)] private int segments = 32;
     
     [Header("Strength Text")]
-    [SerializeField] private GameObject strengthTextPrefab;
+    [SerializeField] private GameObject strengthTextObject;
     [SerializeField] private Color textColor = Color.white;
     [SerializeField] private Vector2 textOffset = new Vector2(0, 30f);
     
@@ -31,13 +31,17 @@ public class InteractionStrengthVisualizer : MonoBehaviour
     private float fadeOutTime = 0.15f;
     
     // Text component references
-    private GameObject strengthTextObject;
     private TextMeshProUGUI strengthText;
 
     void Start()
     {
         simulationGameObject = GameObject.FindGameObjectWithTag("Simulation");
         simulation = simulationGameObject.GetComponent<IFluidSimulation>();
+
+        fadeProgress = fadeOutTime;
+        currentStrength = simulation.getBrushStrengthPercent();
+        lastStrength = currentStrength;
+
         InitializeLineRenderer();
         PrecalculateCircle();
         SetupStrengthText();
@@ -89,35 +93,6 @@ public class InteractionStrengthVisualizer : MonoBehaviour
 
     void SetupStrengthText()
     {
-        // If a prefab is provided, instantiate it
-        if (strengthTextPrefab != null)
-        {
-            strengthTextObject = Instantiate(strengthTextPrefab, transform);
-        }
-        // Otherwise create a new TextMeshPro object
-        else
-        {
-            strengthTextObject = new GameObject("StrengthText");
-            strengthTextObject.transform.SetParent(transform);
-            
-            // Add TextMeshPro component
-            strengthText = strengthTextObject.AddComponent<TextMeshProUGUI>();
-            
-            // Setup text properties
-            strengthText.fontSize = 2;
-            strengthText.alignment = TextAlignmentOptions.Center;
-            strengthText.color = textColor;
-            
-            // Make sure it renders on top
-            Canvas canvas = strengthTextObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.WorldSpace;
-            canvas.sortingOrder = 10;
-            
-            // Add a RectTransform and set its properties
-            RectTransform rectTransform = strengthText.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(10, 3);
-        }
-        
         // Get the TextMeshPro component if we didn't create it above
         if (strengthText == null)
         {
@@ -136,12 +111,15 @@ public class InteractionStrengthVisualizer : MonoBehaviour
             fadeProgress = 0f;
         } else
         {
-            fadeProgress += Time.deltaTime;
+            if (fadeProgress < fadeOutTime)
+                fadeProgress += Time.deltaTime;
         }
         
         bool shouldShow = alwaysShow || fadeProgress < fadeOutTime;
         
         lineRenderer.enabled = shouldShow;
+        Cursor.visible = !shouldShow;
+
         strengthTextObject.SetActive(shouldShow);
 
         SetLineColor(circleColor);
@@ -150,7 +128,16 @@ public class InteractionStrengthVisualizer : MonoBehaviour
     void UpdateCirclePositionsIfNeeded()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // Calculate text offset
+        float mouseY = mousePosition.y;
+        float halfScreenHeight = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0)).y + Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0)).y;
+        textOffset = new Vector2(0, (mouseY > halfScreenHeight ? -1 : 1) * (simulation.getInteractionRadius() + 0.85f) );
+        if (simulation.getInteractionRadius() > 4f)
+        {
+            textOffset = Vector2.zero;
+        }
         
+
         if (currentRadius != lastRadius || mousePosition != lastMousePosition)
         {
             UpdateCirclePositions(mousePosition, currentRadius);
@@ -176,7 +163,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         Color fadeTextColor = textColor;
         fadeTextColor.a = Mathf.Lerp(1f, 0f, fadeProgress / fadeOutTime);
         strengthText.color = fadeTextColor;
-        
+
         // Position text above the circle
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         strengthTextObject.transform.position = new Vector3(mousePosition.x + textOffset.x, mousePosition.y + textOffset.y, 0);
