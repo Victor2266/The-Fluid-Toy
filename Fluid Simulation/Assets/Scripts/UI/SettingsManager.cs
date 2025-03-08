@@ -86,7 +86,13 @@ public class SettingsManager : MonoBehaviour
     }
 
     private void InitializeFpsToggle(){
-        uncapFpsToggle.isOn = PlayerPrefs.GetInt($"FPS_UNCAP", 0) == 0 ? false : true;
+        if(PlayerPrefs.GetInt($"FPS_UNCAP", 0) == 1){
+            Application.targetFrameRate = -1;
+            uncapFpsToggle.isOn = true;
+        }else{
+            Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
+            uncapFpsToggle.isOn = false;
+        }
         uncapFpsToggle.onValueChanged.AddListener(onUncapFPSChanged);
     }
 
