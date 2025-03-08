@@ -169,7 +169,7 @@ Shader "Instanced/MultiFluidParticle2D"
                 o.pos = float4(100000, 100000, 100000, 1);
                 return o;
 
-                // FOR DEBUG:
+                // FOR DEBUG (Uncomment this and comment the 2 lines above to see particles even if they are disabled):
                 //particle.type = 1;
             }
 
