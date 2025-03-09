@@ -5,10 +5,17 @@ using UnityEngine;
 
 public class SimulationSettingsWrapper : MonoBehaviour
 {
-    [SerializeField] GameObject simulation2DGameObject;
+    private GameObject simulation2DGameObject;
     private IFluidSimulation simulation2DScript;
 
     [SerializeField] private TMP_Dropdown edgeTypeDropdown;
+    [SerializeField] private TMP_Dropdown HideFPSDropdown;
+    [SerializeField] private TMP_Dropdown HideMouseCircleDropdown;
+    [SerializeField] private TMP_Dropdown HideBenchmarkDropdown;
+
+    private GameObject fpsDisplayObject;
+    private GameObject mouseCircleObject;
+    private GameObject benchmarkObject;
 
     void Awake()
     {
@@ -36,10 +43,32 @@ public class SimulationSettingsWrapper : MonoBehaviour
     void Start()
     {
         edgeTypeDropdown.onValueChanged.AddListener(setEdgeType);
+        HideFPSDropdown.onValueChanged.AddListener(setHideFPS);
+        fpsDisplayObject = FindFirstObjectByType<FPSDisplay>().gameObject;
+        HideMouseCircleDropdown.onValueChanged.AddListener(setHideMouseCircle);
+        mouseCircleObject = FindFirstObjectByType<InteractionRadiusVisualizer>().gameObject;
+        HideBenchmarkDropdown.onValueChanged.AddListener(setHideBenchmark);
+        benchmarkObject = FindFirstObjectByType<FrameTimeBenchmark>().gameObject;
     }
 
 
-    public void setEdgeType(int edgeTypeIndex){
+    public void setEdgeType(int edgeTypeIndex)
+    {
         simulation2DScript.setEdgeType(edgeTypeIndex);
+    }
+
+    public void setHideFPS(int hideFPSIndex)
+    {
+        fpsDisplayObject.SetActive(hideFPSIndex == 0);
+    }
+
+    public void setHideMouseCircle(int hideMouseCircleIndex)
+    {
+        mouseCircleObject.SetActive(hideMouseCircleIndex == 0);
+    }
+
+    public void setHideBenchmark(int hideBenchmarkIndex)
+    {
+        benchmarkObject.SetActive(hideBenchmarkIndex == 0);
     }
 }
