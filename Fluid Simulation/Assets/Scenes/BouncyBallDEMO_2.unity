@@ -203,6 +203,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d2c5d728bfbc762488dfec45a0cb4f1f, type: 2}
   - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
   - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
+  - {fileID: 11400000, guid: feb8075e7e5787d4dbe0b2d994dd13db, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawners: []
   boxColliders: []
@@ -319,7 +320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &254802564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1337,7 +1338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  particleCount: 1024
+  particleCount: 64
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0.3, y: -7.31}
   spawnSize: {x: 7, y: 2.28}
