@@ -4,12 +4,13 @@ using UnityEngine.Rendering;
 public class SensorManager : MonoBehaviour
 {
     [Header("Detection Settings")]
+    [Tooltip("How often to check temperature (overrides indiv. sensor values)")]
+    public float checkInterval = 0.1f;
+    [Tooltip("Automatically adds sensors in the scene to this manager")]
+    public bool scanForSensorsOnStart = true;
+
     [Tooltip("Thermal Sensors")]
     public FluidSensor[] fluidSensors;
-
-    [Tooltip("How often to check temperature (overrides sensors)")]
-    public float checkInterval = 0.1f;
-    public bool scanForSensorsOnStart = true;
 
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
