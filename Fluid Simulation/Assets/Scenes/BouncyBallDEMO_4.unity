@@ -166,7 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
-  maxParticles: 307200
+  maxParticles: 10000
   scanForObstaclesOnStart: 1
   scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 6
-  particleCount: 100
+  particleCount: 50
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0.3, y: -0.2}
   spawnSize: {x: 7, y: 7}
@@ -607,6 +607,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a19bbe8994ec604c935b32910de3ba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &521228567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 521228569}
+  - component: {fileID: 521228568}
+  m_Layer: 0
+  m_Name: Benchmark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &521228568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521228567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2766ddcf012b3194594f288c30336db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  benchmarkDuration: 10
+  logDetailedStats: 1
+  visualizeInEditor: 1
+  startBenchmarkKey: 98
+--- !u!4 &521228569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521228567}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &560968169
 GameObject:
   m_ObjectHideFlags: 0
@@ -1099,7 +1147,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.27, z: -10}
+  m_LocalPosition: {x: 0, y: -0.04, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1327,7 +1375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  particleCount: 307100
+  particleCount: 9950
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 0.3, y: -7.31}
   spawnSize: {x: 7, y: 2.28}
@@ -3853,3 +3901,4 @@ SceneRoots:
   - {fileID: 254802565}
   - {fileID: 1866568893}
   - {fileID: 168243783}
+  - {fileID: 521228569}

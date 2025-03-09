@@ -192,17 +192,6 @@ MonoBehaviour:
   updateFluidsEveryFrame: 0
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
-  - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
-  - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
-  - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
-  - {fileID: 11400000, guid: bb7d520fb6254e54f984d59408001bed, type: 2}
-  - {fileID: 11400000, guid: 1183732acd43a2d4b8664f9524fc7eec, type: 2}
-  - {fileID: 11400000, guid: 533c703a025120e49b9958b72efb1b24, type: 2}
-  - {fileID: 11400000, guid: a2265c7b3b1e4de41b8527f0eae8e8e4, type: 2}
-  - {fileID: 11400000, guid: d2c5d728bfbc762488dfec45a0cb4f1f, type: 2}
-  - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
-  - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawners: []
   boxColliders: []
@@ -867,6 +856,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 43}
+--- !u!1 &605572896
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 605572898}
+  - component: {fileID: 605572897}
+  m_Layer: 0
+  m_Name: Benchmark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &605572897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605572896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2766ddcf012b3194594f288c30336db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  benchmarkDuration: 10
+  logDetailedStats: 1
+  visualizeInEditor: 1
+  startBenchmarkKey: 98
+--- !u!4 &605572898
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605572896}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &865134466
 GameObject:
   m_ObjectHideFlags: 0
@@ -3863,3 +3900,4 @@ SceneRoots:
   - {fileID: 254802565}
   - {fileID: 1866568893}
   - {fileID: 168243783}
+  - {fileID: 605572898}
