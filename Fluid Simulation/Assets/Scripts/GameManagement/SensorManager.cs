@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class ThermalSensorManager : MonoBehaviour
+public class SensorManager : MonoBehaviour
 {
     [Header("Detection Settings")]
     [Tooltip("Thermal Sensors")]
-    public ThermalSensor[] thermalSensors;
+    public FluidSensor[] fluidSensors;
 
     [Tooltip("How often to check temperature (overrides sensors)")]
     public float checkInterval = 0.1f;
@@ -30,10 +30,10 @@ public class ThermalSensorManager : MonoBehaviour
         }
         if (scanForSensorsOnStart)
         {
-            thermalSensors = FindObjectsByType<ThermalSensor>(FindObjectsSortMode.None);
-            foreach (ThermalSensor tSense in thermalSensors)
+            fluidSensors = FindObjectsByType<FluidSensor>(FindObjectsSortMode.None);
+            foreach (FluidSensor fSense in fluidSensors)
             {
-                tSense.isManagedSensor = true;
+                fSense.isManagedSensor = true;
             }
         }
     }
@@ -47,15 +47,8 @@ public class ThermalSensorManager : MonoBehaviour
                 return;
             if (!isRequestMade)
             {
-                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), CheckTemperatures);
+                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), CheckSensors);
                 isRequestMade = true;
-                foreach (ThermalSensor tSensor in thermalSensors)
-                {
-                    if (tSensor.isManagedSensor)
-                    {
-                        tSensor.isRequestMade = true;
-                    }
-                }
             }
             nextCheckTime = Time.time + checkInterval;
         }
@@ -63,7 +56,7 @@ public class ThermalSensorManager : MonoBehaviour
 
 
     // Performs fluid check as callback to async read
-    void CheckTemperatures(AsyncGPUReadbackRequest request)
+    void CheckSensors(AsyncGPUReadbackRequest request)
     {
         if (request.hasError)
         {
@@ -76,44 +69,13 @@ public class ThermalSensorManager : MonoBehaviour
         // Create temporary array to get particle positions
         Particle[] particles = request.GetData<Particle>().ToArray();
 
-        foreach (ThermalSensor tSensor in thermalSensors)
+        foreach (FluidSensor fSense in fluidSensors)
         {
-            if (!tSensor.isManagedSensor) continue; // Skip unmanaged sensors
-
-            float sqrRadius = tSensor.detectionRadius * tSensor.detectionRadius;
-            Vector2 checkPosition = tSensor.transform.position;
-            float totalTemp = 0f;
-            int particleCount = 0;
-
-            foreach (Particle particle in particles)
+            if (fSense.isManagedSensor)
             {
-                if (particle.type == FluidType.Disabled) continue;
-
-                Vector2 particlePos = particle.position;
-                Vector2 offsetToParticle = particlePos - checkPosition;
-                float sqrDstToParticle = Vector2.Dot(offsetToParticle, offsetToParticle);
-
-                if (sqrDstToParticle < sqrRadius)
-                {
-                    totalTemp += particle.temperature;
-                    particleCount++;
-                }
+                fSense.CheckSensor(particles);
             }
-
-            // Update fluid presence flag
-            bool previousState = tSensor.metThreshold;
-            tSensor.currentTemperature = totalTemp / particleCount;
-            tSensor.metThreshold = tSensor.doCompare(tSensor.currentTemperature);
-
-            // Notify if state changed
-            if (previousState != tSensor.metThreshold)
-            {
-                tSensor.OnTempThresholdMet();
-            }
-
-            tSensor.isRequestMade = false;
         }
-
         isRequestMade = false;
     }
 

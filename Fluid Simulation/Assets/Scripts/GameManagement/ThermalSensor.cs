@@ -1,16 +1,8 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class ThermalSensor : MonoBehaviour
+public class ThermalSensor : FluidSensor
 {
-    public enum DetectionType
-    {
-        Disabled,
-        GreaterThan,
-        LessThan,
-        Equals
-    }
-
     [Header("Detection Settings")]
     [Tooltip("Temperature Threshold")]
     public float temperatureThreshold = 100f;
@@ -31,7 +23,6 @@ public class ThermalSensor : MonoBehaviour
     public bool showDebugGizmos = true;
     public bool showDebugLogs = true;
     public bool showTempValue = true;
-    public bool isManagedSensor = false;
     [SerializeField] private Vector2 displayOffset = new Vector2(0, 30f);
     public bool metThreshold { get; set; }
     public float currentTemperature { get; set; }
@@ -39,8 +30,7 @@ public class ThermalSensor : MonoBehaviour
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
-
-    public bool isRequestMade { get; set; } = false;
+    private bool isRequestMade = false;
 
     void Start()
     {
@@ -65,16 +55,14 @@ public class ThermalSensor : MonoBehaviour
                 return;
             if (!isRequestMade)
             {
-                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), CheckTemperature);
+                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), ParticleRequest);
                 isRequestMade = true;
             }
             nextCheckTime = Time.time + checkInterval;
         }
     }
 
-
-    // Performs fluid check as callback to async read
-    void CheckTemperature(AsyncGPUReadbackRequest request)
+    protected override void ParticleRequest(AsyncGPUReadbackRequest request)
     {
         if (request.hasError)
         {
@@ -84,12 +72,19 @@ public class ThermalSensor : MonoBehaviour
         if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid() || this == null)
             return;
 
+        // Create temporary array to get particle positions
+        Particle[] particles = request.GetData<Particle>().ToArray();
+
+        CheckSensor(particles);
+        isRequestMade = false;
+    }
+
+    // Performs fluid check as callback to async read
+    public override void CheckSensor(Particle[] particles)
+    {
         Vector2 checkPosition = transform.position;
         float totalTemp = 0f;
         int particleCount = 0;
-
-        // Create temporary array to get particle positions
-        Particle[] particles = request.GetData<Particle>().ToArray();
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
@@ -124,8 +119,6 @@ public class ThermalSensor : MonoBehaviour
 
         if (showDebugLogs)
             Debug.Log($"Avg Tmp is: {currentTemperature} at {gameObject.name}");
-
-        isRequestMade = false;
     }
 
     public bool doCompare(float currentValue)
