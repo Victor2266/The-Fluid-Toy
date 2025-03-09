@@ -10,7 +10,7 @@ public class ThermalSensor : FluidSensor
     [Tooltip("Detection Type")]
     public DetectionType detectType = DetectionType.GreaterThan;
 
-    [Tooltip("How often to check temperature")]
+    [Tooltip("How often to check temperature (overwritten by any Sensor Managers)")]
     public float checkInterval = 0.1f;
 
     [Tooltip("Size of the detection area")]

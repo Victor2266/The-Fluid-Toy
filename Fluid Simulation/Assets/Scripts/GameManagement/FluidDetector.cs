@@ -9,7 +9,7 @@ public class FluidDetector : FluidSensor
     [Tooltip("The density threshold above which fluid is considered present")]
     public float densityThreshold = 0.5f;
     
-    [Tooltip("How often to check for fluid presence (in seconds)")]
+    [Tooltip("How often to check for fluid presence (in seconds; overwritten by any Sensor Managers)")]
     public float checkInterval = 0.1f;
     
     [Tooltip("Size of the detection area")]
