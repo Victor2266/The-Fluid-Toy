@@ -64,7 +64,14 @@ public class SimulationSettingsWrapper : MonoBehaviour
 
     public void setHideMouseCircle(int hideMouseCircleIndex)
     {
+        if (hideMouseCircleIndex == 2){
+            mouseCircleObject.SetActive(true);
+            mouseCircleObject.GetComponent<InteractionRadiusVisualizer>().alwaysShowNeutral = false;
+            return;
+        }
+        
         mouseCircleObject.SetActive(hideMouseCircleIndex == 0);
+        mouseCircleObject.GetComponent<InteractionRadiusVisualizer>().alwaysShowNeutral = true;
     }
 
     public void setHideBenchmark(int hideBenchmarkIndex)
