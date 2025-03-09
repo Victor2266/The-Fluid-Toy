@@ -63,6 +63,7 @@ public class FluidDetector : FluidSensor
         if (request.hasError)
         {
             Debug.Log("GPU ASync Readback Error in Fluid Simulation Readback");
+            isRequestMade = false;
             return;
         }
         if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid() || this == null)
