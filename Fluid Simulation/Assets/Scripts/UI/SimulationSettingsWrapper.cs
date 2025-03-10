@@ -15,7 +15,7 @@ public class SimulationSettingsWrapper : MonoBehaviour
 
     private GameObject fpsDisplayObject;
     private GameObject mouseCircleObject;
-    private GameObject benchmarkObject;
+    [SerializeField] private GameObject benchmarkObject;
 
     void Awake()
     {
@@ -48,7 +48,6 @@ public class SimulationSettingsWrapper : MonoBehaviour
         HideMouseCircleDropdown.onValueChanged.AddListener(setHideMouseCircle);
         mouseCircleObject = FindFirstObjectByType<InteractionRadiusVisualizer>().gameObject;
         HideBenchmarkDropdown.onValueChanged.AddListener(setHideBenchmark);
-        benchmarkObject = FindFirstObjectByType<FrameTimeBenchmark>().gameObject;
     }
 
 
@@ -76,6 +75,6 @@ public class SimulationSettingsWrapper : MonoBehaviour
 
     public void setHideBenchmark(int hideBenchmarkIndex)
     {
-        benchmarkObject.SetActive(hideBenchmarkIndex == 0);
+        benchmarkObject.SetActive(hideBenchmarkIndex != 0);
     }
 }
