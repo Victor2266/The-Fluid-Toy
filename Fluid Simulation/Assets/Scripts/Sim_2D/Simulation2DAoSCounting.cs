@@ -160,7 +160,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         if (spawners == null || spawners.Length == 0)
         {
             Debug.LogWarning("No particle spawners assigned. If this is unintended, please add at least one spawner in the inspector or enable the 'Scan for Particle Spawners on Start' option.");
-            return;
+            
         }
         for (int k = 0; k<spawners.Length; k++)
         {

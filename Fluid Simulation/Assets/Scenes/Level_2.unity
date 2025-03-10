@@ -2026,6 +2026,7 @@ MonoBehaviour:
   fixedTimeStep: 1
   maxParticles: 16000
   scanForObstaclesOnStart: 0
+  scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -5946,6 +5947,7 @@ MonoBehaviour:
   fixedTimeStep: 0
   maxParticles: 16000
   scanForObstaclesOnStart: 1
+  scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -8202,6 +8204,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2030044695443682677, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2109621059557760878, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -8320,6 +8326,14 @@ PrefabInstance:
     - target: {fileID: 4592926617858281530, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4678331517522421534, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 90.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 4678331517522421534, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 24.56
       objectReference: {fileID: 0}
     - target: {fileID: 4762150048331021859, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_Size
@@ -11863,7 +11877,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vsyncCount: 0
-  targetFrameRate: -1
 --- !u!4 &2107056133
 Transform:
   m_ObjectHideFlags: 0
