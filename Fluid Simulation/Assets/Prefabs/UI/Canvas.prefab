@@ -1416,6 +1416,7 @@ GameObject:
   - component: {fileID: 7166298758553803539}
   - component: {fileID: 4728678244752390587}
   - component: {fileID: 8910977963672233529}
+  - component: {fileID: 1680638371184635595}
   m_Layer: 5
   m_Name: Size Slider
   m_TagString: Untagged
@@ -1552,6 +1553,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1680638371184635595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4466570994673122313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipContent: This controls the mouse's effect radius.
 --- !u!1 &4587603171568080755
 GameObject:
   m_ObjectHideFlags: 0
@@ -3041,6 +3055,7 @@ GameObject:
   - component: {fileID: 7326965585065240287}
   - component: {fileID: 4924950206219479531}
   - component: {fileID: 8859891209051748733}
+  - component: {fileID: 6042835735600806098}
   m_Layer: 5
   m_Name: Strength Slider
   m_TagString: Untagged
@@ -3177,6 +3192,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6042835735600806098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9140389361781697878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44485be0b94d1804c952078cd5d7d304, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipContent: This controls the gravity brush strength and the mouse's particle
+    spawning rate.
 --- !u!1001 &9386772185271002
 PrefabInstance:
   m_ObjectHideFlags: 0
