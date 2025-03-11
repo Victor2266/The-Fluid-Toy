@@ -27,13 +27,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public Vector2 boundsSize;
     public Vector2 obstacleSize;
     public Vector2 obstacleCentre;
-
-    public enum EdgeType
-    {
-        Solid,
-        Void,
-        Loop
-    }
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
     public uint spawnRate = 100; // How many particles that can spawn per frame
 
