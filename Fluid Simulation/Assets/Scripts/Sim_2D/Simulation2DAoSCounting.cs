@@ -29,7 +29,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleCentre;
 
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
-    public uint spawnRate = 100; // How many particles that can spawn per frame
+    public uint maxSourceSpawnRate = 20; // How many particles that can spawn per frame
+    public uint maxMouseSpawnRate = 20;
 
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
@@ -188,7 +189,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
         thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
 
-        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
+        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(3);
 
 
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint2>(numParticles);
@@ -199,7 +200,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnDataArr);
-        uint[] atomicCounter = { 0, frameCounter++ };
+        uint[] atomicCounter = { 0, frameCounter++, 0};
         atomicCounterBuffer.SetData(atomicCounter);
 
 
@@ -221,7 +222,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numParticles", numParticles);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
+        compute.SetInt("maxMouseSpawnRate", (int)maxMouseSpawnRate);
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
@@ -479,12 +481,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numThermalBoxes", Math.Max(thermalBoxes.Length, 0));
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int)edgeType);
-        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
+        compute.SetInt("maxMouseSpawnRate", (int)maxMouseSpawnRate);
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
       
-        uint[] atomicCounter = { 0, frameCounter++ };
+        uint[] atomicCounter = { 0, frameCounter++, 0};
         atomicCounterBuffer.SetData(atomicCounter);
         
 
