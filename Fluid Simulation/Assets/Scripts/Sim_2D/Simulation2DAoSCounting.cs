@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+using Unity.PlasticSCM.Editor.WebApi;
 
 
 public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
@@ -44,6 +45,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public float minRadius = 0.25f;
     public float maxRadius = 24f;
     public float interactionStrength;
+    private float currentStrengthPercent;
     public float minStrength = 36f;
     public float maxStrength = 720f;
     public float smoothingTime = 0.04f;
@@ -146,6 +148,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         targetInteractionRadius = interactionRadius;
         targetInteractionStrength = interactionStrength;
+        currentStrengthPercent = (interactionStrength - minStrength) / (maxStrength - minStrength);
         numParticles = maxParticles;
 
         if (scanForParticleSpawnersOnStart){
@@ -223,7 +226,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
-        compute.SetInt("maxMouseSpawnRate", (int)maxMouseSpawnRate);
+        compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
@@ -482,7 +485,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int)edgeType);
         compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
-        compute.SetInt("maxMouseSpawnRate", (int)maxMouseSpawnRate);
+        compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
@@ -509,6 +512,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
                 targetInteractionStrength *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
                 targetInteractionStrength = Mathf.Clamp(targetInteractionStrength, minStrength, maxStrength);
+                currentStrengthPercent = (targetInteractionStrength - minStrength) / (maxStrength - minStrength);
             }
             else{
                 // Apply scroll input to target radius with exponential scaling
@@ -1016,6 +1020,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
     {
+        currentStrengthPercent = strength;
         targetInteractionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
 
