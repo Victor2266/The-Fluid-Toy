@@ -1035,4 +1035,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         fixedTimeStep = fixedTimestepVal;
     }
+
+    public FluidData[] getFluidDataArray(){
+        return fluidDataArray;
+    }
 }

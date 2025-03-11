@@ -11,6 +11,8 @@ public interface IFluidSimulation
     void setEdgeType(int edgeTypeIndex);
     void setFixedTimestep(bool fixedTimestep);
 
+    FluidData[] getFluidDataArray();
+
     void setSelectedFluid(int fluidTypeIndex);
     /// <summary>
     /// Sets the brush type for particle interaction.

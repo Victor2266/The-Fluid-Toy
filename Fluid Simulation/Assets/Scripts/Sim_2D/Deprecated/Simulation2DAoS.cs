@@ -895,4 +895,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         fixedTimeStep = fixedTimestepVal;
     }
+    public FluidData[] getFluidDataArray(){
+        return fluidDataArray;
+    }
 }

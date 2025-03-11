@@ -547,4 +547,7 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     {
         fixedTimeStep = fixedTimestepVal;
     }
+    public FluidData[] getFluidDataArray(){
+        return null;
+    }
 }

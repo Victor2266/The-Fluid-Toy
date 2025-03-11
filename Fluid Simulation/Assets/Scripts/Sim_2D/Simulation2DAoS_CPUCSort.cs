@@ -1240,5 +1240,8 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         fixedTimeStep = fixedTimestepVal;
     }
+    public FluidData[] getFluidDataArray(){
+        return fluidDataArray;
+    }
 
 }
