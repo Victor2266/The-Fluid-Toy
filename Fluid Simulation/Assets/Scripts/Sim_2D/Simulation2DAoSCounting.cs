@@ -30,8 +30,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleCentre;
 
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
-    public uint maxSourceSpawnRate = 20; // How many particles that can spawn per frame
-    public uint maxMouseSpawnRate = 20;
+    public uint maxSourceSpawnRate = 20; // How many particles that can spawn via source per frame
+    public uint maxMouseSpawnRate = 40; // The maximum number of particles that can spawn via mouse per frame, the real number is controlled by the interaction strength percent
 
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
