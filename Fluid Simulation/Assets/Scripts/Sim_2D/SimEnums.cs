@@ -17,3 +17,11 @@ public enum EdgeType
     Void,
     Loop
 }
+
+
+// The simulation gravity mode
+public enum GravityMode
+{
+    Normal, Zero, Radial, Negative, Custom, Gyroscope
+}
+
