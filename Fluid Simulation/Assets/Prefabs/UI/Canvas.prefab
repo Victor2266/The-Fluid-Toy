@@ -5870,14 +5870,29 @@ PrefabInstance:
 
         RMB
 
-        SCROLL
+        Scroll Wheel
 
-        SHIFT
-        + SCROLL
+        Shift
+        + Scroll Wheel
 
-        LMB + SCROLL
+        Middle Mouse Button
 
-        LMB + SHIFT + SCROLL'
+        LMB + Scroll Wheel
+
+        LMB
+        + Shift + Scroll Wheel'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1353259883086352021, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 301d1c6477eb8ee4aa995edfc7c86680, type: 2}
+    - target: {fileID: 1353259883086352021, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 3303376031612326287, guid: 301d1c6477eb8ee4aa995edfc7c86680, type: 2}
+    - target: {fileID: 1353259883086352021, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 1414927193157430713, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_Name
@@ -5888,20 +5903,40 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2987655510687563668, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -31
+      objectReference: {fileID: 0}
+    - target: {fileID: 2987655510687563668, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 198
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -56
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3524787591176181153, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -81
+      objectReference: {fileID: 0}
+    - target: {fileID: 3524787591176181153, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3897421011284637976, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3897421011284637976, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4365769675071356382, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_Pivot.x
@@ -5997,24 +6032,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6229690019195773653, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_text
-      value: 'Play/Pause Simulation
+      value: 'Pause Simulation
 
         Reset Simulation
 
-        Use Selected
-        Brush, Drag Objects
+        Use Selected Brush
+        or Drag Objects
 
         Use Alternate Brush Effect
 
         Change Brush
         Size
 
-        Change Brush Strength (For Gravity)
+        Change Brush Strength <color=grey>(For Gravity / Drawing)</color>
 
-        Resize Object
-        Vertically (When Dragging)
+        Reset
+        Brush Size & Strength
 
-        Resize Object Horizontally (When Dragging)'
+        Resize Object Vertically <color=grey>(When
+        Dragging)</color>
+
+        Resize Object Horizontally <color=grey>(When Dragging)</color>'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6229690019195773653, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
+    - target: {fileID: 6229690019195773653, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4419277419123658369, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
+    - target: {fileID: 6229690019195773653, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 9201179044149608905, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_Sprite
