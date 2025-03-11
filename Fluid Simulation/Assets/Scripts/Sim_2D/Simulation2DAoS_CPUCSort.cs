@@ -1236,6 +1236,9 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         sourceObjects[0] = source;
     }
-
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
 
 }

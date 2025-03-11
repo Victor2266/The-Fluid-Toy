@@ -8,7 +8,11 @@ public class SimulationSettingsWrapper : MonoBehaviour
     private GameObject simulation2DGameObject;
     private IFluidSimulation simulation2DScript;
 
+    [Header("Simulation Settings")]
     [SerializeField] private TMP_Dropdown edgeTypeDropdown;
+    [SerializeField] private TMP_Dropdown fixedTimestepDropdown;
+
+    [Header("UI Settings")]
     [SerializeField] private TMP_Dropdown HideFPSDropdown;
     [SerializeField] private TMP_Dropdown HideMouseCircleDropdown;
     [SerializeField] private TMP_Dropdown HideBenchmarkDropdown;
@@ -42,11 +46,21 @@ public class SimulationSettingsWrapper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Edge Type
         edgeTypeDropdown.onValueChanged.AddListener(setEdgeType);
+
+        // Fixed Timestep
+        fixedTimestepDropdown.onValueChanged.AddListener(setTimestampMode);
+
+        // FPS Display
         HideFPSDropdown.onValueChanged.AddListener(setHideFPS);
         fpsDisplayObject = FindFirstObjectByType<FPSDisplay>().gameObject;
+
+        // Mouse Circle
         HideMouseCircleDropdown.onValueChanged.AddListener(setHideMouseCircle);
         mouseCircleObject = FindFirstObjectByType<InteractionRadiusVisualizer>().gameObject;
+
+        // Benchmark Script
         HideBenchmarkDropdown.onValueChanged.AddListener(setHideBenchmark);
     }
 
@@ -76,5 +90,10 @@ public class SimulationSettingsWrapper : MonoBehaviour
     public void setHideBenchmark(int hideBenchmarkIndex)
     {
         benchmarkObject.SetActive(hideBenchmarkIndex != 0);
+    }
+
+    public void setTimestampMode(int timestampModeIndex)
+    {
+        simulation2DScript.setFixedTimestep(timestampModeIndex == 1);
     }
 }

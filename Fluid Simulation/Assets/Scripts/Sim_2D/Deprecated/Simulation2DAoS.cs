@@ -891,5 +891,8 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public void SetFirstSourceObject(SourceObjectInitializer source){
         sourceObjects[0] = null;
     }
-    
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
 }

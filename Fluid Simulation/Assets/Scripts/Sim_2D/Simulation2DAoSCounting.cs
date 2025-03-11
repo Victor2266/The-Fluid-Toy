@@ -1030,4 +1030,9 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     {
         sourceObjects[0] = source;
     }
+
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
 }

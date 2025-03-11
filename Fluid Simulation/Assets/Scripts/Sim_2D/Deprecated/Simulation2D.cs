@@ -543,4 +543,8 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     public void SetFirstSourceObject(SourceObjectInitializer source){
         return;
     }
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
 }
