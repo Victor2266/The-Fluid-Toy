@@ -2027,14 +2027,15 @@ MonoBehaviour:
   maxParticles: 16000
   scanForObstaclesOnStart: 0
   scanForParticleSpawnersOnStart: 1
-  iterationsPerFrame: 3
+  iterationsPerFrame: 1
   globalEntropyRate: 1
   roomTemperature: 22
   boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 1
-  spawnRate: 10
+  maxSourceSpawnRate: 10
+  maxMouseSpawnRate: 40
   selectedFluid: 0
   brushState: 2
   interactionRadius: 3
@@ -3262,7 +3263,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1499615900}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
