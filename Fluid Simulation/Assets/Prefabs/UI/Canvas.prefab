@@ -2025,7 +2025,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7723421981990690167
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2042,7 +2042,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -170.25}
   m_SizeDelta: {x: 960, y: 720}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7960410922476590585
@@ -2073,15 +2073,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler Text. Filler
-    Text. '
+  m_text: 'Hint: Right click on obstacles to open a context menu.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
   m_sharedMaterial: {fileID: 4621470211802787547, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
@@ -2130,7 +2122,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -5908,7 +5900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2987655510687563668, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_SizeDelta.y
@@ -5920,7 +5912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 3524787591176181153, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -5928,7 +5920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3524787591176181153, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 3897421011284637976, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_Type
@@ -6030,6 +6022,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5492596335097496743, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 6229690019195773653, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_text
       value: 'Pause Simulation
@@ -6063,6 +6059,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4419277419123658369, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
     - target: {fileID: 6229690019195773653, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 8647033440377947331, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
