@@ -11,7 +11,7 @@ public class InteractionRadiusVisualizer : MonoBehaviour
     [SerializeField] private Color attractColor = Color.green;
     [SerializeField] private Color repelColor = Color.red;
     [SerializeField] private Color neutralColor = Color.grey;
-    [SerializeField] private bool alwaysShowNeutral = true;
+    public bool alwaysShowNeutral = true;
     [SerializeField] [Range(8, 64)] private int segments = 32;
     
     private LineRenderer lineRenderer;

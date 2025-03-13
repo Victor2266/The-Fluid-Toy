@@ -101,7 +101,7 @@ RWStructuredBuffer<Circle> CircleColliders;
 RWStructuredBuffer<SourceObj> SourceObjs;
 RWStructuredBuffer<OrientedBox> DrainObjs;
 RWStructuredBuffer<ThermalBox> ThermalBoxes;
-RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
+RWStructuredBuffer<uint> atomicCounter; // source counter Integer, frame tickCount, mouse counter integer
 
 // Settings
 const uint numParticles;
@@ -123,7 +123,8 @@ int numFluidTypes;
 int brushType;
 int selectedFluidType;
 int edgeType;
-uint spawnRate;
+uint maxSourceSpawnRate;
+uint maxMouseSpawnRate;
 
 int GetFluidTypeIndexFromID(int fluidID){
 
@@ -184,10 +185,13 @@ float GetMaxSmoothingRadius(int indexA, int indexB)
     return max(FluidDataSet[indexA].smoothingRadius, FluidDataSet[indexB].smoothingRadius);
 }
 
-
 void atomicIncrementCounter() {
     uint increment = 1u;
     InterlockedAdd(atomicCounter[0], increment, atomicCounter[0]);
+}
+void atomicIncrementMouseCounter() {
+    uint increment = 1u;
+    InterlockedAdd(atomicCounter[2], increment, atomicCounter[2]);
 }
 
 // PCG (permuted congruential generator). Thanks to:
@@ -486,15 +490,15 @@ void HandleCollisions(inout Particle particle)
 	particle.velocity = vel;
 }
 
-void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawnRate number of times per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
+void HandleLeftMouseInput(inout Particle particle){ //This is called up to maxMouseSpawnRate number of times per frame, once atomicCounter[2] reaches maxMouseSpawnRate it needs to get set back to 0 by the c# script
 
-	atomicIncrementCounter();
+	atomicIncrementMouseCounter();
 
-	if (atomicCounter[0] >= spawnRate) {
+	if (atomicCounter[2] >= maxMouseSpawnRate) {
 		return;
 	}
 
-	uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+	uint randomState = (atomicCounter[2] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
 	float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
 
@@ -517,7 +521,7 @@ void HandleSourceObject(inout Particle particle){
 	atomicIncrementCounter();
 
 	// Only spawn if we haven't reached the spawn rate for this frame
-    if (atomicCounter[0] >= spawnRate) return;
+    if (atomicCounter[0] >= maxSourceSpawnRate) return;
 
 	// Create random state for this spawn attempt
     uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;

@@ -418,6 +418,7 @@ MonoBehaviour:
   brushSizeText: {fileID: 0}
   brushStrengthSlider: {fileID: 0}
   brushStrengthText: {fileID: 0}
+  obstaclePrefabs: []
   FluidTypebuttons: []
 --- !u!82 &7741581685545149440
 AudioSource:
@@ -1633,7 +1634,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7075117062414912365, guid: d40c87f91358c084d85edcd80aa6096d, type: 3}
       propertyPath: tooltipContent
-      value: Nothing Brush. Disables all brushes.
+      value: Eraser. Will delete particles. You can also right click (PC) or use
+        two fingers (Mobile).
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

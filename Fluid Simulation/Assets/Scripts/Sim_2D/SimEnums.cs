@@ -1,3 +1,5 @@
+// The Fluid Type Enums is in FluidData.cs
+
 // Brush Settings Enum type
 public enum BrushType
 {
@@ -7,4 +9,19 @@ public enum BrushType
     Eraser
 }
 
-// The Fluid Type Enums is in FluidData.cs
+
+// The simulation edge type
+public enum EdgeType
+{
+    Solid,
+    Void,
+    Loop
+}
+
+
+// The simulation gravity mode
+public enum GravityMode
+{
+    Normal, Zero, Radial, Negative, Custom, Gyroscope
+}
+
