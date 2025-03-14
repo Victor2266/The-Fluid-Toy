@@ -123,6 +123,7 @@ int numFluidTypes;
 int brushType;
 int selectedFluidType;
 int edgeType;
+int gravityMode;
 uint maxSourceSpawnRate;
 uint maxMouseSpawnRate;
 
@@ -278,7 +279,42 @@ float NearPressureFromDensity(float nearDensity, float nearPressureMultiplier)
 float2 ExternalForces(float2 pos, float2 velocity, float gravity)
 {
 	// Gravity
-	float2 gravityAccel = float2(0, gravity);
+    float2 gravityAccel = float2(0, 0);
+    
+    // Select gravity mode
+    switch (gravityMode)
+    {
+        case 0: // Normal
+            gravityAccel = float2(0, gravity);
+            break;
+        case 1: // Zero
+            gravityAccel = float2(0, 0);
+            break;
+        case 2: // Radial (towards center)
+            float2 dirToCenter = -pos;
+            float distToCenter = length(dirToCenter);
+            gravityAccel = distToCenter > 0.001f ? 
+                normalize(dirToCenter) * abs(gravity) : 
+                float2(0, 0);
+            break;
+        case 3: // Negative
+            gravityAccel = float2(0, -gravity);
+            break;
+        case 4: // Custom
+            // Custom gravity direction vector
+            // gravityAccel = customGravityDirection * gravity;
+            gravityAccel = float2(0, gravity); // Default to normal for now
+            break;
+        case 5: // Left (treat left as down)
+            gravityAccel = float2(-gravity, 0);
+            break;
+        case 6: // Right (treat right as down)
+            gravityAccel = float2(gravity, 0);
+            break;
+        default:
+            gravityAccel = float2(0, gravity); // Default to normal
+            break;
+    }
 
 	// Input interactions modify gravity
 	if (brushType == 1 && interactionInputStrength != 0) {

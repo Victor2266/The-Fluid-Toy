@@ -29,6 +29,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleCentre;
 
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
+    [SerializeField] private GravityMode gravityMode = GravityMode.Normal;
     public uint maxSourceSpawnRate = 20; // How many particles that can spawn via source per frame
     public uint maxMouseSpawnRate = 40; // The maximum number of particles that can spawn via mouse per frame, the real number is controlled by the interaction strength percent
 
@@ -483,6 +484,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numThermalBoxes", Math.Max(thermalBoxes.Length, 0));
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int)edgeType);
+        compute.SetInt("gravityMode", (int)gravityMode);
         compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
         compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
