@@ -11,22 +11,22 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
   m_Name: Gas_Fire
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   fluidType: 17
   gravity: 12
   collisionDamping: 0.5
   smoothingRadius: 0.35
   targetDensity: 60
-  pressureMultiplier: 8
+  pressureMultiplier: 800
   nearPressureMultiplier: 16
   viscosityStrength: 0.01
   startTemperature: 1000
   thermalDiffusivity: 50
-  boilState: 16
+  boilState: 17
   boilTemp: 1200
   freezeState: 0
   freezeTemp: 600
-  entropy: 2
+  friction: 0
   entropyTarget: 300
   visualParams:
     style: 1
