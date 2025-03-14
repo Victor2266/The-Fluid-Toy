@@ -20,21 +20,21 @@ MonoBehaviour:
   pressureMultiplier: 400
   nearPressureMultiplier: 15
   viscosityStrength: 0.08
-  startTemperature: 22
-  thermalDiffusivity: 20
+  startTemperature: 150
+  thermalDiffusivity: 40
   boilState: 16
-  boilTemp: 482
+  boilTemp: 200
   freezeState: 15
   freezeTemp: 0
-  entropy: 0
-  entropyTarget: 25
+  entropy: 2
+  entropyTarget: 180
   visualParams:
-    style: 0
+    style: 3
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.6, g: 0.6, b: 0.6, a: 0.6}
-      key1: {r: 0.7, g: 0.7, b: 0.7, a: 0.6}
-      key2: {r: 0.8, g: 0.8, b: 0.8, a: 0}
+      key0: {r: 0.1376945, g: 0.5943396, b: 0.08690815, a: 0.6}
+      key1: {r: 0.40710726, g: 0.842417, b: 0.13275497, a: 0.6}
+      key2: {r: 0.91858065, g: 1, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -60,7 +60,7 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 3
       m_NumAlphaKeys: 2
-    visualScale: 0.2
+    visualScale: 0.8
     baseOpacity: 0.6
     noiseScale: 1.2
     timeScale: 0.5
