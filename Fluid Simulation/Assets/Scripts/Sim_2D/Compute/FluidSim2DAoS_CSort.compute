@@ -300,16 +300,16 @@ float2 ExternalForces(float2 pos, float2 velocity, float gravity)
         case 3: // Negative
             gravityAccel = float2(0, -gravity);
             break;
-        case 4: // Custom
+        case 4: // Right (treat Right as down)
+            gravityAccel = float2(-gravity, 0);
+            break;
+        case 5: // Left (treat Left as down)
+            gravityAccel = float2(gravity, 0);
+            break;
+		case 6: // Custom
             // Custom gravity direction vector
             // gravityAccel = customGravityDirection * gravity;
             gravityAccel = float2(0, gravity); // Default to normal for now
-            break;
-        case 5: // Left (treat left as down)
-            gravityAccel = float2(-gravity, 0);
-            break;
-        case 6: // Right (treat right as down)
-            gravityAccel = float2(gravity, 0);
             break;
         default:
             gravityAccel = float2(0, gravity); // Default to normal

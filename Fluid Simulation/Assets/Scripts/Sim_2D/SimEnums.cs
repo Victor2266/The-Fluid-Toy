@@ -22,6 +22,6 @@ public enum EdgeType
 // The simulation gravity mode
 public enum GravityMode
 {
-    Normal, Zero, Radial, Negative, Custom, Right, Left
+    Normal, Zero, Radial, Negative, Right, Left, Custom
 }
 
