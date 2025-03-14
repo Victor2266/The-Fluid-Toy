@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8746213186943955425}
   - component: {fileID: 9089143415984429209}
-  - component: {fileID: 3575461716859029015}
+  - component: {fileID: -8604907445394592624}
   - component: {fileID: 279188387211555177}
   - component: {fileID: 2362419238567219575}
   - component: {fileID: 1871501553181630736}
@@ -54,7 +54,7 @@ MonoBehaviour:
     velo: {x: 0, y: 0}
     spawnRate: 1
     fluidType: 1
---- !u!114 &3575461716859029015
+--- !u!114 &-8604907445394592624
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,13 +63,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3107906514027048532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Script: {fileID: 11500000, guid: 0abceb061889ec74086bcb062be77ba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contextMenuPrefab: {fileID: 7495468562297270248, guid: 47b55135293a1c74495232d71c73f8f5, type: 3}
+  contextMenuPrefab: {fileID: 4522718764711096951, guid: 324383bf861d818469cc81e70c994b22, type: 3}
   contextMenuHeading: Edit Source Object
   childObjectType: 0
-  startsInScene: 0
 --- !u!114 &279188387211555177
 MonoBehaviour:
   m_ObjectHideFlags: 0

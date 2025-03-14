@@ -440,7 +440,10 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         // NOT IMPLEMENTED
         Debug.Log("Not implemented in Simulation2D.cs setEdgeType: " + edgeTypeIndex);
     }
-
+    public void setGravityMode(int gravityModeIndex)
+    {
+        return; // Not implemented
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         // NOT IMPLEMENTED
@@ -542,5 +545,12 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     }
     public void SetFirstSourceObject(SourceObjectInitializer source){
         return;
+    }
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
+    public FluidData[] getFluidDataArray(){
+        return null;
     }
 }

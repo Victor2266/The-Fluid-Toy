@@ -28,14 +28,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public Vector2 obstacleSize;
     public Vector2 obstacleCentre;
 
-    public enum EdgeType
-    {
-        Solid,
-        Void,
-        Loop
-    }
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
-    public uint spawnRate = 100; // How many particles that can spawn per frame
+    [SerializeField] private GravityMode gravityMode = GravityMode.Normal;
+    public uint maxSourceSpawnRate = 20; // How many particles that can spawn via source per frame
+    public uint maxMouseSpawnRate = 40; // The maximum number of particles that can spawn via mouse per frame, the real number is controlled by the interaction strength percent
 
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
@@ -49,6 +45,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public float minRadius = 0.25f;
     public float maxRadius = 24f;
     public float interactionStrength;
+    private float currentStrengthPercent;
     public float minStrength = 36f;
     public float maxStrength = 720f;
     public float smoothingTime = 0.04f;
@@ -129,9 +126,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     const int densityKernel = 5;
     const int pressureKernel = 6;
     const int viscosityKernel = 7;
-    const int temperatureKernel = 8;
-    const int updatePositionKernel = 9;
-    const int updateStateKernel = 10;
+    const int frictionKernel = 8;
+    const int temperatureKernel = 9;
+    const int updatePositionKernel = 10;
+    const int updateStateKernel = 11;
 
     // State
     bool isPaused;
@@ -151,6 +149,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
         targetInteractionRadius = interactionRadius;
         targetInteractionStrength = interactionStrength;
+        currentStrengthPercent = (interactionStrength - minStrength) / (maxStrength - minStrength);
         numParticles = maxParticles;
 
         if (scanForParticleSpawnersOnStart){
@@ -160,7 +159,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         if (spawners == null || spawners.Length == 0)
         {
             Debug.LogWarning("No particle spawners assigned. If this is unintended, please add at least one spawner in the inspector or enable the 'Scan for Particle Spawners on Start' option.");
-            return;
+            
         }
         for (int k = 0; k<spawners.Length; k++)
         {
@@ -194,7 +193,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         drainObjectBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(drainObjects.Length, 1));
         thermalBoxesBuffer = ComputeHelper.CreateStructuredBuffer<ThermalBox>(Mathf.Max(thermalBoxes.Length, 1));
 
-        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(2);
+        atomicCounterBuffer = ComputeHelper.CreateStructuredBuffer<uint>(3);
 
 
         spatialIndices = ComputeHelper.CreateStructuredBuffer<uint2>(numParticles);
@@ -205,16 +204,16 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         fluidDataBuffer.SetData(fluidParamArr);
         ScalingFactorsBuffer.SetData(scalingFactorsArr);
         SetInitialBufferData(spawnDataArr);
-        uint[] atomicCounter = { 0, frameCounter++ };
+        uint[] atomicCounter = { 0, frameCounter++, 0};
         atomicCounterBuffer.SetData(atomicCounter);
 
 
         // Init compute
-        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
-        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
-        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
-        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, fluidDataBuffer, "FluidDataSet", SpawnParticlesKernel, externalForcesKernel, densityKernel, pressureKernel, viscosityKernel, frictionKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
+        ComputeHelper.SetBuffer(compute, ScalingFactorsBuffer, "ScalingFactorsBuffer", densityKernel, pressureKernel, viscosityKernel, frictionKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, particleBuffer, "Particles", SpawnParticlesKernel, externalForcesKernel, reorderKernel, reorderCopybackKernel, spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, frictionKernel, temperatureKernel, updatePositionKernel, updateStateKernel);
+        ComputeHelper.SetBuffer(compute, spatialIndices, "SpatialIndices", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, frictionKernel, temperatureKernel);
+        ComputeHelper.SetBuffer(compute, spatialOffsets, "SpatialOffsets", spatialHashKernel, densityKernel, pressureKernel, viscosityKernel, frictionKernel, temperatureKernel);
         ComputeHelper.SetBuffer(compute, sortedIndices, "SortedIndices", spatialHashKernel, reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, sortedParticleBuffer, "SortedParticles", reorderKernel, reorderCopybackKernel);
         ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
@@ -227,7 +226,8 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numParticles", numParticles);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
+        compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
@@ -381,6 +381,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         //compute the pressure and viscosity on CPU
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: pressureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: viscosityKernel);
+        ComputeHelper.Dispatch(compute, numParticles, kernelIndex: frictionKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: temperatureKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updatePositionKernel);
         ComputeHelper.Dispatch(compute, numParticles, kernelIndex: updateStateKernel);
@@ -485,12 +486,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         compute.SetInt("numThermalBoxes", Math.Max(thermalBoxes.Length, 0));
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int)edgeType);
-        compute.SetInt("spawnRate", (int)spawnRate);
+        compute.SetInt("gravityMode", (int)gravityMode);
+        compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
+        compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
       
-        uint[] atomicCounter = { 0, frameCounter++ };
+        uint[] atomicCounter = { 0, frameCounter++, 0};
         atomicCounterBuffer.SetData(atomicCounter);
         
 
@@ -512,6 +515,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
                 float scaleFactor = scrollDelta > 0 ? 1.1f : 0.9f;
                 targetInteractionStrength *= Mathf.Pow(scaleFactor, Mathf.Abs(scrollDelta));
                 targetInteractionStrength = Mathf.Clamp(targetInteractionStrength, minStrength, maxStrength);
+                currentStrengthPercent = (targetInteractionStrength - minStrength) / (maxStrength - minStrength);
             }
             else{
                 // Apply scroll input to target radius with exponential scaling
@@ -917,6 +921,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         edgeType = (EdgeType)edgeTypeIndex;
     }
 
+    public void setGravityMode(int gravityModeIndex)
+    {
+        gravityMode = (GravityMode)gravityModeIndex;
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         selectedFluid = fluidTypeIndex;
@@ -1019,6 +1027,7 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
 
     public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
     {
+        currentStrengthPercent = strength;
         targetInteractionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
 
@@ -1029,5 +1038,14 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public void SetFirstSourceObject(SourceObjectInitializer source)
     {
         sourceObjects[0] = source;
+    }
+
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
+
+    public FluidData[] getFluidDataArray(){
+        return fluidDataArray;
     }
 }

@@ -926,17 +926,15 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 	}
 
 	// Add entropy contribution
-	switch (fluidData.entropy)
+	switch (fluidData.entropyTarget)
 	{ 
-		case 0: // Disabled
+		case 11111.0f: // Disabled
 			break;
-		case 1: // Use scene roomTemperature
+		case 22222.0f: // Use scene roomTemperature
 			deltaTemp += (roomTemperature - temp) * globalEntropyRate;
 			break;
-		case 2: // Use FluidParam value
+		default: // Fixed entropy
 			deltaTemp += (fluidData.entropyTarget - temp) * globalEntropyRate;
-			break;
-		default: // Default skip
 			break;
 	}
 	

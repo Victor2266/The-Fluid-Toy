@@ -167,7 +167,7 @@ public class FrameTimeBenchmark : MonoBehaviour
     private void OnGUI()
     {
         // Always show the key instruction
-        GUILayout.BeginArea(new Rect(10, 10, 300, 150));
+        GUILayout.BeginArea(new Rect(26, 60, 300, 150));
         GUILayout.Label($"Press {startBenchmarkKey} to start benchmark");
 
         if (visualizeInEditor && isBenchmarking)

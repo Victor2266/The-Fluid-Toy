@@ -33,7 +33,7 @@ public struct SourceObjectInitializer //40 bytes total: This is for setting up s
     [Range(0, 1)]
     // Each particle will pick a random source object to spawn from and then it will generate a number between 0 and 1 to compare to this spawnRate to see if it should spawn
     public float spawnRate; //4 bytes: This is the percent chance that the particle spawns, 1 means 100% given that the particle has picked this source
-    public int fluidType; //4 bytes: Setting this to 0 will disable this source
+    public int fluidType; //4 bytes: This is the fluid type's ID not index. Setting this to 0 will disable this source
 }
 
 [System.Serializable]

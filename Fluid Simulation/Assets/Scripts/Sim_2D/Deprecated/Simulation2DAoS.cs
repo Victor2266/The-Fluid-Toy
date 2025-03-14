@@ -653,7 +653,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         edgeType = (EdgeType)edgeTypeIndex;
     }
-
+    public void setGravityMode(int gravityModeIndex)
+    {
+        return; // Not implemented
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         selectedFluid = fluidTypeIndex;
@@ -891,5 +894,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public void SetFirstSourceObject(SourceObjectInitializer source){
         sourceObjects[0] = null;
     }
-    
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
+    public FluidData[] getFluidDataArray(){
+        return fluidDataArray;
+    }
 }
