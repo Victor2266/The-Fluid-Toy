@@ -9,6 +9,7 @@ public interface IFluidSimulation
     //void SetFluidProperties(FluidData fluidData);
 
     void setEdgeType(int edgeTypeIndex);
+    void setGravityMode(int gravityModeIndex);
     void setFixedTimestep(bool fixedTimestep);
 
     FluidData[] getFluidDataArray();

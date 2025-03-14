@@ -440,7 +440,10 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         // NOT IMPLEMENTED
         Debug.Log("Not implemented in Simulation2D.cs setEdgeType: " + edgeTypeIndex);
     }
-
+    public void setGravityMode(int gravityModeIndex)
+    {
+        return; // Not implemented
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         // NOT IMPLEMENTED

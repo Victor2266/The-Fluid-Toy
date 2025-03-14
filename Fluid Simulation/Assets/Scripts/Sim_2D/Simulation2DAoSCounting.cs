@@ -919,6 +919,10 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
         edgeType = (EdgeType)edgeTypeIndex;
     }
 
+    public void setGravityMode(int gravityModeIndex)
+    {
+        gravityMode = (GravityMode)gravityModeIndex;
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         selectedFluid = fluidTypeIndex;
