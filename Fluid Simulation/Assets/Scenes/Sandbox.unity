@@ -1680,7 +1680,7 @@ MonoBehaviour:
   enableScrolling: 1
   enableHotkeys: 1
   manuallySelectFluidTypes: 1
-  updateFluidsEveryFrame: 0
+  updateFluidsEveryFrame: 1
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
@@ -1694,6 +1694,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d2c5d728bfbc762488dfec45a0cb4f1f, type: 2}
   - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
   - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
+  - {fileID: 11400000, guid: b80a88647f973af4192ef836d0c4d993, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawners: []
   boxColliders: []

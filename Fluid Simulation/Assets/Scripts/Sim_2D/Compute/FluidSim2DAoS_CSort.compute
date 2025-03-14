@@ -6,6 +6,7 @@
 #pragma kernel CalculateDensities
 #pragma kernel CalculatePressureForce
 #pragma kernel CalculateViscosity
+#pragma kernel CalculatePowderForces
 #pragma kernel CalculateTemperature
 #pragma kernel UpdatePositions
 #pragma kernel UpdateStates
@@ -468,9 +469,43 @@ void HandleCollisions(inout Particle particle)
 
         // Apply position and velocity corrections in a single operation
         pos = pos * (1 - outOfBounds) + sign(pos) * halfSize * outOfBounds;
-        //vel = vel * (1 - outOfBounds) + vel * -fluidData.collisionDamping * outOfBounds;
-		vel = vel * (1 - outOfBounds * (1 + fluidData.collisionDamping));
-
+		if (fluidData.friction != 0)
+        {
+			vel = vel * (1 - outOfBounds * (1 + fluidData.collisionDamping));
+		}
+		else
+		{
+			// Calculate normal and tangential components
+            float2 normal = outOfBounds * sign(pos);
+            
+            // Project velocity onto normal direction (for reflection)
+            float normalVel = dot(vel, normal);
+            float2 normalVelVector = normalVel * normal;
+            
+            // Calculate tangential component
+            float2 tangentialVelVector = vel - normalVelVector;
+            float tangentialSpeed = length(tangentialVelVector);
+            
+            // Apply normal reflection with damping
+            float2 newNormalVel = -normalVelVector * fluidData.collisionDamping;
+            
+            // Apply friction to tangential component
+            float2 newTangentialVel;
+            if (tangentialSpeed > 0.001f)
+            {
+                // Apply dynamic friction (velocity-dependent)
+                float frictionMagnitude = min(tangentialSpeed, fluidData.friction * abs(normalVel));
+                newTangentialVel = tangentialVelVector * max(0, tangentialSpeed - frictionMagnitude) / tangentialSpeed;
+            }
+            else
+            {
+                // For very low speeds, just zero out tangential component
+                newTangentialVel = float2(0, 0);
+            }
+            
+            // Combine components
+            vel = newNormalVel + newTangentialVel;
+		}
     }
     else if (edgeType == 1) // Void edge
     {
@@ -696,6 +731,15 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
 	FluidData fluidData = FluidDataSet[fluidIndex];
     particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius, fluidIndex); // This needs the fluidData
+
+	// For powders, use a modified density calculation that prevents
+    // excessive spreading under pressure
+    if (fluidData.friction > 0) 
+    {
+        // Make powders maintain minimum density even under pressure
+        float minPowderDensity = fluidData.targetDensity * 0.8;
+        particle.density.x = max(particle.density.x, minPowderDensity);
+    }
 	
 	//particle.density.x = max(particle.density.x, 0.1); // Clamp density
     //particle.density.y = max(particle.density.y, 0.1);
@@ -853,6 +897,101 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 	Particles[id.x].velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
 }
 
+[numthreads(NumThreads,1,1)]
+void CalculatePowderForces(uint3 id : SV_DispatchThreadID) // Inter Particle Friction
+{
+    if (id.x >= numParticles) return;
+    Particle particle = Particles[id.x];
+    if (particle.type == 0) return; // Skip disabled
+    
+    int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+    FluidData fluidData = FluidDataSet[fluidIndex];
+    
+    // Skip if this isn't a powder type
+    if (fluidData.friction == 0) return;
+    
+    float2 pos = particle.predictedPosition;
+    int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+    float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
+    
+    float2 frictionForce = float2(0, 0);
+    float2 velocity = particle.velocity;
+    float relativeSpeed;
+    
+    // Find neighboring particles
+    for (int i = 0; i < 9; i++)
+    {
+        uint hash = HashCell2D(originCell + offsets2D[i]);
+        uint key = KeyFromHash(hash, numParticles);
+        uint currIndex = SpatialOffsets[key];
+        
+        while (currIndex < numParticles)
+        {
+			uint2 indexData = SpatialIndices[currIndex];
+			currIndex ++;
+			// Exit if no longer looking at correct bin
+			if (indexData[1] != key) break;
+			// Skip if hash does not match
+			if (indexData[0] != hash) continue;
+
+			uint neighbourIndex = currIndex-1;
+			// Skip if looking at self
+			if (neighbourIndex == id.x) continue;
+			Particle neighbourParticle = Particles[neighbourIndex];
+			if (neighbourParticle.type == 0) continue; // Skip disabled
+            
+            int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
+            FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
+            
+            float2 neighbourPos = neighbourParticle.predictedPosition;
+            float2 offsetToNeighbour = neighbourPos - pos;
+            float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
+            
+            if (sqrDstToNeighbour > sqrRadius) continue;
+            
+            float dst = sqrt(sqrDstToNeighbour);
+            float2 dirToNeighbour = dst > 0 ? offsetToNeighbour / dst : float2(0, 1);
+            
+            // Calculate relative motion
+            float2 relativeVelocity = neighbourParticle.velocity - velocity;
+            relativeSpeed = length(relativeVelocity);
+            
+            if (relativeSpeed > 0.001)
+            {
+                // Apply friction proportional to relative speed and inverse of distance
+                float frictionMagnitude = fluidData.friction * relativeSpeed * 
+                    (1.0 - dst/fluidData.smoothingRadius);
+                
+                // Direction is opposite to relative velocity
+                float2 frictionDir = -normalize(relativeVelocity);
+                
+                // Weight friction by kernel
+                frictionForce += frictionDir * frictionMagnitude * 
+                    ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
+            }
+        }
+    }
+    
+    // Apply friction forces
+    particle.velocity += frictionForce * deltaTime;
+    
+    // Additional powder behavior: damping vertical motion more than horizontal
+    // This creates the "pile" effect characteristic of powders
+    float damping = 0.98; // Slight natural damping for powders
+    particle.velocity *= damping;
+    
+    // Limit maximum speed to prevent explosive behavior
+    float maxSpeed = 5.0;
+    float currentSpeed = length(particle.velocity);
+    if (currentSpeed > maxSpeed)
+    {
+        particle.velocity = (particle.velocity / currentSpeed) * maxSpeed;
+    }
+    
+    // Update particle
+    Particles[id.x] = particle;
+}
+
 [numthreads(NumThreads, 1, 1)]
 void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 {
@@ -982,6 +1121,22 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
+
+    // Get fluid data for this particle
+    int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+    FluidData fluidData = FluidDataSet[fluidIndex];
+    
+    // For powders, implement rest state optimization
+    if (fluidData.friction > 0) 
+    {
+        float speedSq = dot(particle.velocity, particle.velocity);
+        if (speedSq < 0.05 && particle.density.x >= fluidData.targetDensity) 
+        {
+            // Reduce velocity further to help powders come to rest
+            particle.velocity *= 0.9;
+        }
+    }
+
     particle.position += particle.velocity * deltaTime;
     HandleCollisions(particle); // This needs the FluidDataSet
     Particles[id.x] = particle;
