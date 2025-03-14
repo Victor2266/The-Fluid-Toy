@@ -3,7 +3,7 @@ using UnityEngine;
 
  // This is the identifier (ID) for each fluid,
  // match the file name exatly (for automatic scanning).
- // Also check that the buttons set the correct ID Number. 
+ // Also check that the buttons set the correct ID Number.
  // Do NOT change the order of these as that will mess up all the IDs, add new IDs to the end
 public enum FluidType {
     Disabled,
@@ -22,6 +22,8 @@ public enum FluidType {
     CrudeOil_Fire,
     Cold_Fire,
     Snow
+    Gas,
+    Gas_Fire
 }
 
 public enum VisualStyle
@@ -56,7 +58,7 @@ public struct FluidParam
     // 11111.0f → Disabled (no entropy). Fluid temperture will not decrease on its own (without interaction with other particles)
     // 22222.0f → Scene-driven entropy (use roomTemperature from the scene). Fluid temperature will adjust towards the temperature set by the scene in simulation (roomTemperature).
     // Any other value → Fixed entropy (use entropyTarget directly). Fluid temperature will approach a fixed value in the FluidParam.
-    public float entropyTarget; 
+    public float entropyTarget;
 };
 
 // These are calculated once based on the smoothing radius of each fluid
@@ -77,18 +79,18 @@ public struct VisualParameters //This is just for the inspector
     public VisualStyle style;
     public Gradient colorGradient;
     public float visualScale;
-    
+
     // General parameters
     public float baseOpacity;
     public float noiseScale;
     public float timeScale;
-    
+
     // Glow parameters
     public float glowIntensity;
     public float glowFalloff;  // Added glow falloff parameter
     public float minPropertyValue; // For temperature mapping
     public float maxPropertyValue;
-    
+
 }
 
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]
@@ -207,7 +209,7 @@ Any other value → Fixed entropy (use entropyTarget directly). Fluid temperatur
         public float noiseScale;
         public float timeScale;
         public float glowIntensity;
-        public float glowFalloff; 
+        public float glowFalloff;
         public float minValue;
         public float maxValue;
     }
