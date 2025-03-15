@@ -1680,7 +1680,7 @@ MonoBehaviour:
   enableScrolling: 1
   enableHotkeys: 1
   manuallySelectFluidTypes: 1
-  updateFluidsEveryFrame: 1
+  updateFluidsEveryFrame: 0
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
@@ -1695,6 +1695,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
   - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
   - {fileID: 11400000, guid: b80a88647f973af4192ef836d0c4d993, type: 2}
+  - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba077, type: 2}
+  - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba088, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawners: []
   boxColliders: []
@@ -2819,6 +2821,30 @@ PrefabInstance:
       propertyPath: benchmarkObject
       value: 
       objectReference: {fileID: 738685443}
+    - target: {fileID: 5201051744251171071, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5201051744251171071, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5201051744251171071, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5201051744251171071, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5201051744251171071, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5201051744251171071, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5970111011558180506, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
