@@ -13,21 +13,21 @@ MonoBehaviour:
   m_Name: Gas_Fire
   m_EditorClassIdentifier: 
   fluidType: 17
-  gravity: 12
+  gravity: 0
   collisionDamping: 0.5
-  smoothingRadius: 0.35
-  targetDensity: 60
-  pressureMultiplier: 800
-  nearPressureMultiplier: 16
-  viscosityStrength: 0.01
-  startTemperature: 1000
-  thermalDiffusivity: 50
+  smoothingRadius: 0.2
+  targetDensity: 32
+  pressureMultiplier: 80
+  nearPressureMultiplier: 160
+  viscosityStrength: 0.1
+  startTemperature: 1960
+  thermalDiffusivity: 48
   boilState: 17
-  boilTemp: 1200
+  boilTemp: 1960
   freezeState: 0
-  freezeTemp: 600
+  freezeTemp: 1745
   friction: 0
-  entropyTarget: 300
+  entropyTarget: 1645
   visualParams:
     style: 1
     colorGradient:
@@ -60,11 +60,11 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 5
       m_NumAlphaKeys: 2
-    visualScale: 0.4
+    visualScale: 0.38
     baseOpacity: 1
-    noiseScale: 2.6
+    noiseScale: 2.4
     timeScale: 1.2
     glowIntensity: 2.5
     glowFalloff: 0.9
-    minPropertyValue: 400
-    maxPropertyValue: 1200
+    minPropertyValue: 1745
+    maxPropertyValue: 1900
