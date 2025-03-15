@@ -943,7 +943,7 @@ void CalculatePowderForces(uint3 id : SV_DispatchThreadID) // Inter Particle Fri
             int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
             FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
 
-			if (neighbourData.friction == 0) continue; // Skip friction with fluids
+			if (neighbourData.friction == 0) continue; // Skip friction calculation with fluids
             
             float2 neighbourPos = neighbourParticle.predictedPosition;
             float2 offsetToNeighbour = neighbourPos - pos;
