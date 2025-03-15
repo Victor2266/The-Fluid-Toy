@@ -13,7 +13,19 @@ public class MultiParticleDisplay2D : MonoBehaviour, IParticleDisplay
 	ComputeBuffer visualParamsBuffer;
 	public Dictionary<FluidType, Texture2D> gradientTextures;
 
+	// TODO: Refactor these three initilizers to use the IFluidSimulation to reduce repeated code
 	public void Init(Simulation2DAoSCounting sim)
+	{
+		material = new Material(shader);
+		material.SetBuffer("Particles", sim.particleBuffer);
+
+		CreateAndSetupVisualParamsBuffer(sim.fluidDataArray);
+
+		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
+		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
+	}
+
+	public void Init(Simulation2DAoSCountingUnified sim)
 	{
 		material = new Material(shader);
 		material.SetBuffer("Particles", sim.particleBuffer);
