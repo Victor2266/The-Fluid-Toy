@@ -976,9 +976,17 @@ void CalculatePowderForces(uint3 id : SV_DispatchThreadID) // Inter Particle Fri
     particle.velocity += frictionForce * deltaTime;
     
     // Additional powder behavior: damping vertical motion more than horizontal
-    // This creates the "pile" effect characteristic of powders
-    float damping = 0.98; // Slight natural damping for powders
-    particle.velocity *= damping;
+    // This creates the "pile" effect characteristic of powders (Original was 0.98 flat damping, now we use a variable damping)
+	if (abs(particle.velocity.y) < 0.1 && particle.density[0] > fluidData.targetDensity * 0.9) {
+		float damping = 0.8; // Slight natural damping for powders
+		particle.velocity *= damping;
+	}
+	else
+	{
+		float damping = 0.995; // Slight natural damping for powders
+		particle.velocity *= damping;
+	}
+
     
     // Update particle
     Particles[id.x] = particle;
@@ -1125,7 +1133,7 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
         if (speedSq < 0.005 && particle.density.x >= fluidData.targetDensity) 
         {
             // Reduce velocity further to help powders come to rest
-            particle.velocity *= 0.9;
+            particle.velocity *= 0.5;
         }
     }
 

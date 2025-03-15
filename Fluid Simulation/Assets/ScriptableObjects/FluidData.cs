@@ -23,7 +23,10 @@ public enum FluidType {
     Cold_Fire,
     Snow,
     Gas,
-    Gas_Fire
+    Gas_Fire,
+    HotStone,
+    Magma,
+    Stone
 }
 
 public enum VisualStyle
@@ -31,7 +34,8 @@ public enum VisualStyle
     VelocityBased,
     Temperature,
     Glowing,
-    Fuzzy
+    Fuzzy,
+    Temperature_NonGlowing
 }
 
 // Struct for passing to compute shader.
