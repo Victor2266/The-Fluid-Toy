@@ -942,6 +942,8 @@ void CalculatePowderForces(uint3 id : SV_DispatchThreadID) // Inter Particle Fri
             
             int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
             FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
+
+			if (neighbourData.friction == 0) continue; // Skip friction with fluids
             
             float2 neighbourPos = neighbourParticle.predictedPosition;
             float2 offsetToNeighbour = neighbourPos - pos;
@@ -983,7 +985,7 @@ void CalculatePowderForces(uint3 id : SV_DispatchThreadID) // Inter Particle Fri
 	}
 	else
 	{
-		float damping = 0.995; // Slight natural damping for powders
+		float damping = 0.99; // Slight natural damping for powders
 		particle.velocity *= damping;
 	}
 
