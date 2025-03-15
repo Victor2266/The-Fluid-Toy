@@ -8,14 +8,19 @@ public class BoundaryRestriction : MonoBehaviour
     public float minY = -10f;
     public float maxY = 10f;
 
+    private Vector3 startingPosition;
+    void Start()
+    {
+        startingPosition = transform.position;
+    }
     void Update()
     {
         // Get the current position of the game object
         Vector3 position = transform.position;
 
         // Clamp the position within the specified boundaries
-        position.x = Mathf.Clamp(position.x, minX, maxX);
-        position.y = Mathf.Clamp(position.y, minY, maxY);
+        position.x = Mathf.Clamp(position.x, startingPosition.x + minX, startingPosition.x + maxX);
+        position.y = Mathf.Clamp(position.y, startingPosition.y + minY, startingPosition.y + maxY);
 
         // Update the position of the game object
         transform.position = position;

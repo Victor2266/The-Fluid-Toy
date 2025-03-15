@@ -16,12 +16,16 @@ public class Draggable : MonoBehaviour
     public Vector3 targetScale;
     private Rigidbody2D rb2d;
 
+    [Header("Level 3 Gate Control Flags")]
     public bool isGate = false;
     public bool openDirection = false;
     public bool returnsToOriginalPosition = false;
     private Vector3 OriginalPosition;
     public float returningSmoothingSpeed = 0.005F;
-    public float maxOffset = 2.5F;
+    public float minX = -10f;
+    public float maxX = 10f;
+    public float minY = -10f;
+    public float maxY = 10f;
 
     void Start()
     {
@@ -73,26 +77,21 @@ public class Draggable : MonoBehaviour
             if(isGate){
                 Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3 dirtoMouse = mousePosition - transform.position;
-                if(openDirection == false){
-                    dirtoMouse.x = Mathf.Min(0, dirtoMouse.x);
-                    dirtoMouse.y = Mathf.Min(0, dirtoMouse.y);
-                }else{
-                    dirtoMouse.x = Mathf.Max(0, dirtoMouse.x);
-                    dirtoMouse.y = Mathf.Max(0, dirtoMouse.y);
-                }
                 Vector3 targetPosition = transform.position;
                 targetPosition.x += dirtoMouse.x * Mathf.Cos(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
                 targetPosition.y += dirtoMouse.y * Mathf.Sin(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
-                if((targetPosition - OriginalPosition).magnitude < maxOffset){
-                    if (enableSmoothing)
-                    {
-                        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
-                    }
-                    else
-                    {
-                        transform.position = targetPosition;
-                    }
+                targetPosition.x = Mathf.Clamp(targetPosition.x, OriginalPosition.x + minX, OriginalPosition.x + maxX);
+                targetPosition.y = Mathf.Clamp(targetPosition.y, OriginalPosition.y + minY, OriginalPosition.y + maxY);
+                
+                if (enableSmoothing)
+                {
+                    transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
                 }
+                else
+                {
+                    transform.position = targetPosition;
+                }
+                
                 
             }else{
                 Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
