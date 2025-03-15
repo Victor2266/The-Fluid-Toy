@@ -15,44 +15,19 @@ public class ParticleDisplay2D : MonoBehaviour, IParticleDisplay
 	Texture2D gradientTexture;
 	bool needsUpdate;
 
-
-	public void Init(Simulation2DAoS sim)
+	// This has a bunch of init overrides because the oldest versions of the simulation don't have the same particle buffer
+	public void Init(IFluidSimulation sim)
 	{
+		if (sim is Simulation2D)
+		{
+			Init((Simulation2D)sim);
+			return;
+		}
         needsUpdate = true;
         material = new Material(shader);
-		material.SetBuffer("Particles", sim.particleBuffer);
+		material.SetBuffer("Particles", sim.GetParticleBuffer());
 
-		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
-		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
-	}
-
-	public void Init(Simulation2DAoSCounting sim)
-	{
-        needsUpdate = true;
-        material = new Material(shader);
-		material.SetBuffer("Particles", sim.particleBuffer);
-
-		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
-		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
-	}
-
-	public void Init(Simulation2DAoSCountingUnified sim)
-	{
-        needsUpdate = true;
-        material = new Material(shader);
-		material.SetBuffer("Particles", sim.particleBuffer);
-
-		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
-		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
-	}
-
-	public void Init(Simulation2DAoS_CPUCSort sim)
-	{
-        needsUpdate = true;
-        material = new Material(shader);
-		material.SetBuffer("Particles", sim.particleBuffer);
-
-		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.particleBuffer.count);
+		argsBuffer = ComputeHelper.CreateArgsBuffer(mesh, sim.GetParticleBuffer().count);
 		bounds = new Bounds(Vector3.zero, Vector3.one * 10000);
 	}
 
