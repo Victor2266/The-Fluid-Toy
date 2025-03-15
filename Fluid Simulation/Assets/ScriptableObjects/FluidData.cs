@@ -24,7 +24,7 @@ public enum FluidType {
     Snow,
     Gas,
     Gas_Fire,
-    HotStone,
+    Hot_Stone,
     Magma,
     Stone
 }
