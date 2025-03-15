@@ -1130,7 +1130,7 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     if (fluidData.friction > 0) 
     {
         float speedSq = dot(particle.velocity, particle.velocity);
-        if (speedSq < 0.05 && particle.density.x >= fluidData.targetDensity) 
+        if (speedSq < 0.005 && particle.density.x >= fluidData.targetDensity) 
         {
             // Reduce velocity further to help powders come to rest
             particle.velocity *= 0.9;
