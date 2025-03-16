@@ -79,6 +79,10 @@ public interface IFluidSimulation
 
     void SetFirstSourceObject(SourceObjectInitializer source);
 
+    SourceObjectInitializer GetSourceObject(int index);
+
+    void SetSourceObject(SourceObjectInitializer sources, int index);
+
     /// <summary>
     /// Releases the compute buffers used by the simulation.
     /// </summary>

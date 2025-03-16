@@ -8,7 +8,7 @@ using Unity.Collections;
 using Unity.Jobs;
 
 
-public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
+public class Simulation2DAoS : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
@@ -254,7 +254,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
 
         // Init display
-        display.Init(this);
+        // display.Init();
 
         //initializeCPUKernelSettingsAoS();
     }
