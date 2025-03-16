@@ -4,10 +4,7 @@
 #pragma kernel ReorderArray
 #pragma kernel CopybackArray
 #pragma kernel CalculateDensities
-#pragma kernel CalculatePressureForce
-#pragma kernel CalculateViscosity
-#pragma kernel CalculatePowderForces
-#pragma kernel CalculateTemperature
+#pragma kernel UnifiedForceCalculation
 #pragma kernel UpdatePositions
 #pragma kernel UpdateStates
 
@@ -419,7 +416,6 @@ void DisableParticle(inout Particle particle){
 	particle.position.y = (RandomValue(randomState) * 2 - 1) * halfSize.y;
 	particle.predictedPosition = particle.position;
 	particle.velocity = float2(0, 0);
-	particle.density = float2(0, 0);
 
 	particle.type = 0; // Remove the particle by setting to 0 which is disabled.
 }
@@ -578,7 +574,6 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to maxMo
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
 
 	particle.velocity = float2(0, 0);
-	particle.density = float2(0, 0);
 	particle.predictedPosition = interactionInputPoint + offset;
 	particle.position = interactionInputPoint + offset;
 	int selectedFluidTypeIndex = GetFluidTypeIndexFromID(selectedFluidType);
@@ -748,375 +743,185 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
     Particles[id.x] = particle;
 }
 
+// New unified kernel that performs one neighbor search and calculates all forces
 [numthreads(NumThreads,1,1)]
-void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
-{
-	if (id.x >= numParticles) return;
-	Particle particle = Particles[id.x];
-	if (particle.type == 0) return; // Skip disabled
-
-	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
-	FluidData fluidData = FluidDataSet[fluidIndex];
-
-	float density = Particles[id.x].density[0];
-	float densityNear = Particles[id.x].density[1];
-	float pressureMultiplier = fluidData.pressureMultiplier;
-	float pressure = PressureFromDensity(density, fluidData.targetDensity, pressureMultiplier);
-	float nearPressure = NearPressureFromDensity(densityNear, fluidData.nearPressureMultiplier);
-	float2 pressureForce = 0;
-
-	float2 pos = Particles[id.x].predictedPosition;
-	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
-
-	int numNeighbours = 0;
-
-	// Neighbour search
-	for (int i = 0; i < 9; i ++)
-	{
-		uint hash = HashCell2D(originCell + offsets2D[i]);
-		uint key = KeyFromHash(hash, numParticles);
-		uint currIndex = SpatialOffsets[key];
-
-		while (currIndex < numParticles)
-		{
-			uint2 indexData = SpatialIndices[currIndex];
-			currIndex ++;
-			// Exit if no longer looking at correct bin (index, hash, key)
-			if (indexData[1] != key) break;
-			// Skip if hash does not match
-			if (indexData[0] != hash) continue;
-
-			uint neighbourIndex = currIndex-1;
-			// Skip if looking at self
-			if (neighbourIndex == id.x) continue;
-			Particle neighbourParticle = Particles[neighbourIndex];
-			if (neighbourParticle.type == 0) continue; // Skip disabled
-			
-			FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
-
-			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
-			float2 offsetToNeighbour = neighbourPos - pos;
-			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
-
-			// Skip if not within radius
-			if (sqrDstToNeighbour > sqrRadius) continue;
-			numNeighbours ++;
-
-			// Calculate pressure force
-			float dst = sqrt(sqrDstToNeighbour);
-			float2 dirToNeighbour = dst > 0 ? offsetToNeighbour / dst : float2(0, 1);
-
-			float neighbourDensity = Particles[neighbourIndex].density[0];
-			float neighbourNearDensity = Particles[neighbourIndex].density[1];
-			float neighbourPressure = PressureFromDensity(neighbourDensity, neighbourData.targetDensity, neighbourData.pressureMultiplier);
-			float neighbourNearPressure = NearPressureFromDensity(neighbourNearDensity, neighbourData.nearPressureMultiplier);
-
-			float sharedPressure = (pressure + neighbourPressure) * 0.5;
-			float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5;
-
-			// FIXME possible issues with Newton's 2nd law in the event that smoothing radius is different for 2 particles
-			// Currently using smoothing radius of viewpoint particle rather than neighbour particle
-			// If one is smaller than the other, physics will get weird.
-			
-			pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius, fluidIndex) * sharedPressure / neighbourDensity;
-			pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius, fluidIndex) * sharedNearPressure / neighbourDensity;
-		}
-	}
-
-	float2 acceleration = pressureForce / density;
-
-	if (pressureMultiplier > 512) {
-		// If there are less than X neighbours, limit the pressure force to prevent unstability due to high pressure multipliers
-		// Only do this for particles with high pressure multipliers (greater than 512)
-		if (numNeighbours < round(pressureMultiplier / 64.0) && length(acceleration) > 100) {
-			acceleration = normalize(acceleration) * 100;
-		}
-	}
-
-	Particles[id.x].velocity += acceleration * deltaTime;//
-}
-
-
-
-[numthreads(NumThreads,1,1)]
-void CalculateViscosity (uint3 id : SV_DispatchThreadID)
-{
-	if (id.x >= numParticles) return;
-	Particle particle = Particles[id.x];
-	if (particle.type == 0) return; // Skip disabled
-
-	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
-	FluidData fluidData = FluidDataSet[fluidIndex];
-
-	if (fluidData.viscosityStrength == 0) return; // Skip viscosity calculations for particles with 0 viscosity strength
-
-	if(particle.density[0] > fluidData.targetDensity * 32) return; // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
-		
-	float2 pos = Particles[id.x].predictedPosition;
-	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
-
-	float2 viscosityForce = 0;
-	float2 velocity = Particles[id.x].velocity;
-
-	for (int i = 0; i < 9; i ++)
-	{
-		uint hash = HashCell2D(originCell + offsets2D[i]);
-		uint key = KeyFromHash(hash, numParticles);
-		uint currIndex = SpatialOffsets[key];
-
-		while (currIndex < numParticles)
-		{
-			uint2 indexData = SpatialIndices[currIndex];
-			currIndex ++;
-			// Exit if no longer looking at correct bin
-			if (indexData[1] != key) break;
-			// Skip if hash does not match
-			if (indexData[0] != hash) continue;
-
-			uint neighbourIndex = currIndex-1;
-			// Skip if looking at self
-			if (neighbourIndex == id.x) continue;
-			Particle neighbourParticle = Particles[neighbourIndex];
-			if (neighbourParticle.type == 0) continue; // Skip disabled
-
-			// FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
-
-			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
-			float2 offsetToNeighbour = neighbourPos - pos;
-			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
-
-			// Skip if not within radius
-			if (sqrDstToNeighbour > sqrRadius) continue;
-
-			float dst = sqrt(sqrDstToNeighbour);
-			float2 neighbourVelocity = Particles[neighbourIndex].velocity;
-			viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex); // FIXME using viewpoint particle's smoothing radius
-		}
-
-	}
-	Particles[id.x].velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
-}
-
-[numthreads(NumThreads,1,1)]
-void CalculatePowderForces(uint3 id : SV_DispatchThreadID) // Inter Particle Friction
+void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
-    if (particle.type == 0) return; // Skip disabled
+    if (particle.type == 0) return; // Skip disabled particles
     
     int fluidIndex = GetFluidTypeIndexFromID(particle.type);
     FluidData fluidData = FluidDataSet[fluidIndex];
     
-    // Skip if this isn't a powder type
-    if (fluidData.friction == 0) return;
+    // Initialize force accumulators
+    float2 pressureForce = 0;
+    float2 viscosityForce = 0;
+    float2 frictionForce = 0;
+    float deltaTemp = 0;
     
+    // Pre-compute particle properties
     float2 pos = particle.predictedPosition;
+    float2 velocity = particle.velocity;
+    float temp = particle.temperature;
+    
+    // Calculate pressure values
+    float density = Particles[id.x].density[0];
+	float densityNear = Particles[id.x].density[1];
+    float pressure = PressureFromDensity(density, fluidData.targetDensity, fluidData.pressureMultiplier);
+    float nearPressure = NearPressureFromDensity(densityNear, fluidData.nearPressureMultiplier);
+    
+    // Set up spatial hash search
     int2 originCell = GetCell2D(pos, maxSmoothingRadius);
     float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
     
-    float2 frictionForce = float2(0, 0);
-    float2 velocity = particle.velocity;
-    float relativeSpeed;
-    
-    // Find neighboring particles
-    for (int i = 0; i < 9; i++)
-    {
+    // Perform the single neighbor search
+    int numNeighbours = 0;
+    for (int i = 0; i < 9; i++) {
         uint hash = HashCell2D(originCell + offsets2D[i]);
         uint key = KeyFromHash(hash, numParticles);
         uint currIndex = SpatialOffsets[key];
         
-        while (currIndex < numParticles)
-        {
-			uint2 indexData = SpatialIndices[currIndex];
-			currIndex ++;
-			// Exit if no longer looking at correct bin
-			if (indexData[1] != key) break;
-			// Skip if hash does not match
-			if (indexData[0] != hash) continue;
-
-			uint neighbourIndex = currIndex-1;
-			// Skip if looking at self
-			if (neighbourIndex == id.x) continue;
-			Particle neighbourParticle = Particles[neighbourIndex];
-			if (neighbourParticle.type == 0) continue; // Skip disabled
+        while (currIndex < numParticles) {
+            uint2 indexData = SpatialIndices[currIndex];
+            currIndex++;
+            
+            // Exit if no longer looking at correct bin
+            if (indexData[1] != key) break;
+            
+            // Skip if hash does not match
+            if (indexData[0] != hash) continue;
+            
+            uint neighbourIndex = currIndex-1;
+            
+            // Skip if looking at self
+            if (neighbourIndex == id.x) continue;
+            
+            Particle neighbourParticle = Particles[neighbourIndex];
+            if (neighbourParticle.type == 0) continue; // Skip disabled
             
             int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
             FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
-
-			if (neighbourData.friction == 0) continue; // Skip friction calculation with fluids
             
             float2 neighbourPos = neighbourParticle.predictedPosition;
             float2 offsetToNeighbour = neighbourPos - pos;
             float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
             
+            // Skip if not within radius
             if (sqrDstToNeighbour > sqrRadius) continue;
             
+            numNeighbours++;
             float dst = sqrt(sqrDstToNeighbour);
             float2 dirToNeighbour = dst > 0 ? offsetToNeighbour / dst : float2(0, 1);
             
-            // Calculate relative motion
-            float2 relativeVelocity = neighbourParticle.velocity - velocity;
-            relativeSpeed = length(relativeVelocity);
+            // === PRESSURE FORCE CALCULATION ===
+            float neighbourDensity = neighbourParticle.density[0];
+            float neighbourNearDensity = neighbourParticle.density[1];
+            float neighbourPressure = PressureFromDensity(neighbourDensity, neighbourData.targetDensity, neighbourData.pressureMultiplier);
+            float neighbourNearPressure = NearPressureFromDensity(neighbourNearDensity, neighbourData.nearPressureMultiplier);
             
-            if (relativeSpeed > 0.001)
-            {
-                // Apply friction proportional to relative speed and inverse of distance
-                float frictionMagnitude = fluidData.friction * relativeSpeed * 
-                    (1.0 - dst/fluidData.smoothingRadius);
-                
-                // Direction is opposite to relative velocity
-                float2 frictionDir = -normalize(relativeVelocity);
-                
-                // Weight friction by kernel
-                frictionForce += frictionDir * frictionMagnitude * 
-                    ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
+            float sharedPressure = (pressure + neighbourPressure) * 0.5;
+            float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5;
+            
+            pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius, fluidIndex) * sharedPressure / neighbourDensity;
+            pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius, fluidIndex) * sharedNearPressure / neighbourDensity;
+            
+            // === VISCOSITY FORCE CALCULATION ===
+            if (fluidData.viscosityStrength > 0 && !(density > fluidData.targetDensity * 32)) {
+                float2 neighbourVelocity = neighbourParticle.velocity;
+                viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
             }
+            
+            // === POWDER FORCES CALCULATION ===
+            if (fluidData.friction > 0 && neighbourData.friction > 0) {
+                float2 relativeVelocity = neighbourParticle.velocity - velocity;
+                float relativeSpeed = length(relativeVelocity);
+                
+                if (relativeSpeed > 0.001) {
+                    float frictionMagnitude = fluidData.friction * relativeSpeed * (1.0 - dst/fluidData.smoothingRadius);
+                    float2 frictionDir = -normalize(relativeVelocity);
+                    frictionForce += frictionDir * frictionMagnitude * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
+                }
+            }
+            
+            // === TEMPERATURE CALCULATION ===
+            float neighbourTemp = neighbourParticle.temperature;
+            deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, fluidIndex);
         }
     }
     
-    // Apply friction forces
-    particle.velocity += frictionForce * deltaTime;
+    // Apply pressure force
+    float2 pressureAcceleration = pressureForce / density;
+    if (fluidData.pressureMultiplier > 512) {
+        if (numNeighbours < round(fluidData.pressureMultiplier / 64.0) && length(pressureAcceleration) > 100) {
+            pressureAcceleration = normalize(pressureAcceleration) * 100;
+        }
+    }
+    particle.velocity += pressureAcceleration * deltaTime;
     
-    // Additional powder behavior: damping vertical motion more than horizontal
-    // This creates the "pile" effect characteristic of powders (Original was 0.98 flat damping, now we use a variable damping)
-	if (abs(particle.velocity.y) < 0.1 && particle.density[0] > fluidData.targetDensity * 0.9) {
-		float damping = 0.8; // Slight natural damping for powders
-		particle.velocity *= damping;
-	}
-	else
-	{
-		float damping = 0.99; // Slight natural damping for powders
-		particle.velocity *= damping;
-	}
-
+    // Apply viscosity force
+    if (fluidData.viscosityStrength > 0 && !(density > fluidData.targetDensity * 32)) {
+        particle.velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
+    }
     
-    // Update particle
+    // Apply powder forces
+    if (fluidData.friction > 0) {
+        particle.velocity += frictionForce * deltaTime;
+        
+        // Additional powder behavior
+        if (abs(particle.velocity.y) < 0.1 && density > fluidData.targetDensity * 0.9) {
+            particle.velocity *= 0.8;
+        } else {
+            particle.velocity *= 0.99;
+        }
+    }
+    
+    // Apply temperature changes
+    float thermalDiffusivity = density > 0 ? fluidData.thermalDiffusivity / density : fluidData.thermalDiffusivity;
+    
+    // --- THERMAL BOXES INTERACTION ---
+    for (int j = 0; j < numThermalBoxes; j++) {
+        ThermalBox tBox = ThermalBoxes[j];
+        float2 right = tBox.box.zLocal;
+        float2 up = float2(-tBox.box.zLocal.y, tBox.box.zLocal.x);
+        float2 localPos = pos - tBox.box.pos;
+        float2 rotatedPos = float2(dot(localPos, right), dot(localPos, up));
+        float2 boxHalfSize = tBox.box.size * 0.5;
+        float2 distanceFromCenter = abs(rotatedPos) - fluidData.smoothingRadius;
+        float2 penetration = distanceFromCenter - boxHalfSize;
+        
+        if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
+            continue;
+            
+        if (penetration.x <= 0 && penetration.y <= 0) {
+            deltaTemp += (tBox.temperature - temp) * tBox.conductivity;
+            continue;
+        }
+        
+        float2 closestPoint = float2(
+            clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
+            clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
+        );
+        float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
+        deltaTemp += (tBox.temperature - temp) * tBox.conductivity * minDistance / fluidData.smoothingRadius;
+    }
+    
+    // Room temperature/entropy contribution
+    switch (fluidData.entropyTarget) { 
+        case 11111.0f: // Disabled
+            break;
+        case 22222.0f: // Use scene roomTemperature
+            deltaTemp += (roomTemperature - temp) * globalEntropyRate;
+            break;
+        default: // Fixed entropy
+            deltaTemp += (fluidData.entropyTarget - temp) * globalEntropyRate;
+            break;
+    }
+    
+    particle.temperature += deltaTemp * thermalDiffusivity * deltaTime;
+    
+    // Update particle data
     Particles[id.x] = particle;
-}
-
-[numthreads(NumThreads, 1, 1)]
-void CalculateTemperature(uint3 id : SV_DispatchThreadID)
-{
-	if (id.x >= numParticles) return;
-	Particle particle = Particles[id.x];
-	if (particle.type == 0) return; // Skip disabled
-
-	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
-	FluidData fluidData = FluidDataSet[fluidIndex];
-
-	float density = Particles[id.x].density[0];
-	float2 pos = Particles[id.x].predictedPosition;
-	int2 originCell = GetCell2D(pos, maxSmoothingRadius);
-	float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
-	
-	float1 temp = Particles[id.x].temperature;
-	float1 thermalDiffusivity = density > 0 ? fluidData.thermalDiffusivity / (density) : fluidData.thermalDiffusivity;
-	float1 deltaTemp = 0;
-
-	// Neighbour particle interactions
-	for (int i = 0; i < 9; i++)
-	{
-		uint hash = HashCell2D(originCell + offsets2D[i]);
-		uint key = KeyFromHash(hash, numParticles);
-		uint currIndex = SpatialOffsets[key];
-
-		while (currIndex < numParticles)
-		{
-			uint2 indexData = SpatialIndices[currIndex];
-			currIndex++;
-			// Exit if no longer looking at correct bin
-			if (indexData[1] != key) break;
-			// Skip if hash does not match
-			if (indexData[0] != hash) continue;
-
-			uint neighbourIndex = currIndex - 1;
-			// Skip if looking at self
-			if (neighbourIndex == id.x) continue;
-			Particle neighbourParticle = Particles[neighbourIndex];
-			if (neighbourParticle.type == 0) continue; // Skip disabled
-
-			// FluidData neighbourData = FluidDataSet[GetFluidTypeIndexFromID(neighbourParticle.type)];
-
-			float2 neighbourPos = Particles[neighbourIndex].predictedPosition;
-			float2 offsetToNeighbour = neighbourPos - pos;
-			float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
-
-			// Skip if not within radius
-			if (sqrDstToNeighbour > sqrRadius) continue;
-
-			float dst = sqrt(sqrDstToNeighbour);
-			float1 neighbourTemp = Particles[neighbourIndex].temperature;
-
-			deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, fluidIndex); // FIXME using viewpoint particle's smoothing radius
-		}
-
-	}
-
-	// Calculate thermal contribution of any nearby tBoxes
-	for (int j = 0; j < numThermalBoxes; j++)
-	{
-		ThermalBox tBox = ThermalBoxes[j];
-
-		// Create rotation matrix for local space transformation
-		float2 right = tBox.box.zLocal;
-		float2 up = float2(-tBox.box.zLocal.y, tBox.box.zLocal.x); // Precompute once
-
-		// Transform position to box's local space
-		float2 localPos = pos - tBox.box.pos;
-		// Transform to box's local space
-		float2 rotatedPos = float2(
-			dot(localPos, right),
-			dot(localPos, up)
-			);
-
-		// Calculate distance to box edges in local space
-		float2 boxHalfSize = tBox.box.size * 0.5;
-		float2 distanceFromCenter = abs(rotatedPos) - fluidData.smoothingRadius;
-
-		// Check if within range
-		float2 penetration = distanceFromCenter - boxHalfSize;
-
-		// Skip calculations if no collision with this box
-		if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
-			continue;
-
-		// If the particle is fully inside the box then use full Temperature Kernel Value, no need to calculate distance
-		if (penetration.x <= 0 && penetration.y <= 0) {
-			deltaTemp += (tBox.temperature - temp) * tBox.conductivity;
-			continue;
-		}
-
-		// If the particle is on the outside of the box it will calculate a fall off distance for the delta temp
-		float2 closestPoint = float2(
-			clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
-			clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
-			);
-		float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
-		
-		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * minDistance / fluidData.smoothingRadius;  // This one is a linear relationship 0 to 1
-
-		// This TemperatureKernel leads to a slightly strange behavior where the outside of a thermal box will heat up faster than the inside
-		// This is because the TemperatureKernel returns a number between 0 and 10.39 for a smoothing radius of 0.35 (it's not 0 to 1)
-		// So for particles approaching the surface of the thermal box this acts as a conductivity amplifier 
-		//deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
-	}
-
-	// Add entropy contribution
-	switch (fluidData.entropyTarget)
-	{ 
-		case 11111.0f: // Disabled
-			break;
-		case 22222.0f: // Use scene roomTemperature
-			deltaTemp += (roomTemperature - temp) * globalEntropyRate;
-			break;
-		default: // Fixed entropy
-			deltaTemp += (fluidData.entropyTarget - temp) * globalEntropyRate;
-			break;
-	}
-
-	Particles[id.x].temperature += deltaTemp * thermalDiffusivity * deltaTime;
 }
 
 [numthreads(NumThreads,1,1)]
