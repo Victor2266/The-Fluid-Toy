@@ -653,7 +653,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         edgeType = (EdgeType)edgeTypeIndex;
     }
-
+    public void setGravityMode(int gravityModeIndex)
+    {
+        return; // Not implemented
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         selectedFluid = fluidTypeIndex;

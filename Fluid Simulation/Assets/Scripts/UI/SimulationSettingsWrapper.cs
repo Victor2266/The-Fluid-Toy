@@ -10,6 +10,7 @@ public class SimulationSettingsWrapper : MonoBehaviour
 
     [Header("Simulation Settings")]
     [SerializeField] private TMP_Dropdown edgeTypeDropdown;
+    [SerializeField] private TMP_Dropdown gravityModeDropdown;
     [SerializeField] private TMP_Dropdown fixedTimestepDropdown;
 
     [Header("UI Settings")]
@@ -49,6 +50,9 @@ public class SimulationSettingsWrapper : MonoBehaviour
         // Edge Type
         edgeTypeDropdown.onValueChanged.AddListener(setEdgeType);
 
+        // Gravity Mode
+        gravityModeDropdown.onValueChanged.AddListener(setGravityMode);
+
         // Fixed Timestep
         fixedTimestepDropdown.onValueChanged.AddListener(setTimestampMode);
 
@@ -68,6 +72,11 @@ public class SimulationSettingsWrapper : MonoBehaviour
     public void setEdgeType(int edgeTypeIndex)
     {
         simulation2DScript.setEdgeType(edgeTypeIndex);
+    }
+
+    public void setGravityMode(int gravityModeIndex)
+    {
+        simulation2DScript.setGravityMode(gravityModeIndex);
     }
 
     public void setHideFPS(int hideFPSIndex)

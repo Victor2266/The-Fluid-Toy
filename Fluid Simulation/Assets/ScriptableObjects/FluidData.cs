@@ -3,7 +3,7 @@ using UnityEngine;
 
  // This is the identifier (ID) for each fluid,
  // match the file name exatly (for automatic scanning).
- // Also check that the buttons set the correct ID Number. 
+ // Also check that the buttons set the correct ID Number.
  // Do NOT change the order of these as that will mess up all the IDs, add new IDs to the end
 public enum FluidType {
     Disabled,
@@ -20,7 +20,13 @@ public enum FluidType {
     Smoke,
     Crude_Oil,
     CrudeOil_Fire,
-    Cold_Fire
+    Cold_Fire,
+    Snow,
+    Gas,
+    Gas_Fire,
+    Hot_Stone,
+    Magma,
+    Stone
 }
 
 public enum VisualStyle
@@ -28,15 +34,8 @@ public enum VisualStyle
     VelocityBased,
     Temperature,
     Glowing,
-    Fuzzy
-}
-
-// Rate is directly proportional to thermalDiffusivity * global var. set by scene
-public enum Entropy
-{
-    Disabled, // Fluid temperture will not decrease on its own (without interaction with other particles)
-    Scene,    // Fluid temperature will adjust towards the temperature set by the scene in simulation (roomTemperature)
-    Fixed     // Fluid temperature will approach a fixed value in the FluidParam
+    Fuzzy,
+    Temperature_NonGlowing
 }
 
 // Struct for passing to compute shader.
@@ -58,8 +57,12 @@ public struct FluidParam
     public float boilTemp;
     public FluidType freezeState;
     public float freezeTemp;
-    public Entropy entropy;
-    public float entropyTarget; // You could remove this and pack the info into the entropy enum reserve values (0-8) for fixed behaviors and use the other values for entropyTargets
+    public float friction;
+    // Rate is directly proportional to thermalDiffusivity * global var. set by scene
+    // 11111.0f → Disabled (no entropy). Fluid temperture will not decrease on its own (without interaction with other particles)
+    // 22222.0f → Scene-driven entropy (use roomTemperature from the scene). Fluid temperature will adjust towards the temperature set by the scene in simulation (roomTemperature).
+    // Any other value → Fixed entropy (use entropyTarget directly). Fluid temperature will approach a fixed value in the FluidParam.
+    public float entropyTarget;
 };
 
 // These are calculated once based on the smoothing radius of each fluid
@@ -80,18 +83,18 @@ public struct VisualParameters //This is just for the inspector
     public VisualStyle style;
     public Gradient colorGradient;
     public float visualScale;
-    
+
     // General parameters
     public float baseOpacity;
     public float noiseScale;
     public float timeScale;
-    
+
     // Glow parameters
     public float glowIntensity;
     public float glowFalloff;  // Added glow falloff parameter
     public float minPropertyValue; // For temperature mapping
     public float maxPropertyValue;
-    
+
 }
 
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]
@@ -140,9 +143,12 @@ public class FluidData : ScriptableObject
     public FluidType freezeState = FluidType.Water;
     [Tooltip("Temperature min before state change")]
     public float freezeTemp = 0f;
-    [Tooltip("Entropy; how temperature will change without any interaction")]
-    public Entropy entropy = Entropy.Disabled;
-    [Tooltip("Entropy target, target temperature for entropy (if fixed)")]
+    [Tooltip("Friction coefficient, non-zero values acts like powder")]
+    public float friction = 0f;
+    [Tooltip(@"Rate is directly proportional to thermalDiffusivity * global var. set by scene
+11111.0f → Disabled (no entropy). Fluid temperture will not decrease on its own (without interaction with other particles)
+22222.0f → Scene-driven entropy (use roomTemperature from the scene). Fluid temperature will adjust towards the temperature set by the scene in simulation (roomTemperature).
+Any other value → Fixed entropy (use entropyTarget directly). Fluid temperature will approach a fixed value in the FluidParam.")]
     public float entropyTarget = 25f;
 
     [Header("Visual Properties")]
@@ -177,7 +183,7 @@ public class FluidData : ScriptableObject
             boilTemp = boilTemp,
             freezeState = freezeState,
             freezeTemp = freezeTemp,
-            entropy = entropy,
+            friction = friction,
             entropyTarget = entropyTarget
         };
         return fluidParams;
@@ -207,7 +213,7 @@ public class FluidData : ScriptableObject
         public float noiseScale;
         public float timeScale;
         public float glowIntensity;
-        public float glowFalloff; 
+        public float glowFalloff;
         public float minValue;
         public float maxValue;
     }

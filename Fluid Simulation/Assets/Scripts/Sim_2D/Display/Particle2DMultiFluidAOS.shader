@@ -153,6 +153,8 @@ Shader "Instanced/MultiFluidParticle2D"
                     return saturate((particle.temperature - visualData.minValue) / (visualData.maxValue - visualData.minValue));
                 case 3: // Fuzzy
                     return saturate(length(particle.velocity) / visualData.maxValue);
+                case 4: // Temperature_NonGlowing
+                    return saturate((particle.temperature - visualData.minValue) / (visualData.maxValue - visualData.minValue));
                 default:
                     return 0;
             }
