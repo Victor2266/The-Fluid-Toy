@@ -916,112 +916,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &849118679
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 849118681}
-  - component: {fileID: 849118680}
-  m_Layer: 0
-  m_Name: Water Spawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &849118680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 849118679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0, y: 0}
-  spawnSize: {x: 13, y: 6}
-  jitterStr: 0.025
-  temperature: 22
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
---- !u!4 &849118681
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 849118679}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &929574465
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 929574467}
-  - component: {fileID: 929574466}
-  m_Layer: 0
-  m_Name: Steam Spawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &929574466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 929574465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 2
-  particleCount: 5000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 10, y: 0}
-  spawnSize: {x: 5, y: 5}
-  jitterStr: 0.025
-  temperature: 200
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
---- !u!4 &929574467
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 929574465}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,9 +1457,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4232784153801f48af4e1625a986622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fluidSensors: []
   checkInterval: 0.1
   scanForSensorsOnStart: 1
+  fluidSensors: []
 --- !u!4 &1200216425
 Transform:
   m_ObjectHideFlags: 0
@@ -2148,7 +2042,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isManagedSensor: 0
-  isRequestMade: 0
   temperatureThreshold: 100
   detectType: 1
   checkInterval: 0.1
@@ -2203,7 +2096,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isManagedSensor: 0
-  isRequestMade: 0
   temperatureThreshold: 100
   detectType: 1
   checkInterval: 0.1
@@ -3670,8 +3562,6 @@ SceneRoots:
   - {fileID: 1497315419}
   - {fileID: 1526596367}
   - {fileID: 638810972}
-  - {fileID: 849118681}
-  - {fileID: 929574467}
   - {fileID: 1200216425}
   - {fileID: 1506282430}
   - {fileID: 1498428952}
