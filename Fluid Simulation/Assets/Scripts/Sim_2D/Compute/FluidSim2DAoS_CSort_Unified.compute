@@ -230,16 +230,12 @@ float2 CalculateDensity(float2 pos, float smoothingRadius, int fluidIndex)
 		{
 			uint2 indexData = SpatialIndices[currIndex];
 			currIndex++;
-			// Exit if no longer looking at correct bin
-			if (indexData[1] != key) break;
-			// Skip if hash does not match
-			if (indexData[0] != hash) continue;
+			if (indexData[1] != key) break; // Exit if no longer looking at correct bin
+			if (indexData[0] != hash) continue; // Skip if hash does not match
 
 			uint neighbourIndex = currIndex-1;
 			Particle neighbourParticle = Particles[neighbourIndex];
 			int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
-
-			// FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
 
 			if (neighbourParticle.type == 0) continue; // Skip disabled particles
 
@@ -786,35 +782,34 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             uint2 indexData = SpatialIndices[currIndex];
             currIndex++;
             
-            // Exit if no longer looking at correct bin
-            if (indexData[1] != key) break;
-            
-            // Skip if hash does not match
-            if (indexData[0] != hash) continue;
+            if (indexData[1] != key) break; // Exit if no longer looking at correct bin
+            if (indexData[0] != hash) continue; // Skip if hash does not match
             
             uint neighbourIndex = currIndex-1;
             
-            // Skip if looking at self
-            if (neighbourIndex == id.x) continue;
+            if (neighbourIndex == id.x) continue; // Skip if looking at self
             
             Particle neighbourParticle = Particles[neighbourIndex];
-            if (neighbourParticle.type == 0) continue; // Skip disabled
+            if (neighbourParticle.type == 0) continue; // Skip disabled particles
             
+            // Get neighbour's FluidParam struct
             int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
             FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
             
+            // Sqr. distance calc.
             float2 neighbourPos = neighbourParticle.predictedPosition;
             float2 offsetToNeighbour = neighbourPos - pos;
             float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
             
-            // Skip if not within radius
-            if (sqrDstToNeighbour > sqrRadius) continue;
+            if (sqrDstToNeighbour > sqrRadius) continue; // Skip if not within radius
             
-            numNeighbours++;
-            float dst = sqrt(sqrDstToNeighbour);
+            numNeighbours++; // Track # of neighbours
+            float dst = sqrt(sqrDstToNeighbour); // Eulerian distance
             float2 dirToNeighbour = dst > 0 ? offsetToNeighbour / dst : float2(0, 1);
             
             // === PRESSURE FORCE CALCULATION ===
+            // Effectively the partial derivative w/r to density of the average of pressure between this particle and its neighbour
+            // We use near pressure to enforce incompressibility (prevent particle overlap) which can kill performance and lead to poor stability
             float neighbourDensity = neighbourParticle.density[0];
             float neighbourNearDensity = neighbourParticle.density[1];
             float neighbourPressure = PressureFromDensity(neighbourDensity, neighbourData.targetDensity, neighbourData.pressureMultiplier);
@@ -823,16 +818,20 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             float sharedPressure = (pressure + neighbourPressure) * 0.5;
             float sharedNearPressure = (nearPressure + neighbourNearPressure) * 0.5;
             
+            // Using the smoothing radius of the viewpoint particle rather than neighbour particle here.
+            // It may be better to use a consistent smoothing radius (either largest or smallest always), else Newton's 2nd law may be violated
             pressureForce += dirToNeighbour * DensityDerivative(dst, fluidData.smoothingRadius, fluidIndex) * sharedPressure / neighbourDensity;
             pressureForce += dirToNeighbour * NearDensityDerivative(dst, fluidData.smoothingRadius, fluidIndex) * sharedNearPressure / neighbourDensity;
             
             // === VISCOSITY FORCE CALCULATION ===
+            // Equalizes particle velocities between adjacent particles
             if (fluidData.viscosityStrength > 0 && !(density > fluidData.targetDensity * 32)) {
                 float2 neighbourVelocity = neighbourParticle.velocity;
                 viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
             }
             
             // === POWDER FORCES CALCULATION ===
+            // Reduces relative velocity by friction coeff.
             if (fluidData.friction > 0 && neighbourData.friction > 0) {
                 float2 relativeVelocity = neighbourParticle.velocity - velocity;
                 float relativeSpeed = length(relativeVelocity);
@@ -845,6 +844,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             }
             
             // === TEMPERATURE CALCULATION ===
+            // Equalizes particle temperatures between adjacent particles
             float neighbourTemp = neighbourParticle.temperature;
             deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, fluidIndex);
         }
@@ -891,13 +891,14 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
         float2 penetration = distanceFromCenter - boxHalfSize;
         
         if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
-            continue;
-            
+            continue; // Skip if outside of particle smoothing radius (no contact)
+        
         if (penetration.x <= 0 && penetration.y <= 0) {
             deltaTemp += (tBox.temperature - temp) * tBox.conductivity;
-            continue;
+            continue; // If particle fully within box, use full temperature kernel
         }
         
+        // Else, calculate temperature change based on smoothing radius distance to closest point of box
         float2 closestPoint = float2(
             clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
             clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
@@ -918,6 +919,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             break;
     }
     
+    // Final temp contribution summation
     particle.temperature += deltaTemp * thermalDiffusivity * deltaTime;
     
     // Update particle data
