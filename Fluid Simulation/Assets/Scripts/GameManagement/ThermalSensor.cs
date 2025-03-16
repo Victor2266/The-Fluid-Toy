@@ -1,27 +1,31 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class FluidDetector : FluidSensor
-// This only works for the regular simulation and not the AoS version right now because it accesses the buffers like positionBuffer,
-// which we replaced with the particle struct buffer
+public class ThermalSensor : FluidSensor
 {
     [Header("Detection Settings")]
-    [Tooltip("The density threshold above which fluid is considered present")]
-    public float densityThreshold = 0.5f;
-    
-    [Tooltip("How often to check for fluid presence (in seconds; overwritten by any Sensor Managers)")]
+    [Tooltip("Temperature Threshold")]
+    public float temperatureThreshold = 100f;
+
+    [Tooltip("Detection Type")]
+    public DetectionType detectType = DetectionType.GreaterThan;
+
+    [Tooltip("How often to check temperature (overwritten by any Sensor Managers)")]
     public float checkInterval = 0.1f;
-    
+
     [Tooltip("Size of the detection area")]
     public float detectionRadius = 2f;
+
+    [Tooltip("Percent Margin for Threshold (0.1 = 10%)")]
+    public float errorMargin = 0.01f;
 
     [Header("Debug")]
     public bool showDebugGizmos = true;
     public bool showDebugLogs = true;
-    public bool showDensityValue = true;
-    [SerializeField] private Vector2 densityDisplayOffset = new Vector2(0, 30f);
-    public bool isFluidPresent { get; private set; }
-    public float currentDensity { get; private set; }
+    public bool showTempValue = true;
+    [SerializeField] private Vector2 displayOffset = new Vector2(0, 30f);
+    public bool metThreshold { get; set; }
+    public float currentTemperature { get; set; }
 
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
@@ -63,7 +67,6 @@ public class FluidDetector : FluidSensor
         if (request.hasError)
         {
             Debug.Log("GPU ASync Readback Error in Fluid Simulation Readback");
-            isRequestMade = false;
             return;
         }
         if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid() || this == null)
@@ -80,14 +83,16 @@ public class FluidDetector : FluidSensor
     public override void CheckSensor(Particle[] particles)
     {
         Vector2 checkPosition = transform.position;
-        float totalDensity = 0f;
+        float totalTemp = 0f;
+        int particleCount = 0;
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
 
         foreach (Particle particle in particles)
         {
-            if(particle.type == FluidType.Disabled){
+            if (particle.type == FluidType.Disabled)
+            {
                 continue;
             }
             Vector2 particlePos = particle.position;
@@ -96,29 +101,55 @@ public class FluidDetector : FluidSensor
 
             if (sqrDstToParticle < sqrRadius)
             {
-                float dst = Mathf.Sqrt(sqrDstToParticle);
-                // Using a simplified density kernel for detection
-                totalDensity += (1 - (dst / detectionRadius)) * (1 - (dst / detectionRadius));
+                totalTemp += particle.temperature;
+                particleCount++;
             }
         }
 
         // Update fluid presence flag
-        bool previousState = isFluidPresent;
-        currentDensity = totalDensity;
-        isFluidPresent = totalDensity > densityThreshold;
+        bool previousState = metThreshold;
+        currentTemperature = particleCount == 0 ? 0 : totalTemp/particleCount;
+        metThreshold = doCompare(currentTemperature);
 
         // Notify if state changed
-        if (previousState != isFluidPresent)
+        if (previousState != metThreshold)
         {
-            OnFluidPresenceChanged();
+            OnTempThresholdMet();
         }
+
+        if (showDebugLogs)
+            Debug.Log($"Avg Tmp is: {currentTemperature} at {gameObject.name}");
     }
 
-    void OnFluidPresenceChanged()
+    public bool doCompare(float currentValue)
+    {
+        bool toReturn;
+        switch (detectType)
+        {
+            case DetectionType.GreaterThan:
+                toReturn = currentValue > (temperatureThreshold * (1 + errorMargin));
+                break;
+            case DetectionType.LessThan:
+                toReturn = currentValue < (temperatureThreshold * (1 + errorMargin));
+                break;
+            case DetectionType.Equals:
+                toReturn = Mathf.Abs(currentValue - temperatureThreshold) < (errorMargin * temperatureThreshold);
+                break;
+            case DetectionType.Disabled:
+                toReturn = false;
+                break;
+            default:
+                toReturn = false;
+                break;
+        }
+        return toReturn;
+    }
+
+    public void OnTempThresholdMet()
     {
         // You can add custom events or UnityEvents here to notify other scripts
         if (showDebugLogs)
-            Debug.Log($"Fluid presence changed to: {isFluidPresent} at {gameObject.name}");
+            Debug.Log($"Temperature threshold condition changed to: {metThreshold} at {gameObject.name}");
     }
 
     void OnDrawGizmos()
@@ -126,25 +157,25 @@ public class FluidDetector : FluidSensor
         if (!showDebugGizmos) return;
 
         // Draw detection radius
-        Gizmos.color = isFluidPresent ? Color.blue : Color.white;
+        Gizmos.color = metThreshold ? Color.blue : Color.white;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 
     void OnGUI()
     {
-        if (!showDensityValue) return;
+        if (!showTempValue) return;
 
         // Convert world position to screen position
         Vector3 worldPosition = transform.position;
         Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPosition);
-        
+
         // Adjust for GUI coordinate system and offset
         screenPos.y = Screen.height - screenPos.y; // Flip Y coordinate
-        Vector2 displayPos = new Vector2(screenPos.x + densityDisplayOffset.x, screenPos.y + densityDisplayOffset.y);
+        Vector2 displayPos = new Vector2(screenPos.x + displayOffset.x, screenPos.y + displayOffset.y);
 
         // Display the density value
-        string densityText = $"Density: {currentDensity:F2}";
-        GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 100, 20), densityText);
+        string text = $"Temperature: {currentTemperature:F2}";
+        GUI.Label(new Rect(displayPos.x - 50, displayPos.y, 150, 20), text);
     }
 
     void OnDestroy()
