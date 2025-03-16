@@ -771,7 +771,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     int2 originCell = GetCell2D(pos, maxSmoothingRadius);
     float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
     
-    // Perform the single neighbor search
+    // Perform the nearest neighbor search
     int numNeighbours = 0;
     for (int i = 0; i < 9; i++) {
         uint hash = HashCell2D(originCell + offsets2D[i]);
@@ -825,6 +825,8 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             
             // === VISCOSITY FORCE CALCULATION ===
             // Equalizes particle velocities between adjacent particles
+            // Skips viscosity calculations for particles with 0 viscosity strength
+            // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
             if (fluidData.viscosityStrength > 0 && !(density > fluidData.targetDensity * 32)) {
                 float2 neighbourVelocity = neighbourParticle.velocity;
                 viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
@@ -832,13 +834,18 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             
             // === POWDER FORCES CALCULATION ===
             // Reduces relative velocity by friction coeff.
+            // Skip if this particle or neighbour particle isn't a powder type
             if (fluidData.friction > 0 && neighbourData.friction > 0) {
+                // Calculate relative motion
                 float2 relativeVelocity = neighbourParticle.velocity - velocity;
                 float relativeSpeed = length(relativeVelocity);
                 
                 if (relativeSpeed > 0.001) {
+                    // Apply friction proportional to relative speed and inverse of distance
                     float frictionMagnitude = fluidData.friction * relativeSpeed * (1.0 - dst/fluidData.smoothingRadius);
+                    // Direction is opposite to relative velocity
                     float2 frictionDir = -normalize(relativeVelocity);
+                    // Weight friction by kernel
                     frictionForce += frictionDir * frictionMagnitude * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
                 }
             }
@@ -850,55 +857,65 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
         }
     }
     
-    // Apply pressure force
+    // [Apply pressure force]
     float2 pressureAcceleration = pressureForce / density;
     if (fluidData.pressureMultiplier > 512) {
+        // If there are less than X neighbours, limit the pressure force to prevent instability due to high pressure multipliers
+		// Only do this for particles with high pressure multipliers (greater than 512)
         if (numNeighbours < round(fluidData.pressureMultiplier / 64.0) && length(pressureAcceleration) > 100) {
             pressureAcceleration = normalize(pressureAcceleration) * 100;
         }
     }
     particle.velocity += pressureAcceleration * deltaTime;
     
-    // Apply viscosity force
+    // [Apply viscosity force]
     if (fluidData.viscosityStrength > 0 && !(density > fluidData.targetDensity * 32)) {
         particle.velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
     }
     
-    // Apply powder forces
+    // [Apply powder forces]
+    // Skip if this particle isn't a powder type
     if (fluidData.friction > 0) {
         particle.velocity += frictionForce * deltaTime;
         
         // Additional powder behavior
+        // This creates the "pile" effect characteristic of powders (Original was 0.98 flat damping, now we use a variable damping)
         if (abs(particle.velocity.y) < 0.1 && density > fluidData.targetDensity * 0.9) {
+            // This value is for powders at rest and 90% of target density
             particle.velocity *= 0.8;
         } else {
             particle.velocity *= 0.99;
         }
     }
     
-    // Apply temperature changes
+    // [Apply temperature changes]
     float thermalDiffusivity = density > 0 ? fluidData.thermalDiffusivity / density : fluidData.thermalDiffusivity;
     
     // --- THERMAL BOXES INTERACTION ---
     for (int j = 0; j < numThermalBoxes; j++) {
         ThermalBox tBox = ThermalBoxes[j];
+        // Create rotation matrix for local space transformation
         float2 right = tBox.box.zLocal;
         float2 up = float2(-tBox.box.zLocal.y, tBox.box.zLocal.x);
+        // Transform position to box's local space
         float2 localPos = pos - tBox.box.pos;
+        // Transform to box's local space
         float2 rotatedPos = float2(dot(localPos, right), dot(localPos, up));
+        // Calculate distance to box edges in local space
         float2 boxHalfSize = tBox.box.size * 0.5;
         float2 distanceFromCenter = abs(rotatedPos) - fluidData.smoothingRadius;
+        // Check if within range
         float2 penetration = distanceFromCenter - boxHalfSize;
         
         if (penetration.x >= fluidData.smoothingRadius || penetration.y >= fluidData.smoothingRadius)
-            continue; // Skip if outside of particle smoothing radius (no contact)
+            continue; // Skip if no collision with this box (outside of particle smoothing radius)
         
         if (penetration.x <= 0 && penetration.y <= 0) {
             deltaTemp += (tBox.temperature - temp) * tBox.conductivity;
-            continue; // If particle fully within box, use full temperature kernel
+            continue; // If particle fully within box, use full temperature kernel, no need to calculate distance
         }
         
-        // Else, calculate temperature change based on smoothing radius distance to closest point of box
+        // Else, calculate temperature change based on smoothing radius fall off distance to closest point of box
         float2 closestPoint = float2(
             clamp(rotatedPos.x, -boxHalfSize.x, boxHalfSize.x),
             clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
