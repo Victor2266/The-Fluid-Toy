@@ -29,6 +29,7 @@ public class SensorManager : MonoBehaviour
             enabled = false;
             return;
         }
+        // Update sensor list
         if (scanForSensorsOnStart)
         {
             fluidSensors = FindObjectsByType<FluidSensor>(FindObjectsSortMode.None);
@@ -43,19 +44,6 @@ public class SensorManager : MonoBehaviour
     {
         if (Time.time >= nextCheckTime)
         {
-            // Update sensor list
-            if (scanForSensorsOnStart)
-            {
-                if (FindObjectsByType<FluidSensor>(FindObjectsSortMode.None).Length != fluidSensors.Length)
-                {
-                    fluidSensors = FindObjectsByType<FluidSensor>(FindObjectsSortMode.None);
-                    foreach (FluidSensor fSense in fluidSensors)
-                    {
-                        fSense.isManagedSensor = true;
-                    }
-                }
-            }
-
             //sends async data request to GPU after each check time.
             if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid())
                 return;
