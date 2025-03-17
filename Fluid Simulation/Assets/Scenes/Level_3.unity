@@ -4219,7 +4219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fluidDetector: {fileID: 1834107471}
+  fluidDetector: {fileID: 1438465182}
   sourceIndex: 0
   activationValue: 0
   activationTime: 0
@@ -4237,6 +4237,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1599078525}
+  - {fileID: 1438465183}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &830526357 stripped
@@ -8392,7 +8393,6 @@ MonoBehaviour:
   - {fileID: 1540588521}
   boxColliders:
   - {fileID: 391855510}
-  - {fileID: 1528639264}
   - {fileID: 888681458}
   - {fileID: 737689014}
   - {fileID: 1221151976}
@@ -8448,7 +8448,8 @@ MonoBehaviour:
     velo: {x: 0, y: 0}
     spawnRate: 0
     fluidType: 11
-  drainObjects: []
+  drainObjects:
+  - {fileID: 1528639264}
   thermalBoxes:
   - transform: {fileID: 1187910111}
     temperature: 22
@@ -9220,6 +9221,58 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6e30824d9298e44f8025dd6c0532f66, type: 3}
+--- !u!1 &1438465181
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1438465183}
+  - component: {fileID: 1438465182}
+  m_Layer: 0
+  m_Name: Fluid Detector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1438465182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438465181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6dba1f9b3821b84f94671ee52db88ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isManagedSensor: 0
+  densityThreshold: 100
+  checkInterval: 0.1
+  detectionRadius: 2.06
+  showDebugGizmos: 1
+  showDebugLogs: 0
+  showDensityValue: 1
+  densityDisplayOffset: {x: 0, y: -120}
+--- !u!4 &1438465183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438465181}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 19.79, y: 7.6, z: 1.5613014}
+  m_LocalScale: {x: 0.75421, y: 3.49034, z: 0.70277}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 818200270}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1454862776
 GameObject:
   m_ObjectHideFlags: 0
