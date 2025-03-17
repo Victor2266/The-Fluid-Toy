@@ -36,6 +36,7 @@ public class Level3ButtonScript : MonoBehaviour
 
     void OnMouseOver()
     {
+        //add some animation for when hovering over
         if (Input.GetMouseButtonDown(0)){
             Debug.Log("Pressed");
             activateSource();
