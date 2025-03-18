@@ -75,6 +75,10 @@ public class SensorManager : MonoBehaviour
         {
             if (fSense.isManagedSensor)
             {
+                if (fSense == null)
+                {
+                    continue;
+                }
                 fSense.CheckSensor(particles);
             }
         }
