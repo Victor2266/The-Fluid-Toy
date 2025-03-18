@@ -1247,4 +1247,12 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
         return sourceObjects[index];
     }
 
+    public ThermalBoxInitializer GetThermalBox(int index){
+        return thermalBoxes[index];
+    }
+
+    public void SetThermalBox(ThermalBoxInitializer thermalBox, int index){
+        thermalBoxes[index] = thermalBox;
+    }
+
 }

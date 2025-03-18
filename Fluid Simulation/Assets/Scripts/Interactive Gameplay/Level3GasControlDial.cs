@@ -29,7 +29,7 @@ public class Level3GasControlDial : MonoBehaviour
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if(pressed){
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -42,7 +42,6 @@ public class Level3GasControlDial : MonoBehaviour
                     angleToMouse = minAngle;
                 }
             }
-            Debug.Log(angleToMouse);
             angleToMouse = Mathf.Clamp(angleToMouse, minAngle, maxAngle);
             transform.eulerAngles = new Vector3(0, 0, angleToMouse);
             currVelo = Remap(angleToMouse, minAngle, maxAngle, minVelo, maxVelo);

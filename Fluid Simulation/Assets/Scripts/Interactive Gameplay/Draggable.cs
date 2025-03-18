@@ -18,7 +18,6 @@ public class Draggable : MonoBehaviour
 
     [Header("Level 3 Gate Control Flags")]
     public bool isGate = false;
-    public bool openDirection = false;
     public bool returnsToOriginalPosition = false;
     private Vector3 OriginalPosition;
     public float returningSmoothingSpeed = 0.005F;

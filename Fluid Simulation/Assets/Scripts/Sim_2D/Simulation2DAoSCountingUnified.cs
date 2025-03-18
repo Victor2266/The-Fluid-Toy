@@ -1048,4 +1048,11 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     public SourceObjectInitializer GetSourceObject(int index){
         return sourceObjects[index];
     }
+    public ThermalBoxInitializer GetThermalBox(int index){
+        return thermalBoxes[index];
+    }
+
+    public void SetThermalBox(ThermalBoxInitializer thermalBox, int index){
+        thermalBoxes[index] = thermalBox;
+    }
 }

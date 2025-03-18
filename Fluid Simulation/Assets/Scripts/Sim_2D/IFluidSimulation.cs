@@ -81,7 +81,11 @@ public interface IFluidSimulation
 
     SourceObjectInitializer GetSourceObject(int index);
 
-    void SetSourceObject(SourceObjectInitializer sources, int index);
+    void SetSourceObject(SourceObjectInitializer source, int index);
+
+    ThermalBoxInitializer GetThermalBox(int index);
+
+    void SetThermalBox(ThermalBoxInitializer thermalBox, int index);
 
     /// <summary>
     /// Releases the compute buffers used by the simulation.
