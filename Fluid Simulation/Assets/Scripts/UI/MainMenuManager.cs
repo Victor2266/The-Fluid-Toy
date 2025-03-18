@@ -11,6 +11,8 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject levelSelectPanel;
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject sandboxPanel;
+
 
     private SettingsManager settingsManager;
     
@@ -123,6 +125,7 @@ public class MainMenuManager : MonoBehaviour
         mainMenuPanel.SetActive(true);
         levelSelectPanel.SetActive(false);
         settingsPanel.SetActive(false);
+        sandboxPanel.SetActive(false);
         PlayButtonSound();
     }
     
@@ -131,6 +134,7 @@ public class MainMenuManager : MonoBehaviour
         mainMenuPanel.SetActive(false);
         levelSelectPanel.SetActive(true);
         settingsPanel.SetActive(false);
+        sandboxPanel.SetActive(false);
         RefreshLevelButtons(); // Refresh level buttons lock status
         PlayButtonSound();
     }
@@ -140,6 +144,16 @@ public class MainMenuManager : MonoBehaviour
         mainMenuPanel.SetActive(false);
         levelSelectPanel.SetActive(false);
         settingsPanel.SetActive(true);
+        sandboxPanel.SetActive(false);
+        PlayButtonSound();
+    }
+
+    public void ShowSandboxPanel()
+    {
+        mainMenuPanel.SetActive(false);
+        levelSelectPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        sandboxPanel.SetActive(true);
         PlayButtonSound();
     }
     
@@ -151,6 +165,8 @@ public class MainMenuManager : MonoBehaviour
         // Load the level scene
         SceneManager.LoadSceneAsync($"Level_{levelNumber}");
     }
+
+
 
     public void LoadSandbox()
     {
