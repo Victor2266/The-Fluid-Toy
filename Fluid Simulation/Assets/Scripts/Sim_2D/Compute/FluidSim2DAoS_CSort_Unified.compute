@@ -756,19 +756,12 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     float2 frictionForce = 0;
     float deltaTemp = 0;
     
-    // Pre-compute particle properties
-    float2 pos = particle.predictedPosition;
-    float2 velocity = particle.velocity;
-    float temp = particle.temperature;
-    
     // Calculate pressure values
-    float density = Particles[id.x].density[0];
-	float densityNear = Particles[id.x].density[1];
-    float pressure = PressureFromDensity(density, fluidData.targetDensity, fluidData.pressureMultiplier);
-    float nearPressure = NearPressureFromDensity(densityNear, fluidData.nearPressureMultiplier);
+    float pressure = PressureFromDensity(particle.density[0], fluidData.targetDensity, fluidData.pressureMultiplier);
+    float nearPressure = NearPressureFromDensity(particle.density[1], fluidData.nearPressureMultiplier);
     
     // Set up spatial hash search
-    int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+    int2 originCell = GetCell2D(particle.predictedPosition, maxSmoothingRadius);
     float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
     
     // Perform the nearest neighbor search
@@ -798,7 +791,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             
             // Sqr. distance calc.
             float2 neighbourPos = neighbourParticle.predictedPosition;
-            float2 offsetToNeighbour = neighbourPos - pos;
+            float2 offsetToNeighbour = neighbourPos - particle.predictedPosition;
             float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
             
             if (sqrDstToNeighbour > sqrRadius) continue; // Skip if not within radius
@@ -827,9 +820,9 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             // Equalizes particle velocities between adjacent particles
             // Skips viscosity calculations for particles with 0 viscosity strength
             // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
-            if (fluidData.viscosityStrength > 0 && !(density > fluidData.targetDensity * 32)) {
+            if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) {
                 float2 neighbourVelocity = neighbourParticle.velocity;
-                viscosityForce += (neighbourVelocity - velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
+                viscosityForce += (neighbourVelocity - particle.velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
             }
             
             // === POWDER FORCES CALCULATION ===
@@ -837,7 +830,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             // Skip if this particle or neighbour particle isn't a powder type
             if (fluidData.friction > 0 && neighbourData.friction > 0) {
                 // Calculate relative motion
-                float2 relativeVelocity = neighbourParticle.velocity - velocity;
+                float2 relativeVelocity = neighbourParticle.velocity - particle.velocity;
                 float relativeSpeed = length(relativeVelocity);
                 
                 if (relativeSpeed > 0.001) {
@@ -853,12 +846,12 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             // === TEMPERATURE CALCULATION ===
             // Equalizes particle temperatures between adjacent particles
             float neighbourTemp = neighbourParticle.temperature;
-            deltaTemp += (neighbourTemp - temp) * TemperatureKernel(dst, fluidData.smoothingRadius, fluidIndex);
+            deltaTemp += (neighbourTemp - particle.temperature) * TemperatureKernel(dst, fluidData.smoothingRadius, fluidIndex);
         }
     }
     
     // [Apply pressure force]
-    float2 pressureAcceleration = pressureForce / density;
+    float2 pressureAcceleration = pressureForce / particle.density[0];
     if (fluidData.pressureMultiplier > 512) {
         // If there are less than X neighbours, limit the pressure force to prevent instability due to high pressure multipliers
 		// Only do this for particles with high pressure multipliers (greater than 512)
@@ -869,7 +862,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     particle.velocity += pressureAcceleration * deltaTime;
     
     // [Apply viscosity force]
-    if (fluidData.viscosityStrength > 0 && !(density > fluidData.targetDensity * 32)) {
+    if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) {
         particle.velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
     }
     
@@ -880,7 +873,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
         
         // Additional powder behavior
         // This creates the "pile" effect characteristic of powders (Original was 0.98 flat damping, now we use a variable damping)
-        if (abs(particle.velocity.y) < 0.1 && density > fluidData.targetDensity * 0.9) {
+        if (abs(particle.velocity.y) < 0.1 && particle.density[0] > fluidData.targetDensity * 0.9) {
             // This value is for powders at rest and 90% of target density
             particle.velocity *= 0.8;
         } else {
@@ -889,7 +882,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     }
     
     // [Apply temperature changes]
-    float thermalDiffusivity = density > 0 ? fluidData.thermalDiffusivity / density : fluidData.thermalDiffusivity;
+    float thermalDiffusivity = particle.density[0] > 0 ? fluidData.thermalDiffusivity / particle.density[0] : fluidData.thermalDiffusivity;
     
     // --- THERMAL BOXES INTERACTION ---
     for (int j = 0; j < numThermalBoxes; j++) {
@@ -898,7 +891,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
         float2 right = tBox.box.zLocal;
         float2 up = float2(-tBox.box.zLocal.y, tBox.box.zLocal.x);
         // Transform position to box's local space
-        float2 localPos = pos - tBox.box.pos;
+        float2 localPos = particle.predictedPosition - tBox.box.pos;
         // Transform to box's local space
         float2 rotatedPos = float2(dot(localPos, right), dot(localPos, up));
         // Calculate distance to box edges in local space
@@ -911,7 +904,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             continue; // Skip if no collision with this box (outside of particle smoothing radius)
         
         if (penetration.x <= 0 && penetration.y <= 0) {
-            deltaTemp += (tBox.temperature - temp) * tBox.conductivity;
+            deltaTemp += (tBox.temperature - particle.temperature) * tBox.conductivity;
             continue; // If particle fully within box, use full temperature kernel, no need to calculate distance
         }
         
@@ -921,7 +914,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             clamp(rotatedPos.y, -boxHalfSize.y, boxHalfSize.y)
         );
         float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
-        deltaTemp += (tBox.temperature - temp) * tBox.conductivity * minDistance / fluidData.smoothingRadius;
+        deltaTemp += (tBox.temperature - particle.temperature) * tBox.conductivity * minDistance / fluidData.smoothingRadius;
     }
     
     // Room temperature/entropy contribution
@@ -929,10 +922,10 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
         case 11111.0f: // Disabled
             break;
         case 22222.0f: // Use scene roomTemperature
-            deltaTemp += (roomTemperature - temp) * globalEntropyRate;
+            deltaTemp += (roomTemperature - particle.temperature) * globalEntropyRate;
             break;
         default: // Fixed entropy
-            deltaTemp += (fluidData.entropyTarget - temp) * globalEntropyRate;
+            deltaTemp += (fluidData.entropyTarget - particle.temperature) * globalEntropyRate;
             break;
     }
     
