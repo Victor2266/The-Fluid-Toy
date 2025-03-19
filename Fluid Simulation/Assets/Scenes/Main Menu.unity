@@ -2674,7 +2674,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400, y: -64}
+  m_AnchoredPosition: {x: 390, y: -68}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &979276170
@@ -6237,6 +6237,7 @@ GameObject:
   m_Component:
   - component: {fileID: 142428097335675124}
   - component: {fileID: 5829688347284709295}
+  - component: {fileID: 5829688347284709296}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -6507,7 +6508,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -400, y: -64}
+  m_AnchoredPosition: {x: -390, y: -68}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3505331705154465791
@@ -6888,6 +6889,21 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5829688347284709296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782826354286627253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 094d4508891750d4ba589605c34be361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 0}
+  snapSpeed: 5
+  snapOnRelease: 1
 --- !u!114 &6034908162687235395
 MonoBehaviour:
   m_ObjectHideFlags: 0
