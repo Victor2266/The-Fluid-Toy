@@ -17,11 +17,8 @@ public class Level3Manager : LevelManager
     [SerializeField] private AudioSource barAudioSource;
     [SerializeField] private AudioSource targetAudioSource;
     [SerializeField] private AudioSource ambientSFXAudioSource;
-
-    public GameObject button;
     public bool buttonEnabled = false;
     public float timeToEnable = 10.0F;
-
     public bool enableWin = false;
     private float TTL;
 
@@ -47,7 +44,7 @@ public class Level3Manager : LevelManager
     {
         if (hasWon) return;
         timer += Time.deltaTime;
-
+        holdTimer = 0;
         if (!buttonEnabled){
             if (fluidDetector1.isFluidPresent){
                 if(TTL <= 0){
