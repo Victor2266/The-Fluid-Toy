@@ -535,7 +535,9 @@ Transform:
   m_LocalPosition: {x: 11.572808, y: 0.96436036, z: 0.99488086}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 264430843}
+  - {fileID: 1428528239}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &105816476
@@ -702,12 +704,12 @@ MonoBehaviour:
   currentLevel: 3
   requiredHoldTime: 0
   audioSource: {fileID: 0}
-  winSound: {fileID: 0}
+  winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
   backgroundMusic: {fileID: 0}
   initialMusicVolume: 0.5
   fadeOutStartTime: 0
   showDebugTimer: 1
-  levelCompleteAnim: {fileID: 0}
+  levelCompleteAnim: {fileID: 105816477}
   timer: 0
   threeStarTime: 0
   twoStarTime: 0
@@ -717,6 +719,7 @@ MonoBehaviour:
   barAudioSource: {fileID: 0}
   targetAudioSource: {fileID: 0}
   ambientSFXAudioSource: {fileID: 0}
+  button: {fileID: 105816473}
   buttonEnabled: 0
   timeToEnable: 10
   enableWin: 0
@@ -1311,11 +1314,11 @@ Transform:
   m_GameObject: {fileID: 264430842}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.8135037}
+  m_LocalPosition: {x: -5.1028085, y: -1.2615851, z: -0.14637345}
   m_LocalScale: {x: 1.1875, y: 2.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1030527994}
+  m_Father: {fileID: 105816474}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &264430844
 MonoBehaviour:
@@ -7002,6 +7005,7 @@ GameObject:
   - component: {fileID: 1030527994}
   - component: {fileID: 1030527993}
   - component: {fileID: 1030527992}
+  - component: {fileID: 1030527995}
   m_Layer: 0
   m_Name: Button Finish
   m_TagString: Untagged
@@ -7112,11 +7116,65 @@ Transform:
   m_LocalPosition: {x: 6.47, y: -0.29722476, z: -0.96499634}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 264430843}
-  - {fileID: 1428528239}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1030527995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030527991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 105816479}
+        m_TargetAssemblyTypeName: Level3Manager, Assembly-CSharp
+        m_MethodName: buttonWin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1051273004
 GameObject:
   m_ObjectHideFlags: 0
@@ -9679,11 +9737,11 @@ Transform:
   m_GameObject: {fileID: 1428528238}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.91, y: 9.64, z: 1.8135037}
+  m_LocalPosition: {x: 2.807191, y: 8.378415, z: -0.14637345}
   m_LocalScale: {x: 1.1875, y: 2.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1030527994}
+  m_Father: {fileID: 105816474}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1428528240
 MonoBehaviour:

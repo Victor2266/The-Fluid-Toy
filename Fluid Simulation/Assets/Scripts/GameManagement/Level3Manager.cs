@@ -18,6 +18,7 @@ public class Level3Manager : LevelManager
     [SerializeField] private AudioSource targetAudioSource;
     [SerializeField] private AudioSource ambientSFXAudioSource;
 
+    public GameObject button;
     public bool buttonEnabled = false;
     public float timeToEnable = 10.0F;
 
@@ -60,7 +61,6 @@ public class Level3Manager : LevelManager
         }else{
             if(!fluidDetector2.isFluidPresent){
                 enableWin = true;
-                hasWon = true;
             }
         }
 
@@ -79,6 +79,12 @@ public class Level3Manager : LevelManager
             //         ambientSFXAudioSource.volume = Mathf.Lerp(initialMusicVolume, 0f, fadeProgress);
             //     }
             // }
+    }
+
+    public void buttonWin(){
+        if(enableWin){
+            hasWon = true;
+        }
     }
 
 	private AudioClip GetRandomSound(List<AudioClip> soundList)
