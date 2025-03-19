@@ -19,6 +19,8 @@ public class SliderSnapper : MonoBehaviour, IPointerUpHandler
     [Range(0.0f, 0.5f)]
     public float snapThreshold = 0.25f;
     public bool snapWhileDragging = false;
+
+    public AudioSource audioSource;
     
     private float lastSnapValue = 0f;
     private Tweener currentTween;
@@ -110,6 +112,7 @@ public class SliderSnapper : MonoBehaviour, IPointerUpHandler
                 .OnComplete(() => {
                     isAnimating = false;
                     lastSnapValue = targetValue;
+                    audioSource.Play();
                 });
         }
     }

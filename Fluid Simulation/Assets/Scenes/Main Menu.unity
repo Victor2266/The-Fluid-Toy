@@ -3372,7 +3372,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 200, y: 0}
-  m_SizeDelta: {x: 2, y: 50}
+  m_SizeDelta: {x: 2, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1051542490
 MonoBehaviour:
@@ -4456,7 +4456,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2, y: 50}
+  m_SizeDelta: {x: 2, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1726631097
 MonoBehaviour:
@@ -4736,7 +4736,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -200, y: 0}
-  m_SizeDelta: {x: 2, y: 50}
+  m_SizeDelta: {x: 2, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1882283657
 MonoBehaviour:
@@ -6901,11 +6901,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 094d4508891750d4ba589605c34be361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 0}
-  snapDuration: 0.2
+  slider: {fileID: 5829688347284709295}
+  snapDuration: 0.1
   snapEase: 27
   snapThreshold: 0.25
   snapWhileDragging: 0
+  audioSource: {fileID: 7452510517123386696}
 --- !u!114 &6034908162687235395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7005,6 +7006,7 @@ GameObject:
   - component: {fileID: 6034908162687235395}
   - component: {fileID: 7452510517123386694}
   - component: {fileID: 7452510517123386695}
+  - component: {fileID: 7452510517123386696}
   m_Layer: 5
   m_Name: Sandbox Setup Panel
   m_TagString: Untagged
@@ -7141,6 +7143,103 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sandboxSettingSlider: {fileID: 5829688347284709295}
+--- !u!82 &7452510517123386696
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6204899378718665877}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
+  m_audioClip: {fileID: 8300000, guid: d9cbeb44d0a3be044a922add2a8fabfc, type: 3}
+  m_Resource: {fileID: 8300000, guid: d9cbeb44d0a3be044a922add2a8fabfc, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7697995007444198608
 GameObject:
   m_ObjectHideFlags: 0
