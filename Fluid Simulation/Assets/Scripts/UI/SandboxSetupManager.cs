@@ -25,7 +25,7 @@ public class SandboxSetupManager : MonoBehaviour
 
     private void OnSandBoxPresetChanged(float presetIndex)
     {
-        PlayerPrefs.SetInt("SandboxPreset", (int) presetIndex);
+        PlayerPrefs.SetInt("SandboxPreset", Mathf.RoundToInt(presetIndex));
         PlayerPrefs.Save();
     }
 }

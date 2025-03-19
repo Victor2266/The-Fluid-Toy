@@ -6258,7 +6258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
+  m_Color: {r: 0.25, g: 0.25, b: 0.25, a: 0.8509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6884,7 +6884,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 4
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6902,8 +6902,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 0}
-  snapSpeed: 5
-  snapOnRelease: 1
+  snapDuration: 0.2
+  snapEase: 27
+  snapThreshold: 0.25
+  snapWhileDragging: 0
 --- !u!114 &6034908162687235395
 MonoBehaviour:
   m_ObjectHideFlags: 0

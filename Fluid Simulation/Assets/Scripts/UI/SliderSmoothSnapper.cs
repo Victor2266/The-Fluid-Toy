@@ -1,21 +1,28 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
-public class SliderSmoothSnapper : MonoBehaviour, IPointerUpHandler
+public class SliderSnapper : MonoBehaviour, IPointerUpHandler
 {
     [Tooltip("The slider to snap to whole numbers")]
     public Slider slider;
     
-    [Tooltip("How quickly the slider snaps to the nearest whole number")]
-    public float snapSpeed = 5.0f;
+    [Tooltip("How long the snap animation should take (in seconds)")]
+    [Range(0.1f, 1.0f)]
+    public float snapDuration = 0.25f;
     
-    [Tooltip("Whether to snap only when the user releases the slider")]
-    public bool snapOnRelease = true;
+    [Tooltip("The easing function to use for the snap animation")]
+    public Ease snapEase = Ease.OutBack;
     
-    private bool isSnapping = false;
-    private Coroutine snapCoroutine;
+    [Tooltip("The threshold at which to snap to the next whole number while dragging (0.0-0.5)")]
+    [Range(0.0f, 0.5f)]
+    public float snapThreshold = 0.25f;
+    public bool snapWhileDragging = false;
+    
+    private float lastSnapValue = 0f;
+    private Tweener currentTween;
+    private bool isAnimating = false;
     
     private void Start()
     {
@@ -32,86 +39,79 @@ public class SliderSmoothSnapper : MonoBehaviour, IPointerUpHandler
             }
         }
         
-        // Add listener for slider value change
-        if (!snapOnRelease)
-        {
-            slider.onValueChanged.AddListener(OnSliderValueChangedAutoSnap);
-        }
-        else
-        {
-            // We'll use IPointerUpHandler instead for release detection
-            slider.onValueChanged.AddListener(OnSliderValueChanged);
-        }
+        // Round the initial value
+        lastSnapValue = Mathf.Round(slider.value);
+        slider.value = lastSnapValue;
+        
+        // Add event listeners
+        slider.onValueChanged.AddListener(OnSliderValueChanged);
     }
     
-    // This is called when the pointer is released from the slider
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (snapOnRelease && slider != null)
-        {
-            SnapToNearestWholeNumber();
-        }
-    }
-    
+    // This handles snapping while dragging
     private void OnSliderValueChanged(float value)
     {
-        // Do nothing while the slider is being dragged
-        // The snap will happen on release
-    }
-    
-    private void OnSliderValueChangedAutoSnap(float value)
-    {
-        // Snap to nearest whole number whenever the value changes
-        SnapToNearestWholeNumber();
-    }
-    
-    private void SnapToNearestWholeNumber()
-    {
-        // Don't start a new coroutine if one is already running
-        if (isSnapping)
+        if (!snapWhileDragging)
+            return;
+        // Skip if we're currently animating a snap
+        if (isAnimating)
             return;
         
-        // Calculate the nearest whole number
+        float currentValue = slider.value;
+        float decimalPart = currentValue - Mathf.Floor(currentValue);
+        
+        // Determine if we need to snap
+        bool shouldSnapUp = decimalPart >= (1.0f - snapThreshold);
+        bool shouldSnapDown = decimalPart <= snapThreshold;
+        
+        if (shouldSnapUp || shouldSnapDown)
+        {
+            float targetValue;
+            
+            if (shouldSnapUp)
+                targetValue = Mathf.Ceil(currentValue);
+            else
+                targetValue = Mathf.Floor(currentValue);
+            
+            // Only snap if we're moving to a new value
+            if (targetValue != lastSnapValue)
+            {
+                // Kill any existing tween
+                if (currentTween != null && currentTween.IsActive())
+                    currentTween.Kill();
+                
+                // Create a new tween
+                isAnimating = true;
+                currentTween = DOTween.To(() => slider.value, x => slider.value = x, targetValue, snapDuration)
+                    .SetEase(snapEase)
+                    .OnComplete(() => {
+                        isAnimating = false;
+                        lastSnapValue = targetValue;
+                    });
+            }
+        }
+    }
+    
+    // This handles snapping when the slider is released
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        // Kill any existing tween
+        if (currentTween != null && currentTween.IsActive())
+            currentTween.Kill();
+        
+        // Always snap to nearest whole number on release
         float targetValue = Mathf.Round(slider.value);
         
-        // If we're already at a whole number, no need to snap
-        if (Mathf.Approximately(slider.value, targetValue))
-            return;
-        
-        // Start the smooth snapping coroutine
-        if (snapCoroutine != null)
-            StopCoroutine(snapCoroutine);
-            
-        snapCoroutine = StartCoroutine(SmoothSnapCoroutine(targetValue));
-    }
-    
-    private IEnumerator SmoothSnapCoroutine(float targetValue)
-    {
-        isSnapping = true;
-        
-        float startValue = slider.value;
-        float time = 0f;
-        
-        // Calculate the duration based on the distance and speed
-        float duration = Mathf.Abs(targetValue - startValue) / snapSpeed;
-        
-        while (time < duration)
+        // Only animate if we're not already at the target
+        if (!Mathf.Approximately(slider.value, targetValue))
         {
-            time += Time.deltaTime;
-            float t = Mathf.Clamp01(time / duration);
-            
-            // Use smooth step for a more natural easing
-            float smoothT = t * t * (3f - 2f * t);
-            
-            // Update the slider value
-            slider.value = Mathf.Lerp(startValue, targetValue, smoothT);
-            
-            yield return null;
+            isAnimating = true;
+            currentTween = DOTween.To(() => slider.value, x => slider.value = x, targetValue, snapDuration)
+                .SetEase(snapEase)
+                .OnComplete(() => {
+                    isAnimating = false;
+                    lastSnapValue = targetValue;
+                });
         }
-        
-        // Ensure we end exactly at the target value
-        slider.value = targetValue;
-        isSnapping = false;
     }
     
     private void OnDestroy()
@@ -121,5 +121,9 @@ public class SliderSmoothSnapper : MonoBehaviour, IPointerUpHandler
         {
             slider.onValueChanged.RemoveAllListeners();
         }
+        
+        // Kill any active tweens
+        if (currentTween != null && currentTween.IsActive())
+            currentTween.Kill();
     }
 }
