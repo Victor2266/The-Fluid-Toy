@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 - Mac
 - Linux
 - Android
-
+- WebGPU
 ---
 
 ## 🚀 Key Features  
