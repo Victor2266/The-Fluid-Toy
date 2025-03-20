@@ -190,7 +190,7 @@ public class Level2Manager : LevelManager
         sourceVelocity += -1 * Math.Sign(sourceOffset) * rand * Time.deltaTime;
 
         //update source offset amount
-        sourceOffset += sourceVelocity * Time.deltaTime * 120f;
+        sourceOffset += sourceVelocity * Time.deltaTime * 240f;
 
         //enforce max offset rule
         if (Math.Abs(sourceOffset) > maxSourceOffset)
