@@ -6872,6 +6872,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1796505727300090952, guid: 4e98cb58bb32af54d8cb64badbcc617c, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2244099203070884472, guid: 4e98cb58bb32af54d8cb64badbcc617c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -7442,6 +7446,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 4497720422058347654, guid: 7f93e60e0d2d152458b93ada23cd87b6, type: 3}
+      propertyPath: rightEdgeOffset
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497720422058347654, guid: 7f93e60e0d2d152458b93ada23cd87b6, type: 3}
+      propertyPath: edgeDetectionWidth
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 4569521854710221175, guid: 7f93e60e0d2d152458b93ada23cd87b6, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4294967295
@@ -7729,8 +7741,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 4
-    m_Right: 4
+    m_Left: 16
+    m_Right: 40
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
