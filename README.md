@@ -40,9 +40,9 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
   - Draw Brush which uses interlocked add operation to avoid race condition
   - Eraser Brush which randomizes particle position for even density distribution
   - **Source/Drain Objects**:  
-  - Source: Spawns particles with configurable initial velocities  
-  - Drain: Disables particles using spatial triggers  
-  - Automatic buffer management with particle recycling
+    - Source: Spawns particles with configurable initial velocities  
+    - Drain: Disables particles using spatial triggers  
+    - Automatic buffer management with particle recycling
 - **Multi-Fluid Support**:  
   - Data-oriented design with fluid property tables  
   - 64px×1px gradient textures per fluid type stitched into 2D atlas  
