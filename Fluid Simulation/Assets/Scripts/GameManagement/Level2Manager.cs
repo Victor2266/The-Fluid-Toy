@@ -234,9 +234,7 @@ public class Level2Manager : LevelManager
             {
                 currentHeatLevel = 0;
                 isOverheated = true;
-
                 overheatedTimer = 0f;
-                source.spawnRate = 0;
             }
         }
         else
