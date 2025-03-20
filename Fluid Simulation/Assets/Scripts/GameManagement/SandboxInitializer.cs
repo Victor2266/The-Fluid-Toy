@@ -35,8 +35,8 @@ public class SandboxInitializer : MonoBehaviour
         obstacleBoundarys[3].transform.localPosition = new Vector3(sideObstacleBoundaryPositions[presetIndex], 0, 0);
 
         // Set up Obstacle Boundary colliders sizes
-        obstacleBoundarys[0].GetComponent<BoxCollider2D>().size = new Vector2(topObstacleBoundaryPositions[presetIndex] * 4f, 15f);
-        obstacleBoundarys[1].GetComponent<BoxCollider2D>().size = new Vector2(topObstacleBoundaryPositions[presetIndex] * 4f, 15f);
+        obstacleBoundarys[0].GetComponent<BoxCollider2D>().size = new Vector2(topObstacleBoundaryPositions[presetIndex] * 3.5f, 15f);
+        obstacleBoundarys[1].GetComponent<BoxCollider2D>().size = new Vector2(topObstacleBoundaryPositions[presetIndex] * 3.5f, 15f);
         obstacleBoundarys[2].GetComponent<BoxCollider2D>().size = new Vector2(15f, sideObstacleBoundaryPositions[presetIndex] * 2f);
         obstacleBoundarys[3].GetComponent<BoxCollider2D>().size = new Vector2(15f, sideObstacleBoundaryPositions[presetIndex] * 2f);
 

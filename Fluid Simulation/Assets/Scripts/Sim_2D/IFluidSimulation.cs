@@ -11,7 +11,9 @@ public interface IFluidSimulation
     void stepSimulation();
     void resetSimulation();
     void setBounds(Vector2 bounds);
+    Vector2 getBounds();
     void setMaxParticles(int maxParticles);
+    int GetParticleCount();
 
     // Fluid data
     FluidData[] getFluidDataArray();
@@ -21,15 +23,14 @@ public interface IFluidSimulation
     void SetBrushType(int brushTypeIndex);
     void setInteractionRadiusPercent(float radius);
     void setInteractionStrengthPercent(float strength);
-
-    // Fluid detector
-    bool IsPositionBufferValid();
-    ComputeBuffer GetParticleBuffer();
-    int GetParticleCount();
     float getInteractionRadius();
     float getInteractionStrength();
     float getBrushSizePercent();
     float getBrushStrengthPercent();
+
+    // Fluid detector
+    bool IsPositionBufferValid();
+    ComputeBuffer GetParticleBuffer();
 
     // Obstacle management
     void UpdateBoxColliders();

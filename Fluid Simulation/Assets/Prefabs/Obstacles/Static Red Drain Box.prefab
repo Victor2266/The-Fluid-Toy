@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7561925434262176731}
   - component: {fileID: 3913507381758772233}
   - component: {fileID: 4742944408136187829}
+  - component: {fileID: 8397380920338386945}
   m_Layer: 0
   m_Name: Static Red Drain Box
   m_TagString: DrainObject
@@ -238,3 +239,18 @@ MonoBehaviour:
   contextMenuPrefab: {fileID: 4341401936970538196, guid: fa0bf94ad4f016f498f27dedf36e38f3, type: 3}
   contextMenuHeading: Edit Static Drain Box
   childObjectType: 0
+--- !u!114 &8397380920338386945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2193037358868928429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5

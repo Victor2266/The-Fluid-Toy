@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2362419238567219575}
   - component: {fileID: 1871501553181630736}
   - component: {fileID: 6821360446916077348}
+  - component: {fileID: 6001094004352849743}
   m_Layer: 0
   m_Name: Source Object
   m_TagString: SourceObject
@@ -275,3 +276,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segments: 32
+--- !u!114 &6001094004352849743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3107906514027048532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5

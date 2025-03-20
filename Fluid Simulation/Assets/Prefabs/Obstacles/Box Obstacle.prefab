@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 9133241969234344816}
   - component: {fileID: 1024338463112414083}
   - component: {fileID: 3455259151828961297}
+  - component: {fileID: 4306315849101010457}
   m_Layer: 0
   m_Name: Box Obstacle
   m_TagString: BoxCollider
@@ -145,7 +146,6 @@ MonoBehaviour:
   contextMenuPrefab: {fileID: 4341401936970538196, guid: fa0bf94ad4f016f498f27dedf36e38f3, type: 3}
   contextMenuHeading: Edit Dynamic Box
   childObjectType: 0
-  startsInScene: 0
 --- !u!120 &1024338463112414083
 LineRenderer:
   serializedVersion: 2
@@ -267,3 +267,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd424e0c8763b9a47a966e9ce142b39a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4306315849101010457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659254764009895527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5

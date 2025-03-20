@@ -734,7 +734,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         boundsSize = bounds;
     }
-
+    public Vector2 getBounds()
+    {
+        return boundsSize;
+    }
     public void setMaxParticles(int newMaxParticles)
     {
         return;
