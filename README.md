@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 
 ## 🕹 Download and Play Here:
 - [Itch.io](https://awasete.itch.io/the-fluid-toy)
-- [Our Website Redirect](http://thefluidtoy.com/)
+- [Our Website Demo (Currently Redirects to itch)](http://thefluidtoy.com/)
 
 ## 🖥️💻 Supported platforms
 - Windows
