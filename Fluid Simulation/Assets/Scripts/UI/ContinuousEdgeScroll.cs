@@ -18,7 +18,7 @@ public class ContinuousEdgeScroll : MonoBehaviour
 
     [Tooltip("Right edge offset as percentage of screen width")]
     [Range(0f, 0.1f)]
-    public float rightEdgeOffsetPercentage = 0.02f;
+    public float rightEdgeOffsetPercentage = 0.1f;
 
     // Reference resolution values
     private const float REFERENCE_WIDTH = 1280f; // 720p width
@@ -97,13 +97,12 @@ public class ContinuousEdgeScroll : MonoBehaviour
         // Check if mouse is within screen height
         if (mousePosition.y > 0 && mousePosition.y < screenHeight)
         {
-            // Calculate scroll value based on mouse position
-            float scrollValue = 0f;
 
-                // Calculate proportional scroll based on mouse x position
-                float normalizedMouseX = Mathf.Clamp((mousePosition.x - edgeDetectionWidth) / (screenWidth - edgeDetectionWidth - rightEdgeOffset), 0f, 1f);
-                scrollValue = Mathf.Clamp01(normalizedMouseX);
-            
+            // Calculate proportional scroll based on mouse x position
+            float normalizedMouseX = Mathf.Clamp((mousePosition.x - edgeDetectionWidth) / (screenWidth - edgeDetectionWidth - rightEdgeOffset), 0f, 1f);
+            // Calculate scroll value based on mouse position
+            float scrollValue = Mathf.Clamp01(normalizedMouseX);
+
 
             // Smoothly update scroll position
             scrollRect.horizontalNormalizedPosition = Mathf.Lerp(
