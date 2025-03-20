@@ -10,8 +10,9 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 - Cameron Tuffner-Lyons  
 - JJ Marr  
 
-## 🕹 Download Here (Coming Soon):
+## 🕹 Download and Play Here:
 - [Itch.io](https://awasete.itch.io/the-fluid-toy)
+- [Our Website Redirect](http://thefluidtoy.com/)
 
 ## 🖥️💻 Supported platforms
 - Windows
