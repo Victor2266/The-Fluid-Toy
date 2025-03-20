@@ -51,8 +51,8 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 
 ### 🌐 Simulation Properties
 - **All States of Matter**:
-  - *Gas*
-  - *Liquid*
+  - *Gasses*
+  - *Liquids*
   - *Powders*  
 - **Edge Behavior Modes**:  
   - *Solid*: Acts as immovable wall (default)  
