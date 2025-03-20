@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -99,25 +100,10 @@ public class ContinuousEdgeScroll : MonoBehaviour
             // Calculate scroll value based on mouse position
             float scrollValue = 0f;
 
-            // Left edge scrolling
-            if (mousePosition.x <= edgeDetectionWidth)
-            {
-                // Map edge detection width to 0 scroll position
-                scrollValue = 0f;
-            }
-            // Right edge scrolling (accounting for offset)
-            else if (mousePosition.x >= (screenWidth - edgeDetectionWidth - rightEdgeOffset))
-            {
-                // Map edge detection width to 1 (full) scroll position
-                scrollValue = 1f;
-            }
-            // Intermediate scrolling
-            else
-            {
                 // Calculate proportional scroll based on mouse x position
-                float normalizedMouseX = mousePosition.x / screenWidth;
+                float normalizedMouseX = Mathf.Clamp((mousePosition.x - edgeDetectionWidth) / (screenWidth - edgeDetectionWidth - rightEdgeOffset), 0f, 1f);
                 scrollValue = Mathf.Clamp01(normalizedMouseX);
-            }
+            
 
             // Smoothly update scroll position
             scrollRect.horizontalNormalizedPosition = Mathf.Lerp(
