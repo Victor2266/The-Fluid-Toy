@@ -159,7 +159,8 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 ---
 
 ## 🙏 Acknowledgments  
-Special thanks to **Sebastian Lague** for inspirational fluid simulation content.
+- Special thanks to **Sebastian Lague** for inspirational fluid simulation content.
+- Thanks to [The Powder Toy](https://github.com/The-Powder-Toy/The-Powder-Toy) for physics sim inspiration.
 - **Testing**: Validated through family/friend playtests  
 ---
 
