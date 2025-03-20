@@ -647,9 +647,8 @@ MonoBehaviour:
   coolingRate: 1.25
   totalTargetHitsNeeded: 150
   targetHits: 0
-  sourcePlayerModulationStrength: 1
-  sourceAcceleration: 0.00025
-  sourceVelocity: 0.1
+  sourceAcceleration: 0.25
+  sourceVelocity: 0.25
   maxSourceJitter: 0
   maxSourceOffset: 10
   sourceOffset: 0
@@ -1883,6 +1882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6dba1f9b3821b84f94671ee52db88ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isManagedSensor: 0
   densityThreshold: 0.5
   checkInterval: 0.2
   detectionRadius: 1.75
@@ -2034,6 +2034,7 @@ MonoBehaviour:
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 1
+  gravityMode: 0
   maxSourceSpawnRate: 10
   maxMouseSpawnRate: 40
   selectedFluid: 0

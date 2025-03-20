@@ -45,7 +45,6 @@ public class Level2Manager : LevelManager
     public int targetHits = 0;
 
     [Header("Source nozzle control")]
-    public float sourcePlayerModulationStrength = 11;
     public float sourceAcceleration = 0.02F;
     public float sourceVelocity = 1;
     public float maxSourceJitter;
@@ -183,8 +182,8 @@ public class Level2Manager : LevelManager
         float rand = UnityEngine.Random.Range(-maxSourceJitter, maxSourceJitter);
 
         //apply acceleration to source modulation
-        sourceVelocity += -1 * Math.Sign(sourceOffset) * sourceAcceleration;
-        sourceVelocity += -1 * Math.Sign(sourceOffset) * rand;
+        sourceVelocity += -1 * Math.Sign(sourceOffset) * sourceAcceleration * Time.deltaTime;
+        sourceVelocity += -1 * Math.Sign(sourceOffset) * rand * Time.deltaTime;
 
         //update source offset amount
         sourceOffset += sourceVelocity;
@@ -268,6 +267,7 @@ public class Level2Manager : LevelManager
         targetAngle = currentAngle + sourceOffset;
         // convert back to vector and apply nozzle strength
         Vector3 direction = new Vector3(Mathf.Cos(targetAngle * Mathf.Deg2Rad), Mathf.Sin(targetAngle * Mathf.Deg2Rad), 0);
+        direction.Normalize();
         direction *= nozzleStrength;
 
         //update source rotation and nozzle velocity
