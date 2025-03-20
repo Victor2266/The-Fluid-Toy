@@ -3,7 +3,7 @@
 <b> CPU-GPU Fluid Simulation in Unity: Optimizing Collision Detection with GPU Acceleration for Real-Time Particle-Based Fluid Simulations. </b>
 </p>
 <p align="center">
-The ULTIMATE in 2D fluid simulation engine. Experience realtime interactive physics and fluid simulation in a neat package you can import and use in your own projects! Got any neat ideas? Feel free to alter the codebase and contribute as you see fit!
+The ULTIMATE FREE 2D fluid simulation engine for Unity. Experience realtime interactive physics and fluid simulation in a neat package you can import and use in your own projects! Got any neat ideas? Feel free to alter the codebase and contribute as you see fit!
 </p>
 
 
