@@ -44,6 +44,8 @@ public class SandboxInitializer : MonoBehaviour
         GameObject simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simulationGameobject.GetComponent<IFluidSimulation>();
 
-
+        // Update simulation settings
+        sim.setBounds(simulationBounds[presetIndex]);
+        sim.setMaxParticles(simulationMaxParticles[presetIndex]);
     }
 }
