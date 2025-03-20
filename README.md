@@ -151,7 +151,7 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
   - Game state management  
   - UI/input processing  
 - **GPU Pipeline**:  
-  - SPH fluid solver (density/pressure/viscosity)  
+  - SPH fluid solver (with density/pressure/viscosity/friction/temperture kernels)
   - Spatial hashing for neighbor detection  
   - Collision resolution using boundary textures  
 
