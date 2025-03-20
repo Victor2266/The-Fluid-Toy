@@ -115,7 +115,7 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 
 ### Sandbox Mode  
 - **Dual Purpose**:  
-  1. Player experimentation with all fluid/types  
+  1. Player can freely play and experiment with all fluid and obstacle types
   2. Performance benchmarking environment  
 - **Continuous Integration**: Always updated with latest features
 
