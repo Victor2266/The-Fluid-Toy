@@ -48,7 +48,11 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
   - 64px×1px gradient textures per fluid type stitched into 2D atlas  
   - Shader-driven visual differentiation using dynamic branching  
 
-### 🌐 Simulation Properties  
+### 🌐 Simulation Properties
+- **Simulate All States of Matter**:
+- *Gas*
+- *Liquid*
+- *Powders*  
 - **Edge Behavior Modes**:  
   - *Solid*: Acts as immovable wall (default)  
   - *Void*: Disables particles and randomizes positions
