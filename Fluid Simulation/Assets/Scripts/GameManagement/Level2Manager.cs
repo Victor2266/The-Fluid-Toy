@@ -11,6 +11,7 @@ public class Level2Manager : LevelManager
     public GameObject sourceObjectParent;
     public Transform targetTransform;
     public SpriteRenderer targetHighlightSprite;
+    public ParticleSystem steamParticleSystem;
     public GameObject tableObject;
 
     private IFluidSimulation sim;
@@ -163,6 +164,7 @@ public class Level2Manager : LevelManager
                 // Play overheated sound
                 if (isOverheated && overheatSound != null && barAudioSource != null)
                 {
+                    steamParticleSystem.Play();
                     barAudioSource.PlayOneShot(overheatSound);
                 }
                 gunAudioSource.loop = false;
