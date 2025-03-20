@@ -12,7 +12,7 @@ public class SandboxSetupManager : MonoBehaviour
     public Slider sandboxSettingSlider;
     public TMP_Text sandboxSettingText;
 
-    private String[] sandboxSettings = {"(4k)", "Low (8k)", "Medium (16k)", "High (32k)", "(64k)"}; //{"Very Low (4k)", "Low (8k)", "Medium (16k)", "High (32k)", "Ultra High (64k)"};
+    private string[] sandboxSettings = {"(4k)", "Low (8k)", "Medium (16k)", "High (32k)", "(64k)"}; //{"Very Low (4k)", "Low (8k)", "Medium (16k)", "High (32k)", "Ultra High (64k)"};
 
     private void Start()
     {
