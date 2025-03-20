@@ -10,6 +10,7 @@ public class Level2Manager : LevelManager
     public FluidDetector fluidDetector;
     public GameObject sourceObjectParent;
     public Transform targetTransform;
+    public SpriteRenderer targetHighlightSprite;
     public GameObject tableObject;
 
     private IFluidSimulation sim;
@@ -109,6 +110,9 @@ public class Level2Manager : LevelManager
                 targetHits += 1;
                 // Shake for 0.05 seconds with strength of 0.1
                 targetTransform.DOShakePosition(0.025f, 0.075f, fadeOut: true);
+                targetHighlightSprite.DOKill();
+                targetHighlightSprite.color = new Color(1, 1, 1, .8f);
+                targetHighlightSprite.DOColor(new Color(1, 1, 1, 0), 0.25f);
                 targetAudioSource.PlayOneShot(targetAudioSource.clip, 1f);
                 timeOfLastHit = Time.time;
                 timeOfLastDecay = 0;
@@ -186,7 +190,7 @@ public class Level2Manager : LevelManager
         sourceVelocity += -1 * Math.Sign(sourceOffset) * rand * Time.deltaTime;
 
         //update source offset amount
-        sourceOffset += sourceVelocity * Time.deltaTime * 100f;
+        sourceOffset += sourceVelocity * Time.deltaTime * 120f;
 
         //enforce max offset rule
         if (Math.Abs(sourceOffset) > maxSourceOffset)
@@ -301,5 +305,6 @@ public class Level2Manager : LevelManager
     void OnDestroy()
     {
         targetTransform.DOKill();
+        targetHighlightSprite.DOKill();
     }
 }
