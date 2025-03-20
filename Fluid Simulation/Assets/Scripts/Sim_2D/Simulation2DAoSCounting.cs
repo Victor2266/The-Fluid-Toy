@@ -1048,4 +1048,13 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public FluidData[] getFluidDataArray(){
         return fluidDataArray;
     }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+
+    public void setMaxParticles(int newMaxParticles)
+    {
+        maxParticles = newMaxParticles;
+    }
 }

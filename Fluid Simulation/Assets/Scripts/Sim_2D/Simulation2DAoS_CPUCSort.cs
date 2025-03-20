@@ -1066,6 +1066,15 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         targetInteractionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+
+    public void setMaxParticles(int newMaxParticles)
+    {
+        maxParticles = newMaxParticles;
+    }
 
     void initializeCPUKernelSettingsAoS()
     {

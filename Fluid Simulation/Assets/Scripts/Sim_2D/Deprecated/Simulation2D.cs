@@ -553,4 +553,13 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
     public FluidData[] getFluidDataArray(){
         return null;
     }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+
+    public void setMaxParticles(int newMaxParticles)
+    {
+        return;
+    }
 }

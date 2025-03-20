@@ -10,6 +10,8 @@ public interface IFluidSimulation
     bool getPaused();
     void stepSimulation();
     void resetSimulation();
+    void setBounds(Vector2 bounds);
+    void setMaxParticles(int maxParticles);
 
     // Fluid data
     FluidData[] getFluidDataArray();
