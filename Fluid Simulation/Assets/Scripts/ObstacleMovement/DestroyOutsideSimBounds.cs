@@ -72,7 +72,6 @@ public class DestroyOutsideSimulationBounds : MonoBehaviour
     private bool IsCompletelyOutsideSimulationBounds()
     {
         // Assuming simulation is centered at (0,0)
-        // If your simulation has a different center, adjust these calculations
         float halfWidth = simulationBounds.x / 2f + boundsBuffer;
         float halfHeight = simulationBounds.y / 2f + boundsBuffer;
         
