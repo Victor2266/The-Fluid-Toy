@@ -118,12 +118,19 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
   1. Player experimentation with all fluid/types  
   2. Performance benchmarking environment  
 - **Continuous Integration**: Always updated with latest features
+
+### Levels 1-10
+- **Each level is a demonstration of a different mechanic**
   
-### Level 1: Tavern Challenge  
-- **Objective**: Fill a beer mug using gravity manipulation  
-- **Tech Stack**:  
-  - CPU-managed cup physics → GPU collision resolution  
-  - Async particle position feedback for completion detection  
+  #### Level 1: Tavern Trouble  
+  - **Objective**: Fill a beer mug using gravity manipulation  
+  - **Tech Stack**:  
+    - Async particle position readback for level completion detection
+ 
+  #### Level 2: Carnival Chaos  
+  - **Objective**: Shoot a moving target with a water gun
+  - **Tech Stack**:  
+    - Introduction to source objects
 
 ---
 
@@ -160,7 +167,8 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 - **GPU Pipeline**:  
   - SPH fluid solver (with density/pressure/viscosity/friction/temperture kernels)
   - Spatial hashing for neighbor detection  
-  - Collision resolution using boundary textures  
+  - Collision resolution using boundary textures
+  - Async particle position feedback for fluid property sensors 
 
 ---
 
