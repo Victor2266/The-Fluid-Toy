@@ -99,7 +99,7 @@ public class ContinuousEdgeScroll : MonoBehaviour
         {
 
             // Calculate proportional scroll based on mouse x position
-            float normalizedMouseX = Mathf.Clamp((mousePosition.x - edgeDetectionWidth) / (screenWidth - edgeDetectionWidth - rightEdgeOffset), 0f, 1f);
+            float normalizedMouseX = (mousePosition.x - edgeDetectionWidth) / (screenWidth - edgeDetectionWidth - rightEdgeOffset);
             // Calculate scroll value based on mouse position
             float scrollValue = Mathf.Clamp01(normalizedMouseX);
 
