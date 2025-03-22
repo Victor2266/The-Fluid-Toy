@@ -1008,7 +1008,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 897449234}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -1329,7 +1329,7 @@ MonoBehaviour:
   bloomThreshold: 1
   bloomIntensity: 10
   blurSize: 0.75
-  softness: 4
+  softness: 3.75
   postProcessShader: {fileID: 4800000, guid: 6d553be73fbc1084faa776322e285d17, type: 3}
 --- !u!1 &963455855
 GameObject:
@@ -1880,7 +1880,7 @@ GameObject:
   - component: {fileID: 1281819541}
   - component: {fileID: 1281819540}
   m_Layer: 0
-  m_Name: Lava Spawner (1)
+  m_Name: Snow Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1898,13 +1898,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 15
-  particleCount: 1000
+  type: 14
+  particleCount: 400
   initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: -2.51, y: -0.98}
-  spawnSize: {x: 2.08, y: 3.4}
+  spawnCentre: {x: -3.74, y: -3.31}
+  spawnSize: {x: 0.5, y: 0.5}
   jitterStr: 0.025
-  temperature: -120
+  temperature: -600
   showSpawnBoundsGizmos: 1
   wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!4 &1281819541
