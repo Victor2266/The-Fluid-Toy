@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &659254764009895527
+--- !u!1 &2193037358868928429
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,43 +8,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1881563075863748925}
-  - component: {fileID: 4603311029488377704}
-  - component: {fileID: 1158679304923414470}
-  - component: {fileID: 8373801101542918093}
-  - component: {fileID: 9133241969234344816}
-  - component: {fileID: 1024338463112414083}
-  - component: {fileID: 3455259151828961297}
-  - component: {fileID: 4306315849101010457}
+  - component: {fileID: 5839482189632468200}
+  - component: {fileID: 3897088091573810152}
+  - component: {fileID: 4445787870629485545}
+  - component: {fileID: 7561925434262176731}
+  - component: {fileID: 3913507381758772233}
+  - component: {fileID: 4742944408136187829}
+  - component: {fileID: 8397380920338386945}
   m_Layer: 0
-  m_Name: Box Obstacle
-  m_TagString: BoxCollider
+  m_Name: Static Red Drain Box
+  m_TagString: DrainObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1881563075863748925
+--- !u!4 &5839482189632468200
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
+  m_GameObject: {fileID: 2193037358868928429}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 8, z: 1}
+  m_LocalScale: {x: 8, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &4603311029488377704
+--- !u!61 &3897088091573810152
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
+  m_GameObject: {fileID: 2193037358868928429}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -84,40 +83,13 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!50 &1158679304923414470
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 1
-  m_Mass: 32
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!114 &8373801101542918093
+--- !u!114 &4445787870629485545
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
+  m_GameObject: {fileID: 2193037358868928429}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
@@ -129,31 +101,16 @@ MonoBehaviour:
   uniformScaling: 0
   scaleSpeed: 0.1
   minScale: 0.4
-  maxScale: 18
+  maxScale: 32
   targetScale: {x: 0, y: 0, z: 0}
---- !u!114 &9133241969234344816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contextMenuPrefab: {fileID: 4341401936970538196, guid: fa0bf94ad4f016f498f27dedf36e38f3, type: 3}
-  contextMenuHeading: Edit Dynamic Box
-  childObjectType: 0
---- !u!120 &1024338463112414083
+--- !u!120 &7561925434262176731
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
+  m_GameObject: {fileID: 2193037358868928429}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -192,10 +149,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Positions:
-  - {x: -2, y: -4, z: 0}
-  - {x: 2, y: -4, z: 0}
-  - {x: 2, y: 4, z: 0}
-  - {x: -2, y: 4, z: 0}
+  - {x: -4, y: -1, z: 0}
+  - {x: 4, y: -1, z: 0}
+  - {x: 4, y: 1, z: 0}
+  - {x: -4, y: 1, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.2
@@ -216,8 +173,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0, g: 1, b: 0, a: 1}
-      key1: {r: 0, g: 1, b: 0, a: 1}
+      key0: {r: 1, g: 0, b: 0, a: 1}
+      key1: {r: 1, g: 0, b: 0, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -255,25 +212,40 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 1
   m_ApplyActiveColorSpace: 1
---- !u!114 &3455259151828961297
+--- !u!114 &3913507381758772233
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
+  m_GameObject: {fileID: 2193037358868928429}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd424e0c8763b9a47a966e9ce142b39a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4306315849101010457
+--- !u!114 &4742944408136187829
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659254764009895527}
+  m_GameObject: {fileID: 2193037358868928429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 4341401936970538196, guid: fa0bf94ad4f016f498f27dedf36e38f3, type: 3}
+  contextMenuHeading: Edit Static Drain Box
+  childObjectType: 0
+--- !u!114 &8397380920338386945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2193037358868928429}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}

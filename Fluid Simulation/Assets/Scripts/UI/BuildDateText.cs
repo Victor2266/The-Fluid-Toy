@@ -4,7 +4,7 @@ using TMPro;
 public class BuildDateText : MonoBehaviour
 {
     // This will hold the build date as a string
-public static string BuildDate = "Build Date: March 18, 2025";
+public static string BuildDate = "Build Date: March 21, 2025";
 
     private void Start()
     {

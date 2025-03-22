@@ -10,6 +10,9 @@ public class SandboxSetupManager : MonoBehaviour
 {
 
     public Slider sandboxSettingSlider;
+    public TMP_Text sandboxSettingText;
+
+    private string[] sandboxSettings = {"(4k)", "Low (8k)", "Medium (16k)", "High (32k)", "(64k)"}; //{"Very Low (4k)", "Low (8k)", "Medium (16k)", "High (32k)", "Ultra High (64k)"};
 
     private void Start()
     {
@@ -18,14 +21,16 @@ public class SandboxSetupManager : MonoBehaviour
 
     public void Initialize(){
         // Load sandbox settings and apply to the slider
-        float savedSandboxPreset = PlayerPrefs.GetInt("SandboxPreset", 2);
+        int savedSandboxPreset = PlayerPrefs.GetInt("SandboxPreset", 2);
         sandboxSettingSlider.value = savedSandboxPreset;
+        sandboxSettingText.text = sandboxSettings[savedSandboxPreset];
         sandboxSettingSlider.onValueChanged.AddListener(OnSandBoxPresetChanged);
     }
 
     private void OnSandBoxPresetChanged(float presetIndex)
     {
-        PlayerPrefs.SetInt("SandboxPreset", (int) presetIndex);
+        PlayerPrefs.SetInt("SandboxPreset", Mathf.RoundToInt(presetIndex));
+        sandboxSettingText.text = sandboxSettings[Mathf.RoundToInt(presetIndex)];
         PlayerPrefs.Save();
     }
 }

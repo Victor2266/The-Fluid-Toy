@@ -730,6 +730,18 @@ public class Simulation2DAoS : MonoBehaviour
     {
         interactionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
     }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+    public Vector2 getBounds()
+    {
+        return boundsSize;
+    }
+    public void setMaxParticles(int newMaxParticles)
+    {
+        return;
+    }
     
     void initializeCPUKernelSettingsAoS(){
         CPUKernelAOS.numParticles = numParticles;

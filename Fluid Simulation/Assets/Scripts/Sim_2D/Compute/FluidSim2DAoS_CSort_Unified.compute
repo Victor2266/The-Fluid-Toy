@@ -561,10 +561,9 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to maxMo
 	if (atomicCounter[2] >= maxMouseSpawnRate) {
 		return;
 	}
-
-	uint randomState = (atomicCounter[2] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+    uint randomState = (uint)((particle.position.x + atomicCounter[2]) * 1000) + (uint)((particle.position.y + atomicCounter[2]) * 1000) + atomicCounter[1] * 982451653; // Seed based on counter[2]: The particle, counter[1]: The frame, the particle position and a random large prime number
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-	float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
+	float radius = sqrt(RandomValue(randomState)) * interactionInputRadius; // Random distance from center, biased more towards the maximum radius
 
 	// Calculate offset from interactionInputPoint
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
@@ -588,7 +587,7 @@ void HandleSourceObject(inout Particle particle){
     if (atomicCounter[0] >= maxSourceSpawnRate) return;
 
 	// Create random state for this spawn attempt
-    uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;
+    uint randomState = (uint)((particle.position.x + atomicCounter[0]) * 1000) + (uint)((particle.position.y + atomicCounter[0]) * 1000) + atomicCounter[1] * 982451653; // Seed based on counter[2]: The particle, counter[1]: The frame, the particle position and a random large prime number
 
 	// Select a random source object
 	uint sourceIndex = NextRandom(randomState) % numSourceObjs;
@@ -601,7 +600,7 @@ void HandleSourceObject(inout Particle particle){
 		return;
 
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-	float radius = RandomValue(randomState) * source.radius; // Random distance from center
+	float radius = sqrt(RandomValue(randomState)) * source.radius; // Random distance from center, biased more towards the maximum radius
 
 	// Calculate random position within source circle
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
@@ -820,7 +819,8 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             // Equalizes particle velocities between adjacent particles
             // Skips viscosity calculations for particles with 0 viscosity strength
             // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
-            if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) {
+            //if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) { // The unified kernel doesn't seem to clump without this
+            if (fluidData.viscosityStrength > 0) {
                 float2 neighbourVelocity = neighbourParticle.velocity;
                 viscosityForce += (neighbourVelocity - particle.velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
             }
@@ -862,9 +862,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     particle.velocity += pressureAcceleration * deltaTime;
     
     // [Apply viscosity force]
-    if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) {
-        particle.velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
-    }
+    particle.velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
     
     // [Apply powder forces]
     // Skip if this particle isn't a powder type

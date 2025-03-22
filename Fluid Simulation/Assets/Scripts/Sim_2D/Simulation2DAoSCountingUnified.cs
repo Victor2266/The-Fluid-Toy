@@ -1055,4 +1055,17 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     public void SetThermalBox(ThermalBoxInitializer thermalBox, int index){
         thermalBoxes[index] = thermalBox;
     }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+    public Vector2 getBounds()
+    {
+        return boundsSize;
+    }
+
+    public void setMaxParticles(int newMaxParticles)
+    {
+        maxParticles = newMaxParticles;
+    }
 }
