@@ -30,6 +30,8 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
 
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
     [SerializeField] private GravityMode gravityMode = GravityMode.Normal;
+    [Tooltip("Enables a more even distribution of particle spawns (from source objects only)")]
+    public bool evenlyDistributeParticleSpawns = true;
     public uint maxSourceSpawnRate = 20; // How many particles that can spawn via source per frame
     public uint maxMouseSpawnRate = 40; // The maximum number of particles that can spawn via mouse per frame, the real number is controlled by the interaction strength percent
 
@@ -221,6 +223,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         ComputeHelper.SetBuffer(compute, atomicCounterBuffer, "atomicCounter", SpawnParticlesKernel, updatePositionKernel, updateStateKernel);
 
         compute.SetInt("numParticles", numParticles);
+        compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
         compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
@@ -472,6 +475,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     {
         compute.SetFloat("deltaTime", deltaTime);
         compute.SetVector("boundsSize", boundsSize);
+        compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
