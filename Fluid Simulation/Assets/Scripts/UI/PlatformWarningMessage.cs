@@ -7,6 +7,8 @@ using TMPro;
 /// </summary>
 public class PlatformWarningMessage : MonoBehaviour
 {
+    public GameObject backgroundImage;
+
     [Header("Platform-Specific Messages")]
     [TextArea(3, 5)]
     [Tooltip("Warning message for WebGL builds")]
@@ -52,6 +54,7 @@ public class PlatformWarningMessage : MonoBehaviour
             return;
         }
         
+
         SetAppropriateMessage();
     }
     
@@ -84,6 +87,7 @@ public class PlatformWarningMessage : MonoBehaviour
         if (string.IsNullOrEmpty(message))
         {
             gameObject.SetActive(false);
+            if (backgroundImage != null) backgroundImage.SetActive(false);
         }
     }
 }
