@@ -6,6 +6,9 @@ public class Level3GasControlDial : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     
     public IFluidSimulation sim;
+    public AudioSource burnerSound;
+    public float minVolume = 0;
+    public float maxVolume = 1;
     public int sourceIndex;
     public float minVelo = 0;
     public float maxVelo = 1F;
@@ -23,6 +26,9 @@ public class Level3GasControlDial : MonoBehaviour
 
     void Start()
     {
+        if(burnerSound == null){
+            burnerSound = GetComponent<AudioSource>();
+        }
         if (sim == null){
             simObject = GameObject.FindGameObjectWithTag("Simulation");
             sim = simObject.GetComponent<IFluidSimulation>();
@@ -50,7 +56,7 @@ public class Level3GasControlDial : MonoBehaviour
         }else{
             updateDial();
         }
-        
+        updateSound();
     }
 
     void updateSource(){
@@ -100,5 +106,21 @@ public class Level3GasControlDial : MonoBehaviour
     float Remap(float source, float sourceFrom, float sourceTo, float targetFrom, float targetTo)
     {
 	    return targetFrom + (source-sourceFrom)*(targetTo-targetFrom)/(sourceTo-sourceFrom);
+    }
+
+    void updateSound(){
+        float vol = Remap(currVelo, minVelo, maxVelo, minVolume, maxVolume);
+        if(burnerSound.volume == 0 && vol != 0){
+            burnerSound.volume = vol;
+            burnerSound.Play();
+
+        }else if(vol == 0 && burnerSound.volume != 0){
+            burnerSound.volume = vol;
+            burnerSound.Stop();
+        }else{
+            burnerSound.volume = vol;
+        }
+        
+        
     }
 }

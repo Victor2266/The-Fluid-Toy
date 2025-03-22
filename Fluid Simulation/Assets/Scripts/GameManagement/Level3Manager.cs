@@ -7,34 +7,25 @@ using Random = UnityEngine.Random;
 public class Level3Manager : LevelManager
 {
     [Header("Level References")]
-    public FluidDetector fluidDetector1;
-    public FluidDetector fluidDetector2;
     private IFluidSimulation sim;
     private GameObject simObject;
 
-    [Header("Audio Source")]
-    [SerializeField] private AudioSource gunAudioSource;
-    [SerializeField] private AudioSource barAudioSource;
-    [SerializeField] private AudioSource targetAudioSource;
-    [SerializeField] private AudioSource ambientSFXAudioSource;
-    public bool buttonEnabled = false;
-    public float timeToEnable = 10.0F;
-    public bool enableWin = false;
-    private float TTL;
+    public FluidDetector smokeAlarm;
+    public AudioSource smokeAlarmSound;
+    public float smokeSoundDuration = 5F;
+    public float smokeSoundVolume = 0.2F;
+    private bool soundDisabled = false;
+    private float smokeDetectedTime;
+    private bool smokeDetected;
 
     // Start is called before the first frame update
     void Start()
     {
+        if(smokeAlarm == null || smokeAlarmSound == null){
+            soundDisabled = true;
+        }
         simObject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simObject.GetComponent<IFluidSimulation>();
-        if (fluidDetector1 == null || fluidDetector2 == null) // Auto-find references if not assigned in inspector on start
-        {
-            
-            Debug.LogError("No FluidDetector connected to level manager");
-            enabled = false;
-            return;
-        }
-        TTL = timeToEnable;
     }
 
     // Update is called once per frame
@@ -44,23 +35,13 @@ public class Level3Manager : LevelManager
     {
         if (hasWon) return;
         timer += Time.deltaTime;
-        holdTimer = 0;
-        if (!buttonEnabled){
-            if (fluidDetector1.isFluidPresent){
-                if(TTL <= 0){
-                    buttonEnabled = true;
-                }else{
-                    TTL -= Time.deltaTime;
-                }
-            }else{
-                TTL = timeToEnable;
-            }
-        }else{
-            if(!fluidDetector2.isFluidPresent){
-                enableWin = true;
-            }
+        if(smokeAlarm.isFluidPresent && !smokeDetected){
+            smokeDetected = true;
+            smokeDetectedTime = Time.time;
+            smokeAlarmSound.volume = smokeSoundVolume;
+            smokeAlarmSound.Play();
         }
-
+        toggleSmokeSound();
 
             // // Update background music volume (fixed)
             // if (backgroundMusic != null)
@@ -79,30 +60,17 @@ public class Level3Manager : LevelManager
     }
 
     public void buttonWin(){
-        if(enableWin){
-            hasWon = true;
-        }
+            backgroundMusic.volume = 0.1F;
+            TriggerWin();
     }
 
-	private AudioClip GetRandomSound(List<AudioClip> soundList)
-    {
-        if (soundList == null || soundList.Count == 0)
-        {
-            Debug.LogWarning("No sound clips assigned to the list!");
-            return null;
+    void toggleSmokeSound(){
+        if(!smokeDetected || !smokeAlarmSound.isPlaying) return;
+
+        if(Time.time - smokeDetectedTime > smokeSoundDuration){
+            smokeAlarmSound.Stop();
         }
-
-        int randomIndex = Random.Range(0, soundList.Count);
-        AudioClip randomClip = soundList[randomIndex];
-
-        if (randomClip == null)
-        {
-            Debug.LogWarning("Null audio clip found in the list!");
-        }
-
-        return randomClip;
     }
-
     void OnDestroy()
     {
         

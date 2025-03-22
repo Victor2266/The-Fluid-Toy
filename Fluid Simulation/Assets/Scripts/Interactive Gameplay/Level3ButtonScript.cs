@@ -3,59 +3,70 @@ using UnityEngine;
 
 public class Level3ButtonScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    
-    public IFluidSimulation sim;
-    public int sourceIndex;
-    public float activationValue = 0.1F;
-    public float activationTime;
-    private GameObject simObject;
-    private float clickedTime;
-    private bool clicked;
+    public FluidDetector fluidDetector1;
+    public FluidDetector fluidDetector2;
+    public Gradient gradient;
+    public Color disabledColor;
+    public SpriteRenderer spriteRenderer;
+    public Level3Manager manager;
 
-    private SourceObjectInitializer source;
+    public bool buttonEnabled = false;
+    public float timeToEnable = 10.0F;
+    public bool enableWin = false;
+    private float TTL;
     void Start()
     {
-        if (sim == null){
-            simObject = GameObject.FindGameObjectWithTag("Simulation");
-            sim = simObject.GetComponent<IFluidSimulation>();
+        if(fluidDetector1 == null || fluidDetector2 == null){
+            Debug.LogError("Error fluid detectors not connected to button script");
+        }
+        if(spriteRenderer == null){
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+        if (manager == null){
+            Debug.LogError("Error no manager connected to button script");
         }
     }
 
+    void OnMouseDown()
+    {
+        if(enableWin)
+            manager.buttonWin();
+        
+    }
     void FixedUpdate()
     {
-        if(clicked){
-            if(activationTime != 0){
-                if (Time.time - clickedTime >= activationTime){
-                    deactivateSource();
+        if (!buttonEnabled){
+            if (fluidDetector1.isFluidPresent){
+                if(TTL <= 0){
+                    buttonEnabled = true;
+                }else{
+                    TTL -= Time.deltaTime;
                 }
+            }else{
+                TTL = timeToEnable;
             }
-            
+        }else{
+            if(!fluidDetector2.isFluidPresent){
+                enableWin = true;
+            }
         }
+
+        gradientUpdate();
     }
 
-    void OnMouseOver()
+
+    void gradientUpdate()
     {
-        //add some animation for when hovering over
-        if (Input.GetMouseButtonDown(0)){
-            Debug.Log("Pressed");
-            activateSource();
+        if(!buttonEnabled){
+            spriteRenderer.color = disabledColor;
+        }else{
+            float t = Remap(fluidDetector2.currentDensity, 0, 70, 0, 1);
+            spriteRenderer.color = gradient.Evaluate(t);
         }
     }
 
-    void activateSource(){
-        source = sim.GetSourceObject(sourceIndex);
-        source.spawnRate = activationValue;
-        clicked = true;
-        clickedTime = Time.time;
-        sim.SetSourceObject(source, sourceIndex);
-    }
-
-    void deactivateSource(){
-        source = sim.GetSourceObject(sourceIndex);
-        source.spawnRate = 0;
-        clicked = true;
-        clickedTime = Time.time;
-        sim.SetSourceObject(source, sourceIndex);
+    float Remap(float source, float sourceFrom, float sourceTo, float targetFrom, float targetTo)
+    {
+	    return targetFrom + (source-sourceFrom)*(targetTo-targetFrom)/(sourceTo-sourceFrom);
     }
 }
