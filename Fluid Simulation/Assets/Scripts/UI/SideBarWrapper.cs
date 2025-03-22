@@ -231,12 +231,15 @@ public class SideBarWrapper : MonoBehaviour
     void OnDestroy()
     {
         RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
-        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = null;
+        if (HideBottombarIcon != null){
+            HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        }
         CanvasGroup bottomBarCanvasGroup = bottomBarParent.GetComponent<CanvasGroup>();
 
         // Kill exising animations
         DOTween.Kill(bottomBarRect);
-        DOTween.Kill(HideBottombarIconRect);
+        if (HideBottombarIconRect != null) DOTween.Kill(HideBottombarIconRect);
         DOTween.Kill(bottomBarCanvasGroup);
     }
 }
