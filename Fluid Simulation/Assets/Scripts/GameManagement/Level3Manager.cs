@@ -35,7 +35,7 @@ public class Level3Manager : LevelManager
     {
         if (hasWon) return;
         timer += Time.deltaTime;
-        if(smokeAlarm.isFluidPresent && !smokeDetected){
+        if(!soundDisabled && smokeAlarm.isFluidPresent && !smokeDetected){
             smokeDetected = true;
             smokeDetectedTime = Time.time;
             smokeAlarmSound.volume = smokeSoundVolume;
@@ -65,6 +65,7 @@ public class Level3Manager : LevelManager
     }
 
     void toggleSmokeSound(){
+        if(soundDisabled) return;
         if(!smokeDetected || !smokeAlarmSound.isPlaying) return;
 
         if(Time.time - smokeDetectedTime > smokeSoundDuration){
