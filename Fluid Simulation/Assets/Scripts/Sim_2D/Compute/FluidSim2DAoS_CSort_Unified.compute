@@ -561,10 +561,9 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to maxMo
 	if (atomicCounter[2] >= maxMouseSpawnRate) {
 		return;
 	}
-
-	uint randomState = (atomicCounter[2] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+    uint randomState = (uint)((particle.position.x + atomicCounter[2]) * 1000) + (uint)((particle.position.y + atomicCounter[2]) * 1000) + atomicCounter[1] * 982451653; // Seed based on counter[2]: The particle, counter[1]: The frame, the particle position and a random large prime number
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-	float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
+	float radius = sqrt(RandomValue(randomState)) * interactionInputRadius; // Random distance from center, biased more towards the maximum radius
 
 	// Calculate offset from interactionInputPoint
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
@@ -588,7 +587,7 @@ void HandleSourceObject(inout Particle particle){
     if (atomicCounter[0] >= maxSourceSpawnRate) return;
 
 	// Create random state for this spawn attempt
-    uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;
+    uint randomState = (uint)((particle.position.x + atomicCounter[0]) * 1000) + (uint)((particle.position.y + atomicCounter[0]) * 1000) + atomicCounter[1] * 982451653; // Seed based on counter[2]: The particle, counter[1]: The frame, the particle position and a random large prime number
 
 	// Select a random source object
 	uint sourceIndex = NextRandom(randomState) % numSourceObjs;
@@ -601,7 +600,7 @@ void HandleSourceObject(inout Particle particle){
 		return;
 
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-	float radius = RandomValue(randomState) * source.radius; // Random distance from center
+	float radius = sqrt(RandomValue(randomState)) * source.radius; // Random distance from center
 
 	// Calculate random position within source circle
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
