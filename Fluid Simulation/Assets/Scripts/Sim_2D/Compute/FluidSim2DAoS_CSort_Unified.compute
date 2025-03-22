@@ -820,7 +820,8 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             // Equalizes particle velocities between adjacent particles
             // Skips viscosity calculations for particles with 0 viscosity strength
             // If the density is too high, skip viscosity, it's probably clumped together, this lets it separate again.
-            if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) {
+            //if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) { // The unified kernel doesn't seem to clump without this
+            if (fluidData.viscosityStrength > 0) {
                 float2 neighbourVelocity = neighbourParticle.velocity;
                 viscosityForce += (neighbourVelocity - particle.velocity) * ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
             }
@@ -862,9 +863,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     particle.velocity += pressureAcceleration * deltaTime;
     
     // [Apply viscosity force]
-    if (fluidData.viscosityStrength > 0 && !(particle.density[0] > fluidData.targetDensity * 32)) {
-        particle.velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
-    }
+    particle.velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
     
     // [Apply powder forces]
     // Skip if this particle isn't a powder type
