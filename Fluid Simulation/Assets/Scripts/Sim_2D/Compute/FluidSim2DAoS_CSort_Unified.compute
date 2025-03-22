@@ -600,7 +600,7 @@ void HandleSourceObject(inout Particle particle){
 		return;
 
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-	float radius = sqrt(RandomValue(randomState)) * source.radius; // Random distance from center
+	float radius = sqrt(RandomValue(randomState)) * source.radius; // Random distance from center, biased more towards the maximum radius
 
 	// Calculate random position within source circle
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
