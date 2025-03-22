@@ -111,6 +111,7 @@ const float interactionInputRadius;
 const float maxSmoothingRadius;
 const float globalEntropyRate;
 const float roomTemperature;
+const bool evenlyDistributedSpawns;
 
 int numBoxColliders;
 int numCircleColliders;
@@ -600,8 +601,16 @@ void HandleSourceObject(inout Particle particle){
 		return;
 
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
-	float radius = sqrt(RandomValue(randomState)) * source.radius; // Random distance from center, biased more towards the maximum radius
-
+    float radius;
+    if (evenlyDistributedSpawns)
+    {
+        radius = sqrt(RandomValue(randomState)) * source.radius; // Random distance from center, biased more towards the maximum radius
+    }   
+    else
+    {
+        radius = RandomValue(randomState) * source.radius;
+    }
+        
 	// Calculate random position within source circle
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
 	float2 spawnPos = source.pos + offset;
