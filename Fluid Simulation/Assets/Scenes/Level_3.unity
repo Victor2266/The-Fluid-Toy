@@ -2455,10 +2455,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableSourceUpdate: 0
   fluidDetector: {fileID: 2004694910}
   sound: {fileID: 422608363}
   targetVolume: 0.3
+  disableSourceUpdate: 0
   sourceIndex: 6
   activationValue: 0.2
   activationTime: 5
@@ -2474,10 +2474,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableSourceUpdate: 0
   fluidDetector: {fileID: 2004694910}
   sound: {fileID: 0}
   targetVolume: 0.3
+  disableSourceUpdate: 0
   sourceIndex: 7
   activationValue: 0.2
   activationTime: 5
@@ -5408,10 +5408,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableSourceUpdate: 0
   fluidDetector: {fileID: 1438465182}
   sound: {fileID: 0}
   targetVolume: 0.3
+  disableSourceUpdate: 0
   sourceIndex: 0
   activationValue: 0
   activationTime: 0
@@ -5444,10 +5444,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableSourceUpdate: 0
   fluidDetector: {fileID: 1834107471}
   sound: {fileID: 0}
   targetVolume: 0.3
+  disableSourceUpdate: 0
   sourceIndex: 0
   activationValue: 0
   activationTime: 0
@@ -6130,10 +6130,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableSourceUpdate: 0
   fluidDetector: {fileID: 1834107471}
   sound: {fileID: 911957036}
   targetVolume: 0.3
+  disableSourceUpdate: 0
   sourceIndex: 2
   activationValue: 0.5
   activationTime: 10
@@ -8062,7 +8062,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 264430843}
-  - {fileID: 1428528239}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1030527995
@@ -8077,7 +8076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bc89e62f3adbb945bdeb74977b774b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fluidDetector1: {fileID: 1428528240}
+  fluidDetector1: {fileID: 1834107471}
   fluidDetector2: {fileID: 264430844}
   gradient:
     serializedVersion: 2
@@ -9336,7 +9335,7 @@ MonoBehaviour:
   minThermal: 22
   maxThermal: 200
   heatingSpeed: 5
-  dialThreshold: 3
+  dialThreshold: 5
 --- !u!212 &1187910115
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10741,58 +10740,6 @@ MonoBehaviour:
     transform: {fileID: 1422328853}
     temperature: 500
     conductivity: 16
---- !u!1 &1428528238
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1428528239}
-  - component: {fileID: 1428528240}
-  m_Layer: 0
-  m_Name: Fluid Detector (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1428528239
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428528238}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.9099994, y: 9.64, z: 1.8135037}
-  m_LocalScale: {x: 1.1875, y: 2.2, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1030527994}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1428528240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428528238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6dba1f9b3821b84f94671ee52db88ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isManagedSensor: 0
-  densityThreshold: 1
-  checkInterval: 0.1
-  detectionRadius: 1.42
-  showDebugGizmos: 1
-  showDebugLogs: 0
-  showDensityValue: 1
-  densityDisplayOffset: {x: 0, y: 124.6}
 --- !u!1 &1431660825
 GameObject:
   m_ObjectHideFlags: 0
@@ -13798,10 +13745,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableSourceUpdate: 0
   fluidDetector: {fileID: 1834107471}
   sound: {fileID: 1591066379}
   targetVolume: 0.3
+  disableSourceUpdate: 0
   sourceIndex: 8
   activationValue: 0.5
   activationTime: 10
@@ -15162,10 +15109,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6978623ea6b7c554fb2ac1c7a6386d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableSourceUpdate: 0
   fluidDetector: {fileID: 1834107471}
   sound: {fileID: 1936932725}
   targetVolume: 0.3
+  disableSourceUpdate: 0
   sourceIndex: 1
   activationValue: 0.5
   activationTime: 10

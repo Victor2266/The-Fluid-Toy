@@ -1,22 +1,29 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class Level3DetectionScript : MonoBehaviour
+public class PuzzleLevelDetectionScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public bool disableSourceUpdate = false;
+    [Header("Level References")]
     public IFluidSimulation sim;
     public FluidDetector fluidDetector;
+
+    [Header("Activation sound settings")]
     public AudioSource sound;
     public float targetVolume = 0.3F;
+
+    [Header("Source control settings")]
+    public bool disableSourceUpdate = false;
     public int sourceIndex;
     public float activationValue = 0.1F;
     public float activationTime;
+    
     private float toggledTime;
     private GameObject simObject;
     private bool activated;
     private SourceObjectInitializer source;
     private bool soundDisabled = false;
+
+
     void Start()
     {
         if (sound == null){
@@ -27,10 +34,14 @@ public class Level3DetectionScript : MonoBehaviour
             sim = simObject.GetComponent<IFluidSimulation>();
         }
         if(fluidDetector == null && disableSourceUpdate == false){
-            Debug.LogError("No fluid detector connected");
+            Debug.LogError("No fluid detector connected to Detection script");
         }
     }
 
+    /// <summary>
+    /// Activates or deactivates fluid source based on fluid detector value.
+    /// Deactivation can occur after <param name="activationTime"></param> or never if activationTime set to 0
+    /// </summary>
     void FixedUpdate()
     {
         if(!activated){
@@ -53,6 +64,10 @@ public class Level3DetectionScript : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// If disableSourceUpdate is false, acctivates source indexed by sourceIndex with specified spawnrate and starts sound effect.
+    /// Else only starts sound effect.
+    /// </summary>
     void activateSource(){
         if(disableSourceUpdate){
             startSound();
@@ -66,6 +81,10 @@ public class Level3DetectionScript : MonoBehaviour
         startSound();
     }
 
+    /// <summary>
+    /// If disableSourceUpdate is false, deactivates source indexed by sourceIndex with specified spawnrate and stops sound effect.
+    /// Else only stops sound effect.
+    /// </summary>
     void deactivateSource(){
         if(disableSourceUpdate){
             stopSound();
@@ -78,6 +97,9 @@ public class Level3DetectionScript : MonoBehaviour
         stopSound();
     }
 
+    /// <summary>
+    /// If soundDisabled is false, starts sound playback at specified volume.
+    /// </summary>
     void startSound(){
         if(soundDisabled) return;
 
@@ -85,6 +107,9 @@ public class Level3DetectionScript : MonoBehaviour
         sound.Play();
     }
 
+    /// <summary>
+    /// If soundDisabled is false, stops sound playback and sets volume to 0.
+    /// </summary>
     void stopSound(){
         if(soundDisabled) return;
         sound.volume = 0;

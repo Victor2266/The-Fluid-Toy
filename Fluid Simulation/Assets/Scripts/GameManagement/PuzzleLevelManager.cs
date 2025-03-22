@@ -4,21 +4,21 @@ using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Level3Manager : LevelManager
+public class PuzzleLevelManager : LevelManager
 {
     [Header("Level References")]
     private IFluidSimulation sim;
     private GameObject simObject;
-
     public FluidDetector smokeAlarm;
     public AudioSource smokeAlarmSound;
+    
+    [Header("Smoke alarm sound settings")]
     public float smokeSoundDuration = 5F;
     public float smokeSoundVolume = 0.2F;
     private bool soundDisabled = false;
     private float smokeDetectedTime;
     private bool smokeDetected;
 
-    // Start is called before the first frame update
     void Start()
     {
         if(smokeAlarm == null || smokeAlarmSound == null){
@@ -28,42 +28,34 @@ public class Level3Manager : LevelManager
         sim = simObject.GetComponent<IFluidSimulation>();
     }
 
-    // Update is called once per frame
-    // This script will check for the win conditions
-    // this can be customized for each level
     void FixedUpdate()
     {
         if (hasWon) return;
         timer += Time.deltaTime;
+
+        //Smoke Detector sound effect handled by level manager
         if(!soundDisabled && smokeAlarm.isFluidPresent && !smokeDetected){
             smokeDetected = true;
             smokeDetectedTime = Time.time;
             smokeAlarmSound.volume = smokeSoundVolume;
             smokeAlarmSound.Play();
         }
+        //check and update smoke sound on fixed update
         toggleSmokeSound();
 
-            // // Update background music volume (fixed)
-            // if (backgroundMusic != null)
-            // {
-            //     float percentageComplete = (float)targetHits / (float)totalTargetHitsNeeded;
-            //     float fadeStartThreshold = 0.75f;
-
-            //     if (percentageComplete >= fadeStartThreshold)
-            //     {
-            //         float fadeProgress = (percentageComplete - fadeStartThreshold) / (1f - fadeStartThreshold);
-            //         fadeProgress = Mathf.Clamp01(fadeProgress);
-            //         backgroundMusic.volume = Mathf.Lerp(initialMusicVolume, 0f, fadeProgress);
-            //         ambientSFXAudioSource.volume = Mathf.Lerp(initialMusicVolume, 0f, fadeProgress);
-            //     }
-            // }
     }
 
+    /// <summary>
+    /// called by win button to trigger level win animation, sets bgm volume to 0.1
+    /// </summary>
     public void buttonWin(){
             backgroundMusic.volume = 0.1F;
             TriggerWin();
     }
 
+    /// <summary>
+    /// Toggles smoke sound effect off based on smokeSoundDuration
+    /// </summary>
     void toggleSmokeSound(){
         if(soundDisabled) return;
         if(!smokeDetected || !smokeAlarmSound.isPlaying) return;
@@ -71,9 +63,5 @@ public class Level3Manager : LevelManager
         if(Time.time - smokeDetectedTime > smokeSoundDuration){
             smokeAlarmSound.Stop();
         }
-    }
-    void OnDestroy()
-    {
-        
     }
 }
