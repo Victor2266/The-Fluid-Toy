@@ -13149,7 +13149,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4592926617858281530, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: '<b>Level 3</b>
+      value: '<b>Level __</b>
 
 
 '
@@ -13244,15 +13244,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: 'Hint:
-
-        Use the left and right mouse buttons
-
-        to move
-        the fluid around
+      value: 'Move the green water gates and red valves to win the level.
 
 
-        Try to fill up the cup!'
+
+        Hint:
+        How do you create smoke with water?'
       objectReference: {fileID: 0}
     - target: {fileID: 5956592469553698964, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
@@ -13471,6 +13468,10 @@ PrefabInstance:
     - target: {fileID: 7694538204002005048, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7723421981990690167, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -48.6
       objectReference: {fileID: 0}
     - target: {fileID: 7740778838992167872, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
