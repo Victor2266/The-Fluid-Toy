@@ -26,7 +26,9 @@ public enum FluidType {
     Gas_Fire,
     Hot_Stone,
     Magma,
-    Stone
+    Stone,
+    Cement,
+    Concrete
 }
 
 public enum VisualStyle

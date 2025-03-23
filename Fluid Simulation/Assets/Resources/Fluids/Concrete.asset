@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
-  m_Name: Stone
+  m_Name: Concrete
   m_EditorClassIdentifier: 
-  fluidType: 20
+  fluidType: 22
   gravity: -14
   collisionDamping: 0
   smoothingRadius: 0.35
   targetDensity: 64
   pressureMultiplier: 500
   nearPressureMultiplier: 64
-  viscosityStrength: 0.1
+  viscosityStrength: 0
   startTemperature: 22
-  thermalDiffusivity: 2.86
+  thermalDiffusivity: 64
   boilState: 19
   boilTemp: 700
-  freezeState: 20
+  freezeState: 22
   freezeTemp: 0
-  friction: 0.2
+  friction: 22222
   entropyTarget: 11111
   visualParams:
     style: 4
@@ -60,11 +60,11 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    visualScale: 0.13
+    visualScale: 0.16
     baseOpacity: 1
     noiseScale: 0
     timeScale: 0
     glowIntensity: 0
     glowFalloff: 0
-    minPropertyValue: 400
+    minPropertyValue: 300
     maxPropertyValue: 700

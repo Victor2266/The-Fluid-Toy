@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
-  m_Name: Stone
+  m_Name: Cement
   m_EditorClassIdentifier: 
-  fluidType: 20
+  fluidType: 21
   gravity: -14
   collisionDamping: 0
   smoothingRadius: 0.35
-  targetDensity: 64
+  targetDensity: 72
   pressureMultiplier: 500
   nearPressureMultiplier: 64
   viscosityStrength: 0.1
@@ -24,15 +24,15 @@ MonoBehaviour:
   thermalDiffusivity: 2.86
   boilState: 19
   boilTemp: 700
-  freezeState: 20
+  freezeState: 21
   freezeTemp: 0
-  friction: 0.2
+  friction: 11111
   entropyTarget: 11111
   visualParams:
     style: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 1}
+      key0: {r: 0.7372549, g: 0.6862745, b: 0.5529412, a: 1}
       key1: {r: 0.6792453, g: 0.2619946, b: 0, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -60,7 +60,7 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    visualScale: 0.13
+    visualScale: 0.17
     baseOpacity: 1
     noiseScale: 0
     timeScale: 0

@@ -875,7 +875,18 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     
     // [Apply powder forces]
     // Skip if this particle isn't a powder type
-    if (fluidData.friction > 0) {
+    if (fluidData.friction == 11111.0f) {
+        if (abs(particle.velocity.y) < 0.1) {
+            // This value is for powders at rest and 90% of target density
+            particle.velocity *= 0.1;
+        } else {
+            particle.velocity *= 0.9;
+        }
+    }
+    else if (fluidData.friction == 22222.0f) { // Non-moving but with foam expansion
+        particle.velocity *= 0.1;
+    }
+    else if (fluidData.friction > 0) {
         particle.velocity += frictionForce * deltaTime;
         
         // Additional powder behavior
