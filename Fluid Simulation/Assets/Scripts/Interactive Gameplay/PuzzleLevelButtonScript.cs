@@ -21,7 +21,12 @@ public class PuzzleLevelButtonScript : MonoBehaviour
     public bool buttonEnabled = false;
     public float timeToEnable = 10.0F;
     public bool enableWin = false;
+
+    [Header("Sliding Distance for Appearance")]
+    public float slidingDistance = 3F;
     private float TTL;
+    private Vector3 startingPosition;
+    private Vector3 endingPosition;
 
     void Start()
     {
@@ -37,6 +42,9 @@ public class PuzzleLevelButtonScript : MonoBehaviour
         }
         //set sprite color
         gradientUpdate();
+        startingPosition = transform.position;
+        endingPosition = startingPosition;
+        endingPosition.x -= slidingDistance;
     }
 
     /// <summary>
@@ -62,6 +70,7 @@ public class PuzzleLevelButtonScript : MonoBehaviour
                 if(TTL <= 0){
                     buttonEnabled = true;
                 }else{
+                    SlideLeft();
                     TTL -= Time.deltaTime;
                 }
             }else{
@@ -71,6 +80,7 @@ public class PuzzleLevelButtonScript : MonoBehaviour
             if(!fluidDetector2.isFluidPresent){
                 enableWin = true;
             }
+            
             gradientUpdate();
         }
 
@@ -87,6 +97,12 @@ public class PuzzleLevelButtonScript : MonoBehaviour
         }else{
             float t = Remap(fluidDetector2.currentDensity, 0, 70, 0, 1);
             spriteRenderer.color = gradient.Evaluate(t);
+        }
+    }
+
+    void SlideLeft(){
+        if(transform.position.x != endingPosition.x){
+            transform.position = Vector3.Lerp(transform.position, endingPosition, 0.02F / 10);
         }
     }
 

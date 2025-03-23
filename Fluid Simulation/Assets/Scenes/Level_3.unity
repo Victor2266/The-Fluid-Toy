@@ -8321,7 +8321,7 @@ Transform:
   m_GameObject: {fileID: 1030527991}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.47, y: -0.29722476, z: -0.96499634}
+  m_LocalPosition: {x: 8.87, y: -0.29722476, z: -0.96499634}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8372,12 +8372,13 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  disabledColor: {r: 0.254717, g: 0.22467962, b: 0.22467962, a: 1}
+  disabledColor: {r: 0.8862746, g: 0.003921569, b: 0.04705883, a: 1}
   spriteRenderer: {fileID: 1030527993}
   manager: {fileID: 105816479}
   buttonEnabled: 0
   timeToEnable: 10
   enableWin: 0
+  slidingDistance: 3
 --- !u!1 &1050520277
 GameObject:
   m_ObjectHideFlags: 0
@@ -13369,7 +13370,7 @@ PrefabInstance:
       propertyPath: m_text
       value: '
 
-        Get to the End (placeholder)'
+        Solve the Puzzle!'
       objectReference: {fileID: 0}
     - target: {fileID: 6805873491615882965, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontSize
