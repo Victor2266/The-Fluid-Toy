@@ -141,6 +141,9 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     private const float MAX_DELTA_TIME = 1f / 30f; // Maximum allowed delta time
     private const float FIXED_TIME_STEP = 1f / 120f; // Your desired fixed time step
 
+    // For complex readback
+    private bool _readbackPending;
+
     void Start()
     {
         // Debug.Log(System.Runtime.InteropServices.Marshal.SizeOf(typeof(SourceObjectInitializer))); //This prints the size of the typeof(struct)
@@ -1058,5 +1061,31 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     public void setMaxParticles(int newMaxParticles)
     {
         maxParticles = newMaxParticles;
+    }
+
+    public void RequestReadback(Action<Particle[]> callback)
+    {
+        if (_readbackPending || _particleBuffer == null)
+        {
+            callback?.Invoke(null);
+            return;
+        }
+
+        _readbackPending = true;
+        AsyncGPUReadback.Request(_particleBuffer, request =>
+        {
+            _readbackPending = false;
+
+            if (request.hasError)
+            {
+                Debug.LogError("Readback failed");
+                callback?.Invoke(null);
+                return;
+            }
+
+            Particle[] data = new Particle[_particleBuffer.count];
+            request.GetData<Particle>().CopyTo(data);
+            callback?.Invoke(data);
+        });
     }
 }

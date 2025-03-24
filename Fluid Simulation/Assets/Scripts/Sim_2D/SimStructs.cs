@@ -6,8 +6,8 @@ using UnityEngine;
 
 //Defining Structs
 [System.Serializable]
-[StructLayout(LayoutKind.Sequential, Size = 40)]
-public struct Particle // 40 bytes total
+[StructLayout(LayoutKind.Sequential, Size = 44)]
+public struct Particle // 44 bytes total
 {
     public float2 density; //8 bytes, density and near density
     public Vector2 velocity; //8 bytes
@@ -15,6 +15,7 @@ public struct Particle // 40 bytes total
     public Vector2 position; // 8
     public float temperature; // 4
     public FluidType type; // 4 (enum is int by default)
+    public int objectId; // For virtual particles only
 }
 
 [System.Serializable]

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Linq;
 
 public class VirtualParticleManager : MonoBehaviour
 {
@@ -13,13 +14,22 @@ public class VirtualParticleManager : MonoBehaviour
     [Tooltip("Starting temperature of virtual particles")]
     public float startTemp = 22f;
 
+    [Header("Update settings")]
+    [Tooltip("Update each frame")]
+    public bool updateEachFrame = true;
+    [Tooltip("Update interval")]
+    public float updateInterval = 0.1f;
+
     [Header("Managed entities")]
+    // NOTE: Do not modify ordering in real-time, as index order at init is used to keep track of which particle array belongs to which object
     public Rigidbody2D[] rigidbodyObjects; // Array of Rigidbody objects
     private Particle[][] virtualParticles; // Array to store virtual particles for each Rigidbody
 
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
     private Vector2[][] virtualParticleForces; // Virtual forces
+    private float nextUpdate;
+    private bool isRequestMade = false;
 
     void Start()
     {
@@ -34,12 +44,13 @@ public class VirtualParticleManager : MonoBehaviour
         }
         if (scanOnStart)
         {
-            // FIXME ADD FILTERING FOR NON-BUOYANT OBJECTS
             rigidbodyObjects = FindObjectsByType<Rigidbody2D>(FindObjectsSortMode.None);
-            foreach (Rigidbody2D rBody in rigidbodyObjects)
+            // FIXME ADD FILTERING FOR NON-BUOYANT OBJECTS, if desired (will need a flag somewhere; may require wrapping RigidBody2D in some class)
+            /*foreach (Rigidbody2D rBody in rigidbodyObjects)
             {
+                // Set flags here as needed, if above is ever done
                 //fSense.isManagedSensor = true;
-            }
+            }*/
         }
 
         // Initialize virtual particles for each Rigidbody
@@ -48,33 +59,68 @@ public class VirtualParticleManager : MonoBehaviour
         for (int i = 0; i < rigidbodyObjects.Length; i++)
         {
             // Generate particles as well as force vectors for each particle
-            virtualParticles[i] = GenerateVirtualParticles(rigidbodyObjects[i], particlesPerObject, particleSpacing);
-            virtualParticleForces[i] = new Vector2[particlesPerObject];
+            //  virtualParticles[i] may be null iff the collider reference in rigidbodyObjects[i] is null. In this case, we skip over the object
+            virtualParticles[i] = GenerateVirtualParticles(rigidbodyObjects[i], particlesPerObject, particleSpacing, i+1);
+            if (virtualParticles[i] == null) {
+                virtualParticleForces[i] = null;
+            } else {
+                virtualParticleForces[i] = new Vector2[particlesPerObject];
+            }
         }
+
+        // Do cleanup - delete any null entries and remove rigidybodyObject with invalid (null) collider references
+        rigidbodyObjects = rigidbodyObjects.Where(x => x.GetComponent<Collider2D>() != null).ToArray();
+        virtualParticles = virtualParticles.Where(x => x != null).ToArray();
+        virtualParticleForces = virtualParticleForces.Where(x => x != null).ToArray();
+
+        // Particle data is taken in by the sim via getVirtualParticles() call inside the simulation script
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        // Update virtual particle positions based on Rigidbody transforms
-        for (int i = 0; i < rigidbodyObjects.Length; i++)
+        if (updateEachFrame || Time.time >= nextUpdate)
         {
-            UpdateVirtualParticles(rigidbodyObjects[i], virtualParticles[i]);
-        }
+            if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid())
+                return; // Early return
 
-        // Pass virtual particle data to your HLSL-based fluid simulation
-        SendVirtualParticlesToFluidSimulation(virtualParticles);
+            if (!isRequestMade) // Wait for outstanding requests first
+            {
+                // FIXME FIXME README
+                // Implement formal async readback handling on simulation script, or else we will have coherency issues.
+                // Async read
+                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), request =>
+                {
+                    if (!request.hasError)
+                    {
+                        Particle [] p
+                        fluidSimulation.GetParticleBuffer().SetData(newData); // Safe to upload now
+                    }
+                });
 
-        // Retrieve forces from the fluid simulation (this is just a placeholder)
-        RetrieveForcesFromFluidSimulation(virtualParticleForces);
+                // Async write
+                AsyncGPUWrite
 
-        // Apply forces to the Rigidbody
-        for (int i = 0; i < rigidbodyObjects.Length; i++)
-        {
-            ApplyForcesToRigidbody(rigidbodyObjects[i], virtualParticles[i], virtualParticleForces[i]);
+                // Update virtual particle positions based on Rigidbody transforms
+                for (int i = 0; i < rigidbodyObjects.Length; i++)
+                {
+                    UpdateVirtualParticles(rigidbodyObjects[i], virtualParticles[i]);
+                }
+
+                // Async read from simulation.
+                RetrieveForcesFromFluidSimulation(virtualParticleForces);
+
+                // Apply forces to the Rigidbody
+                for (int i = 0; i < rigidbodyObjects.Length; i++)
+                {
+                    ApplyForcesToRigidbody(rigidbodyObjects[i], virtualParticles[i], virtualParticleForces[i]);
+                }
+                SendVirtualParticlesToFluidSimulation(virtualParticles); // Update in simulation
+            }
+            if (!updateEachFrame) nextUpdate = Time.time + updateInterval;
         }
     }
 
-    private Particle[] GenerateVirtualParticles(Rigidbody2D rb, int count, float spacing)
+    private Particle[] GenerateVirtualParticles(Rigidbody2D rb, int count, float spacing, int objectId)
     {
         // Generate virtual particles for a Rigidbody
         Collider2D collider = rb.GetComponent<Collider2D>();
@@ -84,15 +130,15 @@ public class VirtualParticleManager : MonoBehaviour
         // Handle different colliders
         if (collider is PolygonCollider2D polyCollider)
         {
-            return GenerateForPolygonCollider(polyCollider, count);
+            return GenerateForPolygonCollider(polyCollider, count, objectId);
         }
         else if (collider is BoxCollider2D boxCollider)
         {
-            return GenerateForBoxCollider(boxCollider, count);
+            return GenerateForBoxCollider(boxCollider, count, objectId);
         }
         else if (collider is CircleCollider2D circleCollider)
         {
-            return GenerateForCircleCollider(circleCollider, count);
+            return GenerateForCircleCollider(circleCollider, count, objectId);
         }
 
 
@@ -176,10 +222,24 @@ public class VirtualParticleManager : MonoBehaviour
         rb.AddTorque(totalTorque);
     }
 
+    public Particle[][] getVirtualParticles()
+    {
+        return this.virtualParticles; // Getter for Simulation-side handling
+    }
+    
+    void OnDestroy()
+    {
+        if (isRequestMade)
+        {
+            AsyncGPUReadback.WaitAllRequests();
+        }
+
+    }
+
     // ==============================
     // Collider type generators below
     // ==============================
-    private Particle[] GenerateForPolygonCollider(PolygonCollider2D collider, int count)
+    private Particle[] GenerateForPolygonCollider(PolygonCollider2D collider, int count, int objectId)
     {
         Particle[] particles = new Particle[count];
         Vector2[] points = collider.points; // Get local space points
@@ -231,14 +291,15 @@ public class VirtualParticleManager : MonoBehaviour
             {
                 type = FluidType.VirtualParticle,
                 temperature = this.startTemp,
-                position = worldPosition
+                position = worldPosition,
+                objectId = objectId
             };
         }
 
         return particles;
     }
 
-    private Particle[] GenerateForBoxCollider(BoxCollider2D collider, int count)
+    private Particle[] GenerateForBoxCollider(BoxCollider2D collider, int count, int objectId)
     {
         Particle[] particles = new Particle[count];
         Vector2 size = collider.size;
@@ -282,14 +343,15 @@ public class VirtualParticleManager : MonoBehaviour
             {
                 type = FluidType.VirtualParticle,
                 temperature = this.startTemp,
-                position = worldPosition
+                position = worldPosition,
+                objectId = objectId
             };
         }
 
         return particles;
     }
 
-    private Particle[] GenerateForCircleCollider(CircleCollider2D collider, int count)
+    private Particle[] GenerateForCircleCollider(CircleCollider2D collider, int count, int objectId)
     {
         Particle[] particles = new Particle[count];
         float radius = collider.radius;
@@ -311,7 +373,8 @@ public class VirtualParticleManager : MonoBehaviour
             {
                 type = FluidType.VirtualParticle,
                 temperature = this.startTemp,
-                position = worldPosition
+                position = worldPosition,
+                objectId = objectId
             };
         }
 
