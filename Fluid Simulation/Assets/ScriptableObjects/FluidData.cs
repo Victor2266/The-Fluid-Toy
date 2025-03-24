@@ -28,7 +28,7 @@ public enum FluidType {
     Magma,
     Stone,
     Cement,
-    Concrete
+    VirtualParticle
 }
 
 public enum VisualStyle
