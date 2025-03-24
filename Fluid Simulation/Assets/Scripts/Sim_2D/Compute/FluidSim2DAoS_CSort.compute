@@ -1120,6 +1120,7 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
+	if (particle.type == -1) return; // Skip virtual particles
 
     // Get fluid data for this particle
     int fluidIndex = GetFluidTypeIndexFromID(particle.type);

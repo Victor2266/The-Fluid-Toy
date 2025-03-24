@@ -10,6 +10,8 @@ public class VirtualParticleManager : MonoBehaviour
     public float particleSpacing = 0.1f; // Spacing between virtual particles
     [Tooltip("Automatically adds rigidbodies to this manager on start")]
     public bool scanOnStart = true;
+    [Tooltip("Starting temperature of virtual particles")]
+    public float startTemp = 22f;
 
     [Header("Managed entities")]
     public Rigidbody2D[] rigidbodyObjects; // Array of Rigidbody objects
@@ -45,10 +47,12 @@ public class VirtualParticleManager : MonoBehaviour
         virtualParticleForces = new Vector2[rigidbodyObjects.Length][];
         for (int i = 0; i < rigidbodyObjects.Length; i++)
         {
+            // Generate particles as well as force vectors for each particle
             virtualParticles[i] = GenerateVirtualParticles(rigidbodyObjects[i], particlesPerObject, particleSpacing);
             virtualParticleForces[i] = new Vector2[particlesPerObject];
         }
     }
+
     void FixedUpdate()
     {
         // Update virtual particle positions based on Rigidbody transforms
@@ -70,30 +74,29 @@ public class VirtualParticleManager : MonoBehaviour
         }
     }
 
-    // Generate virtual particles for a Rigidbody
     private Particle[] GenerateVirtualParticles(Rigidbody2D rb, int count, float spacing)
     {
-        Particle[] particles = new Particle[count];
-        Bounds bounds = rb.GetComponent<Collider>().bounds; // Use the Collider bounds to generate particles
+        // Generate virtual particles for a Rigidbody
+        Collider2D collider = rb.GetComponent<Collider2D>();
 
-        for (int i = 0; i < count; i++)
+        if (collider == null) return null; // Null return on null collider
+
+        // Handle different colliders
+        if (collider is PolygonCollider2D polyCollider)
         {
-            // Generate particles within the bounds of the Rigidbody's Collider
-            Vector2 position = new Vector2(
-                Random.Range(bounds.min.x, bounds.max.x),
-                Random.Range(bounds.min.y, bounds.max.y)
-            );
-
-            // Create a new Particle and set its position
-            particles[i] = new Particle
-            {
-                type = FluidType.VirtualParticle,
-                temperature = 22f,
-                position = position
-            };
+            return GenerateForPolygonCollider(polyCollider, count);
+        }
+        else if (collider is BoxCollider2D boxCollider)
+        {
+            return GenerateForBoxCollider(boxCollider, count);
+        }
+        else if (collider is CircleCollider2D circleCollider)
+        {
+            return GenerateForCircleCollider(circleCollider, count);
         }
 
-        return particles;
+
+        return null; // Fall-thru, null return
     }
 
     // Update virtual particle positions based on the Rigidbody's transform
@@ -171,5 +174,147 @@ public class VirtualParticleManager : MonoBehaviour
         // Apply the total force and torque to the Rigidbody
         rb.AddForce(totalForce);
         rb.AddTorque(totalTorque);
+    }
+
+    // ==============================
+    // Collider type generators below
+    // ==============================
+    private Particle[] GenerateForPolygonCollider(PolygonCollider2D collider, int count)
+    {
+        Particle[] particles = new Particle[count];
+        Vector2[] points = collider.points; // Get local space points
+        float totalLength = 0f;
+
+        // Calculate total perimeter length
+        for (int i = 0; i < points.Length; i++)
+        {
+            Vector2 current = points[i];
+            Vector2 next = points[(i + 1) % points.Length];
+            totalLength += Vector2.Distance(current, next);
+        }
+
+        float spacing = totalLength / count;
+        float currentDistance = 0f;
+        int edgeIndex = 0;
+        float edgeProgress = 0f;
+
+        for (int i = 0; i < count; i++)
+        {
+            float targetDistance = i * spacing;
+
+            // Find which edge this particle should be on
+            while (currentDistance < targetDistance && edgeIndex < points.Length)
+            {
+                Vector2 current = points[edgeIndex];
+                Vector2 next = points[(edgeIndex + 1) % points.Length];
+                float edgeLength = Vector2.Distance(current, next);
+
+                if (currentDistance + edgeLength >= targetDistance)
+                {
+                    edgeProgress = (targetDistance - currentDistance) / edgeLength;
+                    break;
+                }
+
+                currentDistance += edgeLength;
+                edgeIndex++;
+            }
+
+            // Get the two points of the current edge
+            Vector2 p1 = points[edgeIndex];
+            Vector2 p2 = points[(edgeIndex + 1) % points.Length];
+
+            // Interpolate between them
+            Vector2 localPosition = Vector2.Lerp(p1, p2, edgeProgress);
+            Vector2 worldPosition = collider.transform.TransformPoint(localPosition);
+
+            particles[i] = new Particle
+            {
+                type = FluidType.VirtualParticle,
+                temperature = this.startTemp,
+                position = worldPosition
+            };
+        }
+
+        return particles;
+    }
+
+    private Particle[] GenerateForBoxCollider(BoxCollider2D collider, int count)
+    {
+        Particle[] particles = new Particle[count];
+        Vector2 size = collider.size;
+        Vector2 offset = collider.offset;
+        Transform transform = collider.transform;
+
+        // Calculate perimeter
+        float perimeter = 2 * (size.x + size.y);
+        float spacing = perimeter / count;
+
+        for (int i = 0; i < count; i++)
+        {
+            float distance = i * spacing;
+            Vector2 localPosition;
+
+            // Top edge
+            if (distance < size.x)
+            {
+                localPosition = new Vector2(-size.x / 2 + distance, size.y / 2);
+            }
+            // Right edge
+            else if (distance < size.x + size.y)
+            {
+                localPosition = new Vector2(size.x / 2, size.y / 2 - (distance - size.x));
+            }
+            // Bottom edge
+            else if (distance < 2 * size.x + size.y)
+            {
+                localPosition = new Vector2(size.x / 2 - (distance - size.x - size.y), -size.y / 2);
+            }
+            // Left edge
+            else
+            {
+                localPosition = new Vector2(-size.x / 2, -size.y / 2 + (distance - 2 * size.x - size.y));
+            }
+
+            localPosition += offset;
+            Vector2 worldPosition = transform.TransformPoint(localPosition);
+
+            particles[i] = new Particle
+            {
+                type = FluidType.VirtualParticle,
+                temperature = this.startTemp,
+                position = worldPosition
+            };
+        }
+
+        return particles;
+    }
+
+    private Particle[] GenerateForCircleCollider(CircleCollider2D collider, int count)
+    {
+        Particle[] particles = new Particle[count];
+        float radius = collider.radius;
+        Vector2 offset = collider.offset;
+        Transform transform = collider.transform;
+
+        for (int i = 0; i < count; i++)
+        {
+            float angle = 2 * Mathf.PI * i / count;
+            Vector2 localPosition = new Vector2(
+                Mathf.Cos(angle) * radius,
+                Mathf.Sin(angle) * radius
+            );
+
+            localPosition += offset;
+            Vector2 worldPosition = transform.TransformPoint(localPosition);
+
+            particles[i] = new Particle
+            {
+                type = FluidType.VirtualParticle,
+                temperature = this.startTemp,
+                position = worldPosition
+            };
+        }
+
+        return particles;
     }
 }

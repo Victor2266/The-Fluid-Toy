@@ -947,6 +947,7 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
+	if (particle.type == -1) return; // Skip virtual particles
     particle.position += particle.velocity * deltaTime;
     HandleCollisions(particle); // This needs the FluidDataSet
     Particles[id.x] = particle;

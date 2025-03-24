@@ -6,6 +6,7 @@ using UnityEngine;
  // Also check that the buttons set the correct ID Number.
  // Do NOT change the order of these as that will mess up all the IDs, add new IDs to the end
 public enum FluidType {
+    VirtualParticle = -1,
     Disabled,
     Water,
     Steam,
@@ -27,8 +28,7 @@ public enum FluidType {
     Hot_Stone,
     Magma,
     Stone,
-    Cement,
-    VirtualParticle
+    Cement
 }
 
 public enum VisualStyle
