@@ -876,7 +876,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
     // [Apply powder forces]
     // Skip if this particle isn't a powder type
     if (fluidData.friction == 11111.0f) {
-        if (abs(particle.velocity.y) < 0.1) {
+        if (abs(particle.velocity.y) < 0.1) { // cement type
             // This value is for powders at rest and 90% of target density
             particle.velocity *= 0.1;
         } else {
