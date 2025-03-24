@@ -28,7 +28,9 @@ public enum FluidType {
     Magma,
     Stone,
     Cement,
-    Concrete
+    Concrete,
+    Neutron,
+    Plutonium
 }
 
 public enum VisualStyle
