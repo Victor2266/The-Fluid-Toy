@@ -17,6 +17,7 @@ public class Draggable : MonoBehaviour
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
     public Vector3 targetScale;
+    private float rotationAmount = 0f;
     private Rigidbody2D rb2d;
 
     protected virtual void Start()
@@ -58,6 +59,8 @@ public class Draggable : MonoBehaviour
         HandleRotating();
 
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
+        transform.Rotate(0, 0, rotationAmount);
+        Mathf.SmoothDampAngle(rotationAmount, 0, ref rotationAmount, 0.25f);
     }
 
     protected virtual void HandleDragging()
@@ -129,8 +132,7 @@ public class Draggable : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
             // Rotate clockwise when scrolling down, counter-clockwise when scrolling up
-            float rotationAmount = scrollDelta > 0 ? rotationSpeed : -rotationSpeed;
-            transform.Rotate(0, 0, rotationAmount);
+            rotationAmount += scrollDelta > 0 ? rotationSpeed : -rotationSpeed;
         }
     }
 
