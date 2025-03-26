@@ -11,8 +11,10 @@ public class PuzzleLevelButtonScript : MonoBehaviour
     public Gradient gradient;
     public Color disabledColor;
 
-    [Header("Sprite Reference")]
+    [Header("Sprite and Sound Reference")]
     public SpriteRenderer spriteRenderer;
+    public AudioSource sound;
+    public float targetVolume = 0.3F;
 
     [Header("Manager Reference")]
     public PuzzleLevelManager manager;
@@ -21,12 +23,16 @@ public class PuzzleLevelButtonScript : MonoBehaviour
     public bool buttonEnabled = false;
     public float timeToEnable = 10.0F;
     public bool enableWin = false;
+    public float hoverScale = 0.8F;
+    public float clickedScale = 0.6F;
 
     [Header("Sliding Distance for Appearance")]
     public float slidingDistance = 3F;
     private float TTL;
     private Vector3 startingPosition;
     private Vector3 endingPosition;
+    private Vector3 startingScale;
+    private bool isSoundEnabled = true;
 
     void Start()
     {
@@ -40,11 +46,15 @@ public class PuzzleLevelButtonScript : MonoBehaviour
         if (manager == null){
             Debug.LogError("Error no manager connected to button script");
         }
+        if(sound == null){
+            isSoundEnabled = false;
+        }
         //set sprite color
         gradientUpdate();
         startingPosition = transform.position;
         endingPosition = startingPosition;
         endingPosition.x -= slidingDistance;
+        startingScale = transform.localScale;
     }
 
     /// <summary>
@@ -52,18 +62,39 @@ public class PuzzleLevelButtonScript : MonoBehaviour
     /// </summary>
     void OnMouseDown()
     {
-        if(enableWin)
+        transform.localScale = new Vector3(startingScale.x * clickedScale, startingScale.y * clickedScale, 0);
+        if(enableWin){
             manager.buttonWin();
+        }else{
+            if(isSoundEnabled){
+                sound.volume = targetVolume;
+                sound.Play();
+            }
+        }
+            
         
     }
 
-    /// <summary>
-    /// Checks if smoke alarm has been triggered (buttonEnabled), if not triggered checks the smoke alarm detector to determine if fluid is present.
-    /// If fluid is present, wait TTL time before enabling the button to prevent quick win.
-    /// If all water has been boiled away from the button (fluiddetector 2 does not detect any fluid at all), then enableWin is set true.
-    /// sprite color is updated every fixed update once buttonEnabled is true.
-    /// </summary>
-    void FixedUpdate()
+    void OnMouseUp()
+    {
+        transform.localScale = new Vector3(startingScale.x * hoverScale, startingScale.y * hoverScale, 0);
+    }
+	void OnMouseExit()
+	{
+		transform.localScale = startingScale;
+	}
+
+	void OnMouseEnter()
+	{
+		transform.localScale = new Vector3(startingScale.x * hoverScale, startingScale.y * hoverScale, 0);
+	}
+	/// <summary>
+	/// Checks if smoke alarm has been triggered (buttonEnabled), if not triggered checks the smoke alarm detector to determine if fluid is present.
+	/// If fluid is present, wait TTL time before enabling the button to prevent quick win.
+	/// If all water has been boiled away from the button (fluiddetector 2 does not detect any fluid at all), then enableWin is set true.
+	/// sprite color is updated every fixed update once buttonEnabled is true.
+	/// </summary>
+	void FixedUpdate()
     {
         if (!buttonEnabled){
             if (fluidDetector1.isFluidPresent){
