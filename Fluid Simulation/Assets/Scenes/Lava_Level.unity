@@ -343,6 +343,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 105816474}
+  - component: {fileID: 105816478}
   - component: {fileID: 105816477}
   - component: {fileID: 105816476}
   m_Layer: 0
@@ -480,7 +481,7 @@ MonoBehaviour:
   checkmarkTransform: {fileID: 1306715013}
   checkmarkImage: {fileID: 1306715014}
   completionScore: {fileID: 1127829677}
-  currentLevel: 1
+  currentLevel: 3
   overlayFadeDuration: 0.5
   checkmarkScaleDuration: 0.7
   checkmarkRotationDuration: 0.5
@@ -491,6 +492,34 @@ MonoBehaviour:
   ThirdStarImage: {fileID: 674052236}
   starSound: {fileID: 8300000, guid: d71dadee69424724898984a43168a771, type: 3}
   audioSource: {fileID: 105816476}
+--- !u!114 &105816478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105816473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75863a39680f217c6b0de7d973a366b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentLevel: 3
+  requiredHoldTime: 5
+  audioSource: {fileID: 0}
+  winSound: {fileID: 0}
+  backgroundMusic: {fileID: 0}
+  initialMusicVolume: 0.5
+  fadeOutStartTime: 0
+  showDebugTimer: 1
+  levelCompleteAnim: {fileID: 0}
+  timer: 0
+  threeStarTime: 0
+  twoStarTime: 0
+  thermalSensor: {fileID: 0}
+  showTemperatureDebug: 1
+  forceWinOnKeyPress: 1
+  winKey: 286
 --- !u!1 &129142224
 GameObject:
   m_ObjectHideFlags: 0
