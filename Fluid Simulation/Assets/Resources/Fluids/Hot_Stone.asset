@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Hot_Stone
   m_EditorClassIdentifier: 
   fluidType: 18
-  gravity: -14
+  gravity: -24
   collisionDamping: 0
   smoothingRadius: 0.35
   targetDensity: 64
   pressureMultiplier: 500
   nearPressureMultiplier: 64
-  viscosityStrength: 0
+  viscosityStrength: 0.1
   startTemperature: 700
   thermalDiffusivity: 2.86
   boilState: 19
@@ -68,3 +68,4 @@ MonoBehaviour:
     glowFalloff: 0
     minPropertyValue: 400
     maxPropertyValue: 700
+    densityScaleFactor: 0
