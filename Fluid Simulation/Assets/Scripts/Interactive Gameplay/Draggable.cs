@@ -56,7 +56,7 @@ public class Draggable : MonoBehaviour
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
     }
 
-    private void HandleDragging()
+    protected void HandleDragging()
     {
         if (isDragging)
         {
