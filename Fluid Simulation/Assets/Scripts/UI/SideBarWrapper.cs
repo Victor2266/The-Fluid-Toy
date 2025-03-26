@@ -36,6 +36,7 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] GameObject GasMenu;
     [SerializeField] GameObject LiquidMenu;
     [SerializeField] GameObject PowderMenu;
+    [SerializeField] GameObject RadioactiveMenu;
 
     private GameObject[] menuPanels = new GameObject[6];
 
@@ -63,7 +64,7 @@ public class SideBarWrapper : MonoBehaviour
             Debug.LogError("Simulation object reference is missing!");
         }
 
-        menuPanels = new GameObject[] { brushSettingsMenu, allFluidsMenu, ObstaclesMenu, GasMenu, LiquidMenu, PowderMenu };
+        menuPanels = new GameObject[] { brushSettingsMenu, allFluidsMenu, ObstaclesMenu, GasMenu, LiquidMenu, PowderMenu, RadioactiveMenu};
     }
 
     public void PauseGame()

@@ -28,7 +28,9 @@ public enum FluidType {
     Magma,
     Stone,
     Cement,
-    Concrete
+    Concrete,
+    Neutron,
+    Plutonium
 }
 
 public enum VisualStyle
@@ -97,6 +99,10 @@ public struct VisualParameters //This is just for the inspector
     public float minPropertyValue; // For temperature mapping
     public float maxPropertyValue;
 
+    // Density-based scaling
+    [Tooltip("Controls how much particle size changes based on density (0 = no change, 1 = full scaling)")]
+    [Range(0f, 1f)]
+    public float densityScaleFactor;
 }
 
 [CreateAssetMenu(fileName = "New Fluid", menuName = "Fluids/New Fluid Type")]
@@ -218,6 +224,7 @@ Any other value → Fixed entropy (use entropyTarget directly). Fluid temperatur
         public float glowFalloff;
         public float minValue;
         public float maxValue;
+        public float densityScaleFactor;
     }
 
     public VisualParamBuffer GetVisualParams()
@@ -233,7 +240,8 @@ Any other value → Fixed entropy (use entropyTarget directly). Fluid temperatur
             glowIntensity = visualParams.glowIntensity,
             glowFalloff = visualParams.glowFalloff,
             minValue = visualParams.minPropertyValue,
-            maxValue = visualParams.maxPropertyValue
+            maxValue = visualParams.maxPropertyValue,
+            densityScaleFactor = visualParams.densityScaleFactor
         };
     }
 
