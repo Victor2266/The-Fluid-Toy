@@ -10,7 +10,10 @@ public class Draggable : MonoBehaviour
     public bool enableSmoothing = true; // Boolean to enable/disable smoothing
     public bool resizable = false; // Controls whether the object can be resized
     public bool uniformScaling = false; // Controls whether the object scales uniformly
+    public bool rotatable = false; // Controls whether the object can be rotated with ctrl shortcut
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
+    public float rotationSpeed = 10f; // Degrees per scroll tick
+
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
     public Vector3 targetScale;
@@ -52,6 +55,7 @@ public class Draggable : MonoBehaviour
     {
         HandleDragging();
         HandleResizing();
+        HandleRotating();
 
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
     }
@@ -77,6 +81,8 @@ public class Draggable : MonoBehaviour
     private void HandleResizing()
     {
         if (!resizable || !isDragging) return;
+
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) return;
 
         float scrollDelta = Input.mouseScrollDelta.y;
         if (scrollDelta == 0) return;
@@ -109,6 +115,22 @@ public class Draggable : MonoBehaviour
                 newScaleY = Mathf.Clamp(newScaleY, minScale, maxScale);
                 targetScale = new Vector3(targetScale.x, newScaleY, targetScale.z);
             }
+        }
+    }
+
+    private void HandleRotating()
+    {
+        if (!rotatable || !isDragging) return;
+
+        float scrollDelta = Input.mouseScrollDelta.y;
+        if (scrollDelta == 0) return;
+
+        // Check if Ctrl key is held down
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+        {
+            // Rotate clockwise when scrolling down, counter-clockwise when scrolling up
+            float rotationAmount = scrollDelta > 0 ? rotationSpeed : -rotationSpeed;
+            transform.Rotate(0, 0, rotationAmount);
         }
     }
 
