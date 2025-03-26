@@ -8,13 +8,13 @@ public class DraggableGate : Draggable
     private Vector3 OriginalPosition;
     public float returningSmoothingSpeed = 0.005F;
 
-    new void Start()
+    protected override void Start()
     {
         base.Start();
         OriginalPosition = transform.position;
     }
 
-    new void Update()
+    protected override void Update()
     {
         base.Update();
         

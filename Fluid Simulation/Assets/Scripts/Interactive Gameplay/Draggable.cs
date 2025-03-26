@@ -16,7 +16,7 @@ public class Draggable : MonoBehaviour
     public Vector3 targetScale;
     private Rigidbody2D rb2d;
 
-    protected void Start()
+    protected virtual void Start()
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
@@ -48,7 +48,7 @@ public class Draggable : MonoBehaviour
         
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         HandleDragging();
         HandleResizing();
@@ -56,7 +56,7 @@ public class Draggable : MonoBehaviour
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
     }
 
-    protected void HandleDragging()
+    protected virtual void HandleDragging()
     {
         if (isDragging)
         {
