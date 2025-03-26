@@ -141,8 +141,10 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     private const float MAX_DELTA_TIME = 1f / 30f; // Maximum allowed delta time
     private const float FIXED_TIME_STEP = 1f / 120f; // Your desired fixed time step
 
-    // For particle readback calls
-    private bool _readbackPending;
+    // For particle readback calls that mutate particle data.
+    // If edting the particleBuffer, please use "RequestParticleReadback()" or else your function maay not be thread safe!
+    // For read-only access, it is good practice but not required (your read data may end up being inaccurate)
+    private bool _particleReadbackPending;
 
     void Start()
     {
@@ -971,8 +973,12 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     }
     public ComputeBuffer GetParticleBuffer()
     {
-
+        // Not threadsafe. No guarantee of accuracy
         return particleBuffer;
+    }
+    public ComputeBuffer GetParticleBufferSafe()
+    {
+        return !_particleReadbackPending ? particleBuffer : null;
     }
     public float[] GetParticleTemps()
     {
@@ -1063,18 +1069,18 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         maxParticles = newMaxParticles;
     }
 
-    public void RequestReadback(Action<Particle[]> callback)
+    public void RequestParticleReadback(Action<Particle[]> callback)
     {
-        if (_readbackPending || particleBuffer == null)
+        if (_particleReadbackPending || particleBuffer == null)
         {
             callback?.Invoke(null);
             return;
         }
 
-        _readbackPending = true;
+        _particleReadbackPending = true;
         AsyncGPUReadback.Request(particleBuffer, request =>
         {
-            _readbackPending = false;
+            _particleReadbackPending = false;
 
             if (request.hasError)
             {

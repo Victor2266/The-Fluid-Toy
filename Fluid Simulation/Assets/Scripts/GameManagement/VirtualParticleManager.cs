@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 public class VirtualParticleManager : MonoBehaviour
 {
@@ -24,10 +26,10 @@ public class VirtualParticleManager : MonoBehaviour
     // NOTE: Do not modify ordering in real-time, as index order at init is used to keep track of which particle array belongs to which object
     public Rigidbody2D[] rigidbodyObjects; // Array of Rigidbody objects
     private Particle[][] virtualParticles; // Array to store virtual particles for each Rigidbody
+    private Particle[] simParticleCache; // Cached copy of game sim particles
 
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
-    private Vector2[][] virtualParticleForces; // Virtual forces
     private float nextUpdate;
     private bool isRequestMade = false;
 
@@ -55,23 +57,16 @@ public class VirtualParticleManager : MonoBehaviour
 
         // Initialize virtual particles for each Rigidbody
         virtualParticles = new Particle[rigidbodyObjects.Length][];
-        virtualParticleForces = new Vector2[rigidbodyObjects.Length][];
         for (int i = 0; i < rigidbodyObjects.Length; i++)
         {
             // Generate particles as well as force vectors for each particle
             //  virtualParticles[i] may be null iff the collider reference in rigidbodyObjects[i] is null. In this case, we skip over the object
             virtualParticles[i] = GenerateVirtualParticles(rigidbodyObjects[i], particlesPerObject, particleSpacing, i+1);
-            if (virtualParticles[i] == null) {
-                virtualParticleForces[i] = null;
-            } else {
-                virtualParticleForces[i] = new Vector2[particlesPerObject];
-            }
         }
 
         // Do cleanup - delete any null entries and remove rigidybodyObject with invalid (null) collider references
         rigidbodyObjects = rigidbodyObjects.Where(x => x.GetComponent<Collider2D>() != null).ToArray();
         virtualParticles = virtualParticles.Where(x => x != null).ToArray();
-        virtualParticleForces = virtualParticleForces.Where(x => x != null).ToArray();
 
         // Particle data is taken in by the sim via getVirtualParticles() call inside the simulation script
     }
@@ -85,38 +80,44 @@ public class VirtualParticleManager : MonoBehaviour
 
             if (!isRequestMade) // Wait for outstanding requests first
             {
-                // FIXME FIXME README
-                // Implement formal async readback handling on simulation script, or else we will have coherency issues.
-                // Async read
-                /*AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), request =>
-                {
-                    if (!request.hasError)
-                    {
-                        Particle [] p
-                        fluidSimulation.GetParticleBuffer().SetData(newData); // Safe to upload now
-                    }
-                });
-
-                // Async write
-                AsyncGPUWrite*/
-
-                // Update virtual particle positions based on Rigidbody transforms
-                for (int i = 0; i < rigidbodyObjects.Length; i++)
-                {
-                    UpdateVirtualParticles(rigidbodyObjects[i], virtualParticles[i]);
-                }
-
-                // Async read from simulation.
-                RetrieveForcesFromFluidSimulation(virtualParticleForces);
-
-                // Apply forces to the Rigidbody
-                for (int i = 0; i < rigidbodyObjects.Length; i++)
-                {
-                    ApplyForcesToRigidbody(rigidbodyObjects[i], virtualParticles[i], virtualParticleForces[i]);
-                }
-                SendVirtualParticlesToFluidSimulation(virtualParticles); // Update in simulation
+                StartCoroutine(FetchParticles());
             }
             if (!updateEachFrame) nextUpdate = Time.time + updateInterval;
+        }
+    }
+
+    void RunUpdate()
+    {
+        // Map particle buffer cache back to virtual particles
+        InvalidateVirtualParticles();
+
+        for (int i = 0; i < rigidbodyObjects.Length; i++)
+        {
+            ApplyForcesToRigidbody(rigidbodyObjects[i], virtualParticles[i]); // Apply forces to the Rigidbody
+            UpdateVirtualParticles(rigidbodyObjects[i], virtualParticles[i]); // Update virtual particle positions based on Rigidbody transforms
+        }
+
+        // Async writeback
+        SendVirtualParticlesToFluidSimulation(virtualParticles); // Update in simulation
+    }
+
+    private void InvalidateVirtualParticles()
+    {
+        // Need to update our virtual particle data
+        int[] pCount = new int[rigidbodyObjects.Length];
+        for (int i = 0; i < simParticleCache.Length; i++)
+        {
+            Particle p = simParticleCache[i];
+            int objId = p.objectId;
+            if (objId == 0) continue; // Not mapped to an object
+
+            // FIXME Does not account for particle ordering. Assuming any errors here may be negligible.
+            if (pCount[objId] >= virtualParticles[i].Length)
+            {
+                Debug.LogWarning("Virtual particle count larger than expected! Particle data may be corrupted.");
+            }
+            virtualParticles[objId + 1][pCount[objId]] = p;
+            pCount[objId]++;
         }
     }
 
@@ -175,9 +176,7 @@ public class VirtualParticleManager : MonoBehaviour
             }
         }
 
-        // Pass the flattened particle array to your HLSL-based fluid simulation
-        // (e.g., using a compute buffer or texture)
-        // Example:
+        // Writeback
         // ComputeBuffer particleBuffer = new ComputeBuffer(totalParticles, sizeof(float) * 3);
         // particleBuffer.SetData(flattenedParticlePositions);
         // fluidSimulationShader.SetBuffer("_VirtualParticles", particleBuffer);
@@ -202,12 +201,13 @@ public class VirtualParticleManager : MonoBehaviour
     }
 
     // Apply forces to the Rigidbody
-    private void ApplyForcesToRigidbody(Rigidbody2D rb, Particle[] particles, Vector2[] forces)
+    private void ApplyForcesToRigidbody(Rigidbody2D rb, Particle[] particles)
     {
         Vector2 totalForce = Vector2.zero;
         float totalTorque = 0f;
 
-        for (int i = 0; i < particles.Length; i++)
+        // FIXME FIXME FIXME
+        /*for (int i = 0; i < particles.Length; i++)
         {
             // Sum up the forces
             totalForce += forces[i];
@@ -215,7 +215,7 @@ public class VirtualParticleManager : MonoBehaviour
             // Calculate torque (optional)
             Vector2 r = particles[i].position - rb.worldCenterOfMass;
             totalTorque += r.x * forces[i].y - r.y * forces[i].x; // Cross product in 2D
-        }
+        }*/
 
         // Apply the total force and torque to the Rigidbody
         rb.AddForce(totalForce);
@@ -224,7 +224,28 @@ public class VirtualParticleManager : MonoBehaviour
 
     public Particle[][] getVirtualParticles()
     {
+        // FIXME remove
         return this.virtualParticles; // Getter for Simulation-side handling
+    }
+
+    private IEnumerator FetchParticles()
+    {
+        isRequestMade = true;
+        Particle[] particles = null;
+
+        fluidSimulation.RequestParticleReadback(res =>
+        {
+            particles = res;
+            isRequestMade = false;
+        });
+
+        yield return new WaitUntil(() => (isRequestMade == false));
+
+        if (particles != null)
+        {
+            simParticleCache = particles;
+            RunUpdate();
+        }
     }
     
     void OnDestroy()

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public interface IFluidSimulation
@@ -31,6 +32,9 @@ public interface IFluidSimulation
     // Fluid detector
     bool IsPositionBufferValid();
     ComputeBuffer GetParticleBuffer();
+
+    // For threadsafe readback
+    void RequestParticleReadback(Action<Particle[]> callback);
 
     // Obstacle management
     void UpdateBoxColliders();
