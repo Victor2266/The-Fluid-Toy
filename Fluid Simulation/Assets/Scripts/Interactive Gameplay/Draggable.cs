@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
-    private bool isDragging = false;
-    private Vector3 offset;
+    protected bool isDragging = false;
+    protected Vector3 offset;
 
     public float smoothingSpeed = 0.2f; // Adjust this value to control the smoothing speed
     public bool enableSmoothing = true; // Boolean to enable/disable smoothing
@@ -16,21 +16,11 @@ public class Draggable : MonoBehaviour
     public Vector3 targetScale;
     private Rigidbody2D rb2d;
 
-    [Header("Level 3 Gate Control Flags")]
-    public bool isGate = false;
-    public bool returnsToOriginalPosition = false;
-    private Vector3 OriginalPosition;
-    public float returningSmoothingSpeed = 0.005F;
-    public float minX = -10f;
-    public float maxX = 10f;
-    public float minY = -10f;
-    public float maxY = 10f;
-
-    void Start()
+    protected void Start()
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
-        OriginalPosition = transform.position;
+        
     }
 
     void OnMouseOver()
@@ -58,54 +48,29 @@ public class Draggable : MonoBehaviour
         
     }
 
-    void Update()
+    protected void Update()
     {
         HandleDragging();
         HandleResizing();
 
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
-        if(!isDragging && returnsToOriginalPosition){
-            transform.position = Vector3.Lerp(transform.position, OriginalPosition, returningSmoothingSpeed);
-        }
     }
 
     private void HandleDragging()
     {
         if (isDragging)
         {
-            if(isGate){
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3 dirtoMouse = mousePosition - transform.position;
-                Vector3 targetPosition = transform.position;
-                targetPosition.x += dirtoMouse.x * Mathf.Cos(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
-                targetPosition.y += dirtoMouse.y * Mathf.Sin(Mathf.Deg2Rad * transform.rotation.eulerAngles.z);
-                targetPosition.x = Mathf.Clamp(targetPosition.x, OriginalPosition.x + minX, OriginalPosition.x + maxX);
-                targetPosition.y = Mathf.Clamp(targetPosition.y, OriginalPosition.y + minY, OriginalPosition.y + maxY);
-                
-                if (enableSmoothing)
-                {
-                    transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
-                }
-                else
-                {
-                    transform.position = targetPosition;
-                }
-                
-                
-            }else{
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3 targetPosition = mousePosition + offset;
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 targetPosition = mousePosition + offset;
 
-                if (enableSmoothing)
-                {
-                    transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
-                }
-                else
-                {
-                    transform.position = targetPosition;
-                }
+            if (enableSmoothing)
+            {
+                transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
             }
-            
+            else
+            {
+                transform.position = targetPosition;
+            }
         }
     }
 
