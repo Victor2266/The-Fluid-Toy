@@ -175,6 +175,18 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    private void onUncapFPSChanged(bool isFpsUncapped){
+        if(isFpsUncapped){
+            Application.targetFrameRate = -1;
+            PlayerPrefs.SetInt($"FPS_UNCAP", 1);
+        }else{
+            Application.targetFrameRate = (int) Screen.currentResolution.refreshRateRatio.value;
+            PlayerPrefs.SetInt($"FPS_UNCAP", 0);
+        }
+        PlayerPrefs.Save();
+        
+    }
+
     private void OnBGMVolumeChanged(float volume)
     {
         SetBGMVolume(volume);
