@@ -804,7 +804,7 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             
             if (sqrDstToNeighbour > sqrRadius) continue; // Skip if not within radius
 
-            // If the squared distance to the neighbor is zero, that means the particles perfectly overlap and this causes them to shoot up or down
+            // If the squared distance to the neighbor is zero, that means the particles perfectly overlap and this causes them to shoot up or down unnaturally
             // We set a default offset and distance to prevent that
             if (sqrDstToNeighbour == 0) {
                 particle.predictedPosition += float2(0, 1);
