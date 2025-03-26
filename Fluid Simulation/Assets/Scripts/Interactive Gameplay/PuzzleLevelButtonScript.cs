@@ -133,7 +133,7 @@ public class PuzzleLevelButtonScript : MonoBehaviour
 
     void SlideLeft(){
         if(transform.position.x != endingPosition.x){
-            transform.position = Vector3.Lerp(transform.position, endingPosition, 0.02F / 10);
+            transform.position = Vector3.Lerp(transform.position, endingPosition, 0.02F/3f);
         }
     }
 
