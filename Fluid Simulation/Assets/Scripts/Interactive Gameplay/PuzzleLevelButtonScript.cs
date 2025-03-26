@@ -126,7 +126,7 @@ public class PuzzleLevelButtonScript : MonoBehaviour
         if(!buttonEnabled){
             spriteRenderer.color = disabledColor;
         }else{
-            float t = Remap(fluidDetector2.currentDensity, 0, 70, 0, 1);
+            float t = Remap(fluidDetector2.currentDensity, 0, 20, 0, 1);
             spriteRenderer.color = gradient.Evaluate(t);
         }
     }
