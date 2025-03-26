@@ -13,7 +13,7 @@ public class BoundaryRestriction : MonoBehaviour
     {
         startingPosition = transform.position;
     }
-    void Update()
+    void LateUpdate()
     {
         // Get the current position of the game object
         Vector3 position = transform.position;
