@@ -1,9 +1,10 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
-    private bool isDragging = false;
-    private Vector3 offset;
+    protected bool isDragging = false;
+    protected Vector3 offset;
 
     public float smoothingSpeed = 0.2f; // Adjust this value to control the smoothing speed
     public bool enableSmoothing = true; // Boolean to enable/disable smoothing
@@ -15,10 +16,11 @@ public class Draggable : MonoBehaviour
     public Vector3 targetScale;
     private Rigidbody2D rb2d;
 
-    void Start()
+    protected virtual void Start()
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
+        
     }
 
     void OnMouseOver()
@@ -43,9 +45,10 @@ public class Draggable : MonoBehaviour
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             rb2d.freezeRotation = false;
         }
+        
     }
 
-    void Update()
+    protected virtual void Update()
     {
         HandleDragging();
         HandleResizing();
@@ -53,7 +56,7 @@ public class Draggable : MonoBehaviour
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
     }
 
-    private void HandleDragging()
+    protected virtual void HandleDragging()
     {
         if (isDragging)
         {

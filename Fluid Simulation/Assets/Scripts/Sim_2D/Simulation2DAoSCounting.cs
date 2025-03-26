@@ -1048,6 +1048,22 @@ public class Simulation2DAoSCounting : MonoBehaviour, IFluidSimulation
     public FluidData[] getFluidDataArray(){
         return fluidDataArray;
     }
+
+    public void SetSourceObject(SourceObjectInitializer source, int index){
+        sourceObjects[index] = source;
+    }
+
+    public SourceObjectInitializer GetSourceObject(int index){
+        return sourceObjects[index];
+    }
+
+    public ThermalBoxInitializer GetThermalBox(int index){
+        return thermalBoxes[index];
+    }
+
+    public void SetThermalBox(ThermalBoxInitializer thermalBox, int index){
+        thermalBoxes[index] = thermalBox;
+    }
     public void setBounds(Vector2 bounds)
     {
         boundsSize = bounds;

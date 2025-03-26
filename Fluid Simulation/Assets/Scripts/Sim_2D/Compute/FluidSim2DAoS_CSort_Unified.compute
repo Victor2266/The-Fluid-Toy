@@ -803,6 +803,14 @@ void UnifiedForceCalculation(uint3 id : SV_DispatchThreadID)
             float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
             
             if (sqrDstToNeighbour > sqrRadius) continue; // Skip if not within radius
+
+            // If the squared distance to the neighbor is zero, that means the particles perfectly overlap and this causes them to shoot up or down unnaturally
+            // We set a default offset and distance to prevent that
+            if (sqrDstToNeighbour == 0) {
+                particle.predictedPosition += float2(0, 1);
+                offsetToNeighbour = float2(0, -1); // Default offset to prevent division by zero
+                sqrDstToNeighbour = 1; // Set squared distance to a non-zero value
+            }
             
             numNeighbours++; // Track # of neighbours
             float dst = sqrt(sqrDstToNeighbour); // Eulerian distance

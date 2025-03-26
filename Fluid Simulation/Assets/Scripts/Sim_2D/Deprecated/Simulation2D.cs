@@ -35,7 +35,7 @@ public struct OrientedBox //24 bytes total
 };
 */
 
-public class Simulation2D : MonoBehaviour, IFluidSimulation
+public class Simulation2D : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
