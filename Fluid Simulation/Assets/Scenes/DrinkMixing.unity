@@ -256,6 +256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDragging: 0
   smoothingSpeed: 0.2
   enableSmoothing: 1
   resizable: 0
@@ -2347,13 +2348,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114913111}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f44d0aa47c5bec43a7c358ab48abf95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   objectToSnapOn: {fileID: 63307905}
-  snapDistance: 0.5
+  snapDistance: 1
   snapOffset: {x: 0, y: 5.6684, z: 0}
 --- !u!50 &1114913113
 Rigidbody2D:
@@ -2407,11 +2408,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114913111}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDragging: 0
   smoothingSpeed: 0.2
   enableSmoothing: 1
   resizable: 0
