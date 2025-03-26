@@ -1487,13 +1487,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529921315}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.99}
+  m_LocalRotation: {x: -0, y: -0, z: 0.0018269379, w: 0.99999833}
+  m_LocalPosition: {x: 0, y: 0.00000034059798, z: -0.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1417526239}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.209}
 --- !u!212 &529921317
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4837,7 +4837,7 @@ MonoBehaviour:
   type: 4
   particleCount: 4000
   initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: -8, y: -4}
+  spawnCentre: {x: -6, y: -4}
   spawnSize: {x: 4, y: 6}
   jitterStr: 0
   temperature: 1000
@@ -5212,6 +5212,7 @@ Transform:
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2115892035}
   - {fileID: 1080318520}
   - {fileID: 1522758089}
   - {fileID: 1626964410}
@@ -5663,6 +5664,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2115892034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2115892035}
+  - component: {fileID: 2115892036}
+  m_Layer: 0
+  m_Name: Lava Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &2115892035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115892034}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -16, y: 5.3333335, z: 0}
+  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1883154047}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2115892036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115892034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 4
+  particleCount: 4000
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 10, y: -4}
+  spawnSize: {x: 4, y: 6}
+  jitterStr: 0
+  temperature: 800
+  showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!1 &2123023227
 GameObject:
   m_ObjectHideFlags: 0
@@ -5740,7 +5794,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 6}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
