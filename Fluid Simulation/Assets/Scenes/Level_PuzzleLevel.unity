@@ -343,7 +343,6 @@ MonoBehaviour:
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
-  isGate: 1
   returnsToOriginalPosition: 0
   returningSmoothingSpeed: 0.005
 --- !u!1 &78400428
@@ -8365,6 +8364,7 @@ GameObject:
   - component: {fileID: 1030527992}
   - component: {fileID: 1030527995}
   - component: {fileID: 1030527996}
+  - component: {fileID: 1030527997}
   m_Layer: 0
   m_Name: Button Finish
   m_TagString: Untagged
@@ -8531,8 +8531,8 @@ MonoBehaviour:
   buttonEnabled: 0
   timeToEnable: 10
   enableWin: 0
-  hoverScale: 0.8
-  clickedScale: 0.6
+  hoverScale: 1.1
+  clickedScale: 0.8
   slidingDistance: 3
 --- !u!82 &1030527996
 AudioSource:
@@ -8631,6 +8631,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1030527997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030527991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7379d937456cb24084373ee3b3947f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originalColor: {r: 1, g: 1, b: 1, a: 1}
+  pulseColor: {r: 1, g: 1, b: 1, a: 0.6509804}
+  pulseDuration: 0.5
+  stopAfterFirstTouch: 1
+  enableHoverDetection: 0
+  hoverScaleMultiplier: 1.1
+  spriteRenderer: {fileID: 1030527993}
 --- !u!1 &1050520277
 GameObject:
   m_ObjectHideFlags: 0
@@ -9369,7 +9388,6 @@ MonoBehaviour:
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
-  isGate: 1
   returnsToOriginalPosition: 0
   returningSmoothingSpeed: 0.005
 --- !u!1 &1163854952
