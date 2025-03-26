@@ -77,7 +77,7 @@ public class PuzzleLevelButtonScript : MonoBehaviour
 
     void OnMouseUp()
     {
-        transform.localScale = new Vector3(startingScale.x * hoverScale, startingScale.y * hoverScale, 0);
+        transform.localScale = startingScale;
     }
 	void OnMouseExit()
 	{
