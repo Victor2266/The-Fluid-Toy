@@ -88,7 +88,7 @@ public class VirtualParticleManager : MonoBehaviour
                 // FIXME FIXME README
                 // Implement formal async readback handling on simulation script, or else we will have coherency issues.
                 // Async read
-                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), request =>
+                /*AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), request =>
                 {
                     if (!request.hasError)
                     {
@@ -98,7 +98,7 @@ public class VirtualParticleManager : MonoBehaviour
                 });
 
                 // Async write
-                AsyncGPUWrite
+                AsyncGPUWrite*/
 
                 // Update virtual particle positions based on Rigidbody transforms
                 for (int i = 0; i < rigidbodyObjects.Length; i++)
