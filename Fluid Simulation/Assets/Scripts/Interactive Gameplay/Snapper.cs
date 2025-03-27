@@ -1,12 +1,13 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(Draggable))]
 public class Snapper : MonoBehaviour
 {
     [Header("Positional Snap Settings")]
     public GameObject objectToSnapOn;
     public float snapDistance = 0.5f;
     public Vector3 snapOffset;
+    public float rotationalOffset;
 
     [Header("Angular Snap Settings")]
     [Tooltip("Allowed angle difference before unsnap (degrees)")]
@@ -17,15 +18,12 @@ public class Snapper : MonoBehaviour
 
     private bool _isSnapped = false;
     private Rigidbody2D _rb;
-    private Vector3 _dragStartPos;
     private Draggable _draggable;
-    private Quaternion _snapRotation;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _draggable = GetComponent<Draggable>();
-        _snapRotation = objectToSnapOn.transform.rotation;
     }
 
     void FixedUpdate()
@@ -46,7 +44,7 @@ public class Snapper : MonoBehaviour
 
         // Check angle (convert to 0-360 range)
         float currentAngle = transform.eulerAngles.z;
-        float targetAngle = _snapRotation.eulerAngles.z;
+        float targetAngle = objectToSnapOn.transform.eulerAngles.z;
         float angleDifference = Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle));
 
         bool inAngle = angleDifference <= angleSlack;
@@ -62,7 +60,7 @@ public class Snapper : MonoBehaviour
 
         // Unsnap if rotated beyond angle slack
         float currentAngle = transform.eulerAngles.z;
-        float targetAngle = _snapRotation.eulerAngles.z;
+        float targetAngle = objectToSnapOn.transform.eulerAngles.z;
         float angleDifference = Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle));
 
         return angleDifference > angleSlack;
@@ -77,9 +75,9 @@ public class Snapper : MonoBehaviour
         if (_rb != null) _rb.bodyType = RigidbodyType2D.Kinematic;
 
         // Immediate snap to position and rotation
-        transform.position = objectToSnapOn.transform.position + snapOffset;
-        transform.rotation = _snapRotation;
         transform.SetParent(objectToSnapOn.transform);
+        transform.localPosition = snapOffset;
+        transform.localRotation = Quaternion.Euler(0, 0, rotationalOffset); //Quaternion.identity;
 
         if (snapEventSO != null) snapEventSO.RaiseSnap(objectToSnapOn);
     }
