@@ -135,7 +135,7 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadSceneAsync("Main Menu", LoadSceneMode.Single);
     }
 
-    protected void OnGUI()
+    protected virtual void OnGUI()
     {
         if (!showDebugTimer || hasWon) return;
 

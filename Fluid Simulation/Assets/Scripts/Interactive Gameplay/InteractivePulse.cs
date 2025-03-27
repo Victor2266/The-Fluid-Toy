@@ -25,7 +25,7 @@ public class InteractivePulse : MonoBehaviour
 
     public SpriteRenderer spriteRenderer;
     private Tweener pulseTweener;
-    private bool hasBeenInteractedWith = false;
+    // private bool hasBeenInteractedWith = false;
 
     void Start()
     {
@@ -67,7 +67,7 @@ public class InteractivePulse : MonoBehaviour
     void OnMouseDown()
     {
         // Mark as interacted
-        hasBeenInteractedWith = true;
+        // hasBeenInteractedWith = true;
 
         // Stop pulsing if option is enabled
         if (stopAfterFirstTouch)
@@ -83,7 +83,7 @@ public class InteractivePulse : MonoBehaviour
     // Public method to manually restart pulsing
     public void RestartPulsing()
     {
-        hasBeenInteractedWith = false;
+        // hasBeenInteractedWith = false;
         StartPulsing();
     }
 

@@ -93,7 +93,7 @@ public class LavaLevelManager : LevelManager
     }
     
     // Override OnGUI to add temperature debug info
-    protected void OnGUI()
+    protected override void OnGUI()
     {
         // Call base implementation to show hold timer
         base.OnGUI();
