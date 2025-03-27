@@ -739,6 +739,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 38, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &184678792
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 184678794}
+  m_Layer: 0
+  m_Name: Twin Ion Cannon 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &184678794
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184678792}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -16.7, y: -9.13, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &194073553
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1686,7 +1717,7 @@ MonoBehaviour:
   timeScale: 1
   fixedTimeStep: 0
   maxParticles: 16000
-  scanForObstaclesOnStart: 1
+  scanForObstaclesOnStart: 0
   scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
@@ -1702,8 +1733,8 @@ MonoBehaviour:
   selectedFluid: 0
   brushState: 1
   interactionRadius: 3
-  minRadius: 0.25
-  maxRadius: 4
+  minRadius: 3
+  maxRadius: 3
   interactionStrength: 360
   minStrength: 36
   maxStrength: 420
@@ -1715,29 +1746,70 @@ MonoBehaviour:
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
-  - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
-  - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
-  - {fileID: 11400000, guid: bb7d520fb6254e54f984d59408001bed, type: 2}
-  - {fileID: 11400000, guid: 1183732acd43a2d4b8664f9524fc7eec, type: 2}
-  - {fileID: 11400000, guid: 533c703a025120e49b9958b72efb1b24, type: 2}
   - {fileID: 11400000, guid: a2265c7b3b1e4de41b8527f0eae8e8e4, type: 2}
-  - {fileID: 11400000, guid: d2c5d728bfbc762488dfec45a0cb4f1f, type: 2}
-  - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
   - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
   - {fileID: 11400000, guid: b80a88647f973af4192ef836d0c4d993, type: 2}
-  - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba077, type: 2}
-  - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba088, type: 2}
   - {fileID: 11400000, guid: 094ea74afe77c5a40b808eac7ee4a009, type: 2}
   - {fileID: 11400000, guid: 7417d855012149445a9a40fa6702a95e, type: 2}
   - {fileID: 11400000, guid: 3abaec57267de4b44bf70d704651ea47, type: 2}
+  - {fileID: 11400000, guid: 1460ff33946bfa3498ddec89701aadb2, type: 2}
+  - {fileID: 11400000, guid: dea485c2d908b634f8ef00186e198f11, type: 2}
+  - {fileID: 11400000, guid: 014e648b7a75ed346a26c81f9e0b14d4, type: 2}
   compute: {fileID: 7200000, guid: 5153d1e4fc4b4204bae3cf5df6749c6d, type: 3}
   spawners: []
   boxColliders: []
   circleColliders: []
-  sourceObjects: []
+  sourceObjects:
+  - transform: {fileID: 184678794}
+    velo: {x: 48, y: 24}
+    spawnRate: 0
+    fluidType: 26
+  - transform: {fileID: 1457186310}
+    velo: {x: -48, y: 24}
+    spawnRate: 0
+    fluidType: 26
+  - transform: {fileID: 542835044}
+    velo: {x: 0, y: 64}
+    spawnRate: 0
+    fluidType: 27
+  - transform: {fileID: 476382477}
+    velo: {x: 0, y: 0}
+    spawnRate: 1
+    fluidType: 23
   drainObjects: []
   thermalBoxes: []
+--- !u!1 &476382476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 476382477}
+  m_Layer: 0
+  m_Name: Neutron Bomb
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &476382477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476382476}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &487956741 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6399190335731302623, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
@@ -1988,7 +2060,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'SELECTED WEAPON: <color=red>TWIN ION-CANNON</color>'
+  m_text: 'SELECTED WEAPON: <color=red>TWIN ION-CANNONS</color>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 563c08b939816f94ba2ebde6d2a6a4e0, type: 2}
   m_sharedMaterial: {fileID: 6826904865547853242, guid: 563c08b939816f94ba2ebde6d2a6a4e0, type: 2}
@@ -2067,6 +2139,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509760352}
   m_CullTransparentMesh: 1
+--- !u!1 &542835043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 542835044}
+  m_Layer: 0
+  m_Name: Death Ray
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &542835044
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542835043}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -9.13, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &548669417
 GameObject:
   m_ObjectHideFlags: 0
@@ -5956,7 +6059,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'ION CANNON: <COLOR=RED>55%</COLOR>
+  m_text: 'TWIN ION-CANNONS: <COLOR=RED>55%</COLOR>
 
     DEATH RAY: <COLOR=RED>55%</COLOR>
 
@@ -7158,6 +7261,37 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1457186309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1457186310}
+  m_Layer: 0
+  m_Name: Twin Ion Cannon 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1457186310
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457186309}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 16.7, y: -9.13, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1460196012
 GameObject:
   m_ObjectHideFlags: 0
@@ -7842,7 +7976,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1520331617
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8485,7 +8619,7 @@ GameObject:
   - component: {fileID: 1677987103}
   - component: {fileID: 1677987102}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: Circle to hide green dot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11131,3 +11265,7 @@ SceneRoots:
   - {fileID: 1116168245}
   - {fileID: 1569988792}
   - {fileID: 1677987103}
+  - {fileID: 184678794}
+  - {fileID: 1457186310}
+  - {fileID: 542835044}
+  - {fileID: 476382477}

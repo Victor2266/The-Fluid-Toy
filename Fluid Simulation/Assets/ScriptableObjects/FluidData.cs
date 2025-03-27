@@ -31,7 +31,9 @@ public enum FluidType {
     Concrete,
     Neutron,
     Plutonium,
-    Sediment
+    Sediment,
+    Ion_Blast,
+    Death_Ray,
 }
 
 public enum VisualStyle
