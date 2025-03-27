@@ -3,12 +3,13 @@ using UnityEngine;
 [RequireComponent(typeof(Draggable))]
 public class AutoUpright : MonoBehaviour
 {
+    // FIXME FIXME FIXME not working. 
     [Header("Uprighter Settings")]
     public bool enableUprighting = true;
     public float rotationalSpeed = 5f; // How fast the object rotates back to upright
     public float delay = 0.5f; // How long after pickup before correction starts
     public float maxAngularVelocity; // Limits the angular acceleration that can be applied. Generally not an issue
-    [Tooltip("How quickly to dampen rotation when not correcting")]
+    [Tooltip("Dampening after correction")]
     public float rotationDamping = 2f;
 
     private Draggable _draggable;
@@ -55,7 +56,6 @@ public class AutoUpright : MonoBehaviour
 
         if (isCorrecting)
         {
-            // Current rotation normalized to [-180,180]
             float currentRotation = _rb.rotation % 360;
             if (currentRotation > 180) currentRotation -= 360;
 

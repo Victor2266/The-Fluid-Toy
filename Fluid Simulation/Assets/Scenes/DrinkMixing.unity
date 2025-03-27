@@ -260,7 +260,9 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 0
   uniformScaling: 0
+  rotatable: 1
   scaleSpeed: 0.1
+  rotationSpeed: 10
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
@@ -2123,6 +2125,7 @@ GameObject:
   - component: {fileID: 1114913113}
   - component: {fileID: 1114913112}
   - component: {fileID: 1114913115}
+  - component: {fileID: 1114913116}
   m_Layer: 0
   m_Name: Shaker Lid
   m_TagString: Untagged
@@ -2145,6 +2148,7 @@ MonoBehaviour:
   objectToSnapOn: {fileID: 63307905}
   snapDistance: 1
   snapOffset: {x: 0, y: 5.75, z: 0}
+  rotationalOffset: 0
   angleSlack: 15
 --- !u!50 &1114913113
 Rigidbody2D:
@@ -2207,10 +2211,29 @@ MonoBehaviour:
   enableSmoothing: 0
   resizable: 0
   uniformScaling: 0
+  rotatable: 1
   scaleSpeed: 0.1
+  rotationSpeed: 10
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
+--- !u!114 &1114913116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114913111}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc645cc06b657e438b1d2e6831a2506, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableUprighting: 1
+  rotationalSpeed: 5
+  delay: 0.5
+  maxAngularVelocity: 50
+  rotationDamping: 2
 --- !u!1 &1150886124
 GameObject:
   m_ObjectHideFlags: 0
