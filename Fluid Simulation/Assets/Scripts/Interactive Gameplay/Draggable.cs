@@ -14,6 +14,7 @@ public class Draggable : MonoBehaviour
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
     public Vector3 targetScale;
+    public bool freeRotation = false;
     private Rigidbody2D rb2d;
 
     protected virtual void Start()
@@ -29,7 +30,7 @@ public class Draggable : MonoBehaviour
             isDragging = true;
             if (rb2d != null) {
                 rb2d.bodyType = RigidbodyType2D.Kinematic;
-                rb2d.freezeRotation = true;
+                if (!freeRotation) rb2d.freezeRotation = true;
                 rb2d.linearVelocity = Vector2.zero;
                 rb2d.angularVelocity = 0f;
             }
@@ -43,7 +44,7 @@ public class Draggable : MonoBehaviour
         isDragging = false;
         if (rb2d != null) {
             rb2d.bodyType = RigidbodyType2D.Dynamic;
-            rb2d.freezeRotation = false;
+            if (!freeRotation) rb2d.freezeRotation = false;
         }
         
     }
