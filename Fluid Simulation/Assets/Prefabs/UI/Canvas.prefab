@@ -1907,7 +1907,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -170.25}
+  m_AnchoredPosition: {x: 0, y: -176.25}
   m_SizeDelta: {x: 960, y: 720}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7960410922476590585
@@ -1938,7 +1938,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Hint: Right click on obstacles to open a context menu.'
+  m_text: Right click on obstacles to open a context menu.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
   m_sharedMaterial: {fileID: 4621470211802787547, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
@@ -6528,7 +6528,9 @@ PrefabInstance:
         LMB + Scroll Wheel
 
         LMB
-        + Shift + Scroll Wheel'
+        + Shift + Scroll Wheel
+
+        LMB + Ctrl + Scroll Wheel'
       objectReference: {fileID: 0}
     - target: {fileID: 1353259883086352021, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_fontAsset
@@ -6556,11 +6558,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2987655510687563668, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 21
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 300
+      value: 314
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -6568,7 +6570,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3002814135840981642, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 21
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 3524787591176181153, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -6576,7 +6578,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3524787591176181153, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 21
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 3897421011284637976, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_Type
@@ -6704,7 +6706,10 @@ PrefabInstance:
         Resize Object Vertically <color=grey>(When
         Dragging)</color>
 
-        Resize Object Horizontally <color=grey>(When Dragging)</color>'
+        Resize Object Horizontally <color=grey>(When Dragging)</color>
+
+        Rotate
+        Object <color=grey>(When Dragging)</color>'
       objectReference: {fileID: 0}
     - target: {fileID: 6229690019195773653, guid: 5bff0007a5eda9c44939c01b629fac15, type: 3}
       propertyPath: m_fontAsset
