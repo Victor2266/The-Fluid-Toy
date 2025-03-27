@@ -3936,13 +3936,13 @@ PrefabInstance:
       propertyPath: m_text
       value: 'Hint:
 
-        Use the left and right mouse buttons
-
-        to move
-        the fluid around
+        Fill the empty vat with the correct mix of lava!
 
 
-        Try to fill up the cup!'
+        Mix
+        it to even out the temperture!
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 5388665203690673518, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4185,6 +4185,10 @@ PrefabInstance:
     - target: {fileID: 7694538204002005048, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7723421981990690167, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7740778838992167872, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y

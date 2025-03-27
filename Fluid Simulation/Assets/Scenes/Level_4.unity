@@ -339,7 +339,9 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 0
   uniformScaling: 0
+  rotatable: 0
   scaleSpeed: 0.1
+  rotationSpeed: 10
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -9659,7 +9661,9 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 0
   uniformScaling: 0
+  rotatable: 0
   scaleSpeed: 0.1
+  rotationSpeed: 10
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -14079,8 +14083,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: 'Move the green water gates and red levers to fill the exhaust pipe
-        with fumes.
+      value: 'Move the green water gates and red levers
+
+        to fill the left
+        exhaust pipe with fumes.
 
 
         Hint: Even heating is the key!'
