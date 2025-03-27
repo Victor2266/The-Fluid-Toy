@@ -1,9 +1,13 @@
 using UnityEngine;
+using TMPro;
 
 public class Level5Manager : LevelManager
 {
     [Header("Level References")]
     public FluidDetector fluidDetector;
+    public ThermalSensor thermalSensor;
+    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI planetStatusReportText;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +22,17 @@ public class Level5Manager : LevelManager
                 return;
             }
         }
+
+        if (thermalSensor == null) // Auto-find references if not assigned in inspector on start
+        {
+            thermalSensor = FindFirstObjectByType<ThermalSensor>();
+            if (thermalSensor == null)
+            {
+                Debug.LogError("No ThermalSensor found in the scene!");
+                enabled = false;
+                return;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -27,6 +42,15 @@ public class Level5Manager : LevelManager
     {
         if (hasWon) return;
         timer += Time.deltaTime;
+
+        // Update timer text
+        timerText.text = $"TIME WASTED ON TASK: <size=16>{timer:F4}s</size>";
+
+        // Update Planet Status Report
+        planetStatusReportText.text = $"REMOVAL STATUS: <color=red>{Mathf.FloorToInt((1 - fluidDetector.currentDensity / 3000f) * 100f)}%</color>\n" +
+                                      $"CLIMATE STATUS: <color=red>{(thermalSensor.currentTemperature > 550 ? "HOSTILE" : "HOSPITABLE")}</color>\n" +
+                                      $"PLANET DENSITY: {fluidDetector.currentDensity:F0}g/cm³\n" +
+                                      $"PLANET TEMPERATURE: {thermalSensor.currentTemperature:F0}C";
 
         // Check for any mouse input
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
