@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Level5Manager : LevelManager
 {
@@ -9,9 +10,16 @@ public class Level5Manager : LevelManager
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI planetStatusReportText;
 
+    public Button TwinIonCannonButton;
+    public Button DeathRayButton;
+    public Button TractorBeamButton;
+    public Button NeutronBombButton;
+
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = false;
+
         if (fluidDetector == null) // Auto-find references if not assigned in inspector on start
         {
             fluidDetector = FindFirstObjectByType<FluidDetector>();
@@ -100,5 +108,10 @@ public class Level5Manager : LevelManager
         {
             ResetHoldTimer();
         }
+    }
+
+    void OnDestroy()
+    {
+        Cursor.visible = true;
     }
 }
