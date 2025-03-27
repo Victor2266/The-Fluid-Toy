@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Hot_Iron
   m_EditorClassIdentifier: 
   fluidType: 26
-  gravity: -14
+  gravity: 0
   collisionDamping: 0
   smoothingRadius: 0.35
   targetDensity: 200
-  pressureMultiplier: 4500
+  pressureMultiplier: 4700
   nearPressureMultiplier: 50
   viscosityStrength: 0
-  startTemperature: 22
-  thermalDiffusivity: 64
+  startTemperature: 700
+  thermalDiffusivity: 100
   boilState: 27
   boilTemp: 700
   freezeState: 26
