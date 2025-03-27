@@ -1,12 +1,16 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Snapper : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class Snapper : MonoBehaviour
 {
-    [Header("Snapper Settings")]
+    [Header("Positional Snap Settings")]
     public GameObject objectToSnapOn;
     public float snapDistance = 0.5f;
     public Vector3 snapOffset;
+
+    [Header("Angular Snap Settings")]
+    [Tooltip("Allowed angle difference before unsnap (degrees)")]
+    public float angleSlack = 15f;
 
     [Header("Event (Optional)")]
     private SnapEventSO snapEventSO;
@@ -15,27 +19,53 @@ public class Snapper : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
     private Rigidbody2D _rb;
     private Vector3 _dragStartPos;
     private Draggable _draggable;
+    private Quaternion _snapRotation;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _draggable = GetComponent<Draggable>();
+        _snapRotation = objectToSnapOn.transform.rotation;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        // Only check for snap if not currently dragging
-        if (!_isSnapped && !_draggable.isDragging &&
-            Vector3.Distance(transform.position, GetSnapPosition()) <= snapDistance)
-        {
-            SnapObj();
+        if (!_isSnapped && !_draggable.getIsDragging()) {
+            // Check if we should snap (position and angle)
+            if (ShouldSnap()) SnapObj();
+        } else if (_isSnapped) {
+            // Check if we should unsnap (position or angle)
+            if (ShouldUnsnap()) Unsnap();
         }
-        
-        if (_isSnapped &&
-            Vector3.Distance(transform.position, GetSnapPosition()) > snapDistance)
-        {
-            Unsnap();
-        }
+    }
+
+    bool ShouldSnap()
+    {
+        // Check distance
+        bool inPosition = Vector3.Distance(transform.position, GetSnapPosition()) <= snapDistance;
+
+        // Check angle (convert to 0-360 range)
+        float currentAngle = transform.eulerAngles.z;
+        float targetAngle = _snapRotation.eulerAngles.z;
+        float angleDifference = Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle));
+
+        bool inAngle = angleDifference <= angleSlack;
+
+        return inPosition && inAngle;
+    }
+
+    bool ShouldUnsnap()
+    {
+        // Unsnap if too far positionally
+        if (Vector3.Distance(transform.position, GetSnapPosition()) > snapDistance)
+            return true;
+
+        // Unsnap if rotated beyond angle slack
+        float currentAngle = transform.eulerAngles.z;
+        float targetAngle = _snapRotation.eulerAngles.z;
+        float angleDifference = Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle));
+
+        return angleDifference > angleSlack;
     }
 
     void SnapObj()
@@ -43,14 +73,12 @@ public class Snapper : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
         _isSnapped = true;
         Debug.Log("Snap!");
 
-        if (_rb != null)
-        {
-            _rb.bodyType = RigidbodyType2D.Kinematic;
-            _rb.linearVelocity = Vector2.zero;
-        }
+        // NOTE: Do not set linear or angular velocity to 0. This results in strange acceleration when snapping/unsnapping, is it is undefined behaviour
+        if (_rb != null) _rb.bodyType = RigidbodyType2D.Kinematic;
 
+        // Immediate snap to position and rotation
         transform.position = objectToSnapOn.transform.position + snapOffset;
-        transform.rotation = objectToSnapOn.transform.rotation;
+        transform.rotation = _snapRotation;
         transform.SetParent(objectToSnapOn.transform);
 
         if (snapEventSO != null) snapEventSO.RaiseSnap(objectToSnapOn);
@@ -63,34 +91,9 @@ public class Snapper : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
 
         transform.SetParent(null);
 
-        if (_rb != null)
-        {
-            _rb.bodyType = RigidbodyType2D.Dynamic;
-        }
+        if (_rb != null) _rb.bodyType = RigidbodyType2D.Dynamic;
 
         if (snapEventSO != null) snapEventSO.RaiseUnsnap(objectToSnapOn);
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (_isSnapped)
-        {
-            Unsnap();
-        }
-        _dragStartPos = transform.position;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        // Empty - let Draggable handle the actual dragging
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (!_isSnapped && Vector3.Distance(transform.position, GetSnapPosition()) > snapDistance)
-        {
-            transform.position = _dragStartPos;
-        }
     }
 
     Vector3 GetSnapPosition()

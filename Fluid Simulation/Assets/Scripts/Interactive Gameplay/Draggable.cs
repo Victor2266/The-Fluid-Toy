@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
-    public bool isDragging = false;
+    protected bool isDragging = false;
     protected Vector3 offset;
 
     public float smoothingSpeed = 0.2f; // Adjust this value to control the smoothing speed
@@ -28,8 +28,7 @@ public class Draggable : MonoBehaviour
 
     void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && !isDragging)
-        {
+        if (Input.GetMouseButtonDown(0)){
             isDragging = true;
             if (rb2d != null) {
                 rb2d.bodyType = RigidbodyType2D.Kinematic;
@@ -44,15 +43,12 @@ public class Draggable : MonoBehaviour
 
     void OnMouseUp()
     {
-        if (isDragging)
-        {
-            isDragging = false;
-            if (rb2d != null)
-            {
-                rb2d.bodyType = RigidbodyType2D.Dynamic;
-                rb2d.freezeRotation = false;
-            }
+        isDragging = false;
+        if (rb2d != null) {
+            rb2d.bodyType = RigidbodyType2D.Dynamic;
+            rb2d.freezeRotation = false;
         }
+        
     }
 
     protected virtual void Update()
@@ -150,5 +146,10 @@ public class Draggable : MonoBehaviour
             newScale.y = Mathf.Clamp(newScale.y, minScale, maxScale);
             targetScale = newScale;
         }
+    }
+
+    public bool getIsDragging()
+    {
+        return isDragging;
     }
 }
