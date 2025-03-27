@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4232784153801f48af4e1625a986622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  checkInterval: 0.5
+  checkInterval: 0.25
   scanForSensorsOnStart: 1
   fluidSensors: []
 --- !u!4 &42287220
@@ -4372,6 +4372,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4494,6 +4495,26 @@ MonoBehaviour:
   chromaticAberration: 0.01
   chromaticDirection: {x: 0.1, y: 0}
   postProcessShader: {fileID: 4800000, guid: ce0920933afcb36498ae60cda26a9b74, type: 3}
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a20d3f443355f6d4eabb430006347e20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPosition: {x: 24, y: 33, z: -10}
+  endPosition: {x: 0, y: 0, z: -10}
+  moveDuration: 3
+  startSize: 13.5
+  midSize: 7.6
+  finalSize: 9.87
+  focusDuration1: 1.5
+  focusDuration2: 3
 --- !u!1 &963455855
 GameObject:
   m_ObjectHideFlags: 0
@@ -4607,7 +4628,7 @@ MonoBehaviour:
   checkInterval: 0.5
   detectionRadius: 8.5
   errorMargin: 0.01
-  showDebugGizmos: 1
+  showDebugGizmos: 0
   showDebugLogs: 0
   showTempValue: 1
   displayOffset: {x: 0, y: 30}
@@ -5512,7 +5533,7 @@ MonoBehaviour:
   densityThreshold: 0.5
   checkInterval: 0.5
   detectionRadius: 8.5
-  showDebugGizmos: 1
+  showDebugGizmos: 0
   showDebugLogs: 0
   showDensityValue: 1
   densityDisplayOffset: {x: 0, y: 120}
