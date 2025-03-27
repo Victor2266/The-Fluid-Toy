@@ -12,7 +12,7 @@ public class Draggable : MonoBehaviour
     public bool uniformScaling = false; // Controls whether the object scales uniformly
     public bool rotatable = false; // Controls whether the object can be rotated with ctrl shortcut
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
-    public float rotationSpeed = 2f; // Degrees per scroll tick
+    public float rotationSpeed = 10f; // Degrees per scroll tick
 
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
@@ -59,11 +59,8 @@ public class Draggable : MonoBehaviour
         HandleRotating();
 
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
-        if (rotationAmount != 0)
-        {
-            transform.Rotate(0, 0, rotationAmount);
-            rotationAmount = Mathf.MoveTowards(rotationAmount, 0, rotationSpeed / 4f); // sum_{n} (1 to 4) of (rotationSpeed/4 * n) Desmos: \sum_{n=1}^{4}\left(\frac{b}{4}n\right)
-        }
+        transform.Rotate(0, 0, rotationAmount);
+        Mathf.SmoothDampAngle(rotationAmount, 0, ref rotationAmount, 0.25f);
     }
 
     protected virtual void HandleDragging()
