@@ -180,4 +180,9 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         lineRenderer.startColor = fadeColor;
         lineRenderer.endColor = fadeColor;
     }
+
+    void OnDestroy()
+    {
+        Cursor.visible = true;
+    }
 }
