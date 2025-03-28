@@ -26,6 +26,14 @@ public class InteractionRadiusVisualizer : MonoBehaviour
         InitializeLineRenderer();
         PrecalculateCircle();
     }
+    void OnEnable()
+    {
+        lineRenderer.enabled = true;
+    }
+    void OnDisable()
+    {
+        lineRenderer.enabled = false;
+    }
 
     void Update()
     {
@@ -120,4 +128,6 @@ public class InteractionRadiusVisualizer : MonoBehaviour
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
     }
+
+
 }

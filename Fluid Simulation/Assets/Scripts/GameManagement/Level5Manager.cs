@@ -11,6 +11,7 @@ public class Level5Manager : LevelManager
     private IFluidSimulation sim;
     public FluidDetector fluidDetector;
     public ThermalSensor thermalSensor;
+    public InteractionRadiusVisualizer interactionRadiusVisualizer;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI planetStatusReportText;
     public TextMeshProUGUI SelectedWeaponText;
@@ -250,6 +251,7 @@ public class Level5Manager : LevelManager
         else if (uiWeaponIndex == 2) // Tractor Beam (using brush types)
         {
             sim.SetBrushType(2);
+            interactionRadiusVisualizer.enabled = false;
         }
         else if (uiWeaponIndex == 3) // Neutron Bomb (simulation source index 3)
         {
@@ -326,6 +328,7 @@ public class Level5Manager : LevelManager
             return;
         }
 
+        interactionRadiusVisualizer.enabled = true;
         FlashImage(TractorBeamImage, Color.white);
         UIActiveWeapon = 2;
         weaponCooldowns[2].state = WeaponState.Active;
