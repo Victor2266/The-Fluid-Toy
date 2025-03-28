@@ -33,7 +33,9 @@ public enum FluidType {
     Plutonium,
     Sediment,
     Hot_Iron,
-    Molten_Iron
+    Molten_Iron,
+    Ion_Blast,
+    Death_Ray,
 }
 
 public enum VisualStyle
