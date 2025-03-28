@@ -911,7 +911,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 545070c272df8504dbc1e292ef84a45c, type: 3}
   m_Resource: {fileID: 8300000, guid: 545070c272df8504dbc1e292ef84a45c, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -8596,11 +8596,11 @@ MonoBehaviour:
   NeutronBombAudioSource: {fileID: 476382478}
   PlanetDetectedSound: {fileID: 8300000, guid: 8ce0ebf7fe255d04f823308968766582, type: 3}
   PlanetNotDetectedSound: {fileID: 8300000, guid: 52061acbcebed704ca78a72314e61c84, type: 3}
-  WeaponReadySound: {fileID: 0}
-  WeaponButtonSelectedSound: {fileID: 0}
-  WeaponButtonNotSelectedSound: {fileID: 0}
-  WeaponDeactivatedSound: {fileID: 0}
+  WeaponReadySound: {fileID: 8300000, guid: a42bcae27d8bc764ea6e8a99d46f32b3, type: 3}
+  WeaponDeactivationSound: {fileID: 8300000, guid: f73579f599f46444db9da0855b4a4bc6, type: 3}
   WeaponChargingSound: {fileID: 0}
+  WeaponButtonSelectedSucessSound: {fileID: 0}
+  WeaponButtonNotSelectedSound: {fileID: 0}
   weaponActiveDuration:
   - 4
   - 5

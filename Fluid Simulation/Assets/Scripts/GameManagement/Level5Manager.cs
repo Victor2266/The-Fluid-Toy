@@ -44,10 +44,12 @@ public class Level5Manager : LevelManager
     public AudioClip PlanetDetectedSound;
     public AudioClip PlanetNotDetectedSound;
     public AudioClip WeaponReadySound;
-    public AudioClip WeaponButtonSelectedSound;
-    public AudioClip WeaponButtonNotSelectedSound;
-    public AudioClip WeaponDeactivatedSound;
+    public AudioClip WeaponDeactivationSound;
     public AudioClip WeaponChargingSound;
+    public AudioClip WeaponButtonSelectedSucessSound;
+    public AudioClip WeaponButtonNotSelectedSound;
+
+
 
     // These control how long a weapon stays active and how long its cooldown lasts.
     public float[] weaponActiveDuration = new float[] { 5f, 5f, 7.5f, 2f };
@@ -65,6 +67,7 @@ public class Level5Manager : LevelManager
     private class WeaponCooldown
     {
         public WeaponState state;
+        public WeaponState prevState;
         public float timeRemaining;
     }
 
@@ -119,11 +122,13 @@ public class Level5Manager : LevelManager
         {
             weaponCooldowns[i] = new WeaponCooldown();
             weaponCooldowns[i].state = WeaponState.Ready;
+            weaponCooldowns[i].prevState = WeaponState.Ready;
             weaponCooldowns[i].timeRemaining = 0f;
         }
         // **** Initialize the neutron bomb weapon’s state as Cooldown.
         weaponCooldowns[3] = new WeaponCooldown();
         weaponCooldowns[3].state = WeaponState.Cooldown;
+        weaponCooldowns[3].prevState = WeaponState.Cooldown;
         weaponCooldowns[3].timeRemaining = weaponCooldownDuration[3];
     
         // Initialize cooldown images
@@ -168,6 +173,9 @@ public class Level5Manager : LevelManager
             planetDetectedBG.color = new Color32(0x00, 0x40, 0x00, 0x80);
             planetDetectedOutline.color = Color.green;
             if (PlanetDetected){
+                DOTween.Kill(planetDetectedOutline);
+                planetDetectedOutline.rectTransform.localPosition = new Vector3(-448f, -249.7f, 0f);
+                planetDetectedOutline.transform.DOJump(planetDetectedText.transform.position, 0.5f, 1, 0.2f).SetEase(Ease.InOutBack);
                 audioSource.PlayOneShot(PlanetNotDetectedSound);
             }
             PlanetDetected = false;
@@ -199,6 +207,9 @@ public class Level5Manager : LevelManager
             planetDetectedBG.color = new Color32(0x65, 0x00, 0x00, 0x80);
             planetDetectedOutline.color = Color.red;
             if (!PlanetDetected){
+                DOTween.Kill(planetDetectedOutline);
+                planetDetectedOutline.rectTransform.localPosition = new Vector3(-448f, -249.7f, 0f);
+                planetDetectedOutline.transform.DOJump(planetDetectedText.transform.position, 0.5f, 1, 0.2f).SetEase(Ease.InOutElastic);
                 audioSource.PlayOneShot(PlanetDetectedSound);
             }
             PlanetDetected = true;
@@ -261,6 +272,11 @@ public class Level5Manager : LevelManager
             {
                 weaponCooldownImages[index][i].color = Color.green;
             }
+            if (weaponCooldowns[index].state != weaponCooldowns[index].prevState){
+                audioSource.PlayOneShot(WeaponReadySound, 0.5f);
+            }
+                
+            weaponCooldowns[index].prevState = weaponCooldowns[index].state;
 
             return "<color=green>READY</color>";
         }
@@ -291,6 +307,11 @@ public class Level5Manager : LevelManager
                     weaponCooldownImages[index][i].color = new Color32(0x00, 0x3C, 0x00, 0xFF);
                 }
             }
+            if (weaponCooldowns[index].state != weaponCooldowns[index].prevState){
+                audioSource.PlayOneShot(WeaponDeactivationSound);
+            }
+                
+            weaponCooldowns[index].prevState = weaponCooldowns[index].state;
 
             return $"<color=red>{percentage}%</color>";
         }
@@ -496,6 +517,7 @@ public class Level5Manager : LevelManager
     void OnDestroy()
     {
         Cursor.visible = true;
+        DOTween.Kill(planetDetectedOutline);
         // Kill DOTween animations on all weapon images.
         foreach (var image in new[] { TwinIonCannonImage, DeathRayImage, TractorBeamImage, NeutronBombImage })
         {
