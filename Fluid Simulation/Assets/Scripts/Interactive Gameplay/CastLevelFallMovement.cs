@@ -30,7 +30,7 @@ public class CastLevelFallMovement : MonoBehaviour
     {
         if(fallSwitch.fall && !fallen){
             if(res != null){
-                res.maxY = 20F;
+                res.maxY = fallDistance;
             }
             fall();
             fallen = true;

@@ -18,14 +18,14 @@ public class CastLevelSwitch : MonoBehaviour
 
     [Header("Optional References")]
     public AudioSource leverSound; // Optional audio feedback
-
-    [Header("Interaction Settings and flags")]
-    public bool canInteract = true; // Can the lever be interacted with?
+    public AudioSource metalInMoldSoundLong;
+    public AudioSource metalInMoldSoundShort;
 
     private Vector3 initialRotation;
     private Vector3 flippedRotation;
     private Tweener currentRotationTween;
     private bool pressed = false;
+    private bool metalInMold = false;
     void Start()
     {
         // Store initial rotation
@@ -45,6 +45,16 @@ public class CastLevelSwitch : MonoBehaviour
     {
         if(pressed){
             AnimateLeverRotation();
+        }
+        if(swordSensor.currentTemperature >= 700 && !metalInMold)
+        {
+            if(metalInMoldSoundLong != null){
+                metalInMoldSoundLong.Play();
+            }
+            if(metalInMoldSoundShort != null){
+                metalInMoldSoundShort.Play();
+            }
+            metalInMold = true;
         }
         if(transform.eulerAngles.z > 90 & !isFlipped && swordSensor.metThreshold){
             release.maxY = releaseMoveAmount;
