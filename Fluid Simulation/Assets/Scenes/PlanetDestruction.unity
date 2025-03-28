@@ -1703,7 +1703,7 @@ MonoBehaviour:
   maxSourceSpawnRate: 120
   maxMouseSpawnRate: 40
   selectedFluid: 0
-  brushState: 1
+  brushState: 2
   interactionRadius: 3
   minRadius: 3
   maxRadius: 3
@@ -3216,7 +3216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLevel: 5
-  requiredHoldTime: 5
+  requiredHoldTime: 1
   audioSource: {fileID: 813745487}
   winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
   backgroundMusic: {fileID: 0}
@@ -3232,6 +3232,7 @@ MonoBehaviour:
   timerText: {fileID: 1138276893}
   planetStatusReportText: {fileID: 1037871352}
   SelectedWeaponText: {fileID: 509760354}
+  WeaponChargeText: {fileID: 1250171387}
   TwinIonCannonButton: {fileID: 1453596480}
   TwinIonCannonImage: {fileID: 1803185743}
   TwinIonCannonMaxVelocity: 54
@@ -3246,7 +3247,17 @@ MonoBehaviour:
   deathRayAimSpeed: 1
   soundEffectPlayer: {fileID: 0}
   soundEffects: []
-  selectedWeaponIndex: 0
+  weaponActiveDuration:
+  - 4
+  - 5
+  - 15
+  - 2
+  weaponCooldownDuration:
+  - 5
+  - 5
+  - 3
+  - 20
+  UIActiveWeapon: -1
 --- !u!1 &836117989
 GameObject:
   m_ObjectHideFlags: 0
@@ -6475,7 +6486,7 @@ GameObject:
   - component: {fileID: 1250171388}
   - component: {fileID: 1250171387}
   m_Layer: 5
-  m_Name: Text (TMP) (2)
+  m_Name: Weapon Charge Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6520,7 +6531,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'TWIN ION-CANNONS: <COLOR=RED>55%</COLOR>
+  m_text: 'TWIN ION-CANNONS: <COLOR=white>55%</COLOR>
 
     DEATH RAY: <COLOR=RED>55%</COLOR>
 
