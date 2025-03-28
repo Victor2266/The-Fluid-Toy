@@ -24,9 +24,9 @@ MonoBehaviour:
   thermalDiffusivity: 100
   boilState: 5
   boilTemp: 176
-  freezeState: 8
+  freezeState: 9
   freezeTemp: 0
-  entropy: 0
+  friction: 0
   entropyTarget: 11111
   visualParams:
     style: 0
@@ -68,3 +68,4 @@ MonoBehaviour:
     glowFalloff: 1
     minPropertyValue: 0
     maxPropertyValue: 6.5
+    densityScaleFactor: 0
