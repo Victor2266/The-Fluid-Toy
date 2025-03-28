@@ -76,6 +76,8 @@ public class Level5Manager : LevelManager
     // (For Tractor Beam, the simulation uses brush types, so our code later distinguishes it.)
     [SerializeField] private int UIActiveWeapon = -1;
 
+    private bool PlanetDetected = true;
+
     void Start()
     {
         Cursor.visible = false;
@@ -160,11 +162,16 @@ public class Level5Manager : LevelManager
         {
             ResetHoldTimer();
         }
-        if (!fluidDetector.isFluidPresent)
+        if (timer > 1f && !fluidDetector.isFluidPresent)
         {
             planetDetectedText.text = "<COLOR=GREEN>PLANET REMOVED\n<SIZE=16>ALL CLEAR!</COLOR>";
             planetDetectedBG.color = new Color32(0x00, 0x40, 0x00, 0x80);
             planetDetectedOutline.color = Color.green;
+            if (PlanetDetected){
+                audioSource.PlayOneShot(PlanetNotDetectedSound);
+            }
+            PlanetDetected = false;
+            
             if (!isHolding)
             {
                 isHolding = true;
@@ -186,11 +193,15 @@ public class Level5Manager : LevelManager
                 TriggerWin();
             }
         }
-        else
+        else if (timer > 1f)
         {
             planetDetectedText.text = "<COLOR=RED>PLANET DETECTED\n<SIZE=16>REMOVE IMMEDIATELY</COLOR>";
             planetDetectedBG.color = new Color32(0x65, 0x00, 0x00, 0x80);
             planetDetectedOutline.color = Color.red;
+            if (!PlanetDetected){
+                audioSource.PlayOneShot(PlanetDetectedSound);
+            }
+            PlanetDetected = true;
             ResetHoldTimer();
         }
 
