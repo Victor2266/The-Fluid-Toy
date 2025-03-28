@@ -9,6 +9,7 @@ public class CastLevelSwitch : MonoBehaviour
     public BoundaryRestriction release;
     [Header("Lever Settings")]
     public bool isFlipped = false;
+    public float releaseMoveAmount = 25F;
 
     [Header("Rotation Parameters")]
     public float rotationDuration = 0.1f; // Duration of rotation animation
@@ -46,7 +47,7 @@ public class CastLevelSwitch : MonoBehaviour
             AnimateLeverRotation();
         }
         if(transform.eulerAngles.z > 90 & !isFlipped && swordSensor.metThreshold){
-            release.maxY = 20F;
+            release.maxY = releaseMoveAmount;
             isFlipped = true;
             PlayLeverEffects();
         }else if(transform.eulerAngles.z <= 90 & isFlipped){

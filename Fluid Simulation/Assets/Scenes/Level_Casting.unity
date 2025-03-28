@@ -290,6 +290,7 @@ MonoBehaviour:
   swordSensor: {fileID: 1613395765}
   release: {fileID: 660278265}
   isFlipped: 0
+  releaseMoveAmount: 25
   rotationDuration: 0.05
   minAngle: 20
   maxAngle: 160
@@ -2271,7 +2272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10993a3150aa884592c015fc1dd2929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fallDistance: 20
+  fallDistance: 25
   movementTime: 1
   fallSwitch: {fileID: 1688704070}
 --- !u!1 &638810971
@@ -3635,7 +3636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10993a3150aa884592c015fc1dd2929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fallDistance: 20
+  fallDistance: 25
   movementTime: 1
   fallSwitch: {fileID: 1082304112}
 --- !u!114 &1082304112
@@ -6684,7 +6685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10993a3150aa884592c015fc1dd2929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fallDistance: 20
+  fallDistance: 25
   movementTime: 1
   fallSwitch: {fileID: 1688704070}
 --- !u!114 &1763122377 stripped
