@@ -15,6 +15,9 @@ public class Level5Manager : LevelManager
     public TextMeshProUGUI planetStatusReportText;
     public TextMeshProUGUI SelectedWeaponText;
     public TextMeshProUGUI WeaponChargeText;
+    public TextMeshProUGUI planetDetectedText;
+    public Image planetDetectedOutline;
+    public Image planetDetectedBG;
 
     public Button TwinIonCannonButton;
     public Image TwinIonCannonImage;
@@ -133,6 +136,9 @@ public class Level5Manager : LevelManager
         }
         if (!fluidDetector.isFluidPresent)
         {
+            planetDetectedText.text = "<COLOR=GREEN>PLANET REMOVED\n<SIZE=16>ALL CLEAR!</COLOR>";
+            planetDetectedBG.color = new Color32(0x00, 0x40, 0x00, 0x80);
+            planetDetectedOutline.color = Color.green;
             if (!isHolding)
             {
                 isHolding = true;
@@ -156,6 +162,9 @@ public class Level5Manager : LevelManager
         }
         else
         {
+            planetDetectedText.text = "<COLOR=RED>PLANET DETECTED\n<SIZE=16>REMOVE IMMEDIATELY</COLOR>";
+            planetDetectedBG.color = new Color32(0x65, 0x00, 0x00, 0x80);
+            planetDetectedOutline.color = Color.red;
             ResetHoldTimer();
         }
 

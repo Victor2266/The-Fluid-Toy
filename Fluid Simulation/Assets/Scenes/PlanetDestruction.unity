@@ -1707,7 +1707,7 @@ MonoBehaviour:
   interactionRadius: 3
   minRadius: 3
   maxRadius: 3
-  interactionStrength: 360
+  interactionStrength: 420
   minStrength: 36
   maxStrength: 420
   smoothingTime: 0.04
@@ -3233,6 +3233,9 @@ MonoBehaviour:
   planetStatusReportText: {fileID: 1037871352}
   SelectedWeaponText: {fileID: 509760354}
   WeaponChargeText: {fileID: 1250171387}
+  planetDetectedText: {fileID: 884232845}
+  planetDetectedOutline: {fileID: 949470976}
+  planetDetectedBG: {fileID: 1495704467}
   TwinIonCannonButton: {fileID: 1453596480}
   TwinIonCannonImage: {fileID: 1803185743}
   TwinIonCannonMaxVelocity: 54
@@ -3853,7 +3856,7 @@ GameObject:
   - component: {fileID: 884232846}
   - component: {fileID: 884232845}
   m_Layer: 6
-  m_Name: Text (TMP) (4)
+  m_Name: Planet Detected Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
