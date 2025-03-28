@@ -19,8 +19,14 @@ public class CupFactory : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
 
+    private IFluidSimulation sim;
     private List<CupInstance> activeClones = new List<CupInstance>();
 
+    private void Start()
+    {
+        GameObject simObject = GameObject.FindGameObjectWithTag("Simulation");
+        sim = simObject.GetComponent<IFluidSimulation>();
+    }
     private string GenerateUniqueID()
     {
         return System.Guid.NewGuid().ToString();
@@ -56,6 +62,7 @@ public class CupFactory : MonoBehaviour
         };
 
         activeClones.Add(instance);
+        sim.UpdateBoxColliders(); // This is costly but necessary
 
         if (showDebugLogs) Debug.Log($"Spawned new cup with ID: {id}. Total clones: {activeClones.Count}");
 
@@ -82,6 +89,7 @@ public class CupFactory : MonoBehaviour
             {
                 Destroy(activeClones[i].cupObject);
                 activeClones.RemoveAt(i);
+                sim.UpdateBoxColliders(); // This is costly but necessary
 
                 if (showDebugLogs) Debug.Log($"Deleted cup with ID: {id}. Remaining clones: {activeClones.Count}");
                 return true;

@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class FluidDispenseButton : MonoBehaviour
 {
-    [Header("Fluid Simulation Reference")]
-    public IFluidSimulation sim;
-
     [Header("Dispensing Settings")]
     public int sourceIndex;
     public float fixedDispenseQuantity = 0.5f;
@@ -27,6 +24,7 @@ public class FluidDispenseButton : MonoBehaviour
     private float dispenseEndTime;
     private bool isDispensing;
     private bool isPressed = false;
+    private IFluidSimulation sim;
 
     void Start()
     {
@@ -142,8 +140,8 @@ public class FluidDispenseButton : MonoBehaviour
         }
     }
 
-    // Visual feedback when hovering
-    /*void OnMouseEnter()
+    // FIXME Visual feedback when hovering
+    void OnMouseEnter()
     {
         // Optional: Add hover effect like sprite tint change
     }
@@ -151,5 +149,5 @@ public class FluidDispenseButton : MonoBehaviour
     void OnMouseExit()
     {
         // Optional: Remove hover effect
-    }*/
+    }
 }
