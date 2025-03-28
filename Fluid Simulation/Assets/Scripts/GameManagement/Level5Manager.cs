@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections;
 
 public class Level5Manager : LevelManager
 {
@@ -51,6 +52,11 @@ public class Level5Manager : LevelManager
     // These control how long a weapon stays active and how long its cooldown lasts.
     public float[] weaponActiveDuration = new float[] { 5f, 5f, 7.5f, 2f };
     public float[] weaponCooldownDuration = new float[] { 3f, 3f, 3f, 12f };
+    public Image[][] weaponCooldownImages = new Image[4][];
+    public Image[] twinIonCannonCooldownImages = new Image[11];
+    public Image[] deathRayCooldownImages = new Image[11];
+    public Image[] tractorBeamCooldownImages = new Image[11];
+    public Image[] neutronBombCooldownImages = new Image[11];
 
     // The weapon “state” (for our UI and simulation) is one of:
     private enum WeaponState { Ready, Active, Cooldown }
@@ -113,10 +119,17 @@ public class Level5Manager : LevelManager
             weaponCooldowns[i].state = WeaponState.Ready;
             weaponCooldowns[i].timeRemaining = 0f;
         }
-
+        // **** Initialize the neutron bomb weapon’s state as Cooldown.
         weaponCooldowns[3] = new WeaponCooldown();
         weaponCooldowns[3].state = WeaponState.Cooldown;
         weaponCooldowns[3].timeRemaining = weaponCooldownDuration[3];
+    
+        // Initialize cooldown images
+        weaponCooldownImages[0] = twinIonCannonCooldownImages;
+        weaponCooldownImages[1] = deathRayCooldownImages;
+        weaponCooldownImages[2] = tractorBeamCooldownImages;
+        weaponCooldownImages[3] = neutronBombCooldownImages;
+        
     }
 
     void Update()
@@ -233,17 +246,41 @@ public class Level5Manager : LevelManager
     {
         if (weaponCooldowns[index].state == WeaponState.Ready)
         {
+            for (int i = 0; i < 11; i++)
+            {
+                weaponCooldownImages[index][i].color = Color.green;
+            }
+
             return "<color=green>READY</color>";
         }
         else if (weaponCooldowns[index].state == WeaponState.Active)
         {
             int percentage = Mathf.FloorToInt((weaponCooldowns[index].timeRemaining / weaponActiveDuration[index]) * 100f);
+            int progress = Mathf.Clamp(Mathf.FloorToInt((100f - percentage) / 9.09f), 0, 10);
+            for (int i = 0; i < 11; i++)
+            {
+                weaponCooldownImages[index][i].color = Color.yellow;
+                if (i < progress) {
+                    weaponCooldownImages[index][i].color = new Color32(0x00, 0x3C, 0x00, 0xFF);
+                }
+            }
+
+            
             return $"<color=yellow>{percentage}%</color>";
         }
         else if (weaponCooldowns[index].state == WeaponState.Cooldown)
         {
             // We show the percentage of the cooldown that has been completed.
             int percentage = Mathf.FloorToInt(((weaponCooldownDuration[index] - weaponCooldowns[index].timeRemaining) / weaponCooldownDuration[index]) * 100f);
+            int progress = Mathf.Clamp(Mathf.FloorToInt((100f - percentage) / 9.09f), 0, 10);
+            for (int i = 0; i < 11; i++)
+            {
+                weaponCooldownImages[index][i].color = Color.red;
+                if (i < progress) {
+                    weaponCooldownImages[index][i].color = new Color32(0x00, 0x3C, 0x00, 0xFF);
+                }
+            }
+
             return $"<color=red>{percentage}%</color>";
         }
         return "";
