@@ -12,6 +12,7 @@ public class Level5Manager : LevelManager
     public FluidDetector fluidDetector;
     public ThermalSensor thermalSensor;
     public InteractionRadiusVisualizer interactionRadiusVisualizer;
+    
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI planetStatusReportText;
     public TextMeshProUGUI SelectedWeaponText;
@@ -34,8 +35,18 @@ public class Level5Manager : LevelManager
     public float deathRayAimSpeed = 1f;       // Adjust as needed
 
     [Header("Sound effects")]
-    public AudioSource soundEffectPlayer;
-    public AudioClip[] soundEffects;
+    public AudioSource TwinIonCannonAudioSource;
+    public AudioSource DeathRayAudioSource;
+    public ClickSoundPlayer clickSoundPlayer;
+    public AudioSource TractorBeamAudioSource;
+    public AudioSource NeutronBombAudioSource;
+    public AudioClip PlanetDetectedSound;
+    public AudioClip PlanetNotDetectedSound;
+    public AudioClip WeaponReadySound;
+    public AudioClip WeaponButtonSelectedSound;
+    public AudioClip WeaponButtonNotSelectedSound;
+    public AudioClip WeaponDeactivatedSound;
+    public AudioClip WeaponChargingSound;
 
     // These control how long a weapon stays active and how long its cooldown lasts.
     public float[] weaponActiveDuration = new float[] { 5f, 5f, 7.5f, 2f };
@@ -62,6 +73,7 @@ public class Level5Manager : LevelManager
     void Start()
     {
         Cursor.visible = false;
+        interactionRadiusVisualizer.hideLineRenderer = true;
 
         if (fluidDetector == null)
         {
@@ -170,12 +182,14 @@ public class Level5Manager : LevelManager
         }
 
         // === NEW: Update each weapon’s active/cooldown timer ===
+        bool isAnyWeaponActive = false;
         for (int i = 0; i < weaponCooldowns.Length; i++)
         {
 
             switch (weaponCooldowns[i].state)
             {
                 case WeaponState.Active:
+                    isAnyWeaponActive = true;
                     weaponCooldowns[i].timeRemaining -= Time.deltaTime;
                     if (weaponCooldowns[i].timeRemaining <= 0f)
                     {
@@ -199,6 +213,11 @@ public class Level5Manager : LevelManager
                     break;
 
             }
+        }
+
+        if (!isAnyWeaponActive)
+        {
+            SelectedWeaponText.text = "SELECT A WEAPON";
         }
 
         // === NEW: Update the UI text for weapon charge ===
@@ -241,23 +260,31 @@ public class Level5Manager : LevelManager
             SourceObjectInitializer RightIonCannon = sim.GetSourceObject(1);
             RightIonCannon.spawnRate = 0f;
             sim.SetSourceObject(RightIonCannon, 1);
+
+            TwinIonCannonAudioSource.Stop();
         }
         else if (uiWeaponIndex == 1) // Death Ray (simulation source index 2)
         {
             SourceObjectInitializer weapon = sim.GetSourceObject(2);
             weapon.spawnRate = 0f;
             sim.SetSourceObject(weapon, 2);
+
+            DeathRayAudioSource.Stop();
         }
         else if (uiWeaponIndex == 2) // Tractor Beam (using brush types)
         {
             sim.SetBrushType(2);
-            interactionRadiusVisualizer.enabled = false;
+            interactionRadiusVisualizer.hideLineRenderer = true;
+            TractorBeamAudioSource.Stop();
+            clickSoundPlayer.enabled = false;
         }
         else if (uiWeaponIndex == 3) // Neutron Bomb (simulation source index 3)
         {
             SourceObjectInitializer weapon = sim.GetSourceObject(3);
             weapon.spawnRate = 0f;
             sim.SetSourceObject(weapon, 3);
+
+            NeutronBombAudioSource.Stop();
         }
         // Reset our active weapon tracking if needed.
         if (UIActiveWeapon == uiWeaponIndex)
@@ -275,6 +302,7 @@ public class Level5Manager : LevelManager
             return;
         }
         FlashImage(TwinIonCannonImage, Color.white);
+        TwinIonCannonAudioSource.Play();
 
         UIActiveWeapon = 0;
         weaponCooldowns[0].state = WeaponState.Active;
@@ -303,8 +331,9 @@ public class Level5Manager : LevelManager
             FlashImage(DeathRayImage, Color.red);
             return;
         }
-
         FlashImage(DeathRayImage, Color.white);
+        DeathRayAudioSource.Play();
+
         UIActiveWeapon = 1;
         weaponCooldowns[1].state = WeaponState.Active;
         weaponCooldowns[1].timeRemaining = weaponActiveDuration[1];
@@ -328,8 +357,10 @@ public class Level5Manager : LevelManager
             return;
         }
 
-        interactionRadiusVisualizer.enabled = true;
+        interactionRadiusVisualizer.hideLineRenderer = false;
         FlashImage(TractorBeamImage, Color.white);
+        clickSoundPlayer.enabled = true;
+
         UIActiveWeapon = 2;
         weaponCooldowns[2].state = WeaponState.Active;
         weaponCooldowns[2].timeRemaining = weaponActiveDuration[2];
@@ -351,6 +382,8 @@ public class Level5Manager : LevelManager
         }
 
         FlashImage(NeutronBombImage, Color.white);
+        NeutronBombAudioSource.Play();
+
         UIActiveWeapon = 3;
         weaponCooldowns[3].state = WeaponState.Active;
         weaponCooldowns[3].timeRemaining = weaponActiveDuration[3];
