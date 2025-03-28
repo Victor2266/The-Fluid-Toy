@@ -173,9 +173,6 @@ public class Level5Manager : LevelManager
             planetDetectedBG.color = new Color32(0x00, 0x40, 0x00, 0x80);
             planetDetectedOutline.color = Color.green;
             if (PlanetDetected){
-                DOTween.Kill(planetDetectedOutline);
-                planetDetectedOutline.rectTransform.localPosition = new Vector3(-448f, -249.7f, 0f);
-                planetDetectedOutline.transform.DOJump(planetDetectedText.transform.position, 0.5f, 1, 0.2f).SetEase(Ease.InOutBack);
                 audioSource.PlayOneShot(PlanetNotDetectedSound);
             }
             PlanetDetected = false;
@@ -207,9 +204,6 @@ public class Level5Manager : LevelManager
             planetDetectedBG.color = new Color32(0x65, 0x00, 0x00, 0x80);
             planetDetectedOutline.color = Color.red;
             if (!PlanetDetected){
-                DOTween.Kill(planetDetectedOutline);
-                planetDetectedOutline.rectTransform.localPosition = new Vector3(-448f, -249.7f, 0f);
-                planetDetectedOutline.transform.DOJump(planetDetectedText.transform.position, 0.5f, 1, 0.2f).SetEase(Ease.InOutElastic);
                 audioSource.PlayOneShot(PlanetDetectedSound);
             }
             PlanetDetected = true;
@@ -517,7 +511,6 @@ public class Level5Manager : LevelManager
     void OnDestroy()
     {
         Cursor.visible = true;
-        DOTween.Kill(planetDetectedOutline);
         // Kill DOTween animations on all weapon images.
         foreach (var image in new[] { TwinIonCannonImage, DeathRayImage, TractorBeamImage, NeutronBombImage })
         {
