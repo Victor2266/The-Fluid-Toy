@@ -4,7 +4,7 @@ using DG.Tweening;
 public class CastLevelCastMovement : MonoBehaviour
 {
     [Header("Button Reference")]
-    public CastLevelCastButton button;
+    public CastLevelSwitch castSwitch;
 
     [Header("Opening/Closing Settings")]
     public float distance = 5F;
@@ -15,9 +15,11 @@ public class CastLevelCastMovement : MonoBehaviour
     private Vector3 openPosition;
 
     private Tweener currentTween;
+    public bool fall = false;
+    private bool isOpened = false;
     void Start()
     {
-        if(button == null){
+        if(castSwitch == null){
             Debug.LogError("Error: button not connected to cast script");
         }
         startingPosition = transform.position;
@@ -27,11 +29,11 @@ public class CastLevelCastMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(button.isOpening){
+        if(castSwitch.isFlipped && !isOpened){
             if(transform.position.x != openPosition.x && currentTween == null){
                 moveToOpenPosition();
             }
-        }else if(button.isClosing){
+        }else if(!castSwitch.isFlipped && isOpened){
             if(transform.position.x != startingPosition.x && currentTween == null){
                 moveToClosePosition();
             }
@@ -48,9 +50,9 @@ public class CastLevelCastMovement : MonoBehaviour
             .SetEase(Ease.OutQuad) // Optional: choose an easing function
             .OnComplete(() => {
                 // Optional: You can add any completion logic here
-                button.isOpened = true;
-                button.isOpening = false;
+                isOpened = true;
                 currentTween = null;
+                fall = true;
             });
     }
 
@@ -64,8 +66,7 @@ public class CastLevelCastMovement : MonoBehaviour
             .SetEase(Ease.OutQuad) // Optional: choose an easing function
             .OnComplete(() => {
                 // Optional: You can add any completion logic here
-                button.isOpened = false;
-                button.isClosing = false;
+                isOpened = false;
                 currentTween = null;
             });
     }

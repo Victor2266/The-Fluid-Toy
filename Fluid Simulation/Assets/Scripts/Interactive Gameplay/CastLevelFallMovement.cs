@@ -9,7 +9,7 @@ public class CastLevelFallMovement : MonoBehaviour
     public float movementTime = 1F;
 
     [Header("Trigger Button")]
-    public CastLevelTriggerButton button;
+    public CastLevelCastMovement fallSwitch;
 
     private Tweener currentTween;
 
@@ -18,7 +18,7 @@ public class CastLevelFallMovement : MonoBehaviour
 
     void Start()
     {
-        if(button == null){
+        if(fallSwitch == null){
             Debug.LogError("Error: no falling trigger connected");
         }
         
@@ -26,7 +26,7 @@ public class CastLevelFallMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(button.fall && !fallen){
+        if(fallSwitch.fall && !fallen){
             fall();
             fallen = true;
         }
