@@ -8,8 +8,10 @@ public class CastLevelFallMovement : MonoBehaviour
     public float fallDistance = 20F;
     public float movementTime = 1F;
 
+    public BoundaryRestriction res;
+
     [Header("Trigger Button")]
-    public CastLevelCastMovement fallSwitch;
+    public CastingLevelManager fallSwitch;
 
     private Tweener currentTween;
 
@@ -19,7 +21,7 @@ public class CastLevelFallMovement : MonoBehaviour
     void Start()
     {
         if(fallSwitch == null){
-            Debug.LogError("Error: no falling trigger connected");
+            fallSwitch = GameObject.FindFirstObjectByType<CastingLevelManager>();
         }
         
     }
@@ -27,6 +29,9 @@ public class CastLevelFallMovement : MonoBehaviour
     void FixedUpdate()
     {
         if(fallSwitch.fall && !fallen){
+            if(res != null){
+                res.maxY = 20F;
+            }
             fall();
             fallen = true;
         }

@@ -5,26 +5,25 @@ public class CastLevelCastMovement : MonoBehaviour
 {
     [Header("Button Reference")]
     public CastLevelSwitch castSwitch;
+    public CastingLevelManager manager;
 
     [Header("Opening/Closing Settings")]
     public float distance = 5F;
     public float movementTime = 1f;
+    public bool isOpened = false;
 
     private Vector3 startingPosition;
 
     private Vector3 openPosition;
 
     private Tweener currentTween;
-    public bool fall = false;
-    private bool isOpened = false;
+    
     void Start()
     {
         if(castSwitch == null){
             Debug.LogError("Error: button not connected to cast script");
         }
-        startingPosition = transform.position;
-        openPosition = transform.position;
-        openPosition.x += distance;
+
     }
 
     void FixedUpdate()
@@ -44,6 +43,8 @@ public class CastLevelCastMovement : MonoBehaviour
     {
         // Kill any existing tween to prevent multiple animations
         currentTween?.Kill();
+        openPosition = transform.position;
+        openPosition.x += distance;
 
         // Move to open position smoothly
         currentTween = transform.DOMove(openPosition, movementTime)
@@ -52,7 +53,6 @@ public class CastLevelCastMovement : MonoBehaviour
                 // Optional: You can add any completion logic here
                 isOpened = true;
                 currentTween = null;
-                fall = true;
             });
     }
 
@@ -60,7 +60,7 @@ public class CastLevelCastMovement : MonoBehaviour
     {
         // Kill any existing tween to prevent multiple animations
         currentTween?.Kill();
-
+        startingPosition = transform.position;
         // Move to open position smoothly
         currentTween = transform.DOMove(startingPosition, movementTime)
             .SetEase(Ease.OutQuad) // Optional: choose an easing function
