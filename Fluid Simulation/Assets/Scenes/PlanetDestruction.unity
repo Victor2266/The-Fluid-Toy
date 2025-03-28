@@ -1687,7 +1687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 0
+  fixedTimeStep: 1
   maxParticles: 16000
   scanForObstaclesOnStart: 0
   scanForParticleSpawnersOnStart: 1
@@ -1700,7 +1700,7 @@ MonoBehaviour:
   edgeType: 1
   gravityMode: 2
   evenlyDistributeParticleSpawns: 0
-  maxSourceSpawnRate: 40
+  maxSourceSpawnRate: 120
   maxMouseSpawnRate: 40
   selectedFluid: 0
   brushState: 1
@@ -3231,15 +3231,22 @@ MonoBehaviour:
   thermalSensor: {fileID: 0}
   timerText: {fileID: 1138276893}
   planetStatusReportText: {fileID: 1037871352}
+  SelectedWeaponText: {fileID: 509760354}
   TwinIonCannonButton: {fileID: 1453596480}
   TwinIonCannonImage: {fileID: 1803185743}
+  TwinIonCannonMaxVelocity: 54
   DeathRayButton: {fileID: 855515109}
   DeathRayImage: {fileID: 1150038378}
+  DeathRayMaxVelocity: 64
   TractorBeamButton: {fileID: 1360753542}
   TractorBeamImage: {fileID: 1135074367}
   NeutronBombButton: {fileID: 843182360}
   NeutronBombImage: {fileID: 894246425}
-  SelectedWeaponText: {fileID: 509760354}
+  twinIonCannonAimSpeed: 10
+  deathRayAimSpeed: 1
+  soundEffectPlayer: {fileID: 0}
+  soundEffects: []
+  selectedWeaponIndex: 0
 --- !u!1 &836117989
 GameObject:
   m_ObjectHideFlags: 0
@@ -4797,7 +4804,7 @@ MonoBehaviour:
   errorMargin: 0.01
   showDebugGizmos: 0
   showDebugLogs: 0
-  showTempValue: 1
+  showTempValue: 0
   displayOffset: {x: 0, y: 30}
 --- !u!4 &980064305
 Transform:
@@ -5699,7 +5706,7 @@ MonoBehaviour:
   detectionRadius: 8.5
   showDebugGizmos: 0
   showDebugLogs: 0
-  showDensityValue: 1
+  showDensityValue: 0
   densityDisplayOffset: {x: 0, y: 120}
 --- !u!4 &1116168245
 Transform:

@@ -24,6 +24,13 @@ public class Level5Manager : LevelManager
     public Image TractorBeamImage;
     public Button NeutronBombButton;
     public Image NeutronBombImage;
+    public float twinIonCannonAimSpeed = 10f; // Adjust this value as needed
+
+    public float deathRayAimSpeed = 1f; // Adjust this value as needed
+
+    [Header("Sound effects")]
+    public AudioSource soundEffectPlayer;
+    public AudioClip[] soundEffects;
 
     // Private Variables:
     private float[] weaponMaxVelocities;
@@ -227,15 +234,16 @@ public class Level5Manager : LevelManager
             SourceObjectInitializer LeftIonCannon = sim.GetSourceObject(selectedWeaponIndex);
             SourceObjectInitializer RightIonCannon = sim.GetSourceObject(selectedWeaponIndex + 1);
 
-            LeftIonCannon.velo = sourceVelocity;
-            RightIonCannon.velo = new Vector2(-sourceVelocity.x, sourceVelocity.y);
+            LeftIonCannon.velo = Vector2.Lerp(LeftIonCannon.velo, sourceVelocity, twinIonCannonAimSpeed * Time.deltaTime);
+            RightIonCannon.velo = Vector2.Lerp(RightIonCannon.velo, new Vector2(-sourceVelocity.x, sourceVelocity.y), twinIonCannonAimSpeed * Time.deltaTime);
 
             sim.SetSourceObject(LeftIonCannon, selectedWeaponIndex);
             sim.SetSourceObject(RightIonCannon, selectedWeaponIndex + 1);
         }
-        else{
+        else if (selectedWeaponIndex == 2) // Death Ray
+        {
             SourceObjectInitializer source = sim.GetSourceObject(selectedWeaponIndex);
-            source.velo = sourceVelocity;
+            source.velo = Vector2.Lerp(source.velo, sourceVelocity, deathRayAimSpeed * Time.deltaTime);
             sim.SetSourceObject(source, selectedWeaponIndex);
         }
     }
