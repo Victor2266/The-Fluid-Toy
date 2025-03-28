@@ -565,7 +565,7 @@ Transform:
   - {fileID: 843555045}
   - {fileID: 74489694}
   - {fileID: 253567216}
-  - {fileID: 860809059}
+  - {fileID: 298077915}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &253567215
@@ -1082,12 +1082,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 298077914}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1990327185}
+  m_Father: {fileID: 208174974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &298077916
 MonoBehaviour:
@@ -1104,7 +1104,7 @@ MonoBehaviour:
   isManagedSensor: 0
   densityThreshold: 160
   checkInterval: 0.1
-  detectionRadius: 2.4
+  detectionRadius: 2
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -2613,7 +2613,7 @@ GameObject:
   - component: {fileID: 860809059}
   - component: {fileID: 860809060}
   m_Layer: 0
-  m_Name: Fluid Detector
+  m_Name: ' Fluid Detector Upper'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2627,12 +2627,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860809058}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 208174974}
+  m_Father: {fileID: 1990327185}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &860809060
 MonoBehaviour:
@@ -2649,7 +2649,7 @@ MonoBehaviour:
   isManagedSensor: 0
   densityThreshold: 160
   checkInterval: 0.1
-  detectionRadius: 2.4
+  detectionRadius: 2.1
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -6539,6 +6539,58 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1864700318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1864700319}
+  - component: {fileID: 1864700320}
+  m_Layer: 0
+  m_Name: ' Fluid Detector Lower'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1864700319
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1864700318}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.27, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1990327185}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1864700320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1864700318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6dba1f9b3821b84f94671ee52db88ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isManagedSensor: 0
+  densityThreshold: 160
+  checkInterval: 0.1
+  detectionRadius: 2
+  showDebugGizmos: 1
+  showDebugLogs: 0
+  showDensityValue: 1
+  densityDisplayOffset: {x: 0, y: -120}
 --- !u!1 &1892898329
 GameObject:
   m_ObjectHideFlags: 0
@@ -6938,7 +6990,8 @@ Transform:
   - {fileID: 158788927}
   - {fileID: 1386061973}
   - {fileID: 412644854}
-  - {fileID: 298077915}
+  - {fileID: 1864700319}
+  - {fileID: 860809059}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2035263639
