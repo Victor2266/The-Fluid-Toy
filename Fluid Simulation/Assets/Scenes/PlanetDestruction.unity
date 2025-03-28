@@ -1987,7 +1987,7 @@ GameObject:
   - component: {fileID: 509760355}
   - component: {fileID: 509760354}
   m_Layer: 5
-  m_Name: Text (TMP) (4)
+  m_Name: Selected Weapon Text (Bottom)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3231,10 +3231,15 @@ MonoBehaviour:
   thermalSensor: {fileID: 0}
   timerText: {fileID: 1138276893}
   planetStatusReportText: {fileID: 1037871352}
-  TwinIonCannonButton: {fileID: 0}
-  DeathRayButton: {fileID: 0}
-  TractorBeamButton: {fileID: 0}
-  NeutronBombButton: {fileID: 0}
+  TwinIonCannonButton: {fileID: 1453596480}
+  TwinIonCannonImage: {fileID: 1803185743}
+  DeathRayButton: {fileID: 855515109}
+  DeathRayImage: {fileID: 1150038378}
+  TractorBeamButton: {fileID: 1360753542}
+  TractorBeamImage: {fileID: 1135074367}
+  NeutronBombButton: {fileID: 843182360}
+  NeutronBombImage: {fileID: 894246425}
+  SelectedWeaponText: {fileID: 509760354}
 --- !u!1 &836117989
 GameObject:
   m_ObjectHideFlags: 0
@@ -3439,7 +3444,7 @@ GameObject:
   - component: {fileID: 843182361}
   - component: {fileID: 843182360}
   m_Layer: 6
-  m_Name: Image (12)
+  m_Name: Button 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3635,7 +3640,7 @@ GameObject:
   - component: {fileID: 855515110}
   - component: {fileID: 855515109}
   m_Layer: 6
-  m_Name: Image (10)
+  m_Name: Button 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7048,7 +7053,7 @@ GameObject:
   - component: {fileID: 1360753543}
   - component: {fileID: 1360753542}
   m_Layer: 6
-  m_Name: Image (11)
+  m_Name: Button 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7716,7 +7721,7 @@ GameObject:
   - component: {fileID: 1453596478}
   - component: {fileID: 1453596480}
   m_Layer: 6
-  m_Name: Image (9)
+  m_Name: Button 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8534,7 +8539,7 @@ GameObject:
   - component: {fileID: 1520331619}
   - component: {fileID: 1520331618}
   m_Layer: 5
-  m_Name: Text (TMP) (3)
+  m_Name: Selected Weapon Text (Bottom Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
