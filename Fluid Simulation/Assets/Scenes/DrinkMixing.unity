@@ -325,6 +325,7 @@ MonoBehaviour:
   cupPrefab: {fileID: 1990327182}
   spawnPosition: {x: 0, y: 0}
   maxClones: 5
+  useSensorManager: 1
   showDebugLogs: 1
 --- !u!4 &44533489
 Transform:
@@ -540,6 +541,7 @@ MonoBehaviour:
   cupPrefab: {fileID: 208174971}
   spawnPosition: {x: 0, y: 0}
   maxClones: 5
+  useSensorManager: 1
   showDebugLogs: 1
 --- !u!4 &131409224
 Transform:
@@ -1290,6 +1292,9 @@ MonoBehaviour:
   densityThreshold: 160
   checkInterval: 0.1
   detectionRadius: 2
+  typeDetection: 1
+  typeToDetect: 0
+  particlePercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -2836,6 +2841,9 @@ MonoBehaviour:
   densityThreshold: 160
   checkInterval: 0.1
   detectionRadius: 2.1
+  typeDetection: 1
+  typeToDetect: 0
+  particlePercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -6738,6 +6746,9 @@ MonoBehaviour:
   densityThreshold: 160
   checkInterval: 0.1
   detectionRadius: 2.4
+  typeDetection: 0
+  typeToDetect: 0
+  particlePercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -7136,6 +7147,9 @@ MonoBehaviour:
   densityThreshold: 160
   checkInterval: 0.1
   detectionRadius: 2
+  typeDetection: 1
+  typeToDetect: 0
+  particlePercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -7960,6 +7974,8 @@ SceneRoots:
   - {fileID: 44533489}
   - {fileID: 131409224}
   - {fileID: 168916478}
+  - {fileID: 1990327185}
+  - {fileID: 208174974}
   - {fileID: 892023827}
   - {fileID: 1066261719}
   - {fileID: 1439088636}
@@ -7968,5 +7984,3 @@ SceneRoots:
   - {fileID: 1114913114}
   - {fileID: 63307908}
   - {fileID: 638810972}
-  - {fileID: 208174974}
-  - {fileID: 1990327185}
