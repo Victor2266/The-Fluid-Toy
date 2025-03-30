@@ -22,7 +22,6 @@ public class Draggable : MonoBehaviour
 
     [Tooltip("Max Speed Settings")]
     public float maxDragSpeed = Mathf.Infinity; // Maximum dragging speed (units per second)
-    private Vector3 previousPosition;
     private float currentSpeed;
 
     public float minScale = 0.1f; // Minimum scale limit
@@ -34,7 +33,6 @@ public class Draggable : MonoBehaviour
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
-        previousPosition = transform.position; // For speed tracking
     }
 
     void OnMouseOver()
@@ -103,8 +101,6 @@ public class Draggable : MonoBehaviour
             {
                 transform.position = targetPosition;
             }
-
-            previousPosition = transform.position;
         }
     }
 
