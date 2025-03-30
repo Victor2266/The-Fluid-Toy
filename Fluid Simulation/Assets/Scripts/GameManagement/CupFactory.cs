@@ -20,12 +20,15 @@ public class CupFactory : MonoBehaviour
     [SerializeField] private bool showDebugLogs = true;
 
     private IFluidSimulation sim;
+    private SensorManager sensorManager; // If it exists
     private List<CupInstance> activeClones = new List<CupInstance>();
 
     private void Start()
     {
         GameObject simObject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simObject.GetComponent<IFluidSimulation>();
+        GameObject sManagerObject = GameObject.FindGameObjectWithTag("Simulation");
+        sensorManager = sManagerObject.GetComponent<SensorManager>();
     }
     private string GenerateUniqueID()
     {
@@ -63,6 +66,7 @@ public class CupFactory : MonoBehaviour
 
         activeClones.Add(instance);
         sim.UpdateBoxColliders(); // This is costly but necessary
+        sensorManager.scanForSensors(); // Likewise
 
         if (showDebugLogs) Debug.Log($"Spawned new cup with ID: {id}. Total clones: {activeClones.Count}");
 

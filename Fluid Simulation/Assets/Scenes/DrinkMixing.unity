@@ -391,13 +391,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.5
   enableSmoothing: 1
+  smoothingSpeed: 0.5
   resizable: 0
   uniformScaling: 0
-  rotatable: 1
   scaleSpeed: 0.1
+  rotatable: 1
   rotationSpeed: 10
+  maxDragSpeed: Infinity
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
@@ -695,13 +696,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.5
   enableSmoothing: 1
+  smoothingSpeed: 0.5
   resizable: 0
   uniformScaling: 0
-  rotatable: 1
   scaleSpeed: 0.1
+  rotatable: 1
   rotationSpeed: 10
+  maxDragSpeed: 30
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
@@ -2413,6 +2415,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba077, type: 2}
   - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba088, type: 2}
   - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
+  - {fileID: 11400000, guid: b6704187b4cf2e247bcbfb81c9101d69, type: 2}
   compute: {fileID: 7200000, guid: 5153d1e4fc4b4204bae3cf5df6749c6d, type: 3}
   spawners: []
   boxColliders:
@@ -2435,7 +2438,7 @@ MonoBehaviour:
   - transform: {fileID: 1750291864}
     velo: {x: 0, y: 0}
     spawnRate: 0
-    fluidType: 5
+    fluidType: 28
   drainObjects: []
   thermalBoxes: []
 --- !u!4 &828682584
@@ -3957,13 +3960,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.2
   enableSmoothing: 0
+  smoothingSpeed: 0.2
   resizable: 0
   uniformScaling: 0
-  rotatable: 1
   scaleSpeed: 0.1
+  rotatable: 1
   rotationSpeed: 10
+  maxDragSpeed: Infinity
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
@@ -7569,13 +7573,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.5
   enableSmoothing: 1
+  smoothingSpeed: 0.5
   resizable: 0
   uniformScaling: 0
-  rotatable: 1
   scaleSpeed: 0.1
+  rotatable: 1
   rotationSpeed: 10
+  maxDragSpeed: 10
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
@@ -7899,7 +7904,7 @@ GameObject:
   - component: {fileID: 2146342003}
   m_Layer: 0
   m_Name: Sensor Manager
-  m_TagString: Untagged
+  m_TagString: SensorManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7955,9 +7960,9 @@ SceneRoots:
   - {fileID: 44533489}
   - {fileID: 131409224}
   - {fileID: 168916478}
-  - {fileID: 1439088636}
   - {fileID: 892023827}
   - {fileID: 1066261719}
+  - {fileID: 1439088636}
   - {fileID: 1413552195}
   - {fileID: 1750291864}
   - {fileID: 1114913114}

@@ -6,13 +6,24 @@ public class Draggable : MonoBehaviour
     protected bool isDragging = false;
     protected Vector3 offset;
 
-    public float smoothingSpeed = 0.2f; // Adjust this value to control the smoothing speed
+    [Header("General Settings")]
+    [Tooltip("Smoothing Settings")]
     public bool enableSmoothing = true; // Boolean to enable/disable smoothing
+    public float smoothingSpeed = 0.2f; // Adjust this value to control the smoothing speed
+
+    [Tooltip("Resizing Settings")]
     public bool resizable = false; // Controls whether the object can be resized
     public bool uniformScaling = false; // Controls whether the object scales uniformly
-    public bool rotatable = false; // Controls whether the object can be rotated with ctrl shortcut
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
+
+    [Tooltip("Rotation Settings")]
+    public bool rotatable = false; // Controls whether the object can be rotated with ctrl shortcut
     public float rotationSpeed = 10f; // Degrees per scroll tick
+
+    [Tooltip("Max Speed Settings")]
+    public float maxDragSpeed = Mathf.Infinity; // Maximum dragging speed (units per second)
+    private Vector3 previousPosition;
+    private float currentSpeed;
 
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
@@ -23,7 +34,7 @@ public class Draggable : MonoBehaviour
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
-        
+        previousPosition = transform.position; // For speed tracking
     }
 
     void OnMouseOver()
@@ -67,6 +78,23 @@ public class Draggable : MonoBehaviour
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 targetPosition = mousePosition + offset;
 
+            // Calculate raw movement vector
+            Vector3 movement = targetPosition - transform.position;
+
+            // Apply speed limiting if maxDragSpeed is not Infinity
+            if (maxDragSpeed < Mathf.Infinity)
+            {
+                // Calculate speed in units per second
+                currentSpeed = movement.magnitude / Time.deltaTime;
+
+                if (currentSpeed > maxDragSpeed)
+                {
+                    // Normalize and scale by max speed
+                    movement = movement.normalized * maxDragSpeed * Time.deltaTime;
+                    targetPosition = transform.position + movement;
+                }
+            }
+
             if (enableSmoothing)
             {
                 transform.position = Vector3.Lerp(transform.position, targetPosition, smoothingSpeed);
@@ -75,6 +103,8 @@ public class Draggable : MonoBehaviour
             {
                 transform.position = targetPosition;
             }
+
+            previousPosition = transform.position;
         }
     }
 
