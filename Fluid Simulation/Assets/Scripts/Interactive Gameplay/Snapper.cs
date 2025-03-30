@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Draggable))]
+[RequireComponent(typeof(Draggable))] // There is a hard dependency in this code on "Draggable" for Unsnap functionality.
 public class Snapper : MonoBehaviour
 {
     [Header("Positional Snap Settings")]
@@ -90,7 +90,6 @@ public class Snapper : MonoBehaviour
         transform.SetParent(null);
 
         if (_rb != null) _rb.bodyType = RigidbodyType2D.Dynamic;
-
         if (snapEventSO != null) snapEventSO.RaiseUnsnap(objectToSnapOn);
     }
 

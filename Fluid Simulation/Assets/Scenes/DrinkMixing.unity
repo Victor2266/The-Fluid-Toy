@@ -1289,14 +1289,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isManagedSensor: 0
-  densityThreshold: 160
+  densityThreshold: 100
   checkInterval: 0.1
   detectionRadius: 2
   typeDetection: 1
   typeToDetect: 0
   particlePercentThreshold: 0.75
+  sensorName: Small cup sensor
   showDebugGizmos: 1
-  showDebugLogs: 0
+  showDebugLogs: 1
   showDensityValue: 1
   densityDisplayOffset: {x: 0, y: -120}
 --- !u!1 &308746579
@@ -2844,8 +2845,9 @@ MonoBehaviour:
   typeDetection: 1
   typeToDetect: 0
   particlePercentThreshold: 0.75
+  sensorName: Big cup upper sensor
   showDebugGizmos: 1
-  showDebugLogs: 0
+  showDebugLogs: 1
   showDensityValue: 1
   densityDisplayOffset: {x: 0, y: -120}
 --- !u!1 &892023823
@@ -6749,6 +6751,7 @@ MonoBehaviour:
   typeDetection: 0
   typeToDetect: 0
   particlePercentThreshold: 0.75
+  sensorName: 
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -7150,8 +7153,9 @@ MonoBehaviour:
   typeDetection: 1
   typeToDetect: 0
   particlePercentThreshold: 0.75
+  sensorName: Big cup lower sensor
   showDebugGizmos: 1
-  showDebugLogs: 0
+  showDebugLogs: 1
   showDensityValue: 1
   densityDisplayOffset: {x: 0, y: -120}
 --- !u!1 &1892898329

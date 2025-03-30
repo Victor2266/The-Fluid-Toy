@@ -19,7 +19,6 @@ public class CupFactory : MonoBehaviour
     [Header("Sensor Settings")]
     public bool useSensorManager = false;
 
-
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
 
@@ -71,8 +70,9 @@ public class CupFactory : MonoBehaviour
             uniqueID = id,
             spawnTime = System.DateTime.Now
         };
-
         activeClones.Add(instance);
+
+        // Update collider and sensor lists
         sim.UpdateBoxColliders(); // This is costly but necessary
         if (useSensorManager)
         {

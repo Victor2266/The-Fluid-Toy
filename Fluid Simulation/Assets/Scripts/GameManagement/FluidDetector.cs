@@ -26,6 +26,7 @@ public class FluidDetector : FluidSensor
     public float particlePercentThreshold = 0.75f;
 
     [Header("Debug")]
+    public string sensorName; // Optional. To help debug
     public bool showDebugGizmos = true;
     public bool showDebugLogs = true;
     public bool showDensityValue = true;
@@ -117,12 +118,6 @@ public class FluidDetector : FluidSensor
             if(particle.type == FluidType.Disabled){
                 continue;
             }
-            if (typeDetection)
-            {
-                numType[(int) particle.type - 1]++; // -1 because we don't count Disabled particles
-                numParticles++;
-            }
-
             Vector2 particlePos = particle.position;
             Vector2 offsetToParticle = particlePos - checkPosition;
             float sqrDstToParticle = Vector2.Dot(offsetToParticle, offsetToParticle);
@@ -132,6 +127,12 @@ public class FluidDetector : FluidSensor
                 float dst = Mathf.Sqrt(sqrDstToParticle);
                 // Using a simplified density kernel for detection
                 totalDensity += (1 - (dst / detectionRadius)) * (1 - (dst / detectionRadius));
+
+                if (typeDetection)
+                {
+                    numType[(int)particle.type - 1]++; // -1 because we don't count Disabled particles
+                    numParticles++;
+                }
             }
         }
 
@@ -152,7 +153,16 @@ public class FluidDetector : FluidSensor
             }
             int maxPCount = numType.Max();
             majorityType = numParticles == 0 ? FluidType.Disabled : (FluidType) (numType.ToList().IndexOf(maxPCount)) + 1; // Index + 1, because we did not log Disabled particles
-            if (showDebugLogs && oldMajorityType != majorityType) Debug.Log("New majorityType is: " + majorityType);
+            if (showDebugLogs && oldMajorityType != majorityType)
+            {
+                if (sensorName != null)
+                {
+                    Debug.Log("[" + sensorName + "]: New majorityType is: " + majorityType);
+                } else
+                {
+                    Debug.Log("New majorityType is: " + majorityType);
+                }
+            }
         }
         else // Original functionality
         {
