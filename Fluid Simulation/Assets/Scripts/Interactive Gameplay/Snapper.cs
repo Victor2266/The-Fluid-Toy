@@ -14,7 +14,7 @@ public class Snapper : MonoBehaviour
     public float angleSlack = 15f;
 
     [Header("Event (Optional)")]
-    private SnapEventSO snapEventSO;
+    public SnapEventSO snapEventSO;
 
     private bool _isSnapped = false;
     private Rigidbody2D _rb;
