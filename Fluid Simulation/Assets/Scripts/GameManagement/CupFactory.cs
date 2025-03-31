@@ -194,4 +194,9 @@ public class CupFactory : MonoBehaviour
         }
         return null;
     }
+
+    public List<CupInstance> GetCups()
+    {
+        return activeClones;
+    }
 }
