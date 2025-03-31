@@ -18,9 +18,17 @@ public class CastingLevelManager : LevelManager
 
     [Header("Public Variables")]
     public bool fall = false;
+    public float winDelay = 3F;
+
+    public bool finishedCooling = false;
     public float timeToDeleteBasinLid = 2F;
 
     private bool steamSoundPlayed = false;
+
+    private bool isWinSet = false;
+
+    private float winDelayStart = 0;
+    
 
     // void Start()
     // {
@@ -31,6 +39,15 @@ public class CastingLevelManager : LevelManager
     {
         if(hasWon) return;
 
+        if(isWinSet){
+            if(winDelayStart == 0){
+                winDelayStart = Time.time;
+            }
+            else if(Time.time - winDelayStart >= winDelay) {
+                TriggerWin();
+            }
+            return;
+        }
         if(castLeft.isOpened)
         {
             // evaluateScore();
@@ -48,12 +65,15 @@ public class CastingLevelManager : LevelManager
         if(fall && swordDetector.metThreshold)
         {
             evaluateScore();
-            TriggerWin();
+            finishedCooling = true;
         }
     }
 
-
-    void evaluateScore()
+	public void setWin()
+    {
+        isWinSet = true;
+    }
+	void evaluateScore()
     {
         float mark = 0;
         foreach (FluidDetector grade in gradingDetectors){

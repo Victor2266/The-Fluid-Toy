@@ -1025,6 +1025,8 @@ MonoBehaviour:
   steamSoundVolume: 0.5
   tempSoundThreshold: 30
   fall: 0
+  winDelay: 3
+  finishedCooling: 0
   timeToDeleteBasinLid: 2
 --- !u!82 &105816483
 AudioSource:
@@ -1536,10 +1538,10 @@ BoxCollider2D:
   m_Offset: {x: -2.37, y: -3.7}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 20, y: 13.34}
+    newSize: {x: 20, y: 13.34}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
@@ -1964,6 +1966,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 325235667}
+  - component: {fileID: 325235668}
   m_Layer: 0
   m_Name: Waster Basin
   m_TagString: Untagged
@@ -1995,6 +1998,21 @@ Transform:
   - {fileID: 1905294819}
   m_Father: {fileID: 185208643}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &325235668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325235666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b70ac89f8acc844c4889556140bbd97d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 105816482}
+  distanceToMove: -10
+  movementTime: 3
 --- !u!1 &329036652
 GameObject:
   m_ObjectHideFlags: 0
@@ -7208,7 +7226,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4592926617858281530, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: '<b>Level 4</b>
+      value: '<b>Level __</b>
 
 
 '
@@ -7463,7 +7481,7 @@ PrefabInstance:
       propertyPath: m_text
       value: '
 
-        Solve the Puzzle!'
+        Forge The Sword!'
       objectReference: {fileID: 0}
     - target: {fileID: 6805873491615882965, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontSize
@@ -8061,7 +8079,7 @@ MonoBehaviour:
   enableScrolling: 0
   enableHotkeys: 0
   manuallySelectFluidTypes: 1
-  updateFluidsEveryFrame: 0
+  updateFluidsEveryFrame: 1
   fluidDataArray:
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
   - {fileID: 11400000, guid: 094ea74afe77c5a40b808eac7ee4a009, type: 2}
@@ -9900,6 +9918,7 @@ MonoBehaviour:
   repelColor: {r: 1, g: 0, b: 0, a: 1}
   neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   alwaysShowNeutral: 1
+  hideLineRenderer: 0
   segments: 48
 --- !u!120 &1965732211
 LineRenderer:
