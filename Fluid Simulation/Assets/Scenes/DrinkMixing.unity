@@ -5274,7 +5274,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!82 &1150886125
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5535,8 +5535,11 @@ MonoBehaviour:
   timer: 0
   threeStarTime: 0
   twoStarTime: 0
-  smokeSoundDuration: 5
-  smokeSoundVolume: 0.2
+  largeCupFactory: {fileID: 75995622}
+  mediumCupFactory: {fileID: 44533488}
+  smallCupFactory: {fileID: 131409223}
+  orderZoneObj: {fileID: 0}
+  checkInterval: 0.2
 --- !u!1 &1173401522
 GameObject:
   m_ObjectHideFlags: 0
