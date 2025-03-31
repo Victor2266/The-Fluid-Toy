@@ -63,8 +63,8 @@ public class DrinkMixLevelManager : LevelManager
         {
             if (IsCupCompletelyContained(cup))
             {
-                ProcessCupContents(cup, out float fluidPercent, out bool isFluidPresent);
-                Debug.Log($"Order complete - Cup {cup.uniqueID} | Fluid: {fluidPercent}% | Present: {isFluidPresent}");
+                ProcessCupContents(cup, out FluidType majorityType, out float fluidPercent, out bool isFluidPresent);
+                Debug.Log($"Order complete - Cup {cup.uniqueID} | FluidPercent: {fluidPercent}% | Present: {isFluidPresent} | MajorityFluid: {Enum.GetName(typeof(FluidType), majorityType)}");
                 cupsToRemove.Add(cup);
             }
         }
