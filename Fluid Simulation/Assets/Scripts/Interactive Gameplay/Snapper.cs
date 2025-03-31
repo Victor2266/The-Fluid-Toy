@@ -16,17 +16,17 @@ public class Snapper : MonoBehaviour
     [Header("Event (Optional)")]
     public SnapEventSO snapEventSO;
 
-    private bool _isSnapped = false;
-    private Rigidbody2D _rb;
-    private Draggable _draggable;
+    protected bool _isSnapped = false;
+    protected Rigidbody2D _rb;
+    protected Draggable _draggable;
 
-    void Start()
+    protected virtual void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _draggable = GetComponent<Draggable>();
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (!_isSnapped && !_draggable.getIsDragging()) {
             // Check if we should snap (position and angle)
@@ -37,7 +37,7 @@ public class Snapper : MonoBehaviour
         }
     }
 
-    bool ShouldSnap()
+    protected virtual bool ShouldSnap()
     {
         // Check distance
         bool inPosition = Vector3.Distance(transform.position, GetSnapPosition()) <= snapDistance;
@@ -52,7 +52,7 @@ public class Snapper : MonoBehaviour
         return inPosition && inAngle;
     }
 
-    bool ShouldUnsnap()
+    protected virtual bool ShouldUnsnap()
     {
         // Unsnap if too far positionally
         if (Vector3.Distance(transform.position, GetSnapPosition()) > snapDistance)
@@ -66,7 +66,7 @@ public class Snapper : MonoBehaviour
         return angleDifference > angleSlack;
     }
 
-    void SnapObj()
+    protected virtual void SnapObj()
     {
         _isSnapped = true;
         Debug.Log("Snap!");
@@ -82,7 +82,7 @@ public class Snapper : MonoBehaviour
         if (snapEventSO != null) snapEventSO.RaiseSnap(objectToSnapOn);
     }
 
-    public void Unsnap()
+    protected virtual void Unsnap()
     {
         _isSnapped = false;
         Debug.Log("Unsnap!");
@@ -93,7 +93,7 @@ public class Snapper : MonoBehaviour
         if (snapEventSO != null) snapEventSO.RaiseUnsnap(objectToSnapOn);
     }
 
-    Vector3 GetSnapPosition()
+    protected virtual Vector3 GetSnapPosition()
     {
         return objectToSnapOn.transform.position + snapOffset;
     }
