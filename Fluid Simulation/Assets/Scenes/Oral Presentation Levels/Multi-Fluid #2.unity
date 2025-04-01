@@ -119,6 +119,157 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &85164719
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 85164721}
+  - component: {fileID: 85164720}
+  m_Layer: 0
+  m_Name: Water Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &85164720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85164719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  particleCount: 10000
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: 8.39, y: 0}
+  spawnSize: {x: 9.5, y: 6.3}
+  jitterStr: 0.025
+  temperature: 22
+  showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
+--- !u!4 &85164721
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85164719}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.01, y: -1.4855696, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &165965005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 165965008}
+  - component: {fileID: 165965007}
+  - component: {fileID: 165965006}
+  m_Layer: 0
+  m_Name: SimulationAoSCounting
+  m_TagString: Simulation
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &165965006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165965005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
+  gradientResolution: 64
+--- !u!114 &165965007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165965005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb390a7444a5bbd43a3bc3567cc5a726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeScale: 1
+  fixedTimeStep: 1
+  maxParticles: 20000
+  scanForObstaclesOnStart: 0
+  scanForParticleSpawnersOnStart: 1
+  iterationsPerFrame: 3
+  globalEntropyRate: 1
+  roomTemperature: 22
+  boundsSize: {x: 30.2, y: 16.2}
+  obstacleSize: {x: 0, y: 0}
+  obstacleCentre: {x: 0, y: 0}
+  edgeType: 0
+  gravityMode: 0
+  maxSourceSpawnRate: 20
+  maxMouseSpawnRate: 40
+  selectedFluid: 0
+  brushState: 1
+  interactionRadius: 3
+  minRadius: 0.25
+  maxRadius: 5
+  interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
+  smoothingTime: 0.04
+  enableScrolling: 1
+  enableHotkeys: 0
+  manuallySelectFluidTypes: 1
+  updateFluidsEveryFrame: 0
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
+  - {fileID: 11400000, guid: 2982ac6a7b25b4d28bde6cc98f98bec7, type: 2}
+  compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
+  spawners: []
+  boxColliders: []
+  circleColliders: []
+  sourceObjects: []
+  drainObjects: []
+  thermalBoxes: []
+--- !u!4 &165965008
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165965005}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &217280846
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,6 +863,105 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 43}
+--- !u!1 &723301428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 723301431}
+  - component: {fileID: 723301430}
+  - component: {fileID: 723301429}
+  m_Layer: 0
+  m_Name: SimulationAoSCounting UNIFIED NN
+  m_TagString: Simulation
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &723301429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723301428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
+  gradientResolution: 64
+--- !u!114 &723301430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723301428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a854985f392bc7f49a6eeaa1d49e704d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeScale: 1
+  fixedTimeStep: 1
+  maxParticles: 20000
+  scanForObstaclesOnStart: 0
+  scanForParticleSpawnersOnStart: 1
+  iterationsPerFrame: 3
+  globalEntropyRate: 1
+  roomTemperature: 22
+  boundsSize: {x: 34.9, y: 19.6}
+  obstacleSize: {x: 0, y: 0}
+  obstacleCentre: {x: 0, y: 0}
+  edgeType: 0
+  gravityMode: 0
+  evenlyDistributeParticleSpawns: 1
+  maxSourceSpawnRate: 20
+  maxMouseSpawnRate: 40
+  selectedFluid: 0
+  brushState: 1
+  interactionRadius: 3
+  minRadius: 0.25
+  maxRadius: 24
+  interactionStrength: 360
+  minStrength: 16
+  maxStrength: 720
+  smoothingTime: 0.04
+  enableScrolling: 0
+  enableHotkeys: 0
+  manuallySelectFluidTypes: 1
+  updateFluidsEveryFrame: 0
+  fluidDataArray:
+  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
+  - {fileID: 11400000, guid: feb8075e7e5787d4dbe0b2d994dd13db, type: 2}
+  compute: {fileID: 7200000, guid: 5153d1e4fc4b4204bae3cf5df6749c6d, type: 3}
+  spawners: []
+  boxColliders: []
+  circleColliders: []
+  sourceObjects: []
+  drainObjects: []
+  thermalBoxes: []
+--- !u!4 &723301431
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723301428}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &762013219
 GameObject:
   m_ObjectHideFlags: 0
@@ -729,7 +979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &762013220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -758,10 +1008,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 1
-  maxParticles: 10000
-  scanForObstaclesOnStart: 1
-  scanForParticleSpawnersOnStart: 1
+  fixedTimeStep: 0
+  maxParticles: 10240
+  scanForObstaclesOnStart: 0
+  scanForParticleSpawnersOnStart: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -785,7 +1035,8 @@ MonoBehaviour:
   fluidDataArray:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
-  spawners: []
+  spawners:
+  - {fileID: 0}
   boxColliders: []
   circleColliders: []
   sourceObjects: []
@@ -1026,7 +1277,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 9.87
+  orthographic size: 9.93
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1249,59 +1500,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 62, y: 15}
   m_EdgeRadius: 0
---- !u!1 &1110014727
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1110014729}
-  - component: {fileID: 1110014728}
-  m_Layer: 0
-  m_Name: Particle Spawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1110014728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110014727}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  particleCount: 10240
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 0.3, y: -0.2}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  temperature: 0
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
---- !u!4 &1110014729
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110014727}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.89597684, y: -1.4855696, z: -0.03608622}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1419766691
 GameObject:
   m_ObjectHideFlags: 0
@@ -1377,131 +1575,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1419766691}
   m_CullTransparentMesh: 1
---- !u!1 &1430943820
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1430943824}
-  - component: {fileID: 1430943825}
-  - component: {fileID: 1430943822}
-  - component: {fileID: 1430943826}
-  m_Layer: 0
-  m_Name: SimulationAoSCounting
-  m_TagString: Simulation
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1430943822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 3.35, y: 0.51}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  temperature: 0
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
---- !u!4 &1430943824
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1430943825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb390a7444a5bbd43a3bc3567cc5a726, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeScale: 1
-  fixedTimeStep: 1
-  maxParticles: 10000
-  scanForObstaclesOnStart: 1
-  scanForParticleSpawnersOnStart: 1
-  iterationsPerFrame: 3
-  globalEntropyRate: 1
-  roomTemperature: 22
-  boundsSize: {x: 34.2, y: 18.6}
-  obstacleSize: {x: 0, y: 0}
-  obstacleCentre: {x: 0, y: 0}
-  edgeType: 0
-  gravityMode: 0
-  maxSourceSpawnRate: 20
-  maxMouseSpawnRate: 40
-  selectedFluid: 0
-  brushState: 1
-  interactionRadius: 3
-  minRadius: 0.25
-  maxRadius: 24
-  interactionStrength: 360
-  minStrength: 36
-  maxStrength: 720
-  smoothingTime: 0.04
-  enableScrolling: 0
-  enableHotkeys: 1
-  manuallySelectFluidTypes: 1
-  updateFluidsEveryFrame: 0
-  fluidDataArray:
-  - {fileID: 11400000, guid: feb8075e7e5787d4dbe0b2d994dd13db, type: 2}
-  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawners:
-  - {fileID: 1110014728}
-  boxColliders:
-  - {fileID: 338494981}
-  - {fileID: 560968175}
-  circleColliders:
-  - {fileID: 2137391897}
-  - {fileID: 1466571978}
-  sourceObjects: []
-  drainObjects: []
-  thermalBoxes: []
---- !u!114 &1430943826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
-  gradientResolution: 64
 --- !u!1 &1466571974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1791,6 +1864,54 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 1
   m_ApplyActiveColorSpace: 1
+--- !u!1 &1525935667
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1525935669}
+  - component: {fileID: 1525935668}
+  m_Layer: 0
+  m_Name: Benchmark
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1525935668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525935667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2766ddcf012b3194594f288c30336db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  benchmarkDuration: 10
+  logDetailedStats: 1
+  visualizeInEditor: 1
+  startBenchmarkKey: 98
+--- !u!4 &1525935669
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525935667}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1526007770
 GameObject:
   m_ObjectHideFlags: 0
@@ -2064,6 +2185,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1754277700}
   m_CullTransparentMesh: 1
+--- !u!1 &1781153952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1781153954}
+  - component: {fileID: 1781153953}
+  m_Layer: 0
+  m_Name: Water Spawn (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &1781153953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781153952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 6
+  particleCount: 30
+  initialVelocity: {x: 0, y: 0}
+  spawnCentre: {x: -8.39, y: 0}
+  spawnSize: {x: 9.5, y: 6.3}
+  jitterStr: 0.025
+  temperature: 22
+  showSpawnBoundsGizmos: 1
+  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
+--- !u!4 &1781153954
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781153952}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.01, y: -1.4855696, z: -0.03608622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1838838569
 GameObject:
   m_ObjectHideFlags: 0
@@ -3894,11 +4068,14 @@ SceneRoots:
   m_Roots:
   - {fileID: 963194228}
   - {fileID: 5944562705301707792}
-  - {fileID: 1430943824}
   - {fileID: 338494981}
   - {fileID: 560968175}
   - {fileID: 964781775}
   - {fileID: 2137391897}
   - {fileID: 1466571978}
   - {fileID: 762013223}
-  - {fileID: 1110014729}
+  - {fileID: 165965008}
+  - {fileID: 85164721}
+  - {fileID: 1781153954}
+  - {fileID: 1525935669}
+  - {fileID: 723301431}
