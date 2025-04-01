@@ -626,7 +626,7 @@ MonoBehaviour:
   audioSource: {fileID: 105816476}
   winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
   backgroundMusic: {fileID: 2035263640}
-  initialMusicVolume: 0.5
+  initialMusicVolume: 1
   fadeOutStartTime: 0
   showDebugTimer: 1
   levelCompleteAnim: {fileID: 105816477}
@@ -757,6 +757,7 @@ GameObject:
   m_Component:
   - component: {fileID: 207016665}
   - component: {fileID: 207016666}
+  - component: {fileID: 207016667}
   m_Layer: 0
   m_Name: Cup 1 (4)
   m_TagString: Untagged
@@ -798,8 +799,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startRot: 0
-  Speed: 2
+  Speed: 4
   HeightAmp: 3
+  isChild: 0
+--- !u!114 &207016667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207016664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baf79507e3e962142b77e1201bafb8f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPos: {x: 0, y: -4, z: 0}
+  hoverSpeed: 3.5
+  hoverHeightAmp: 0.5
   isChild: 0
 --- !u!1 &271053315
 GameObject:
@@ -2080,6 +2097,7 @@ GameObject:
   m_Component:
   - component: {fileID: 558448166}
   - component: {fileID: 558448167}
+  - component: {fileID: 558448168}
   m_Layer: 0
   m_Name: Cup 1 (1)
   m_TagString: Untagged
@@ -2121,8 +2139,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startRot: 0
-  Speed: 2
+  Speed: 4
   HeightAmp: 3
+  isChild: 0
+--- !u!114 &558448168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558448165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baf79507e3e962142b77e1201bafb8f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPos: {x: 0, y: -4, z: 0}
+  hoverSpeed: 3.5
+  hoverHeightAmp: 0.5
   isChild: 0
 --- !u!1 &613334981
 GameObject:
@@ -3780,7 +3814,7 @@ AudioSource:
   m_Resource: {fileID: 8300000, guid: be8f11d4f9c74e4469b4750803f3a708, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 0.6
   Loop: 1
   Mute: 0
   Spatialize: 0
@@ -6127,6 +6161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1791107530}
   - component: {fileID: 1791107531}
+  - component: {fileID: 1791107532}
   m_Layer: 0
   m_Name: Cup 1 (3)
   m_TagString: Untagged
@@ -6167,8 +6202,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startRot: 0
-  Speed: 2
+  Speed: 4
   HeightAmp: 3
+  isChild: 0
+--- !u!114 &1791107532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791107529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baf79507e3e962142b77e1201bafb8f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPos: {x: 0, y: -4, z: 0}
+  hoverSpeed: 3.5
+  hoverHeightAmp: 0.5
   isChild: 0
 --- !u!1 &1846831460
 GameObject:
@@ -6998,6 +7049,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2010019783}
   - component: {fileID: 2010019784}
+  - component: {fileID: 2010019785}
   m_Layer: 0
   m_Name: Cup 1 (2)
   m_TagString: Untagged
@@ -7039,8 +7091,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startRot: 0
-  Speed: 2
+  Speed: 4
   HeightAmp: 3
+  isChild: 0
+--- !u!114 &2010019785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2010019782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baf79507e3e962142b77e1201bafb8f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPos: {x: 0, y: -4, z: 0}
+  hoverSpeed: 3.5
+  hoverHeightAmp: 0.5
   isChild: 0
 --- !u!1 &2035263639
 GameObject:
@@ -7069,8 +7137,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 8300000, guid: cdee234277dda1448ad0125f968ceba9, type: 3}
-  m_Resource: {fileID: 8300000, guid: cdee234277dda1448ad0125f968ceba9, type: 3}
+  m_audioClip: {fileID: 8300000, guid: c9d6ec6e0550e37428edd173ed730729, type: 3}
+  m_Resource: {fileID: 8300000, guid: c9d6ec6e0550e37428edd173ed730729, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: 1
