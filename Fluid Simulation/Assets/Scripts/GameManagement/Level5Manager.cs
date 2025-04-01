@@ -45,7 +45,7 @@ public class Level5Manager : LevelManager
     public AudioClip PlanetNotDetectedSound;
     public AudioClip WeaponReadySound;
     public AudioClip WeaponDeactivationSound;
-    public AudioClip WeaponChargingSound;
+    public AudioClip SpaceshipMovingSound;
     public AudioClip WeaponButtonSelectedSucessSound;
     public AudioClip WeaponButtonNotSelectedSound;
 
@@ -362,8 +362,10 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[0].state != WeaponState.Ready)
         {
             FlashImage(TwinIonCannonImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
         FlashImage(TwinIonCannonImage, Color.white);
         TwinIonCannonAudioSource.Play();
 
@@ -392,8 +394,10 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[1].state != WeaponState.Ready)
         {
             FlashImage(DeathRayImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
         FlashImage(DeathRayImage, Color.white);
         DeathRayAudioSource.Play();
 
@@ -417,8 +421,10 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[2].state != WeaponState.Ready)
         {
             FlashImage(TractorBeamImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
 
         interactionRadiusVisualizer.hideLineRenderer = false;
         FlashImage(TractorBeamImage, Color.white);
@@ -441,9 +447,11 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[3].state != WeaponState.Ready)
         {
             FlashImage(NeutronBombImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
-
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
+        
         FlashImage(NeutronBombImage, Color.white);
         NeutronBombAudioSource.Play();
 
