@@ -26,7 +26,7 @@ MonoBehaviour:
   boilTemp: 1000
   freezeState: 11
   freezeTemp: 745
-  entropy: 2
+  friction: 0
   entropyTarget: 645
   visualParams:
     style: 1
@@ -68,3 +68,4 @@ MonoBehaviour:
     glowFalloff: 0.93
     minPropertyValue: 745
     maxPropertyValue: 900
+    densityScaleFactor: 0

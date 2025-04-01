@@ -8,14 +8,19 @@ public class SimulationSettingsWrapper : MonoBehaviour
     private GameObject simulation2DGameObject;
     private IFluidSimulation simulation2DScript;
 
+    [Header("Simulation Settings")]
     [SerializeField] private TMP_Dropdown edgeTypeDropdown;
+    [SerializeField] private TMP_Dropdown gravityModeDropdown;
+    [SerializeField] private TMP_Dropdown fixedTimestepDropdown;
+
+    [Header("UI Settings")]
     [SerializeField] private TMP_Dropdown HideFPSDropdown;
     [SerializeField] private TMP_Dropdown HideMouseCircleDropdown;
     [SerializeField] private TMP_Dropdown HideBenchmarkDropdown;
 
     private GameObject fpsDisplayObject;
     private GameObject mouseCircleObject;
-    private GameObject benchmarkObject;
+    [SerializeField] private GameObject benchmarkObject;
 
     void Awake()
     {
@@ -42,19 +47,36 @@ public class SimulationSettingsWrapper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Edge Type
         edgeTypeDropdown.onValueChanged.AddListener(setEdgeType);
+
+        // Gravity Mode
+        gravityModeDropdown.onValueChanged.AddListener(setGravityMode);
+
+        // Fixed Timestep
+        fixedTimestepDropdown.onValueChanged.AddListener(setTimestampMode);
+
+        // FPS Display
         HideFPSDropdown.onValueChanged.AddListener(setHideFPS);
         fpsDisplayObject = FindFirstObjectByType<FPSDisplay>().gameObject;
+
+        // Mouse Circle
         HideMouseCircleDropdown.onValueChanged.AddListener(setHideMouseCircle);
         mouseCircleObject = FindFirstObjectByType<InteractionRadiusVisualizer>().gameObject;
+
+        // Benchmark Script
         HideBenchmarkDropdown.onValueChanged.AddListener(setHideBenchmark);
-        benchmarkObject = FindFirstObjectByType<FrameTimeBenchmark>().gameObject;
     }
 
 
     public void setEdgeType(int edgeTypeIndex)
     {
         simulation2DScript.setEdgeType(edgeTypeIndex);
+    }
+
+    public void setGravityMode(int gravityModeIndex)
+    {
+        simulation2DScript.setGravityMode(gravityModeIndex);
     }
 
     public void setHideFPS(int hideFPSIndex)
@@ -76,6 +98,11 @@ public class SimulationSettingsWrapper : MonoBehaviour
 
     public void setHideBenchmark(int hideBenchmarkIndex)
     {
-        benchmarkObject.SetActive(hideBenchmarkIndex == 0);
+        benchmarkObject.SetActive(hideBenchmarkIndex != 0);
+    }
+
+    public void setTimestampMode(int timestampModeIndex)
+    {
+        simulation2DScript.setFixedTimestep(timestampModeIndex == 1);
     }
 }

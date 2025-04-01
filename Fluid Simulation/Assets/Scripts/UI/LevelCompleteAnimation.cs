@@ -11,6 +11,7 @@ public class LevelCompleteAnimation : MonoBehaviour
     [SerializeField] private RectTransform checkmarkTransform;
     [SerializeField] private Image checkmarkImage;
     [SerializeField] private CanvasGroup completionScore;
+    private float completionScoreOriginalPosY;
 
     [SerializeField] private int currentLevel;
     
@@ -37,6 +38,7 @@ public class LevelCompleteAnimation : MonoBehaviour
         overlayCanvasGroup.alpha = 0f;
         checkmarkImage.color = new Color(1f, 1f, 1f, 0f);
         checkmarkTransform.localScale = Vector3.zero;
+        completionScoreOriginalPosY = completionScore.GetComponent<RectTransform>().localPosition.y;
         if (completionScore != null)
         {
             completionScore.alpha = 0f; // Use alpha property for TextMeshPro
@@ -70,7 +72,7 @@ public class LevelCompleteAnimation : MonoBehaviour
         if (completionScore != null)
         {
             completeSequence.Append(completionScore.DOFade(1f, textFadeDuration));
-            completeSequence.Join(completionScore.transform.DOLocalMoveY(-300f+25f, textFadeDuration)).SetEase(Ease.OutQuint);
+            completeSequence.Join(completionScore.transform.DOLocalMoveY(completionScoreOriginalPosY, textFadeDuration)).SetEase(Ease.OutQuint);
 
             // Fade in each star image based on score
             if (currentLevelScore >= 3)

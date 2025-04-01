@@ -301,6 +301,7 @@ GameObject:
   - component: {fileID: 7800290794164736007}
   - component: {fileID: 3340603581095007496}
   - component: {fileID: 1667475901284883188}
+  - component: {fileID: 4800880842356776524}
   m_Layer: 0
   m_Name: Propeller
   m_TagString: Untagged
@@ -411,7 +412,21 @@ MonoBehaviour:
   contextMenuPrefab: {fileID: 3565508520698697714, guid: 9331f1f4c1c0e5c459a53cbdcea3cd38, type: 3}
   contextMenuHeading: Edit Propeller
   childObjectType: 1
-  startsInScene: 0
+--- !u!114 &4800880842356776524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2270550994858986690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 4
+  checkInterval: 5
 --- !u!1 &7345506622464573819
 GameObject:
   m_ObjectHideFlags: 0

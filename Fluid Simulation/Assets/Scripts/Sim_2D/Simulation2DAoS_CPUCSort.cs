@@ -27,13 +27,6 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public Vector2 boundsSize;
     public Vector2 obstacleSize;
     public Vector2 obstacleCentre;
-
-    public enum EdgeType
-    {
-        Solid,
-        Void,
-        Loop
-    }
     [SerializeField] private EdgeType edgeType = EdgeType.Solid;
     public uint spawnRate = 100; // How many particles that can spawn per frame
 
@@ -972,7 +965,10 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         edgeType = (EdgeType)edgeTypeIndex;
     }
-
+    public void setGravityMode(int gravityModeIndex)
+    {
+        return; // Not implemented
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         selectedFluid = fluidTypeIndex;
@@ -1069,6 +1065,18 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
     {
         targetInteractionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
+    }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+    public Vector2 getBounds()
+    {
+        return boundsSize;
+    }
+    public void setMaxParticles(int newMaxParticles)
+    {
+        maxParticles = newMaxParticles;
     }
 
     void initializeCPUKernelSettingsAoS()
@@ -1236,6 +1244,27 @@ public class Simulation2DAoS_CPUCSort : MonoBehaviour, IFluidSimulation
     {
         sourceObjects[0] = source;
     }
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
+    public FluidData[] getFluidDataArray(){
+        return fluidDataArray;
+    }
+    public void SetSourceObject(SourceObjectInitializer source, int index){
+        sourceObjects[index] = source;
+    }
 
+    public SourceObjectInitializer GetSourceObject(int index){
+        return sourceObjects[index];
+    }
+
+    public ThermalBoxInitializer GetThermalBox(int index){
+        return thermalBoxes[index];
+    }
+
+    public void SetThermalBox(ThermalBoxInitializer thermalBox, int index){
+        thermalBoxes[index] = thermalBox;
+    }
 
 }

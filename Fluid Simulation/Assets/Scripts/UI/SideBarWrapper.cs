@@ -36,6 +36,7 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] GameObject GasMenu;
     [SerializeField] GameObject LiquidMenu;
     [SerializeField] GameObject PowderMenu;
+    [SerializeField] GameObject RadioactiveMenu;
 
     private GameObject[] menuPanels = new GameObject[6];
 
@@ -63,7 +64,7 @@ public class SideBarWrapper : MonoBehaviour
             Debug.LogError("Simulation object reference is missing!");
         }
 
-        menuPanels = new GameObject[] { brushSettingsMenu, allFluidsMenu, ObstaclesMenu, GasMenu, LiquidMenu, PowderMenu };
+        menuPanels = new GameObject[] { brushSettingsMenu, allFluidsMenu, ObstaclesMenu, GasMenu, LiquidMenu, PowderMenu, RadioactiveMenu};
     }
 
     public void PauseGame()
@@ -231,12 +232,15 @@ public class SideBarWrapper : MonoBehaviour
     void OnDestroy()
     {
         RectTransform bottomBarRect = bottomBarParent.GetComponent<RectTransform>();
-        RectTransform HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        RectTransform HideBottombarIconRect = null;
+        if (HideBottombarIcon != null){
+            HideBottombarIconRect = HideBottombarIcon.GetComponent<RectTransform>();
+        }
         CanvasGroup bottomBarCanvasGroup = bottomBarParent.GetComponent<CanvasGroup>();
 
         // Kill exising animations
         DOTween.Kill(bottomBarRect);
-        DOTween.Kill(HideBottombarIconRect);
+        if (HideBottombarIconRect != null) DOTween.Kill(HideBottombarIconRect);
         DOTween.Kill(bottomBarCanvasGroup);
     }
 }

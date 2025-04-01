@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4011970440864342597}
   - component: {fileID: 5938394510410575388}
   - component: {fileID: 9032470865362409857}
+  - component: {fileID: 4369110933411030017}
   m_Layer: 0
   m_Name: Red Drain Box
   m_TagString: DrainObject
@@ -126,7 +127,9 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
+  rotatable: 1
   scaleSpeed: 0.1
+  rotationSpeed: 10
   minScale: 0.4
   maxScale: 18
   targetScale: {x: 0, y: 0, z: 0}
@@ -266,4 +269,18 @@ MonoBehaviour:
   contextMenuPrefab: {fileID: 4341401936970538196, guid: fa0bf94ad4f016f498f27dedf36e38f3, type: 3}
   contextMenuHeading: Edit Drain Box
   childObjectType: 0
-  startsInScene: 0
+--- !u!114 &4369110933411030017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5389338378134970811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5

@@ -1,24 +1,29 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
-    private bool isDragging = false;
-    private Vector3 offset;
+    protected bool isDragging = false;
+    protected Vector3 offset;
 
     public float smoothingSpeed = 0.2f; // Adjust this value to control the smoothing speed
     public bool enableSmoothing = true; // Boolean to enable/disable smoothing
     public bool resizable = false; // Controls whether the object can be resized
     public bool uniformScaling = false; // Controls whether the object scales uniformly
+    public bool rotatable = false; // Controls whether the object can be rotated with ctrl shortcut
     public float scaleSpeed = 0.1f; // Controls how fast the object scales
+    public float rotationSpeed = 10f; // Degrees per scroll tick
+
     public float minScale = 0.1f; // Minimum scale limit
     public float maxScale = 5f; // Maximum scale limit
     public Vector3 targetScale;
     private Rigidbody2D rb2d;
 
-    void Start()
+    protected virtual void Start()
     {
         targetScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
+        
     }
 
     void OnMouseOver()
@@ -43,17 +48,19 @@ public class Draggable : MonoBehaviour
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             rb2d.freezeRotation = false;
         }
+        
     }
 
-    void Update()
+    protected virtual void Update()
     {
         HandleDragging();
         HandleResizing();
+        HandleRotating();
 
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, smoothingSpeed);
     }
 
-    private void HandleDragging()
+    protected virtual void HandleDragging()
     {
         if (isDragging)
         {
@@ -74,6 +81,8 @@ public class Draggable : MonoBehaviour
     private void HandleResizing()
     {
         if (!resizable || !isDragging) return;
+
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) return;
 
         float scrollDelta = Input.mouseScrollDelta.y;
         if (scrollDelta == 0) return;
@@ -109,12 +118,27 @@ public class Draggable : MonoBehaviour
         }
     }
 
+    private void HandleRotating()
+    {
+        if (!rotatable || !isDragging) return;
+
+        float scrollDelta = Input.mouseScrollDelta.y;
+        if (scrollDelta == 0) return;
+
+        // Check if Ctrl key is held down
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+        {
+            // Rotate clockwise when scrolling down, counter-clockwise when scrolling up
+            float rotationAmount = scrollDelta > 0 ? rotationSpeed : -rotationSpeed;
+            transform.Rotate(0, 0, rotationAmount);
+        }
+    }
+
     public void setTargetScale(Vector3 newScale) {
         if (uniformScaling)
         {
-            float maxScale = Mathf.Max(newScale.x, newScale.y);
-            newScale.x = maxScale;
-            newScale.y = maxScale;
+            // newScale.x = newScale.x;
+            newScale.y = newScale.x;
         }
         if (resizable)
         {

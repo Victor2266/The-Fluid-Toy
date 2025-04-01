@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1308592241998119380}
   - component: {fileID: 3670245436132188650}
   - component: {fileID: 1816789720197186956}
+  - component: {fileID: 5005985264492450861}
   m_Layer: 0
   m_Name: Static Circle Obstacle
   m_TagString: CircleCollider
@@ -257,3 +258,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segments: 32
+--- !u!114 &5005985264492450861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267150656088706043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5

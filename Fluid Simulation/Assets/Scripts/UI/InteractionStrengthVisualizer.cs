@@ -29,6 +29,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
 
     private float fadeProgress = 0f;
     private float fadeOutTime = 0.15f;
+    private float scalingFactor = 1f;
     
     // Text component references
     private TextMeshProUGUI strengthText;
@@ -41,6 +42,8 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         fadeProgress = fadeOutTime;
         currentStrength = simulation.getBrushStrengthPercent();
         lastStrength = currentStrength;
+
+        scalingFactor = Camera.main.orthographicSize / 9.87f;
 
         InitializeLineRenderer();
         PrecalculateCircle();
@@ -99,6 +102,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
             strengthText = strengthTextObject.GetComponentInChildren<TextMeshProUGUI>();
         }
         
+        strengthTextObject.transform.localScale = new Vector3(scalingFactor, scalingFactor, 1f);
         // Hide initially if not always shown
         strengthTextObject.SetActive(alwaysShow);
     }
@@ -131,7 +135,7 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         // Calculate text offset
         float mouseY = mousePosition.y;
         float halfScreenHeight = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0)).y + Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 0)).y;
-        textOffset = new Vector2(0, (mouseY > halfScreenHeight ? -1 : 1) * (simulation.getInteractionRadius() + 0.85f) );
+        textOffset = new Vector2(0, (mouseY > halfScreenHeight ? -1 : 1) * (simulation.getInteractionRadius() + 0.85f * scalingFactor) );
         if (simulation.getInteractionRadius() > 4f)
         {
             textOffset = Vector2.zero;
@@ -175,5 +179,10 @@ public class InteractionStrengthVisualizer : MonoBehaviour
         fadeColor.a = Mathf.Lerp(1f, 0f, fadeProgress / fadeOutTime);
         lineRenderer.startColor = fadeColor;
         lineRenderer.endColor = fadeColor;
+    }
+
+    void OnDestroy()
+    {
+        Cursor.visible = true;
     }
 }

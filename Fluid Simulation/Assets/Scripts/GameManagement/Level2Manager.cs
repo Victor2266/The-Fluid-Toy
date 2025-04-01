@@ -10,6 +10,8 @@ public class Level2Manager : LevelManager
     public FluidDetector fluidDetector;
     public GameObject sourceObjectParent;
     public Transform targetTransform;
+    public SpriteRenderer targetHighlightSprite;
+    public ParticleSystem steamParticleSystem;
     public GameObject tableObject;
 
     private IFluidSimulation sim;
@@ -45,7 +47,6 @@ public class Level2Manager : LevelManager
     public int targetHits = 0;
 
     [Header("Source nozzle control")]
-    public float sourcePlayerModulationStrength = 11;
     public float sourceAcceleration = 0.02F;
     public float sourceVelocity = 1;
     public float maxSourceJitter;
@@ -110,6 +111,9 @@ public class Level2Manager : LevelManager
                 targetHits += 1;
                 // Shake for 0.05 seconds with strength of 0.1
                 targetTransform.DOShakePosition(0.025f, 0.075f, fadeOut: true);
+                targetHighlightSprite.DOKill();
+                targetHighlightSprite.color = new Color(1, 1, 1, .8f);
+                targetHighlightSprite.DOColor(new Color(1, 1, 1, 0), 0.25f);
                 targetAudioSource.PlayOneShot(targetAudioSource.clip, 1f);
                 timeOfLastHit = Time.time;
                 timeOfLastDecay = 0;
@@ -160,6 +164,7 @@ public class Level2Manager : LevelManager
                 // Play overheated sound
                 if (isOverheated && overheatSound != null && barAudioSource != null)
                 {
+                    steamParticleSystem.Play();
                     barAudioSource.PlayOneShot(overheatSound);
                 }
                 gunAudioSource.loop = false;
@@ -183,11 +188,11 @@ public class Level2Manager : LevelManager
         float rand = UnityEngine.Random.Range(-maxSourceJitter, maxSourceJitter);
 
         //apply acceleration to source modulation
-        sourceVelocity += -1 * Math.Sign(sourceOffset) * sourceAcceleration;
-        sourceVelocity += -1 * Math.Sign(sourceOffset) * rand;
+        sourceVelocity += -1 * Math.Sign(sourceOffset) * sourceAcceleration * Time.deltaTime;
+        sourceVelocity += -1 * Math.Sign(sourceOffset) * rand * Time.deltaTime;
 
         //update source offset amount
-        sourceOffset += sourceVelocity;
+        sourceOffset += sourceVelocity * Time.deltaTime * 240f;
 
         //enforce max offset rule
         if (Math.Abs(sourceOffset) > maxSourceOffset)
@@ -231,9 +236,7 @@ public class Level2Manager : LevelManager
             {
                 currentHeatLevel = 0;
                 isOverheated = true;
-
                 overheatedTimer = 0f;
-                source.spawnRate = 0;
             }
         }
         else
@@ -268,6 +271,7 @@ public class Level2Manager : LevelManager
         targetAngle = currentAngle + sourceOffset;
         // convert back to vector and apply nozzle strength
         Vector3 direction = new Vector3(Mathf.Cos(targetAngle * Mathf.Deg2Rad), Mathf.Sin(targetAngle * Mathf.Deg2Rad), 0);
+        direction.Normalize();
         direction *= nozzleStrength;
 
         //update source rotation and nozzle velocity
@@ -301,5 +305,6 @@ public class Level2Manager : LevelManager
     void OnDestroy()
     {
         targetTransform.DOKill();
+        targetHighlightSprite.DOKill();
     }
 }

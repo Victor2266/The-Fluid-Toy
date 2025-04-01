@@ -1,5 +1,11 @@
-# The Fluid Toy
-**CPU-GPU Fluid Simulation in Unity: Optimizing Collision Detection with GPU Acceleration for Real-Time Particle-Based Fluid Simulations**  
+# <p align="center"> The Fluid Toy </p>
+<p align="center">
+<b> Optimizing Collision Detection with GPU Acceleration for Real-Time Particle-Based Fluid Simulations. </b>
+</p>
+<p align="center">
+The ULTIMATE FREE 2D fluid simulation engine for Unity. Experience realtime interactive physics and fluid simulation in a neat package you can import and use in your own projects! Got any neat ideas? Feel free to alter the codebase and contribute as you see fit!
+</p>
+
 
 https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 
@@ -10,15 +16,16 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 - Cameron Tuffner-Lyons  
 - JJ Marr  
 
-## 🕹 Download Here (Coming Soon):
+## 🕹 Download and Play Demo Here:
 - [Itch.io](https://awasete.itch.io/the-fluid-toy)
+- [Our Website Demo (Currently Redirects to itch)](http://thefluidtoy.com/)
 
 ## 🖥️💻 Supported platforms
 - Windows
 - Mac
 - Linux
 - Android
-
+- WebGPU
 ---
 
 ## 🚀 Key Features  
@@ -40,24 +47,30 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
   - Draw Brush which uses interlocked add operation to avoid race condition
   - Eraser Brush which randomizes particle position for even density distribution
   - **Source/Drain Objects**:  
-  - Source: Spawns particles with configurable initial velocities  
-  - Drain: Disables particles using spatial triggers  
-  - Automatic buffer management with particle recycling
+    - Source: Spawns particles with configurable initial velocities  
+    - Drain: Disables particles using spatial triggers  
+    - Automatic buffer management with particle recycling
 - **Multi-Fluid Support**:  
   - Data-oriented design with fluid property tables  
   - 64px×1px gradient textures per fluid type stitched into 2D atlas  
   - Shader-driven visual differentiation using dynamic branching  
 
-### 🌐 Simulation Properties  
+### 🌐 Simulation Properties
+- **All States of Matter**:
+  - *Gasses*
+  - *Liquids*
+  - *Powders*  
 - **Edge Behavior Modes**:  
   - *Solid*: Acts as immovable wall (default)  
   - *Void*: Disables particles and randomizes positions
     - Position randomization avoids spatial hash collisions in void mode  
   - *Loop*: Warps particles to opposite boundary  
-- **Gravity Behavior Modes**: (WIP)
+- **Gravity Behavior Modes**:
   - *Normal*
-  - *Radial*
   - *Reversed*
+  - *Radial*
+  - *Left*
+  - *Right*
   - *Zero*
 - **Temperature Simulation**:
   - Particles have individual temperatures
@@ -102,15 +115,22 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 
 ### Sandbox Mode  
 - **Dual Purpose**:  
-  1. Player experimentation with all fluid/types  
+  1. Player can freely play and experiment with all fluid and obstacle types
   2. Performance benchmarking environment  
 - **Continuous Integration**: Always updated with latest features
+
+### Levels 1-10
+- **Each level is a demonstration of a different mechanic:**
   
-### Level 1: Tavern Challenge  
-- **Objective**: Fill a beer mug using gravity manipulation  
-- **Tech Stack**:  
-  - CPU-managed cup physics → GPU collision resolution  
-  - Async particle position feedback for completion detection  
+  #### 1. Tavern Trouble  
+  - **Objective**: Fill a beer mug using gravity manipulation  
+  - **Tech Stack**:  
+    - Async particle position readback for level completion detection
+ 
+  #### 2. Carnival Chaos  
+  - **Objective**: Shoot a moving target with a water gun
+  - **Tech Stack**:  
+    - Introduction to source objects
 
 ---
 
@@ -145,14 +165,16 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
   - Game state management  
   - UI/input processing  
 - **GPU Pipeline**:  
-  - SPH fluid solver (density/pressure/viscosity)  
+  - SPH fluid solver (with density/pressure/viscosity/friction/temperture kernels)
   - Spatial hashing for neighbor detection  
-  - Collision resolution using boundary textures  
+  - Collision resolution using boundary textures
+  - Async particle position feedback for fluid property sensors 
 
 ---
 
 ## 🙏 Acknowledgments  
-Special thanks to **Sebastian Lague** for inspirational fluid simulation content.
+- Special thanks to **Sebastian Lague** for inspirational fluid simulation content.
+- Thanks to [The Powder Toy](https://github.com/The-Powder-Toy/The-Powder-Toy) for physics sim inspiration.
 - **Testing**: Validated through family/friend playtests  
 ---
 

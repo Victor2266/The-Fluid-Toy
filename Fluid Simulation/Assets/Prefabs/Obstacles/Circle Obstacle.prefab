@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 3006006804790266494}
   - component: {fileID: 658577020398200558}
   - component: {fileID: 2084877508545543509}
+  - component: {fileID: -1889188090542670364}
+  - component: {fileID: -2427261129887911980}
   m_Layer: 0
   m_Name: Circle Obstacle
   m_TagString: CircleCollider
@@ -285,3 +287,33 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-1889188090542670364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5025584329272067526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5
+--- !u!114 &-2427261129887911980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5025584329272067526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5

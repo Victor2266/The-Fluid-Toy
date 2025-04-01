@@ -21,13 +21,13 @@ MonoBehaviour:
   nearPressureMultiplier: 18
   viscosityStrength: 0.06
   startTemperature: 22
-  thermalDiffusivity: 1.4
+  thermalDiffusivity: 2.1
   boilState: 2
   boilTemp: 100
-  freezeState: 1
+  freezeState: 15
   freezeTemp: 0
-  entropy: 0
-  entropyTarget: 25
+  friction: 0
+  entropyTarget: 11111
   visualParams:
     style: 0
     colorGradient:
@@ -68,3 +68,4 @@ MonoBehaviour:
     glowFalloff: 1
     minPropertyValue: 0
     maxPropertyValue: 6.5
+    densityScaleFactor: 0

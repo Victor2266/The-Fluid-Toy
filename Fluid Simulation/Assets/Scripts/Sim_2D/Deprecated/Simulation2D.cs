@@ -35,7 +35,7 @@ public struct OrientedBox //24 bytes total
 };
 */
 
-public class Simulation2D : MonoBehaviour, IFluidSimulation
+public class Simulation2D : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
@@ -440,7 +440,10 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         // NOT IMPLEMENTED
         Debug.Log("Not implemented in Simulation2D.cs setEdgeType: " + edgeTypeIndex);
     }
-
+    public void setGravityMode(int gravityModeIndex)
+    {
+        return; // Not implemented
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         // NOT IMPLEMENTED
@@ -541,6 +544,25 @@ public class Simulation2D : MonoBehaviour, IFluidSimulation
         return new SourceObjectInitializer();
     }
     public void SetFirstSourceObject(SourceObjectInitializer source){
+        return;
+    }
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
+    public FluidData[] getFluidDataArray(){
+        return null;
+    }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+    public Vector2 getBounds()
+    {
+        return boundsSize;
+    }
+    public void setMaxParticles(int newMaxParticles)
+    {
         return;
     }
 }

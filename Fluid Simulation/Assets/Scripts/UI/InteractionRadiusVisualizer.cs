@@ -12,6 +12,7 @@ public class InteractionRadiusVisualizer : MonoBehaviour
     [SerializeField] private Color repelColor = Color.red;
     [SerializeField] private Color neutralColor = Color.grey;
     public bool alwaysShowNeutral = true;
+    public bool hideLineRenderer = false;
     [SerializeField] [Range(8, 64)] private int segments = 32;
     
     private LineRenderer lineRenderer;
@@ -70,6 +71,12 @@ public class InteractionRadiusVisualizer : MonoBehaviour
 
     void UpdateVisualizationState()
     {
+        if (hideLineRenderer)
+        {
+            lineRenderer.enabled = false;
+            return;
+        }
+
         bool isInteracting = Input.GetMouseButton(0) || Input.GetMouseButton(1);
         
         if (alwaysShowNeutral)
@@ -92,6 +99,7 @@ public class InteractionRadiusVisualizer : MonoBehaviour
                 SetLineColor(Input.GetMouseButton(0) ? attractColor : repelColor);
             }
         }
+
     }
 
     void UpdateCirclePositionsIfNeeded()
@@ -120,4 +128,6 @@ public class InteractionRadiusVisualizer : MonoBehaviour
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
     }
+
+
 }

@@ -8,7 +8,7 @@ using Unity.Collections;
 using Unity.Jobs;
 
 
-public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
+public class Simulation2DAoS : MonoBehaviour
 {
     public event System.Action SimulationStepCompleted;
 
@@ -254,7 +254,7 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
 
 
         // Init display
-        display.Init(this);
+        // display.Init();
 
         //initializeCPUKernelSettingsAoS();
     }
@@ -653,7 +653,10 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     {
         edgeType = (EdgeType)edgeTypeIndex;
     }
-
+    public void setGravityMode(int gravityModeIndex)
+    {
+        return; // Not implemented
+    }
     public void setSelectedFluid(int fluidTypeIndex)
     {
         selectedFluid = fluidTypeIndex;
@@ -726,6 +729,18 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public void setInteractionStrengthPercent(float strength) // This takes a value between 0 and 1
     {
         interactionStrength = Mathf.Lerp(minStrength, maxStrength, Mathf.Clamp01(strength));
+    }
+    public void setBounds(Vector2 bounds)
+    {
+        boundsSize = bounds;
+    }
+    public Vector2 getBounds()
+    {
+        return boundsSize;
+    }
+    public void setMaxParticles(int newMaxParticles)
+    {
+        return;
     }
     
     void initializeCPUKernelSettingsAoS(){
@@ -891,5 +906,11 @@ public class Simulation2DAoS : MonoBehaviour, IFluidSimulation
     public void SetFirstSourceObject(SourceObjectInitializer source){
         sourceObjects[0] = null;
     }
-    
+    public void setFixedTimestep(bool fixedTimestepVal)
+    {
+        fixedTimeStep = fixedTimestepVal;
+    }
+    public FluidData[] getFluidDataArray(){
+        return fluidDataArray;
+    }
 }

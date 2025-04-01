@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7058341487985514049}
   - component: {fileID: 1566809673345709431}
   - component: {fileID: 8753954417414598425}
+  - component: {fileID: 4656892578880497778}
   m_Layer: 0
   m_Name: Static Thermal Box
   m_TagString: ThermalBox
@@ -145,9 +146,11 @@ MonoBehaviour:
   enableSmoothing: 1
   resizable: 1
   uniformScaling: 0
+  rotatable: 1
   scaleSpeed: 0.1
+  rotationSpeed: 10
   minScale: 0.4
-  maxScale: 18
+  maxScale: 32
   targetScale: {x: 0, y: 0, z: 0}
 --- !u!61 &1195860800424768462
 BoxCollider2D:
@@ -359,3 +362,18 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   cycleDuration: 1.75
+--- !u!114 &4656892578880497778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7005036492308619237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5

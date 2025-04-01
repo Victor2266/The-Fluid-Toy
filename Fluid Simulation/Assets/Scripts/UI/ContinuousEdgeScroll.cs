@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,19 +8,26 @@ public class ContinuousEdgeScroll : MonoBehaviour
     [Tooltip("Reference to the scroll rect component")]
     public ScrollRect scrollRect;
 
-    [Tooltip("Width of the screen edge detection zone")]
-    [Range(10f, 100f)]
-    public float edgeDetectionWidth = 50f;
+    [Tooltip("Percentage of screen width for edge detection zone")]
+    [Range(0.01f, 0.15f)]
+    public float edgeDetectionPercentage = 0.07f;
 
     [Tooltip("Scrolling speed when near screen edges")]
     [Range(0.1f, 128f)]
     public float scrollSpeed = 3f;
 
-    [Tooltip("Offset from the right edge (in pixels)")]
-    public float rightEdgeOffset = 40f;
+    [Tooltip("Right edge offset as percentage of screen width")]
+    [Range(0f, 0.1f)]
+    public float rightEdgeOffsetPercentage = 0.1f;
+
+    // Reference resolution values
+    private const float REFERENCE_WIDTH = 1280f; // 720p width
+    private const float REFERENCE_HEIGHT = 720f;
 
     private RectTransform viewportRectTransform;
     private RectTransform contentRectTransform;
+    private float edgeDetectionWidth;
+    private float rightEdgeOffset;
 
     private bool isOnMobile = false;
 
@@ -53,10 +61,19 @@ public class ContinuousEdgeScroll : MonoBehaviour
             scrollRect.vertical = false;
         }
 
-
         // Cache rect transforms for performance
         viewportRectTransform = scrollRect.viewport;
         contentRectTransform = scrollRect.content;
+        
+        // Calculate scaled values based on current resolution
+        UpdateScaledValues();
+    }
+    
+    private void UpdateScaledValues()
+    {
+        // Calculate edge detection width and offset based on current screen width
+        edgeDetectionWidth = Screen.width * edgeDetectionPercentage;
+        rightEdgeOffset = Screen.width * rightEdgeOffsetPercentage;
     }
 
     private void Update()
@@ -65,6 +82,9 @@ public class ContinuousEdgeScroll : MonoBehaviour
         {
             return;
         }
+        
+        // Update scaled values if resolution changes
+        UpdateScaledValues();
         
         // Only scroll if content is wider than viewport
         if (contentRectTransform.rect.width <= viewportRectTransform.rect.width)
@@ -77,28 +97,12 @@ public class ContinuousEdgeScroll : MonoBehaviour
         // Check if mouse is within screen height
         if (mousePosition.y > 0 && mousePosition.y < screenHeight)
         {
-            // Calculate scroll value based on mouse position
-            float scrollValue = 0f;
 
-            // Left edge scrolling
-            if (mousePosition.x <= edgeDetectionWidth)
-            {
-                // Map edge detection width to 0 scroll position
-                scrollValue = 0f;
-            }
-            // Right edge scrolling (accounting for offset)
-            else if (mousePosition.x >= (screenWidth - edgeDetectionWidth - rightEdgeOffset))
-            {
-                // Map edge detection width to 1 (full) scroll position
-                scrollValue = 1f;
-            }
-            // Intermediate scrolling
-            else
-            {
-                // Calculate proportional scroll based on mouse x position
-                float normalizedMouseX = mousePosition.x / screenWidth;
-                scrollValue = Mathf.Clamp01(normalizedMouseX);
-            }
+            // Calculate proportional scroll based on mouse x position
+            float normalizedMouseX = (mousePosition.x - edgeDetectionWidth) / (screenWidth - edgeDetectionWidth - rightEdgeOffset);
+            // Calculate scroll value based on mouse position
+            float scrollValue = Mathf.Clamp01(normalizedMouseX);
+
 
             // Smoothly update scroll position
             scrollRect.horizontalNormalizedPosition = Mathf.Lerp(
@@ -107,5 +111,13 @@ public class ContinuousEdgeScroll : MonoBehaviour
                 scrollSpeed * Time.deltaTime
             );
         }
+    }
+
+    // Optional: Add this to make adjustments visible in the inspector
+    private void OnValidate()
+    {
+        // For visualization purposes in editor
+        edgeDetectionWidth = REFERENCE_WIDTH * edgeDetectionPercentage;
+        rightEdgeOffset = REFERENCE_WIDTH * rightEdgeOffsetPercentage;
     }
 }

@@ -6,6 +6,7 @@
 #pragma kernel CalculateDensities
 #pragma kernel CalculatePressureForce
 #pragma kernel CalculateViscosity
+#pragma kernel CalculatePowderForces
 #pragma kernel CalculateTemperature
 #pragma kernel UpdatePositions
 #pragma kernel UpdateStates
@@ -46,7 +47,7 @@ struct FluidData
 	float1 boilTemp;
 	int freezeState;
 	float1 freezeTemp;
-	int entropy;
+	float friction;
 	float entropyTarget;
 };
 
@@ -101,7 +102,7 @@ RWStructuredBuffer<Circle> CircleColliders;
 RWStructuredBuffer<SourceObj> SourceObjs;
 RWStructuredBuffer<OrientedBox> DrainObjs;
 RWStructuredBuffer<ThermalBox> ThermalBoxes;
-RWStructuredBuffer<uint> atomicCounter; // counterInt, tickCount
+RWStructuredBuffer<uint> atomicCounter; // source counter Integer, frame tickCount, mouse counter integer
 
 // Settings
 const uint numParticles;
@@ -123,7 +124,9 @@ int numFluidTypes;
 int brushType;
 int selectedFluidType;
 int edgeType;
-uint spawnRate;
+int gravityMode;
+uint maxSourceSpawnRate;
+uint maxMouseSpawnRate;
 
 int GetFluidTypeIndexFromID(int fluidID){
 
@@ -184,10 +187,13 @@ float GetMaxSmoothingRadius(int indexA, int indexB)
     return max(FluidDataSet[indexA].smoothingRadius, FluidDataSet[indexB].smoothingRadius);
 }
 
-
 void atomicIncrementCounter() {
     uint increment = 1u;
     InterlockedAdd(atomicCounter[0], increment, atomicCounter[0]);
+}
+void atomicIncrementMouseCounter() {
+    uint increment = 1u;
+    InterlockedAdd(atomicCounter[2], increment, atomicCounter[2]);
 }
 
 // PCG (permuted congruential generator). Thanks to:
@@ -274,7 +280,42 @@ float NearPressureFromDensity(float nearDensity, float nearPressureMultiplier)
 float2 ExternalForces(float2 pos, float2 velocity, float gravity)
 {
 	// Gravity
-	float2 gravityAccel = float2(0, gravity);
+    float2 gravityAccel = float2(0, 0);
+    
+    // Select gravity mode
+    switch (gravityMode)
+    {
+        case 0: // Normal
+            gravityAccel = float2(0, gravity);
+            break;
+        case 1: // Zero
+            gravityAccel = float2(0, 0);
+            break;
+        case 2: // Radial (towards center)
+            float2 dirToCenter = -pos;
+            float distToCenter = length(dirToCenter);
+            gravityAccel = distToCenter > 0.001f ? 
+                normalize(dirToCenter) * abs(gravity) : 
+                float2(0, 0);
+            break;
+        case 3: // Negative
+            gravityAccel = float2(0, -gravity);
+            break;
+        case 4: // Right (treat Right as down)
+            gravityAccel = float2(-gravity, 0);
+            break;
+        case 5: // Left (treat Left as down)
+            gravityAccel = float2(gravity, 0);
+            break;
+		case 6: // Custom
+            // Custom gravity direction vector
+            // gravityAccel = customGravityDirection * gravity;
+            gravityAccel = float2(0, gravity); // Default to normal for now
+            break;
+        default:
+            gravityAccel = float2(0, gravity); // Default to normal
+            break;
+    }
 
 	// Input interactions modify gravity
 	if (brushType == 1 && interactionInputStrength != 0) {
@@ -378,6 +419,7 @@ void DisableParticle(inout Particle particle){
 	particle.position.y = (RandomValue(randomState) * 2 - 1) * halfSize.y;
 	particle.predictedPosition = particle.position;
 	particle.velocity = float2(0, 0);
+	particle.density = float2(0, 0);
 
 	particle.type = 0; // Remove the particle by setting to 0 which is disabled.
 }
@@ -428,9 +470,43 @@ void HandleCollisions(inout Particle particle)
 
         // Apply position and velocity corrections in a single operation
         pos = pos * (1 - outOfBounds) + sign(pos) * halfSize * outOfBounds;
-        //vel = vel * (1 - outOfBounds) + vel * -fluidData.collisionDamping * outOfBounds;
-		vel = vel * (1 - outOfBounds * (1 + fluidData.collisionDamping));
-
+		if (fluidData.friction == 0)
+        {
+			vel = vel * (1 - outOfBounds * (1 + fluidData.collisionDamping));
+		}
+		else
+		{
+			// Calculate normal and tangential components
+            float2 normal = outOfBounds * sign(pos);
+            
+            // Project velocity onto normal direction (for reflection)
+            float normalVel = dot(vel, normal);
+            float2 normalVelVector = normalVel * normal;
+            
+            // Calculate tangential component
+            float2 tangentialVelVector = vel - normalVelVector;
+            float tangentialSpeed = length(tangentialVelVector);
+            
+            // Apply normal reflection with damping
+            float2 newNormalVel = -normalVelVector * fluidData.collisionDamping;
+            
+            // Apply friction to tangential component
+            float2 newTangentialVel;
+            if (tangentialSpeed > 0.001f)
+            {
+                // Apply dynamic friction (velocity-dependent)
+                float frictionMagnitude = min(tangentialSpeed, fluidData.friction * abs(normalVel));
+                newTangentialVel = tangentialVelVector * max(0, tangentialSpeed - frictionMagnitude) / tangentialSpeed;
+            }
+            else
+            {
+                // For very low speeds, just zero out tangential component
+                newTangentialVel = float2(0, 0);
+            }
+            
+            // Combine components
+            vel = newNormalVel + newTangentialVel;
+		}
     }
     else if (edgeType == 1) // Void edge
     {
@@ -486,15 +562,15 @@ void HandleCollisions(inout Particle particle)
 	particle.velocity = vel;
 }
 
-void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawnRate number of times per frame, once atomicCounter[0] reaches spawnRate it needs to get set back to 0 by the c# script
+void HandleLeftMouseInput(inout Particle particle){ //This is called up to maxMouseSpawnRate number of times per frame, once atomicCounter[2] reaches maxMouseSpawnRate it needs to get set back to 0 by the c# script
 
-	atomicIncrementCounter();
+	atomicIncrementMouseCounter();
 
-	if (atomicCounter[0] >= spawnRate) {
+	if (atomicCounter[2] >= maxMouseSpawnRate) {
 		return;
 	}
 
-	uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
+	uint randomState = (atomicCounter[2] + 1) * atomicCounter[1] * 982451653;  // Seed based on counter[0]: The particle, counter[1]: The frame, and a random large prime number
 	float angle = RandomValue(randomState) * 2.0 * 3.14159; // Random angle [0, 2pi)
 	float radius = RandomValue(randomState) * interactionInputRadius; // Random distance from center
 
@@ -502,6 +578,7 @@ void HandleLeftMouseInput(inout Particle particle){ //This is called up to spawn
 	float2 offset = float2(cos(angle), sin(angle)) * radius;
 
 	particle.velocity = float2(0, 0);
+	particle.density = float2(0, 0);
 	particle.predictedPosition = interactionInputPoint + offset;
 	particle.position = interactionInputPoint + offset;
 	int selectedFluidTypeIndex = GetFluidTypeIndexFromID(selectedFluidType);
@@ -517,7 +594,7 @@ void HandleSourceObject(inout Particle particle){
 	atomicIncrementCounter();
 
 	// Only spawn if we haven't reached the spawn rate for this frame
-    if (atomicCounter[0] >= spawnRate) return;
+    if (atomicCounter[0] >= maxSourceSpawnRate) return;
 
 	// Create random state for this spawn attempt
     uint randomState = (atomicCounter[0] + 1) * atomicCounter[1] * 982451653;
@@ -656,6 +733,15 @@ void CalculateDensities(uint3 id : SV_DispatchThreadID)
 	int fluidIndex = GetFluidTypeIndexFromID(particle.type);
 	FluidData fluidData = FluidDataSet[fluidIndex];
     particle.density = CalculateDensity(particle.predictedPosition, fluidData.smoothingRadius, fluidIndex); // This needs the fluidData
+
+	// For powders, use a modified density calculation that prevents
+    // excessive spreading under pressure
+    if (fluidData.friction > 0) 
+    {
+        // Make powders maintain minimum density even under pressure
+        float minPowderDensity = fluidData.targetDensity * 0.8;
+        particle.density.x = max(particle.density.x, minPowderDensity);
+    }
 	
 	//particle.density.x = max(particle.density.x, 0.1); // Clamp density
     //particle.density.y = max(particle.density.y, 0.1);
@@ -715,6 +801,15 @@ void CalculatePressureForce (uint3 id : SV_DispatchThreadID)
 
 			// Skip if not within radius
 			if (sqrDstToNeighbour > sqrRadius) continue;
+
+			// If the squared distance to the neighbor is zero, that means the particles perfectly overlap and this causes them to shoot up or down unnaturally
+            // We set a default offset and distance to prevent that
+            if (sqrDstToNeighbour == 0) {
+                particle.predictedPosition += float2(0, 1);
+                offsetToNeighbour = float2(0, -1); // Default offset to prevent division by zero
+                sqrDstToNeighbour = 1; // Set squared distance to a non-zero value
+            }
+			
 			numNeighbours ++;
 
 			// Calculate pressure force
@@ -811,6 +906,103 @@ void CalculateViscosity (uint3 id : SV_DispatchThreadID)
 
 	}
 	Particles[id.x].velocity += viscosityForce * fluidData.viscosityStrength * deltaTime;
+}
+
+[numthreads(NumThreads,1,1)]
+void CalculatePowderForces(uint3 id : SV_DispatchThreadID) // Inter Particle Friction
+{
+    if (id.x >= numParticles) return;
+    Particle particle = Particles[id.x];
+    if (particle.type == 0) return; // Skip disabled
+    
+    int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+    FluidData fluidData = FluidDataSet[fluidIndex];
+    
+    // Skip if this isn't a powder type
+    if (fluidData.friction == 0) return;
+    
+    float2 pos = particle.predictedPosition;
+    int2 originCell = GetCell2D(pos, maxSmoothingRadius);
+    float sqrRadius = fluidData.smoothingRadius * fluidData.smoothingRadius;
+    
+    float2 frictionForce = float2(0, 0);
+    float2 velocity = particle.velocity;
+    float relativeSpeed;
+    
+    // Find neighboring particles
+    for (int i = 0; i < 9; i++)
+    {
+        uint hash = HashCell2D(originCell + offsets2D[i]);
+        uint key = KeyFromHash(hash, numParticles);
+        uint currIndex = SpatialOffsets[key];
+        
+        while (currIndex < numParticles)
+        {
+			uint2 indexData = SpatialIndices[currIndex];
+			currIndex ++;
+			// Exit if no longer looking at correct bin
+			if (indexData[1] != key) break;
+			// Skip if hash does not match
+			if (indexData[0] != hash) continue;
+
+			uint neighbourIndex = currIndex-1;
+			// Skip if looking at self
+			if (neighbourIndex == id.x) continue;
+			Particle neighbourParticle = Particles[neighbourIndex];
+			if (neighbourParticle.type == 0) continue; // Skip disabled
+            
+            int neighbourFluidIndex = GetFluidTypeIndexFromID(neighbourParticle.type);
+            FluidData neighbourData = FluidDataSet[neighbourFluidIndex];
+
+			if (neighbourData.friction == 0) continue; // Skip friction calculation with fluids
+            
+            float2 neighbourPos = neighbourParticle.predictedPosition;
+            float2 offsetToNeighbour = neighbourPos - pos;
+            float sqrDstToNeighbour = dot(offsetToNeighbour, offsetToNeighbour);
+            
+            if (sqrDstToNeighbour > sqrRadius) continue;
+            
+            float dst = sqrt(sqrDstToNeighbour);
+            float2 dirToNeighbour = dst > 0 ? offsetToNeighbour / dst : float2(0, 1);
+            
+            // Calculate relative motion
+            float2 relativeVelocity = neighbourParticle.velocity - velocity;
+            relativeSpeed = length(relativeVelocity);
+            
+            if (relativeSpeed > 0.001)
+            {
+                // Apply friction proportional to relative speed and inverse of distance
+                float frictionMagnitude = fluidData.friction * relativeSpeed * 
+                    (1.0 - dst/fluidData.smoothingRadius);
+                
+                // Direction is opposite to relative velocity
+                float2 frictionDir = -normalize(relativeVelocity);
+                
+                // Weight friction by kernel
+                frictionForce += frictionDir * frictionMagnitude * 
+                    ViscosityKernel(dst, fluidData.smoothingRadius, fluidIndex);
+            }
+        }
+    }
+    
+    // Apply friction forces
+    particle.velocity += frictionForce * deltaTime;
+    
+    // Additional powder behavior: damping vertical motion more than horizontal
+    // This creates the "pile" effect characteristic of powders (Original was 0.98 flat damping, now we use a variable damping)
+	if (abs(particle.velocity.y) < 0.1 && particle.density[0] > fluidData.targetDensity * 0.9) {
+		float damping = 0.8; // Slight natural damping for powders
+		particle.velocity *= damping;
+	}
+	else
+	{
+		float damping = 0.99; // Slight natural damping for powders
+		particle.velocity *= damping;
+	}
+
+    
+    // Update particle
+    Particles[id.x] = particle;
 }
 
 [numthreads(NumThreads, 1, 1)]
@@ -913,25 +1105,18 @@ void CalculateTemperature(uint3 id : SV_DispatchThreadID)
 		float minDistance = length(rotatedPos - closestPoint) - fluidData.smoothingRadius;
 		
 		deltaTemp += (tBox.temperature - temp) * tBox.conductivity * minDistance / fluidData.smoothingRadius;  // This one is a linear relationship 0 to 1
-
-		// This TemperatureKernel leads to a slightly strange behavior where the outside of a thermal box will heat up faster than the inside
-		// This is because the TemperatureKernel returns a number between 0 and 10.39 for a smoothing radius of 0.35 (it's not 0 to 1)
-		// So for particles approaching the surface of the thermal box this acts as a conductivity amplifier 
-		//deltaTemp += (tBox.temperature - temp) * tBox.conductivity * TemperatureKernel(minDistance, fluidData.smoothingRadius, fluidIndex);
 	}
 
 	// Add entropy contribution
-	switch (fluidData.entropy)
+	switch (fluidData.entropyTarget)
 	{ 
-		case 0: // Disabled
+		case 11111.0f: // Disabled
 			break;
-		case 1: // Use scene roomTemperature
+		case 22222.0f: // Use scene roomTemperature
 			deltaTemp += (roomTemperature - temp) * globalEntropyRate;
 			break;
-		case 2: // Use FluidParam value
+		default: // Fixed entropy
 			deltaTemp += (fluidData.entropyTarget - temp) * globalEntropyRate;
-			break;
-		default: // Default skip
 			break;
 	}
 
@@ -944,6 +1129,22 @@ void UpdatePositions(uint3 id : SV_DispatchThreadID)
     if (id.x >= numParticles) return;
     Particle particle = Particles[id.x];
 	if (particle.type == 0) return; // Skip disabled
+
+    // Get fluid data for this particle
+    int fluidIndex = GetFluidTypeIndexFromID(particle.type);
+    FluidData fluidData = FluidDataSet[fluidIndex];
+    
+    // For powders, implement rest state optimization
+    if (fluidData.friction > 0) 
+    {
+        float speedSq = dot(particle.velocity, particle.velocity);
+        if (speedSq < 0.005 && particle.density.x >= fluidData.targetDensity) 
+        {
+            // Reduce velocity further to help powders come to rest
+            particle.velocity *= 0.5;
+        }
+    }
+
     particle.position += particle.velocity * deltaTime;
     HandleCollisions(particle); // This needs the FluidDataSet
     Particles[id.x] = particle;

@@ -30,15 +30,16 @@ Shader "Instanced/MultiFluidParticle2D"
         struct VisualParams
         {
             int fluidType;
-            int visualStyle;       // 0: Velocity, 1: Temperature, 2: Glowing, 3: Fuzzy
-            float visualScale;     // Size of the particle
-            float baseOpacity;     // Base opacity before effects
-            float noiseScale;      // Scale of noise for fuzzy effect
-            float timeScale;       // Speed of time-based effects
-            float glowIntensity;   // Intensity of glow effect
-            float glowFalloff;     // How quickly the glow fades
-            float minValue;        // Minimum value for mapping (e.g., min temperature)
-            float maxValue;        // Maximum value for mapping (e.g., max temperature)
+            int visualStyle;          // 0: Velocity, 1: Temperature, 2: Glowing, 3: Fuzzy
+            float visualScale;        // Size of the particle
+            float baseOpacity;        // Base opacity before effects
+            float noiseScale;         // Scale of noise for fuzzy effect
+            float timeScale;          // Speed of time-based effects
+            float glowIntensity;      // Intensity of glow effect
+            float glowFalloff;        // How quickly the glow fades
+            float minValue;           // Minimum value for mapping (e.g., min temperature)
+            float maxValue;           // Maximum value for mapping (e.g., max temperature)
+            float densityScaleFactor; // Controls how much particle size changes based on density
         };
             
         // Input data buffers
@@ -153,6 +154,8 @@ Shader "Instanced/MultiFluidParticle2D"
                     return saturate((particle.temperature - visualData.minValue) / (visualData.maxValue - visualData.minValue));
                 case 3: // Fuzzy
                     return saturate(length(particle.velocity) / visualData.maxValue);
+                case 4: // Temperature_NonGlowing
+                    return saturate((particle.temperature - visualData.minValue) / (visualData.maxValue - visualData.minValue));
                 default:
                     return 0;
             }
@@ -192,9 +195,21 @@ Shader "Instanced/MultiFluidParticle2D"
             o.glowIntensity = visualData.glowIntensity;
             o.glowFalloff = visualData.glowFalloff;
 
+            // Calculate density-based scale factor
+            float densityValue = particle.density.x;
+            // Map density to a scale factor (lower density = smaller particles)
+            // We use a formula that makes particles smaller when density is below target density
+            float targetDensity = 55.0; // This is a common target density value in the simulation
+            float densityRatio = saturate(densityValue / targetDensity);
+            
+            // Calculate final scale with density influence
+            // When densityScaleFactor is 0, use only visualScale
+            // When densityScaleFactor is 1, fully apply the density-based scaling
+            float finalScale = visualData.visualScale * lerp(1.0, densityRatio, visualData.densityScaleFactor);
+            
             // Calculate world position with scaling
             float3 centreWorld = float3(particle.position, 0);
-            float3 worldVertPos = centreWorld + mul(unity_ObjectToWorld, v.vertex * visualData.visualScale);
+            float3 worldVertPos = centreWorld + mul(unity_ObjectToWorld, v.vertex * finalScale);
             o.worldPos = worldVertPos.xy;
 
             // Calculate gradient sampling parameters

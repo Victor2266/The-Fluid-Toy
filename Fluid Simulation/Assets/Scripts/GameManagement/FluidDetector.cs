@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class FluidDetector : MonoBehaviour 
+public class FluidDetector : FluidSensor
 // This only works for the regular simulation and not the AoS version right now because it accesses the buffers like positionBuffer,
 // which we replaced with the particle struct buffer
 {
@@ -9,7 +9,7 @@ public class FluidDetector : MonoBehaviour
     [Tooltip("The density threshold above which fluid is considered present")]
     public float densityThreshold = 0.5f;
     
-    [Tooltip("How often to check for fluid presence (in seconds)")]
+    [Tooltip("How often to check for fluid presence (in seconds; overwritten by any Sensor Managers)")]
     public float checkInterval = 0.1f;
     
     [Tooltip("Size of the detection area")]
@@ -26,7 +26,6 @@ public class FluidDetector : MonoBehaviour
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
-
     private bool isRequestMade = false;
 
     void Start()
@@ -44,38 +43,44 @@ public class FluidDetector : MonoBehaviour
 
     void Update()
     {
-        if (Time.time >= nextCheckTime)
+        if (!isManagedSensor && Time.time >= nextCheckTime)
         {
             // CheckFluidDensity();
             //sends async data request to GPU after each check time.
             if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid())
                 return;
-            if(!isRequestMade){
-                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), CheckFluidDensity);
+            if (!isRequestMade)
+            {
+                AsyncGPUReadback.Request(fluidSimulation.GetParticleBuffer(), ParticleRequest);
                 isRequestMade = true;
             }
-                
-
             nextCheckTime = Time.time + checkInterval;
         }
     }
 
-    
-    // Performs fluid check as callback to async read
-    void CheckFluidDensity(AsyncGPUReadbackRequest request)
+    protected override void ParticleRequest(AsyncGPUReadbackRequest request)
     {
-        if(request.hasError){
+        if (request.hasError)
+        {
             Debug.Log("GPU ASync Readback Error in Fluid Simulation Readback");
+            isRequestMade = false;
             return;
         }
         if (fluidSimulation == null || !fluidSimulation.IsPositionBufferValid() || this == null)
             return;
 
-        Vector2 checkPosition = transform.position;
-        float totalDensity = 0f;
-        
         // Create temporary array to get particle positions
         Particle[] particles = request.GetData<Particle>().ToArray();
+
+        CheckSensor(particles);
+        isRequestMade = false;
+    }
+
+    // Performs fluid check as callback to async read
+    public override void CheckSensor(Particle[] particles)
+    {
+        Vector2 checkPosition = transform.position;
+        float totalDensity = 0f;
 
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
@@ -107,8 +112,6 @@ public class FluidDetector : MonoBehaviour
         {
             OnFluidPresenceChanged();
         }
-
-        isRequestMade = false;
     }
 
     void OnFluidPresenceChanged()
