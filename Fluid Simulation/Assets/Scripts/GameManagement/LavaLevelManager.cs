@@ -25,11 +25,6 @@ public class LavaLevelManager : LevelManager
                 return;
             }
         }
-        
-        // Initialize level settings
-        currentLevel = 3; // Set this to the appropriate level number for the Lava Level
-        threeStarTime = 60f; // Adjust these times as needed
-        twoStarTime = 120f;
     }
 
     // Update is called once per frame
