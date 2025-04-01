@@ -35,6 +35,14 @@ public class LavaLevelManager : LevelManager
         if (hasWon) return;
         timer += Time.deltaTime;
 
+        // Force win if the specified key is pressed
+        if (forceWinOnKeyPress && Input.GetKeyDown(winKey))
+        {
+            TriggerWin();
+            return;
+        }
+
+
         // Check for any mouse input
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
         {
