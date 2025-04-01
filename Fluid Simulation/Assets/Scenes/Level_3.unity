@@ -2253,7 +2253,7 @@ MonoBehaviour:
   spawnCentre: {x: 12.5, y: -4}
   spawnSize: {x: 4, y: 6}
   jitterStr: 0
-  temperature: 750
+  temperature: 700.1
   showSpawnBoundsGizmos: 1
   wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
 --- !u!1 &638810971
@@ -3650,7 +3650,7 @@ MonoBehaviour:
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
-  boundsSize: {x: 34.2, y: 22}
+  boundsSize: {x: 34.2, y: 18.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 0
@@ -4299,7 +4299,7 @@ MonoBehaviour:
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
-  boundsSize: {x: 34.2, y: 22}
+  boundsSize: {x: 34.2, y: 19.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 0
@@ -4321,12 +4321,14 @@ MonoBehaviour:
   updateFluidsEveryFrame: 0
   fluidDataArray:
   - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
+  - {fileID: 11400000, guid: 094ea74afe77c5a40b808eac7ee4a009, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
   spawners: []
   boxColliders: []
   circleColliders: []
   sourceObjects: []
-  drainObjects: []
+  drainObjects:
+  - {fileID: 2044106173}
   thermalBoxes: []
 --- !u!4 &1396291944
 Transform:
@@ -6352,14 +6354,14 @@ MonoBehaviour:
   audioSource: {fileID: 1854668170}
   leftClickSounds:
   - {fileID: 8300000, guid: d8487ddfdb300054db80ca86e9b20401, type: 3}
-  leftClickMinPitch: 0.95
-  leftClickMaxPitch: 1.05
+  leftClickMinPitch: 0.475
+  leftClickMaxPitch: 0.525
   leftClickVolume: 0.2
   enableLeftClickHoldSound: 0
   rightClickSounds:
   - {fileID: 8300000, guid: d8487ddfdb300054db80ca86e9b20401, type: 3}
-  rightClickMinPitch: 0.95
-  rightClickMaxPitch: 1.05
+  rightClickMinPitch: 0.475
+  rightClickMaxPitch: 0.525
   rightClickVolume: 0.3
   enableRightClickHoldSound: 0
 --- !u!82 &1854668170
@@ -7169,6 +7171,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2044106172
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2044106173}
+  m_Layer: 0
+  m_Name: Bottom Drain
+  m_TagString: DrainObject
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2044106173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044106172}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -10, z: 0}
+  m_LocalScale: {x: 36, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2107056131
 GameObject:
   m_ObjectHideFlags: 0
@@ -7506,3 +7539,4 @@ SceneRoots:
   - {fileID: 1791107530}
   - {fileID: 207016665}
   - {fileID: 1240250139}
+  - {fileID: 2044106173}
