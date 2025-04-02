@@ -61,10 +61,9 @@ public class CastingLevelManager : LevelManager
                 steamSoundPlayed = true;
             }
         }
-        if(fall && swordDetector.metThreshold)
+        if(fall && swordDetector.metThreshold && !finishedCooling)
         {
             evaluateScore();
-            print(timer);
             finishedCooling = true;
         }
     }
