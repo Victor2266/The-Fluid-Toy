@@ -45,7 +45,7 @@ public class Level5Manager : LevelManager
     public AudioClip PlanetNotDetectedSound;
     public AudioClip WeaponReadySound;
     public AudioClip WeaponDeactivationSound;
-    public AudioClip WeaponChargingSound;
+    public AudioClip SpaceshipMovingSound;
     public AudioClip WeaponButtonSelectedSucessSound;
     public AudioClip WeaponButtonNotSelectedSound;
 
@@ -325,6 +325,7 @@ public class Level5Manager : LevelManager
             sim.SetSourceObject(RightIonCannon, 1);
 
             TwinIonCannonAudioSource.Stop();
+            ShakeCamera(0.5f, 0.75f);
         }
         else if (uiWeaponIndex == 1) // Death Ray (simulation source index 2)
         {
@@ -333,6 +334,8 @@ public class Level5Manager : LevelManager
             sim.SetSourceObject(weapon, 2);
 
             DeathRayAudioSource.Stop();
+            // Shake the camera for 0.5 seconds with a strength of 1.0
+            ShakeCamera(0.5f, 1.0f);
         }
         else if (uiWeaponIndex == 2) // Tractor Beam (using brush types)
         {
@@ -348,6 +351,8 @@ public class Level5Manager : LevelManager
             sim.SetSourceObject(weapon, 3);
 
             NeutronBombAudioSource.Stop();
+            // Shake the camera for 0.5 seconds with a strength of 1.0
+            ShakeCamera(1.5f, 1.0f);
         }
         // Reset our active weapon tracking if needed.
         if (UIActiveWeapon == uiWeaponIndex)
@@ -362,10 +367,15 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[0].state != WeaponState.Ready)
         {
             FlashImage(TwinIonCannonImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
         FlashImage(TwinIonCannonImage, Color.white);
         TwinIonCannonAudioSource.Play();
+        // Shake the camera for 0.5 seconds with a strength of .75
+        ShakeCamera(0.5f, 0.75f);
+
 
         UIActiveWeapon = 0;
         weaponCooldowns[0].state = WeaponState.Active;
@@ -392,10 +402,14 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[1].state != WeaponState.Ready)
         {
             FlashImage(DeathRayImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
         FlashImage(DeathRayImage, Color.white);
         DeathRayAudioSource.Play();
+        // Shake the camera for 0.5 seconds with a strength of 1.0
+        ShakeCamera(0.5f, 1.0f);
 
         UIActiveWeapon = 1;
         weaponCooldowns[1].state = WeaponState.Active;
@@ -417,8 +431,10 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[2].state != WeaponState.Ready)
         {
             FlashImage(TractorBeamImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
 
         interactionRadiusVisualizer.hideLineRenderer = false;
         FlashImage(TractorBeamImage, Color.white);
@@ -441,11 +457,15 @@ public class Level5Manager : LevelManager
         if (weaponCooldowns[3].state != WeaponState.Ready)
         {
             FlashImage(NeutronBombImage, Color.red);
+            audioSource.PlayOneShot(WeaponButtonNotSelectedSound, 0.25f);
             return;
         }
+        audioSource.PlayOneShot(WeaponButtonSelectedSucessSound, 0.25f);
 
         FlashImage(NeutronBombImage, Color.white);
         NeutronBombAudioSource.Play();
+        // Shake the camera for 0.5 seconds with a strength of 1.0
+        ShakeCamera(1.5f, 1.0f);
 
         UIActiveWeapon = 3;
         weaponCooldowns[3].state = WeaponState.Active;
@@ -508,6 +528,34 @@ public class Level5Manager : LevelManager
         image.DOColor(Color.green, 0.5f).SetEase(Ease.InOutQuad);
     }
 
+    private Vector3 originalPosition;
+    private Sequence shakeSequence;
+    public void ShakeCamera(float duration, float strength)
+    {
+        // Kill any ongoing shake
+        if (shakeSequence != null && shakeSequence.IsActive())
+        {
+            shakeSequence.Kill();
+            if (originalPosition != null) Camera.main.transform.localPosition = originalPosition;
+        }
+        
+        // Store the current position before shaking (in case we're calling shake multiple times)
+        //originalPosition = Camera.main.transform.localPosition;
+        originalPosition = new Vector3(0, 0, -10);
+        
+        // Create a new sequence
+        shakeSequence = DOTween.Sequence();
+        
+        // Add the shake with the passed parameters
+        shakeSequence.Append(Camera.main.DOShakePosition(duration, strength));
+        
+        // Add a callback to return to the original position
+        shakeSequence.OnComplete(() => Camera.main.transform.localPosition = originalPosition);
+
+        // Play the sequence
+        shakeSequence.Play();
+    }
+
     void OnDestroy()
     {
         Cursor.visible = true;
@@ -515,6 +563,11 @@ public class Level5Manager : LevelManager
         foreach (var image in new[] { TwinIonCannonImage, DeathRayImage, TractorBeamImage, NeutronBombImage })
         {
             DOTween.Kill(image);
+        }
+        // Clean up when the object is destroyed
+        if (shakeSequence != null && shakeSequence.IsActive())
+        {
+            shakeSequence.Kill();
         }
     }
 }

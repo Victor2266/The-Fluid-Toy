@@ -25,11 +25,6 @@ public class LavaLevelManager : LevelManager
                 return;
             }
         }
-        
-        // Initialize level settings
-        currentLevel = 3; // Set this to the appropriate level number for the Lava Level
-        threeStarTime = 60f; // Adjust these times as needed
-        twoStarTime = 120f;
     }
 
     // Update is called once per frame
@@ -39,6 +34,14 @@ public class LavaLevelManager : LevelManager
     {
         if (hasWon) return;
         timer += Time.deltaTime;
+
+        // Force win if the specified key is pressed
+        if (forceWinOnKeyPress && Input.GetKeyDown(winKey))
+        {
+            TriggerWin();
+            return;
+        }
+
 
         // Check for any mouse input
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1))

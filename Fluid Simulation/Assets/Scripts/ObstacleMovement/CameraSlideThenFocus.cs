@@ -23,6 +23,9 @@ public class CameraSlideThenFocus : MonoBehaviour
     [Tooltip("Duration for second focus tween (from midSize to finalSize).")]
     public float focusDuration2 = 1.5f;
 
+    public AudioClip moveSound;
+    public AudioSource audioSource;
+
     private void Start()
     {
         // Ensure we have a Camera component.
@@ -44,7 +47,17 @@ public class CameraSlideThenFocus : MonoBehaviour
         Sequence sequence = DOTween.Sequence();
 
         // Append the camera movement tween.
-        sequence.Join(transform.DOMove(endPosition, moveDuration).SetEase(Ease.InOutQuad));
+        sequence.Join(transform.DOMove(endPosition, moveDuration).SetEase(Ease.InOutQuad).OnComplete(() =>
+        {
+            // Play the audio clip from the audio source.
+            if (audioSource != null)
+            {
+                audioSource.Play();
+            }
+        }));
+        // Append an on complete callback to play the audio clip after the sequence completes.
+        
+
 
         // Create a nested sequence for the camera orthographic size focusing effect.
         // This tween goes from startSize -> midSize and then from midSize -> finalSize.
@@ -65,7 +78,13 @@ public class CameraSlideThenFocus : MonoBehaviour
                 focusDuration2
             ).SetEase(Ease.InOutBack)
         );
-
+        focusSequence.InsertCallback(focusDuration2, () =>
+        {
+            if (audioSource != null && moveSound != null)
+            {
+                audioSource.PlayOneShot(moveSound);
+            }
+        });
         // Join the focusing sequence to run concurrently with the camera move.
         sequence.Append(focusSequence);
 
