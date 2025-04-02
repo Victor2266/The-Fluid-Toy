@@ -3,6 +3,8 @@ using UnityEngine;
 using DG.Tweening;
 public class CastLevelControlPanelMovement : MonoBehaviour
 {
+    [Header("Level References")]
+    public CastLevelSwitch controlSwitch;
     public ThermalSensor sensor;
 
     public float moveDistance;
@@ -31,6 +33,26 @@ public class CastLevelControlPanelMovement : MonoBehaviour
                     });
                 if(sound != null){
                     sound.Play();
+                }
+            }
+
+            if(moved && controlSwitch != null){
+                if(controlSwitch.flippedAnimComplete)
+                {
+                    currentTween?.Kill();
+                    Vector3 openPosition = transform.position;
+                    openPosition.x -= moveDistance;
+
+                    // Move to open position smoothly
+                    currentTween = transform.DOMove(openPosition, 2*movementTime)
+                        .SetEase(Ease.OutQuad) // Optional: choose an easing function
+                        .OnComplete(() => {
+                            // Optional: You can add any completion logic here
+                        
+                        });
+                    if(sound != null){
+                        sound.Play();
+                    }
                 }
             }
         }

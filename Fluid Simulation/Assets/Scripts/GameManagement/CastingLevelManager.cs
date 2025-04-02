@@ -11,7 +11,6 @@ public class CastingLevelManager : LevelManager
     public CastLevelCastMovement castLeft;
     public ThermalSensor swordDetector;
     public FluidDetector[] gradingDetectors;
-
     public AudioSource steamSound;
     public float steamSoundVolume = 0.5F;
     public float tempSoundThreshold = 40;
@@ -65,6 +64,7 @@ public class CastingLevelManager : LevelManager
         if(fall && swordDetector.metThreshold)
         {
             evaluateScore();
+            print(timer);
             finishedCooling = true;
         }
     }

@@ -10,6 +10,7 @@ public class CastLevelSwitch : MonoBehaviour
     [Header("Lever Settings")]
     public bool isFlipped = false;
     public float releaseMoveAmount = 25F;
+    public bool flippedAnimComplete = false;
 
     [Header("Rotation Parameters")]
     public float rotationDuration = 0.1f; // Duration of rotation animation
@@ -20,12 +21,16 @@ public class CastLevelSwitch : MonoBehaviour
     public AudioSource leverSound; // Optional audio feedback
     public AudioSource metalInMoldSoundLong;
     public AudioSource metalInMoldSoundShort;
+    public SpriteRenderer moldTexture;
+    public Color targetHotMoldColor;
+    public float moldColorChangeTime = 3F;
 
     private Vector3 initialRotation;
     private Vector3 flippedRotation;
     private Tweener currentRotationTween;
     private bool pressed = false;
     private bool metalInMold = false;
+    private Tweener moldColorTween;
     void Start()
     {
         // Store initial rotation
@@ -54,6 +59,7 @@ public class CastLevelSwitch : MonoBehaviour
             if(metalInMoldSoundShort != null){
                 metalInMoldSoundShort.Play();
             }
+            startMoldTween();
             metalInMold = true;
         }
         if(transform.eulerAngles.z > 90 & !isFlipped && swordSensor.metThreshold){
@@ -65,6 +71,12 @@ public class CastLevelSwitch : MonoBehaviour
             PlayLeverEffects();
         }        
 
+    }
+
+    void startMoldTween()
+    {
+        moldTexture.DOColor(targetHotMoldColor, moldColorChangeTime)
+            .SetEase(Ease.OutQuad);
     }
 
     /// <summary>
@@ -89,6 +101,7 @@ public class CastLevelSwitch : MonoBehaviour
     {
         // Kill any existing rotation tween
         currentRotationTween?.Kill();
+        flippedAnimComplete = false; 
 
         // Determine target rotation based on user input
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -115,6 +128,7 @@ public class CastLevelSwitch : MonoBehaviour
     {
         // Kill any existing rotation tween
         currentRotationTween?.Kill();
+        flippedAnimComplete = false;
 
         // Determine target rotation based on flipped state
         Vector3 targetRotation = isFlipped ? flippedRotation : initialRotation;
@@ -130,7 +144,7 @@ public class CastLevelSwitch : MonoBehaviour
         // Optional: Additional logic when rotation is complete
         
         Debug.Log($"Lever flipped: {isFlipped}");
-        
+        flippedAnimComplete = true;
         
     }
 
