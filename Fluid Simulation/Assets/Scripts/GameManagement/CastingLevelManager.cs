@@ -8,6 +8,8 @@ public class CastingLevelManager : LevelManager
 {
     [Header("Level References")]
 
+    public CastLevelSwitch castSwitch;
+    public FluidDetector crucibleFailSensor;
     public CastLevelCastMovement castLeft;
     public ThermalSensor swordDetector;
     public FluidDetector[] gradingDetectors;
@@ -28,6 +30,7 @@ public class CastingLevelManager : LevelManager
 
     private float winDelayStart = 0;
     
+    public bool hasFailed = false;
 
     // void Start()
     // {
@@ -36,7 +39,7 @@ public class CastingLevelManager : LevelManager
 
     void FixedUpdate()
     {
-        if(hasWon) return;
+        if(hasWon || hasFailed) return;
 
         if(isWinSet){
             if(winDelayStart == 0){
@@ -47,7 +50,17 @@ public class CastingLevelManager : LevelManager
             }
             return;
         }
-        if(castLeft.isOpened)
+
+        if(castSwitch.isFlipped && !hasFailed && !fall)
+        {
+            if(crucibleFailSensor != null && crucibleFailSensor.currentDensity > 0)
+            {
+                //TriggerLose();
+                hasFailed = true;
+            }
+            
+        }
+        if(castLeft.isOpened && !fall)
         {
             // evaluateScore();
             fall = true;
