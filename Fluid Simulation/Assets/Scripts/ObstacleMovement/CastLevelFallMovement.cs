@@ -45,7 +45,7 @@ public class CastLevelFallMovement : MonoBehaviour
         fellPosition.y += fallDistance;
         // Move to open position smoothly
         currentTween = transform.DOMove(fellPosition, movementTime)
-            .SetEase(Ease.OutQuad) // Optional: choose an easing function
+            .SetEase(Ease.InOutQuad) // Optional: choose an easing function
             .OnComplete(() => {
                 // Optional: You can add any completion logic here
                 currentTween = null;
