@@ -4,13 +4,10 @@ const path = require('path');
 const zlib = require('zlib');
 
 const server = http.createServer((req, res) => {
-    // Handle the root path
--    let filePath = req.url === '/' ? '/index.html' : req.url;
--    filePath = path.join(__dirname, 'build', filePath);
-+    let requestPath = req.url === '/' ? '/index.html' : req.url;
-+    // Normalize the path to prevent directory traversal
-+    const normalizedPath = path.normalize(requestPath).replace(/^(\.\.[\/\\])+/, '');
-+    let filePath = path.join(__dirname, 'build', normalizedPath);
+    let requestPath = req.url === '/' ? '/index.html' : req.url;
+    // Normalize the path to prevent directory traversal
+    const normalizedPath = path.normalize(requestPath).replace(/^(\.\.[\/\\])+/, '');
+    let filePath = path.join(__dirname, 'build', normalizedPath);
 
     // Get the file extension
     const extname = path.extname(filePath);
