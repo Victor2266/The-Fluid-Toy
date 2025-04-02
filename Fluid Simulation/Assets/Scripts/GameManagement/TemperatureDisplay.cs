@@ -15,9 +15,12 @@ public class TemperatureDisplay : MonoBehaviour
     public float smoothingSpeed = 5f; // Higher value = faster smoothing
     
     [Header("Color Settings")]
-    public Color startColor = Color.blue;
+    public Color emptyColor = Color.blue;
+    public Color startColor = Color.yellow;
     public Color endColor = Color.red;
     public Color thresholdColor = Color.green;
+    public float minTemp = 0f;
+    public float maxTemp = 1200f;
     
     [Header("Debug")]
     public bool debugMode = true;
@@ -89,8 +92,6 @@ public class TemperatureDisplay : MonoBehaviour
             
             // Calculate color based on temperature
             // Map the temperature to a range between 0 and 1 for color lerping
-            float minTemp = 0f;  // Adjust this based on your expected temperature range
-            float maxTemp = thermalSensor.temperatureThreshold * 1.5f;  // Adjust this based on your expected temperature range
             float colorLerpValue = Mathf.InverseLerp(minTemp, maxTemp, currentDisplayValue);
             Color currentColor = Color.Lerp(startColor, endColor, colorLerpValue);
             displayText.color = currentColor;
