@@ -965,7 +965,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  particleCount: 10000
+  particleCount: 307200
   initialVelocity: {x: 0, y: 0}
   spawnCentre: {x: 8.39, y: 0}
   spawnSize: {x: 9.5, y: 6.3}
@@ -7793,14 +7793,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 0
-  maxParticles: 20000
+  fixedTimeStep: 1
+  maxParticles: 307230
   scanForObstaclesOnStart: 1
   scanForParticleSpawnersOnStart: 1
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
-  boundsSize: {x: 34.9, y: 19.6}
+  boundsSize: {x: 100, y: 56.6}
   obstacleSize: {x: 0, y: 0}
   obstacleCentre: {x: 0, y: 0}
   edgeType: 0
@@ -10050,7 +10050,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 9.93
+  orthographic size: 28.67
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -19315,7 +19315,7 @@ GameObject:
   - component: {fileID: 1781153954}
   - component: {fileID: 1781153953}
   m_Layer: 0
-  m_Name: Water Spawn (1)
+  m_Name: Bouncy Spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
