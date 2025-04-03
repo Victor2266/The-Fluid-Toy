@@ -17,13 +17,13 @@ public class FluidDetector : FluidSensor
     [Tooltip("Size of the detection area")]
     public float detectionRadius = 2f;
 
-    [Header("Fluid Type Detection")]
-    [Tooltip("If enabled, detector will check for fluid type before returning positive")]
-    public bool typeDetection = false; // Default to original
-    [Tooltip("Fluid type to look for (Setting to \"Disabled\" can enable general typed detection, without requiring FluidType for isFluidPresent flag)")]
+    [Header("Fluid Type Detection / Discrimination")]
+    [Tooltip("If enabled, detector will check the fluid type before setting the 'isFluidPresent' flag")]
+    public bool typeDiscrimination = false; // Default to original
+    [Tooltip("Fluid type to check with purityPercentThreshold. (Setting to \"Disabled\" will use the majority type)")]
     public FluidType typeToDetect = FluidType.Disabled;
-    [Tooltip("% of particles that must be of correct type for positive detection (0 to 1)")]
-    public float particlePercentThreshold = 0.75f;
+    [Tooltip("% of particles that must be of correct type to set the 'isFluidPresent' flag (0 to 1)")]
+    public float purityPercentThreshold = 0.75f;
 
     [Header("Debug")]
     public string sensorName; // Optional. To help debug
@@ -106,7 +106,7 @@ public class FluidDetector : FluidSensor
         float sqrRadius = detectionRadius * detectionRadius;
 
         FluidType oldMajorityType = majorityType;
-        if (typeDetection)
+        if (typeDiscrimination)
         {
             numParticles = 0; // Total number of particles
             numType = new int[numFluidTypes]; // Number of particles of each type
@@ -128,7 +128,7 @@ public class FluidDetector : FluidSensor
                 // Using a simplified density kernel for detection
                 totalDensity += (1 - (dst / detectionRadius)) * (1 - (dst / detectionRadius));
 
-                if (typeDetection)
+                if (typeDiscrimination)
                 {
                     numType[(int)particle.type - 1]++; // -1 because we don't count Disabled particles
                     numParticles++;
@@ -140,7 +140,7 @@ public class FluidDetector : FluidSensor
         bool previousState = isFluidPresent;
         currentDensity = totalDensity;
 
-        if (typeDetection) // Typed detection
+        if (typeDiscrimination) // Typed detection
         {
             int maxPCount = numType.Max(); // Largest particle count
             majorityType = numParticles == 0 ? FluidType.Disabled : (FluidType)(numType.ToList().IndexOf(maxPCount)) + 1; // Type with majority of particles; index + 1, because we did not log Disabled particles
@@ -148,7 +148,7 @@ public class FluidDetector : FluidSensor
             if (typeToDetect != FluidType.Disabled) // We only discriminate on type if "typeToDetect" is not disabled
             {
                 particlePercentage = numParticles == 0 ? 0 : numType[(int)typeToDetect - 1] / numParticles; // Use targetted type
-                isFluidPresent = totalDensity > densityThreshold && particlePercentage > particlePercentThreshold;
+                isFluidPresent = totalDensity > densityThreshold && particlePercentage > purityPercentThreshold;
             } 
             else
             {
