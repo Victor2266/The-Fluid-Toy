@@ -34,7 +34,7 @@ public enum FluidType {
     Sediment,
     Ion_Blast,
     Death_Ray,
-    BouncyBallSmall
+    BouncyBallSmall,
     Whiskey,
     Cola,
 }
