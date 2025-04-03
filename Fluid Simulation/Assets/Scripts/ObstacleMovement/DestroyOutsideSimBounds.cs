@@ -6,10 +6,10 @@ public class DestroyOutsideSimulationBounds : MonoBehaviour
     public string simulationTag = "Simulation";
     
     [Tooltip("Optional buffer outside bounds before destroying")]
-    public float boundsBuffer = 0.5f;
+    public float boundsBuffer = 0.05f;
     
     [Tooltip("How often to check if object is outside bounds (seconds)")]
-    public float checkInterval = 0.5f;
+    public float checkInterval = 5f;
     
     private IFluidSimulation sim;
     private Vector2 simulationBounds;

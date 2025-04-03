@@ -1975,9 +1975,13 @@ MonoBehaviour:
   densityThreshold: 0.5
   checkInterval: 0.2
   detectionRadius: 1.75
+  typeDetection: 0
+  typeToDetect: 0
+  particlePercentThreshold: 0.75
+  sensorName: 
   showDebugGizmos: 1
   showDebugLogs: 0
-  showDensityValue: 1
+  showDensityValue: 0
   densityDisplayOffset: {x: 161, y: 0}
 --- !u!1 &393988671
 GameObject:

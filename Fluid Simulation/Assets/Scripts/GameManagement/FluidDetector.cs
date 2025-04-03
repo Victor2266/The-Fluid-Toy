@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -8,12 +10,21 @@ public class FluidDetector : FluidSensor
     [Header("Detection Settings")]
     [Tooltip("The density threshold above which fluid is considered present")]
     public float densityThreshold = 0.5f;
-    
+
     [Tooltip("How often to check for fluid presence (in seconds; overwritten by any Sensor Managers)")]
     public float checkInterval = 0.1f;
-    
+
     [Tooltip("Size of the detection area")]
     public float detectionRadius = 2f;
+
+    [Header("Fluid Type Detection / Discrimination")]
+    [Tooltip("If enabled, detector will check the fluid type before setting the 'isFluidPresent' flag")]
+    public bool typeDiscrimination = false; // Default to original
+    [Tooltip("Fluid type to check with purityPercentThreshold. (Setting to \"Disabled\" will use the majority type)")]
+    public FluidType typeToDetect = FluidType.Disabled;
+    [Tooltip("% of particles that must be of correct type to set the 'isFluidPresent' flag. (0 to 1) (1 means 100% pure)")]
+    [Range(0f, 1f)]
+    public float purityPercentThreshold = 0.75f;
 
     [Header("Debug")]
     public bool showDebugGizmos = true;
@@ -23,10 +34,19 @@ public class FluidDetector : FluidSensor
     public bool isFluidPresent { get; private set; }
     public float currentDensity { get; private set; }
 
+    // Below 3 only take meaningful values if "typeDetection" is enabled. Pollable by game managers with getters.
+    public FluidType majorityType { get; private set; }
+    public float particlePercentage { get; private set; }
+    public int numParticles { get; private set; }
+
     private GameObject simulationGameobject;
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
     private bool isRequestMade = false;
+
+    // Below only take meaningful values/are initialized if "typeDetection" is true
+    private int numFluidTypes = Enum.GetValues(typeof(FluidType)).Length - 1;
+    private int[] numType; // Number of particles of correct type
 
     void Start()
     {
@@ -85,6 +105,14 @@ public class FluidDetector : FluidSensor
         // Calculate density similar to the simulation's density calculation
         float sqrRadius = detectionRadius * detectionRadius;
 
+        FluidType oldMajorityType = majorityType;
+        if (typeDiscrimination)
+        {
+            numParticles = 0; // Total number of particles
+            numType = new int[numFluidTypes]; // Number of particles of each type
+            majorityType = FluidType.Disabled;
+        }
+
         foreach (Particle particle in particles)
         {
             if(particle.type == FluidType.Disabled){
@@ -99,13 +127,44 @@ public class FluidDetector : FluidSensor
                 float dst = Mathf.Sqrt(sqrDstToParticle);
                 // Using a simplified density kernel for detection
                 totalDensity += (1 - (dst / detectionRadius)) * (1 - (dst / detectionRadius));
+
+                if (typeDiscrimination)
+                {
+                    numType[(int)particle.type - 1]++; // -1 because we don't count Disabled particles
+                    numParticles++;
+                }
             }
         }
 
         // Update fluid presence flag
         bool previousState = isFluidPresent;
         currentDensity = totalDensity;
-        isFluidPresent = totalDensity > densityThreshold;
+
+        if (typeDiscrimination) // Typed detection
+        {
+            int maxPCount = numType.Max(); // Largest particle count
+            majorityType = numParticles == 0 ? FluidType.Disabled : (FluidType)(numType.ToList().IndexOf(maxPCount)) + 1; // Type with majority of particles; index + 1, because we did not log Disabled particles
+
+            if (typeToDetect != FluidType.Disabled) // We only discriminate on type if "typeToDetect" is not disabled
+            {
+                particlePercentage = numParticles == 0 ? 0 : numType[(int)typeToDetect - 1] / numParticles; // Use targetted type
+            } 
+            else
+            {
+                particlePercentage = numParticles == 0 ? 0 : numType[(int)majorityType - 1] / numParticles; // Use majority type
+            }
+
+            isFluidPresent = totalDensity > densityThreshold && particlePercentage > purityPercentThreshold; // Check if fluid is present, and that it is pure
+
+            if (showDebugLogs && oldMajorityType != majorityType)
+            {
+                Debug.Log("[" + gameObject.name + "]: New majorityType is: " + majorityType);
+            }
+        }
+        else // Original functionality
+        {
+            isFluidPresent = totalDensity > densityThreshold; // Check that fluid is present
+        }
 
         // Notify if state changed
         if (previousState != isFluidPresent)
