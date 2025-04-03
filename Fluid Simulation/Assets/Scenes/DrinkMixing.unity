@@ -1785,10 +1785,9 @@ MonoBehaviour:
   densityThreshold: 100
   checkInterval: 0.1
   detectionRadius: 2
-  typeDetection: 1
+  typeDiscrimination: 1
   typeToDetect: 0
-  particlePercentThreshold: 0.75
-  sensorName: Small cup sensor
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 1
   showDensityValue: 1
@@ -3576,10 +3575,9 @@ MonoBehaviour:
   densityThreshold: 100
   checkInterval: 0.1
   detectionRadius: 2.1
-  typeDetection: 1
+  typeDiscrimination: 1
   typeToDetect: 0
-  particlePercentThreshold: 0.75
-  sensorName: Medium cup upper sensor
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 1
   showDensityValue: 1
@@ -3853,6 +3851,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &957740704
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 957740705}
+  m_Layer: 0
+  m_Name: Incoming Orders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &957740705
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957740704}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.4, y: 6.8, z: -1.1618807}
+  m_LocalScale: {x: 25, y: 5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2141936662}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -7162,10 +7192,9 @@ MonoBehaviour:
   densityThreshold: 170
   checkInterval: 0.1
   detectionRadius: 2.6
-  typeDetection: 1
+  typeDiscrimination: 1
   typeToDetect: 0
-  particlePercentThreshold: 0.75
-  sensorName: Medium cup upper sensor
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 1
   showDensityValue: 1
@@ -8826,10 +8855,9 @@ MonoBehaviour:
   densityThreshold: 160
   checkInterval: 0.1
   detectionRadius: 2.4
-  typeDetection: 0
+  typeDiscrimination: 0
   typeToDetect: 0
-  particlePercentThreshold: 0.75
-  sensorName: 
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -9307,10 +9335,9 @@ MonoBehaviour:
   densityThreshold: 110
   checkInterval: 0.1
   detectionRadius: 2
-  typeDetection: 1
+  typeDiscrimination: 1
   typeToDetect: 0
-  particlePercentThreshold: 0.75
-  sensorName: Medium cup lower sensor
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 1
   showDensityValue: 1
@@ -9586,6 +9613,7 @@ MonoBehaviour:
   repelColor: {r: 1, g: 0, b: 0, a: 1}
   neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   alwaysShowNeutral: 1
+  hideLineRenderer: 0
   segments: 48
 --- !u!120 &1965732211
 LineRenderer:
@@ -10175,10 +10203,9 @@ MonoBehaviour:
   densityThreshold: 120
   checkInterval: 0.1
   detectionRadius: 2
-  typeDetection: 1
+  typeDiscrimination: 1
   typeToDetect: 0
-  particlePercentThreshold: 0.75
-  sensorName: Medium cup lower sensor
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 1
   showDensityValue: 1
@@ -10315,6 +10342,93 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2141936661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2141936662}
+  - component: {fileID: 2141936663}
+  m_Layer: 0
+  m_Name: Incoming Orders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2141936662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141936661}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 957740705}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &2141936663
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141936661}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: c948d789378ca5846882bf84a5acf2bf, type: 3}
+  m_Color: {r: 0, g: 1, b: 0.030629158, a: 0.05490196}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &2146342002
 GameObject:
   m_ObjectHideFlags: 0
@@ -10394,6 +10508,7 @@ SceneRoots:
   - {fileID: 1413552195}
   - {fileID: 1750291864}
   - {fileID: 1973538776}
+  - {fileID: 957740705}
   - {fileID: 638810972}
   - {fileID: 117813602}
   - {fileID: 1114913114}
