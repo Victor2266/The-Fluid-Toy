@@ -22,7 +22,8 @@ public class FluidDetector : FluidSensor
     public bool typeDiscrimination = false; // Default to original
     [Tooltip("Fluid type to check with purityPercentThreshold. (Setting to \"Disabled\" will use the majority type)")]
     public FluidType typeToDetect = FluidType.Disabled;
-    [Tooltip("% of particles that must be of correct type to set the 'isFluidPresent' flag (0 to 1)")]
+    [Tooltip("% of particles that must be of correct type to set the 'isFluidPresent' flag. (0 to 1) (1 means 100% pure)")]
+    [Range(0f, 1f)]
     public float purityPercentThreshold = 0.75f;
 
     [Header("Debug")]
