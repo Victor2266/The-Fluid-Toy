@@ -27,7 +27,6 @@ public class FluidDetector : FluidSensor
     public float purityPercentThreshold = 0.75f;
 
     [Header("Debug")]
-    public string sensorName; // Optional. To help debug
     public bool showDebugGizmos = true;
     public bool showDebugLogs = true;
     public bool showDensityValue = true;
@@ -159,13 +158,7 @@ public class FluidDetector : FluidSensor
 
             if (showDebugLogs && oldMajorityType != majorityType)
             {
-                if (sensorName != null)
-                {
-                    Debug.Log("[" + sensorName + "]: New majorityType is: " + majorityType);
-                } else
-                {
-                    Debug.Log("New majorityType is: " + majorityType);
-                }
+                Debug.Log("[" + gameObject.name + "]: New majorityType is: " + majorityType);
             }
         }
         else // Original functionality
