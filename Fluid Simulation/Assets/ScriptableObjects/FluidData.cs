@@ -34,6 +34,8 @@ public enum FluidType {
     Sediment,
     Ion_Blast,
     Death_Ray,
+    Whiskey,
+    Cola,
 }
 
 public enum VisualStyle
