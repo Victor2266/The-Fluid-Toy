@@ -22,8 +22,8 @@ public class FluidDetector : FluidSensor
     public bool typeDetection = false; // Default to original
     [Tooltip("Fluid type to look for (Setting to \"Disabled\" can enable general typed detection, without requiring FluidType for isFluidPresent flag)")]
     public FluidType typeToDetect = FluidType.Disabled;
-    [Tooltip("% of particles that must be of correct type for positive detection (decimal)")]
-    public float particlePercentThreshold = 0.75f;
+    [Tooltip("% of particles that must be of correct type for positive detection (0 to 1)")]
+    public float particlePercentPurityThreshold = 0.75f;
 
     [Header("Debug")]
     public string sensorName; // Optional. To help debug
@@ -148,7 +148,7 @@ public class FluidDetector : FluidSensor
             if (typeToDetect != FluidType.Disabled) // We only discriminate on type if "typeToDetect" is not disabled
             {
                 particlePercentage = numParticles == 0 ? 0 : numType[(int)typeToDetect - 1] / numParticles; // Use targetted type
-                isFluidPresent = totalDensity > densityThreshold && particlePercentage > particlePercentThreshold;
+                isFluidPresent = totalDensity > densityThreshold && particlePercentage > particlePercentPurityThreshold;
             } 
             else
             {
