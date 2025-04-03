@@ -148,13 +148,13 @@ public class FluidDetector : FluidSensor
             if (typeToDetect != FluidType.Disabled) // We only discriminate on type if "typeToDetect" is not disabled
             {
                 particlePercentage = numParticles == 0 ? 0 : numType[(int)typeToDetect - 1] / numParticles; // Use targetted type
-                isFluidPresent = totalDensity > densityThreshold && particlePercentage > purityPercentThreshold;
             } 
             else
             {
                 particlePercentage = numParticles == 0 ? 0 : numType[(int)majorityType - 1] / numParticles; // Use majority type
-                isFluidPresent = totalDensity > densityThreshold; // Some type of fluid is present, probably
             }
+
+            isFluidPresent = totalDensity > densityThreshold && particlePercentage > purityPercentThreshold; // Check if fluid is present, and that it is pure
 
             if (showDebugLogs && oldMajorityType != majorityType)
             {
@@ -163,7 +163,7 @@ public class FluidDetector : FluidSensor
         }
         else // Original functionality
         {
-            isFluidPresent = totalDensity > densityThreshold;
+            isFluidPresent = totalDensity > densityThreshold; // Check that fluid is present
         }
 
         // Notify if state changed
