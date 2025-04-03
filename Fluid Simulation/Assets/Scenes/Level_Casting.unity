@@ -850,6 +850,9 @@ MonoBehaviour:
   densityThreshold: 500
   checkInterval: 0.1
   detectionRadius: 0.74
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 0
@@ -1071,7 +1074,7 @@ MonoBehaviour:
   showDebugTimer: 1
   levelCompleteAnim: {fileID: 105816477}
   timer: 0
-  threeStarTime: 32
+  threeStarTime: 32.5
   twoStarTime: 33
   castSwitch: {fileID: 24892573}
   crucibleFailSensor: {fileID: 495381971}
@@ -1653,13 +1656,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.01
   enableSmoothing: 1
+  smoothingSpeed: 0.01
   resizable: 0
   uniformScaling: 0
-  rotatable: 0
   scaleSpeed: 0.1
+  rotatable: 0
   rotationSpeed: 10
+  maxDragSpeed: Infinity
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -3755,6 +3759,9 @@ MonoBehaviour:
   densityThreshold: 0.5
   checkInterval: 0.1
   detectionRadius: 2.07
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 0
@@ -4850,13 +4857,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d0ef4e4b59d3574da3e00d2eac5c8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.2
   enableSmoothing: 1
+  smoothingSpeed: 0.2
   resizable: 0
   uniformScaling: 0
-  rotatable: 0
   scaleSpeed: 0.1
+  rotatable: 0
   rotationSpeed: 10
+  maxDragSpeed: Infinity
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -6674,6 +6682,9 @@ MonoBehaviour:
   densityThreshold: 500
   checkInterval: 0.1
   detectionRadius: 0.4
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 0
@@ -6731,6 +6742,9 @@ MonoBehaviour:
   densityThreshold: 500
   checkInterval: 0.1
   detectionRadius: 2
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 0
@@ -7977,6 +7991,9 @@ MonoBehaviour:
   densityThreshold: 500
   checkInterval: 0.1
   detectionRadius: 0.4
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 0
@@ -9230,7 +9247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4592926617858281530, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: '<b>Level __</b>
+      value: '<b>Level 6</b>
 
 
 '
@@ -10539,6 +10556,9 @@ MonoBehaviour:
   densityThreshold: 500
   checkInterval: 0.1
   detectionRadius: 0.62
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 0
