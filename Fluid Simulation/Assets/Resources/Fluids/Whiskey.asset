@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
-  m_Name: Alcohol
+  m_Name: Whiskey
   m_EditorClassIdentifier: 
-  fluidType: 9
-  gravity: -12
-  collisionDamping: 0.8
+  fluidType: 28
+  gravity: -20
+  collisionDamping: 0.908
   smoothingRadius: 0.35
   targetDensity: 55
   pressureMultiplier: 500
@@ -24,7 +24,7 @@ MonoBehaviour:
   thermalDiffusivity: 100
   boilState: 5
   boilTemp: 176
-  freezeState: 9
+  freezeState: 28
   freezeTemp: 0
   friction: 0
   entropyTarget: 11111
@@ -32,15 +32,15 @@ MonoBehaviour:
     style: 0
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.3529412, g: 0.3137255, b: 0.7137255, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.7610062, g: 0.40163124, b: 0, a: 1}
+      key1: {r: 0.735849, g: 0.50458944, b: 0.090245545, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 4819
+      ctime0: 7325
       ctime1: 65535
       ctime2: 0
       ctime3: 0
@@ -64,7 +64,7 @@ MonoBehaviour:
     baseOpacity: 0.25
     noiseScale: 0
     timeScale: 0
-    glowIntensity: 0
+    glowIntensity: 10
     glowFalloff: 1
     minPropertyValue: 0
     maxPropertyValue: 6.5

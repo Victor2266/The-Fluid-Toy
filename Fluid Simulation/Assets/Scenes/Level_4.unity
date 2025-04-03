@@ -335,13 +335,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d0ef4e4b59d3574da3e00d2eac5c8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.2
   enableSmoothing: 1
+  smoothingSpeed: 0.2
   resizable: 0
   uniformScaling: 0
-  rotatable: 0
   scaleSpeed: 0.1
+  rotatable: 0
   rotationSpeed: 10
+  maxDragSpeed: Infinity
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -1724,9 +1725,12 @@ MonoBehaviour:
   densityThreshold: 1
   checkInterval: 0.1
   detectionRadius: 1.42
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
-  showDensityValue: 1
+  showDensityValue: 0
   densityDisplayOffset: {x: 0, y: 124.6}
 --- !u!222 &264430845
 CanvasRenderer:
@@ -9657,13 +9661,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d0ef4e4b59d3574da3e00d2eac5c8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.2
   enableSmoothing: 1
+  smoothingSpeed: 0.2
   resizable: 0
   uniformScaling: 0
-  rotatable: 0
   scaleSpeed: 0.1
+  rotatable: 0
   rotationSpeed: 10
+  maxDragSpeed: Infinity
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -12639,6 +12644,9 @@ MonoBehaviour:
   densityThreshold: 200
   checkInterval: 0.1
   detectionRadius: 2.06
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
   showDensityValue: 1
@@ -16543,9 +16551,12 @@ MonoBehaviour:
   densityThreshold: 1
   checkInterval: 0.1
   detectionRadius: 1.42
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
-  showDensityValue: 1
+  showDensityValue: 0
   densityDisplayOffset: {x: 0, y: 124.6}
 --- !u!1 &1842855004
 GameObject:
@@ -17964,9 +17975,12 @@ MonoBehaviour:
   densityThreshold: 10
   checkInterval: 0.1
   detectionRadius: 2.06
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 1
   showDebugLogs: 0
-  showDensityValue: 1
+  showDensityValue: 0
   densityDisplayOffset: {x: 0, y: -120}
 --- !u!4 &2004694911
 Transform:

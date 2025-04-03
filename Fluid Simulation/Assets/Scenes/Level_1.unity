@@ -1021,9 +1021,13 @@ MonoBehaviour:
   densityThreshold: 160
   checkInterval: 0.1
   detectionRadius: 2.4
+  typeDetection: 0
+  typeToDetect: 0
+  particlePercentThreshold: 0.75
+  sensorName: 
   showDebugGizmos: 1
   showDebugLogs: 0
-  showDensityValue: 1
+  showDensityValue: 0
   densityDisplayOffset: {x: 0, y: -120}
 --- !u!1 &436594527
 GameObject:
@@ -4657,6 +4661,7 @@ MonoBehaviour:
   repelColor: {r: 1, g: 0, b: 0, a: 1}
   neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   alwaysShowNeutral: 1
+  hideLineRenderer: 0
   segments: 48
 --- !u!120 &1965732211
 LineRenderer:

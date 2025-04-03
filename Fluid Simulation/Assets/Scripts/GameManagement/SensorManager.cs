@@ -32,11 +32,7 @@ public class SensorManager : MonoBehaviour
         // Update sensor list
         if (scanForSensorsOnStart)
         {
-            fluidSensors = FindObjectsByType<FluidSensor>(FindObjectsSortMode.None);
-            foreach (FluidSensor fSense in fluidSensors)
-            {
-                fSense.isManagedSensor = true;
-            }
+            scanForSensors();
         }
     }
 
@@ -83,6 +79,15 @@ public class SensorManager : MonoBehaviour
             }
         }
         isRequestMade = false;
+    }
+
+    public void scanForSensors()
+    {
+        fluidSensors = FindObjectsByType<FluidSensor>(FindObjectsSortMode.None);
+        foreach (FluidSensor fSense in fluidSensors)
+        {
+            fSense.isManagedSensor = true;
+        }
     }
 
     void OnDestroy()
