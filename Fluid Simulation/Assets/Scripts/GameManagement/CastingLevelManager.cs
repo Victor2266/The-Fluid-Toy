@@ -56,6 +56,7 @@ public class CastingLevelManager : LevelManager
             if(crucibleFailSensor != null && crucibleFailSensor.currentDensity > 0)
             {
                 //TriggerLose();
+                Debug.Log("Trigger Lose");
                 hasFailed = true;
             }
             
