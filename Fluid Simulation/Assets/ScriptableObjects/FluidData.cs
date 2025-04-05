@@ -38,6 +38,7 @@ public enum FluidType {
     Death_Ray,
     Whiskey,
     Cola,
+    Fire_Blue
 }
 
 public enum VisualStyle
