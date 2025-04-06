@@ -26,7 +26,6 @@ public class Level1Manager : LevelManager
     // this can be customized for each level
     void Update()
     {
-        UnityEngine.FrameTimingManager.CaptureFrameTimings();
         if (hasWon) return;
         timer += Time.deltaTime;
 
