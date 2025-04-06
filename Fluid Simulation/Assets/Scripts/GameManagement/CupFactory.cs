@@ -56,8 +56,15 @@ public class CupFactory : MonoBehaviour
             return null;
         }
 
+        // Store prefab state; change prefab state to active
+        bool cupActive = cupPrefab.activeSelf;
+        cupPrefab.SetActive(true);
+
         // Instantiate the new cup
         GameObject newCup = Instantiate(cupPrefab, spawnPosition, Quaternion.identity);
+
+        // Restore original cup state (if inactive, disable again)
+        cupPrefab.SetActive(cupActive);
 
         // Generate and assign unique ID
         string id = GenerateUniqueID();
