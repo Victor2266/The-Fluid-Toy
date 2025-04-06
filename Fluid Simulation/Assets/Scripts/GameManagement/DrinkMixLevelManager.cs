@@ -22,10 +22,14 @@ public class DrinkMixLevelManager : LevelManager
     private Transform orderZone;
     private Bounds _zoneBounds;
     private List<CupFactory.CupInstance> _allCups;
+    private IFluidSimulation sim;
 
     // Start is called before the first frame update
     void Start()
     {
+        GameObject simObject = GameObject.FindGameObjectWithTag("Simulation");
+        sim = simObject.GetComponent<IFluidSimulation>();
+
         if (!orderZoneObj || !largeCupFactory || !mediumCupFactory || !smallCupFactory)
         {
             Debug.LogError("Error! One or more null level references!");
@@ -75,8 +79,8 @@ public class DrinkMixLevelManager : LevelManager
             if (smallCupFactory.GetCloneByID(cup.uniqueID) != null) smallCupFactory.DeleteCloneByID(cup.uniqueID);
             if (mediumCupFactory.GetCloneByID(cup.uniqueID) != null) mediumCupFactory.DeleteCloneByID(cup.uniqueID);
             if (largeCupFactory.GetCloneByID(cup.uniqueID) != null) largeCupFactory.DeleteCloneByID(cup.uniqueID);
+            TriggerDrain(0.001f);
         }
-        TriggerDrain(0.05f);
     }
 
     bool IsCupCompletelyContained(CupFactory.CupInstance cup)
@@ -128,19 +132,18 @@ public class DrinkMixLevelManager : LevelManager
 
     public void TriggerDrain(float duration)
     {
-        GameObject drainObj = orderZone.transform.Find("Drain").gameObject;
-        // OR use tag as shown above
-
-        if (drainObj != null)
+        if (orderZone != null)
         {
-            StartCoroutine(ActivateDrain(drainObj, duration));
+            StartCoroutine(ActivateDrain(duration));
         }
     }
 
-    private IEnumerator ActivateDrain(GameObject drain, float duration)
+    private IEnumerator ActivateDrain( float duration)
     {
-        drain.SetActive(true);
+        orderZone.tag = "DrainObject";
+        sim.UpdateDrainObjects();
         yield return new WaitForSeconds(duration);
-        drain.SetActive(false);
+        orderZone.tag = "Untagged";
+        sim.UpdateDrainObjects();
     }
 }
