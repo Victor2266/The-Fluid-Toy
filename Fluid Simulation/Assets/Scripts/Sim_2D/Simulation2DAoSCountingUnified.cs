@@ -1072,4 +1072,20 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     {
         maxParticles = newMaxParticles;
     }
+
+    public Transform[] GetCurrentColliders()
+    {
+        return boxColliders;
+    }
+
+    public void SetColliders(Transform[] colliders)
+    {
+        boxColliders = colliders;
+        boxColliderData = new OrientedBox[boxColliders.Length];
+
+        ComputeHelper.Release(boxCollidersBuffer);
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        UpdateBoxColliderData();
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
+    }
 }

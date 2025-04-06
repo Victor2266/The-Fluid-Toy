@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -75,6 +76,7 @@ public class DrinkMixLevelManager : LevelManager
             if (mediumCupFactory.GetCloneByID(cup.uniqueID) != null) mediumCupFactory.DeleteCloneByID(cup.uniqueID);
             if (largeCupFactory.GetCloneByID(cup.uniqueID) != null) largeCupFactory.DeleteCloneByID(cup.uniqueID);
         }
+        TriggerDrain(0.05f);
     }
 
     bool IsCupCompletelyContained(CupFactory.CupInstance cup)
@@ -105,15 +107,40 @@ public class DrinkMixLevelManager : LevelManager
 
         if (detectors.Length >= 2) // Large/medium
         {
-            // FIXME
-            //majorityType
             fluidPercent = (detectors[0].particlePercentage + detectors[1].particlePercentage) / 2f;
-            isFluidPresent = detectors[0].isFluidPresent || detectors[1].isFluidPresent;
+            isFluidPresent = detectors[0].isFluidPresent && detectors[1].isFluidPresent;
+            if (detectors[0].majorityType == detectors[1].majorityType)
+            {
+                majorityType = detectors[0].majorityType; // Just take [0]
+            }
+            else // If they mixed 50/50 / only half full, we fail them
+            {
+                majorityType = FluidType.Disabled;
+            }
         }
         else // Small
         {
             fluidPercent = detectors[0].particlePercentage;
             isFluidPresent = detectors[0].isFluidPresent;
+            majorityType = detectors[0].majorityType;
         }
+    }
+
+    public void TriggerDrain(float duration)
+    {
+        GameObject drainObj = orderZone.transform.Find("Drain").gameObject;
+        // OR use tag as shown above
+
+        if (drainObj != null)
+        {
+            StartCoroutine(ActivateDrain(drainObj, duration));
+        }
+    }
+
+    private IEnumerator ActivateDrain(GameObject drain, float duration)
+    {
+        drain.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        drain.SetActive(false);
     }
 }
