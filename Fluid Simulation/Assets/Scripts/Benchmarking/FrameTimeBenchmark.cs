@@ -41,8 +41,8 @@ public class FrameTimeBenchmark : MonoBehaviour
 
     private void Update()
     {
-        // Check for benchmark key press
-        if (Input.GetKeyDown(startBenchmarkKey) && !isBenchmarking)
+        // Check for benchmark key press or auto-run if key is None
+        if ((startBenchmarkKey == KeyCode.None || Input.GetKeyDown(startBenchmarkKey)) && !isBenchmarking)
         {
             StartBenchmark();
         }
@@ -166,9 +166,12 @@ public class FrameTimeBenchmark : MonoBehaviour
 
     private void OnGUI()
     {
-        // Always show the key instruction
+        // Always show the key instruction or auto-benchmark status
         GUILayout.BeginArea(new Rect(26, 60, 300, 150));
-        GUILayout.Label($"Press {startBenchmarkKey} to start benchmark");
+        if (startBenchmarkKey == KeyCode.None)
+            GUILayout.Label("Benchmark runs automatically");
+        else
+            GUILayout.Label($"Press {startBenchmarkKey} to start benchmark");
 
         if (visualizeInEditor && isBenchmarking)
         {
