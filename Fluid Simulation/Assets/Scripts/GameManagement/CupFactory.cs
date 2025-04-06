@@ -7,6 +7,7 @@ public class CupFactory : MonoBehaviour
     [System.Serializable]
     public class CupInstance
     {
+        public DrinkLevelManager.CupSize size;
         public GameObject cupObject;
         public string uniqueID;
         public System.DateTime spawnTime;
@@ -14,6 +15,7 @@ public class CupFactory : MonoBehaviour
     }
 
     [Header("Cloning Settings")]
+    [SerializeField] private DrinkLevelManager.CupSize cupSize;
     [SerializeField] private GameObject cupPrefab; // Obj to clone
     [SerializeField] private Vector2 spawnPosition = Vector2.zero;
     [SerializeField] private int maxClones = 5;
@@ -80,6 +82,7 @@ public class CupFactory : MonoBehaviour
         // Record the instance
         CupInstance instance = new CupInstance
         {
+            size = cupSize,
             cupObject = newCup,
             uniqueID = id,
             spawnTime = System.DateTime.Now,
