@@ -153,6 +153,9 @@ public class SettingsManager : MonoBehaviour
 
     private void OnFPSUncappedChanged(bool isUncapped)
     {
+        #if UNITY_WEBGL
+        isUncapped = true; // For Webassembly 2023 feature set, capping the FPS causes the fps counter to increase but the actual game lags like crazy
+        #endif
         if (isUncapped)
         {
             SetAndApplyTargetFPS(-1);
