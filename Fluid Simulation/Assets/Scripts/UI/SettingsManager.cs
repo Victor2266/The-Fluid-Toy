@@ -154,7 +154,10 @@ public class SettingsManager : MonoBehaviour
     private void OnFPSUncappedChanged(bool isUncapped)
     {
         #if UNITY_WEBGL
-            isUncapped = true; // For Webassembly 2023 feature set, capping the FPS causes the fps counter to increase but the actual game lags like crazy
+        // For Webassembly 2023 feature set,
+        // capping the FPS causes the fps counter to increase but the actual game stutters like crazy
+        // Likely due to excessive draw calls from requestAnimationFrame()
+            isUncapped = true; 
         #endif
         if (isUncapped)
         {
@@ -176,18 +179,6 @@ public class SettingsManager : MonoBehaviour
         Screen.fullScreen = isFullscreen;
         PlayerPrefs.SetInt(FULLSCREEN_KEY, isFullscreen ? 1 : 0);
         PlayerPrefs.Save();
-    }
-
-    private void onUncapFPSChanged(bool isFpsUncapped){
-        if(isFpsUncapped){
-            Application.targetFrameRate = -1;
-            PlayerPrefs.SetInt($"FPS_UNCAP", 1);
-        }else{
-            Application.targetFrameRate = (int) Screen.currentResolution.refreshRateRatio.value;
-            PlayerPrefs.SetInt($"FPS_UNCAP", 0);
-        }
-        PlayerPrefs.Save();
-        
     }
 
     private void OnBGMVolumeChanged(float volume)
