@@ -183,7 +183,7 @@ public class MainMenuManager : MonoBehaviour
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
         #elif UNITY_WEBGL
-                Application.OpenURL("about:blank");
+            Application.OpenURL("javascript:window.close();");
         #else
             Application.Quit();
         #endif
