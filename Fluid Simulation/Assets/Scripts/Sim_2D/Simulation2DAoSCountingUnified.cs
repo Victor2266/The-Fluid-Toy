@@ -484,7 +484,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int)edgeType);
         compute.SetInt("gravityMode", (int)gravityMode);
-        compute.SetInt("maxSourceSpawnRate", (int)(maxSourceSpawnRate * Time.deltaTime * 120f));
+        compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
         compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
