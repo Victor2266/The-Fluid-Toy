@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class WebGPUStutterFixer : MonoBehaviour
 {
-#if UNITY_WEBGPU
+#if UNITY_WEBGL
     void Update()
     {
         // Calling this each frame fixes the stuttering that occurs on lower FPS
