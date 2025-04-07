@@ -19,6 +19,7 @@ public class SideBarWrapper : MonoBehaviour
     [SerializeField] GameObject simSettingsPanel;
     [SerializeField] GameObject informationPanel;
     [SerializeField] GameObject bottomBarParent;
+    [SerializeField] GameObject sidebarContent;
 
     [Header("Tooltip and Icon References")]
     [SerializeField] TooltipTrigger HideBottomMenuTooltip;
@@ -65,6 +66,15 @@ public class SideBarWrapper : MonoBehaviour
         }
 
         menuPanels = new GameObject[] { brushSettingsMenu, allFluidsMenu, ObstaclesMenu, GasMenu, LiquidMenu, PowderMenu, RadioactiveMenu};
+    }
+
+    void Update() // Remove this when not debugging
+    {
+        // When pressing H toggle hide the sidebar content
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            sidebarContent.SetActive(!sidebarContent.activeSelf);
+        }
     }
 
     public void PauseGame()

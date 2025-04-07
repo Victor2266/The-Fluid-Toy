@@ -64,7 +64,7 @@ public class SourceObjectContextMenu : EditableObject
             
             fluidTypeField.onValueChanged.AddListener((value) => {
                 FluidData[] fluidDataArray = fluidSimulationScript.getFluidDataArray();
-                sourceObjectInitData.fluidType = (int) fluidDataArray[value].fluidType;
+                sourceObjectInitData.fluidType = fluidDataArray[value].fluidType;
                 RescanForObstacles();
             });
             
@@ -103,7 +103,7 @@ public class SourceObjectContextMenu : EditableObject
                 int currentFluidTypeIndex = 0;
                 for (int i = 0; i < fluidDataArray.Length; i++)
                 {
-                    if ((int)fluidDataArray[i].fluidType == sourceObjectInitData.fluidType)
+                    if (fluidDataArray[i].fluidType == sourceObjectInitData.fluidType)
                     {
                         currentFluidTypeIndex = i;
                         break;

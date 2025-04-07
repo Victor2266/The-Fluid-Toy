@@ -37,6 +37,7 @@ public enum FluidType {
     BouncyBallSmall,
     Whiskey,
     Cola,
+    Fire_Blue
 }
 
 public enum VisualStyle

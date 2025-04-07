@@ -4,7 +4,9 @@ using UnityEngine;
 public class Draggable : MonoBehaviour
 {
     protected bool isDragging = false;
+    protected bool draggingLastFrame = false;
     protected Vector3 offset;
+    protected Vector3 currentVelocity;
 
     [Header("General Settings")]
     [Tooltip("Smoothing Settings")]
@@ -38,12 +40,17 @@ public class Draggable : MonoBehaviour
     void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0)){
-            isDragging = true;
+            if (!isDragging) isDragging = true;
+            else draggingLastFrame = true;
+
             if (rb2d != null) {
-                rb2d.bodyType = RigidbodyType2D.Kinematic;
-                rb2d.freezeRotation = true;
-                rb2d.linearVelocity = Vector2.zero;
-                rb2d.angularVelocity = 0f;
+                if (draggingLastFrame == false)
+                {
+                    rb2d.bodyType = RigidbodyType2D.Kinematic;
+                    rb2d.freezeRotation = true;
+                    rb2d.linearVelocity = Vector2.zero;
+                    rb2d.angularVelocity = 0f;
+                }
             }
 
             offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -53,9 +60,11 @@ public class Draggable : MonoBehaviour
     void OnMouseUp()
     {
         isDragging = false;
+        draggingLastFrame = false;
         if (rb2d != null) {
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             rb2d.freezeRotation = false;
+            rb2d.linearVelocity = currentVelocity;
         }
         
     }
@@ -92,6 +101,9 @@ public class Draggable : MonoBehaviour
                     targetPosition = transform.position + movement;
                 }
             }
+
+            // Save post-processed velocity
+            currentVelocity = (targetPosition - transform.position) / Time.deltaTime;
 
             if (enableSmoothing)
             {
