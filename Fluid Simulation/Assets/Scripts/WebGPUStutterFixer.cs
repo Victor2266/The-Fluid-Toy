@@ -12,4 +12,25 @@ public class WebGPUStutterFixer : MonoBehaviour
         UnityEngine.FrameTimingManager.CaptureFrameTimings();
     }
 #endif
+/*
+    void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.normal.textColor = Color.red;
+        GUI.Label(new Rect(10, 10, 200, 20), "WebGL detected", style);
+    }
+
+#else
+    void OnGUI()
+    {
+        if (!Application.isWebGL)
+        {
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = Color.green;
+            GUI.Label(new Rect(10, 10, 200, 20), "Not on WebGL", style);
+        }
+    }
+#endif
+*/
+
 }
