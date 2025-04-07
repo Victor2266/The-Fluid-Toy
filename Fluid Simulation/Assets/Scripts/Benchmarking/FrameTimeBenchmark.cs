@@ -169,7 +169,7 @@ public class FrameTimeBenchmark : MonoBehaviour
         // Always show the key instruction or auto-benchmark status
         GUILayout.BeginArea(new Rect(26, 60, 300, 150));
         if (startBenchmarkKey == KeyCode.None)
-            GUILayout.Label("Benchmark runs automatically");
+            GUILayout.Label("Benchmark runs continuously");
         else
             GUILayout.Label($"Press {startBenchmarkKey} to start benchmark");
 
