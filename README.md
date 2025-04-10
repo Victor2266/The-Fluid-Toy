@@ -6,7 +6,7 @@
 The ULTIMATE FREE 2D fluid simulation engine for Unity. Experience realtime interactive physics and fluid simulation in a neat package you can import and use in your own projects! Got any neat ideas? Feel free to alter the codebase and contribute as you see fit!
 </p>
 
-[![Trailer Video](https://github.com/user-attachments/assets/b07471c3-65f2-43e6-9ef8-ff5e80d97414)](https://youtu.be/xIEyxDlakDM "The ULTIMATE Fluid Simulator")
+[![Trailer Video](https://github.com/user-attachments/assets/b07471c3-65f2-43e6-9ef8-ff5e80d97414)](https://youtu.be/Hz_DlDSIbpM "The ULTIMATE Fluid Simulator")
 
 https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 
