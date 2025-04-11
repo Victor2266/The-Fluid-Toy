@@ -464,7 +464,7 @@ RectTransform:
   m_GameObject: {fileID: 198929339}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.95, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1618360750}
@@ -496,15 +496,18 @@ MonoBehaviour:
       m_Calls: []
   m_text: '<size=32>Instructions for Enabling WebGPU in Safari:</size>
 
-    1.
 
-    2.
+    1. Go
+    to <b>Settings</b> >  <b>Safari</b> >  <b>Advanced</b> (Bottom of Page) > <b>Feature
+    Flags</b>
 
-    3.
-    Refresh The Page'
+    2. Find <b>WebGPU</b> feature and enable it
+
+    3. Refresh The
+    Page'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
-  m_sharedMaterial: {fileID: 4621470211802787547, guid: 3529e076dfbb3d548a132141118c02f9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
+  m_sharedMaterial: {fileID: 4419277419123658369, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1068,7 +1071,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 280}
+  m_AnchoredPosition: {x: 0, y: 194}
   m_SizeDelta: {x: 640.5, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1321578218
