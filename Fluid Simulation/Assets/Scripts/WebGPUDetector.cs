@@ -3,8 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class WebGPUDetector : MonoBehaviour
 {
+    #if UNITY_WEBGL && !UNITY_EDITOR
     [SerializeField] private string webGPUFallbackSceneName = "WebGPUInstructions";
-    [SerializeField] private bool debugMode = true;
+    [SerializeField] private bool debugMode = false;
     
     private void Start()
     {
@@ -40,6 +41,10 @@ public class WebGPUDetector : MonoBehaviour
                 Debug.LogError("Scene not found in build settings: " + webGPUFallbackSceneName);
             }
         }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
     
     private bool IsUsingWebGPU()
@@ -48,4 +53,5 @@ public class WebGPUDetector : MonoBehaviour
         // WebGPU will be reported as "WebGPU" in SystemInfo.graphicsDeviceType
         return SystemInfo.graphicsDeviceType.ToString() == "WebGPU";
     }
+    #endif
 }
