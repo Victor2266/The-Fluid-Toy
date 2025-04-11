@@ -448,6 +448,7 @@ GameObject:
   - component: {fileID: 198929340}
   - component: {fileID: 198929342}
   - component: {fileID: 198929341}
+  - component: {fileID: 198929343}
   m_Layer: 5
   m_Name: Text (1)
   m_TagString: Untagged
@@ -494,17 +495,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<size=32>Instructions for Enabling WebGPU in Safari:</size>
+  m_text: '<size=32>You need to use a WebGPU Compatible Browser!</size>
 
 
-    1. Go
-    to <b>Settings</b> >  <b>Safari</b> >  <b>Advanced</b> (Bottom of Page) > <b>Feature
-    Flags</b>
-
-    2. Find <b>WebGPU</b> feature and enable it
-
-    3. Refresh The
-    Page'
+    The
+    one we recommend is Google Chrome.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
   m_sharedMaterial: {fileID: 4419277419123658369, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
@@ -583,6 +578,45 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 198929339}
   m_CullTransparentMesh: 1
+--- !u!114 &198929343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198929339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af0cb1adee09edf4e98bcbd69b150889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundImage: {fileID: 0}
+  usePlatformOverOS: 0
+  webGLMessage: <color=red>WARNING:</color> On the web player you cannot change the
+    resolution.
+  androidMessage: <color=red>WARNING:</color> This game requires internet connection.
+  iOSMessage: <color=red>WARNING:</color> Game progress is not saved between sessions.
+  desktopMessage: 
+  consoleMessage: <color=yellow>NOTE:</color> Controller required to play.
+  defaultMessage: 
+  iOS_OSMessage: '<size=32>Instructions for Enabling WebGPU in Safari:</size>
+
+
+    1.
+    Go to <b>Settings</b> >  <b>Safari</b> >  <b>Advanced</b> (Bottom of Page) >
+    <b>Feature Flags</b>
+
+    2. Find <b>WebGPU</b> feature and enable it
+
+    3.
+    Restart Safari'
+  android_OSMessage: '<size=32>You need to use a WebGPU Compatible Browser!</size>
+
+
+    The
+    one we recommend is Google Chrome.'
+  showInEditor: 1
+  editorMessage: <color=blue>DEVELOPMENT BUILD</color>
 --- !u!1 &759382688
 GameObject:
   m_ObjectHideFlags: 0
