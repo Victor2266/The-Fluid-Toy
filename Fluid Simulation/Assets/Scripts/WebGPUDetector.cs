@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 public class WebGPUDetector : MonoBehaviour
 {
     #if UNITY_WEBGL && !UNITY_EDITOR
-    [SerializeField] private string webGPUFallbackSceneName = "WebGPUInstructions";
-    [SerializeField] private bool debugMode = false;
+    private string webGPUFallbackSceneName = "WebGPUInstructions";
+    private bool debugMode = false;
     
     private void Start()
     {

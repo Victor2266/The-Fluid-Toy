@@ -592,8 +592,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroundImage: {fileID: 0}
   usePlatformOverOS: 0
-  webGLMessage: <color=red>WARNING:</color> On the web player you cannot change the
-    resolution.
+  webGLMessage: '<size=32>You need to use a WebGPU Compatible Browser!</size>
+
+
+    The
+    one we recommend is Google Chrome.'
   androidMessage: <color=red>WARNING:</color> This game requires internet connection.
   iOSMessage: <color=red>WARNING:</color> Game progress is not saved between sessions.
   desktopMessage: 
@@ -610,11 +613,6 @@ MonoBehaviour:
 
     3.
     Restart Safari'
-  android_OSMessage: '<size=32>You need to use a WebGPU Compatible Browser!</size>
-
-
-    The
-    one we recommend is Google Chrome.'
   showInEditor: 1
   editorMessage: 'If you want to test the main menu in the editor then disable the
 
