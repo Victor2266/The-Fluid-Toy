@@ -495,11 +495,19 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<size=32>You need to use a WebGPU Compatible Browser!</size>
+  m_text: '<size=32>Instructions for Enabling WebGPU in Safari (iOS):</size>
+
+    <size=24>If
+    you are on MacOS, use Google Chrome.
 
 
-    The
-    one we recommend is Google Chrome.'
+    1. Go to <b>Settings</b> >  <b>Safari</b>
+    >  <b>Advanced</b> (Bottom of Page) > <b>Feature Flags</b>
+
+    2. Find <b>WebGPU</b>
+    feature and enable it
+
+    3. Restart Safari'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
   m_sharedMaterial: {fileID: 4419277419123658369, guid: 27075be3a3fcce34f9fa92d4c604dfbb, type: 2}
@@ -602,17 +610,19 @@ MonoBehaviour:
   desktopMessage: 
   consoleMessage: <color=yellow>NOTE:</color> Controller required to play.
   defaultMessage: 
-  iOS_OSMessage: '<size=32>Instructions for Enabling WebGPU in Safari:</size>
+  iOS_OSMessage: '<size=32>Instructions for Enabling WebGPU in Safari (iOS):</size>
+
+    <size=24>If
+    you are on MacOS, use Google Chrome.
 
 
-    1.
-    Go to <b>Settings</b> >  <b>Safari</b> >  <b>Advanced</b> (Bottom of Page) >
-    <b>Feature Flags</b>
+    1. Go to <b>Settings</b> >  <b>Safari</b>
+    >  <b>Advanced</b> (Bottom of Page) > <b>Feature Flags</b>
 
-    2. Find <b>WebGPU</b> feature and enable it
+    2. Find <b>WebGPU</b>
+    feature and enable it
 
-    3.
-    Restart Safari'
+    3. Restart Safari'
   showInEditor: 1
   editorMessage: 'If you want to test the main menu in the editor then disable the
 

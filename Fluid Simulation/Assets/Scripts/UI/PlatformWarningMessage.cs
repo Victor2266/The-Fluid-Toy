@@ -105,7 +105,7 @@ public class PlatformWarningMessage : MonoBehaviour
 
     void SetOSAppropriateMessage()
     {
-        if (SystemInfo.operatingSystem.ToLower().Contains("iphone os") || SystemInfo.operatingSystem.ToLower().Contains("ipad os") || SystemInfo.operatingSystem.ToLower().Contains("Mac OS"))
+        if (SystemInfo.operatingSystem.ToLower().Contains("iphone os") || SystemInfo.operatingSystem.ToLower().Contains("ipad os") || SystemInfo.operatingSystem.ToLower().Contains("macos"))
         {
             textComponent.text = iOS_OSMessage;
             return;
