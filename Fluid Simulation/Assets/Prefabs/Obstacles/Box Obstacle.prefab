@@ -97,7 +97,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
   m_Mass: 32
-  m_LinearDamping: 0
+  m_LinearDamping: 0.1
   m_AngularDamping: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -123,13 +123,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81de49849297ab4e98b475517b210c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothingSpeed: 0.2
   enableSmoothing: 1
+  smoothingSpeed: 0.2
   resizable: 1
   uniformScaling: 0
-  rotatable: 1
   scaleSpeed: 0.1
+  rotatable: 1
   rotationSpeed: 10
+  maxDragSpeed: Infinity
   minScale: 0.4
   maxScale: 18
   targetScale: {x: 0, y: 0, z: 0}

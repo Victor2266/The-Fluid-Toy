@@ -64,7 +64,7 @@ public class Draggable : MonoBehaviour
         if (rb2d != null) {
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             rb2d.freezeRotation = false;
-            rb2d.linearVelocity = currentVelocity;
+            rb2d.AddForce(currentVelocity, ForceMode2D.Impulse);
         }
         
     }
