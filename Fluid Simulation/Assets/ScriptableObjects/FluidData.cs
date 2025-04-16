@@ -186,7 +186,7 @@ Any other value → Fixed entropy (use entropyTarget directly). Fluid temperatur
             fluidType = fluidType,
             gravity = gravity,
             collisionDamping = collisionDamping,
-            smoothingRadius = smoothingRadius,
+            smoothingRadius = smoothingRadius, // To do the scaling you'd multiply this by Mathf.sqrt(1/scaleFactor)
             targetDensity = targetDensity,
             pressureMultiplier = pressureMultiplier,
             nearPressureMultiplier = nearPressureMultiplier,
