@@ -5,7 +5,7 @@ public class OrthographicCameraAdjuster : MonoBehaviour
 {
     // The reference dimensions that your scene is designed for    
     // Based on a target orthographic size of 9.87 at 16:9:
-    //Reference height = 2 × orthographic size = 2 × 9.87 = 19.74 units
+    // Reference height = 2 × orthographic size = 2 × 9.87 = 19.74 units
     // Reference width = height × aspect ratio = 19.74 × (16/9) = 35.09 units
 
     public float referenceWidth = 35.09f;
