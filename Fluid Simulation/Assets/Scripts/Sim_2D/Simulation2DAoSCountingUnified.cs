@@ -35,6 +35,20 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     public uint maxSourceSpawnRate = 20; // How many particles that can spawn via source per frame
     public uint maxMouseSpawnRate = 40; // The maximum number of particles that can spawn via mouse per frame, the real number is controlled by the interaction strength percent
 
+    /* Couldn't get this to look right
+    [Header("Platform Scaling Settings")]
+    // This is for scaling the same simulation to different platforms. 
+    // The max maxParticles for the scene is multiplied by this value. 
+    // If it lowers the particle count, then it will increase the size of the particles accordingly. 
+    // (0.5 means half the particle count but double in size) 
+    // (-1 is the default value, which will just use platform specific ratios, settimg this to anything else will override the platform defaults
+    // (this is a private variable controlled through the settings)
+    [SerializeField] private float ParticleCountScalingRatio = 1f;
+    public bool Disable_ParticleCountScalingRatio = false;
+    public float Apple_ParticleCountScalingRatio = 0.66f;
+    public float Android_ParticleCountScalingRatio = 0.85f;
+    */
+
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
 
