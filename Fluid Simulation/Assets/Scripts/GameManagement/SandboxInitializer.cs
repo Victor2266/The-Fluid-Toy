@@ -51,6 +51,6 @@ public class SandboxInitializer : MonoBehaviour
         sim.setMaxParticles(simulationMaxParticles[presetIndex]);
 
         // Destroy the sandbox initializer on complete
-        //Destroy(gameObject);
+        Destroy(gameObject);
     }
 }
