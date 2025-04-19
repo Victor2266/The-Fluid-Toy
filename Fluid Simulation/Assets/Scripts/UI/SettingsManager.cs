@@ -9,7 +9,7 @@ using System;
 public class SettingsManager : MonoBehaviour
 {
     //[Header("Level Management")]
-    public static int NumberOfLevels { get; private set; } = 15; //This is where you edit the total number of levels
+    public static int NumberOfLevels { get; private set; } = 10; //This is where you edit the total number of levels
 
     [Header("Resolution Settings")]
     [SerializeField] private TMP_Dropdown resolutionDropdown;
