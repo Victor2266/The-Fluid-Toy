@@ -136,7 +136,20 @@ public class SettingsManager : MonoBehaviour
     {
         Debug.Log($"Resolution changed to {resolutions[index].width}x{resolutions[index].height} @ {resolutions[index].refreshRateRatio.value}Hz");
         Resolution resolution = resolutions[index];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        
+        #if UNITY_ANDROID
+            if (Screen.orientation == ScreenOrientation.LandscapeLeft || Screen.orientation == ScreenOrientation.LandscapeRight)
+            {
+                Screen.SetResolution(resolution.height, resolution.width, Screen.fullScreen);
+            }
+            else
+            {
+                Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+            }
+        #else
+            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        #endif
+
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
         if (PlayerPrefs.GetInt("TargetFPS", (int) resolution.refreshRateRatio.value) != -1){
             SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);

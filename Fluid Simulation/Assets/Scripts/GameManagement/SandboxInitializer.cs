@@ -18,6 +18,9 @@ public class SandboxInitializer : MonoBehaviour
 
     public GameObject[] obstacleBoundarys; // Top, Bottom, Left, Right
 
+    private int lastWidth;
+    private int lastHeight;
+
     void Awake()
     {
         // Set up title text
@@ -25,6 +28,17 @@ public class SandboxInitializer : MonoBehaviour
         string subtitle = sandboxSubtitles[presetIndex];
         sandboxTitleText.text = $"<b>Sandbox Mode</b>\n{subtitle} Particles\n\n";
 
+        // Find the fluid simulation in the scene
+        GameObject simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
+        sim = simulationGameobject.GetComponent<IFluidSimulation>();
+
+        UpdateBoundsSizes(presetIndex);
+
+        // Destroy the sandbox initializer on complete
+        // Destroy(gameObject);
+    }
+
+    private void UpdateBoundsSizes(int presetIndex){
         // Set up camera
         camera.orthographicSize = cameraSizes[presetIndex];
         float boundsWidth = camera.orthographicSize * 2f * Screen.width / Screen.height;
@@ -42,15 +56,20 @@ public class SandboxInitializer : MonoBehaviour
         obstacleBoundarys[2].GetComponent<BoxCollider2D>().size = new Vector2(15f, (boundsWidth + 15f)/2f * 2f);
         obstacleBoundarys[3].GetComponent<BoxCollider2D>().size = new Vector2(15f, (boundsWidth + 15f)/2f * 2f);
 
-        // Find the fluid simulation in the scene
-        GameObject simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
-        sim = simulationGameobject.GetComponent<IFluidSimulation>();
-
         // Update simulation settings
         sim.setBounds(new Vector2(boundsWidth, boundsHeight));   
         sim.setMaxParticles(simulationMaxParticles[presetIndex]);
+    }
 
-        // Destroy the sandbox initializer on complete
-        Destroy(gameObject);
+    void Update()
+    {
+        // Check if resolution has changed
+        if (Screen.width != lastWidth || Screen.height != lastHeight)
+        {
+            UpdateBoundsSizes(PlayerPrefs.GetInt("SandboxPreset", 2));
+            // Update the stored resolution
+            lastWidth = Screen.width;
+            lastHeight = Screen.height;
+        }
     }
 }
