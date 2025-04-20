@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Level1Manager : LevelManager
@@ -50,6 +51,7 @@ public class Level1Manager : LevelManager
             if (!isHolding) // This is used to show the holding timer at the top once fluid is detected
             {
                 isHolding = true;
+                if (HoldTimerObject != null) HoldTimerObject.SetActive(true);
                 holdTimer = 0f;
             }
 
@@ -77,5 +79,7 @@ public class Level1Manager : LevelManager
         {
             ResetHoldTimer();
         }
+
+        UpdateHoldTimerText();
     }
 }

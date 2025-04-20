@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -81,7 +82,11 @@ public class BottomBarWrapper : MonoBehaviour
     {
         foreach (Button button in FluidTypebuttons)
         {
-            if (TooltipManager.Instance.GetLastSelectedFluid() == null){ // At the start of level the last selected fluid is null
+            if (TooltipManager.Instance == null){ // At the start of level the last selected fluid is null
+                return;
+            }
+
+            if (TooltipManager.Instance.GetLastSelectedFluid() == null){
                 button.interactable = true;
                 return;
             }

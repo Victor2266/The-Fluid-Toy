@@ -9,7 +9,7 @@ using System;
 public class SettingsManager : MonoBehaviour
 {
     //[Header("Level Management")]
-    public static int NumberOfLevels { get; private set; } = 15; //This is where you edit the total number of levels
+    public static int NumberOfLevels { get; private set; } = 10; //This is where you edit the total number of levels
 
     [Header("Resolution Settings")]
     [SerializeField] private TMP_Dropdown resolutionDropdown;
@@ -128,7 +128,12 @@ public class SettingsManager : MonoBehaviour
         resolutionDropdown.RefreshShownValue();
 
         // Load and apply target FPS
-        int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, (int)resolutions[savedResolutionIndex].refreshRateRatio.value); // The Default FPS is the refresh rate of the selected resolution
+        #if UNITY_ANDROID
+            // Android devices do not support uncapped FPS, so we set it to the screen's refresh rate
+             int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, (int)resolutions[savedResolutionIndex].refreshRateRatio.value); // The Default FPS is the refresh rate of the selected resolution
+        #else
+            int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, -1); // The Default FPS is the refresh rate of the selected resolution
+        #endif
         uncappedFpsToggle.isOn = savedTargetFPS == -1;
     }
 
@@ -136,11 +141,30 @@ public class SettingsManager : MonoBehaviour
     {
         Debug.Log($"Resolution changed to {resolutions[index].width}x{resolutions[index].height} @ {resolutions[index].refreshRateRatio.value}Hz");
         Resolution resolution = resolutions[index];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        
+        #if UNITY_ANDROID
+            if (Screen.orientation == ScreenOrientation.LandscapeLeft || Screen.orientation == ScreenOrientation.LandscapeRight)
+            {
+                Screen.SetResolution(resolution.height, resolution.width, Screen.fullScreen);
+            }
+            else
+            {
+                Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+            }
+
+            // Android devices do not support uncapped FPS, so we set it to the screen's refresh rate
+            if (PlayerPrefs.GetInt(TARGET_FPS_KEY, (int) resolution.refreshRateRatio.value) != -1){
+                SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
+            }
+        #else
+            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+
+            if (PlayerPrefs.GetInt(TARGET_FPS_KEY, -1) != -1){
+                SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
+            }
+        #endif
+
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
-        if (PlayerPrefs.GetInt("TargetFPS", (int) resolution.refreshRateRatio.value) != -1){
-            SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
-        }
         PlayerPrefs.Save();
     }
 
@@ -153,6 +177,12 @@ public class SettingsManager : MonoBehaviour
 
     private void OnFPSUncappedChanged(bool isUncapped)
     {
+        #if UNITY_WEBGL
+        // For Webassembly 2023 feature set,
+        // capping the FPS causes the fps counter to increase but the actual game stutters like crazy
+        // Likely due to excessive draw calls from requestAnimationFrame()
+            isUncapped = true; 
+        #endif
         if (isUncapped)
         {
             SetAndApplyTargetFPS(-1);
@@ -173,18 +203,6 @@ public class SettingsManager : MonoBehaviour
         Screen.fullScreen = isFullscreen;
         PlayerPrefs.SetInt(FULLSCREEN_KEY, isFullscreen ? 1 : 0);
         PlayerPrefs.Save();
-    }
-
-    private void onUncapFPSChanged(bool isFpsUncapped){
-        if(isFpsUncapped){
-            Application.targetFrameRate = -1;
-            PlayerPrefs.SetInt($"FPS_UNCAP", 1);
-        }else{
-            Application.targetFrameRate = (int) Screen.currentResolution.refreshRateRatio.value;
-            PlayerPrefs.SetInt($"FPS_UNCAP", 0);
-        }
-        PlayerPrefs.Save();
-        
     }
 
     private void OnBGMVolumeChanged(float volume)

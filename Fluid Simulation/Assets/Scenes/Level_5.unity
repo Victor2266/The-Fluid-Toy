@@ -1314,147 +1314,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 224968509}
   m_CullTransparentMesh: 1
---- !u!1 &271053315
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 271053318}
-  - component: {fileID: 271053319}
-  - component: {fileID: 271053320}
-  - component: {fileID: 271053323}
-  m_Layer: 0
-  m_Name: Simulation
-  m_TagString: Simulation
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &271053318
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 271053315}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &271053319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 271053315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf901970f9cf132479a879d7a4acde3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeScale: 1
-  fixedTimeStep: 0
-  enableHotkeys: 1
-  iterationsPerFrame: 3
-  boundsSize: {x: 34.2, y: 18.6}
-  obstacleSize: {x: 0, y: 0}
-  obstacleCentre: {x: 0, y: 0}
-  gravity: -12
-  collisionDamping: 0.95
-  smoothingRadius: 0.35
-  targetDensity: 55
-  pressureMultiplier: 500
-  nearPressureMultiplier: 18
-  viscosityStrength: 0.06
-  interactionRadius: 3
-  minRadius: 0.25
-  maxRadius: 24
-  interactionStrength: 360
-  minStrength: 36
-  maxStrength: 720
-  brushState: 1
-  currentFluid: {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  compute: {fileID: 7200000, guid: 1c77ce8de78fddb419ed2d15cae41af0, type: 3}
-  spawner: {fileID: 271053320}
-  display: {fileID: 271053323}
-  boxColliders: []
-  circleColliders: []
---- !u!114 &271053320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 271053315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 3.35, y: 0.51}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  temperature: 0
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
---- !u!114 &271053323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 271053315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b090cee05a6cd0e4291a0e02381231c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 441b7193936682446b30d2140d15792a, type: 3}
-  scale: 0.2
-  colourMap:
-    serializedVersion: 2
-    key0: {r: 0.13363299, g: 0.34235913, b: 0.7264151, a: 1}
-    key1: {r: 0, g: 0.7901604, b: 1, a: 1}
-    key2: {r: 0.48584908, g: 0.96951246, b: 1, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 4064
-    ctime1: 33191
-    ctime2: 46738
-    ctime3: 65535
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 2
-    m_ColorSpace: -1
-    m_NumColorKeys: 4
-    m_NumAlphaKeys: 2
-  gradientResolution: 64
-  velocityDisplayMax: 6.5
 --- !u!1 &301700130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1940,10 +1799,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 1
+  fixedTimeStep: 0
   maxParticles: 16000
   scanForObstaclesOnStart: 0
-  scanForParticleSpawnersOnStart: 1
+  scanForParticleSpawnersOnStart: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -1982,7 +1841,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dea485c2d908b634f8ef00186e198f11, type: 2}
   - {fileID: 11400000, guid: 014e648b7a75ed346a26c81f9e0b14d4, type: 2}
   compute: {fileID: 7200000, guid: 5153d1e4fc4b4204bae3cf5df6749c6d, type: 3}
-  spawners: []
+  spawners:
+  - {fileID: 1954583926}
+  - {fileID: 2090085896}
+  - {fileID: 1963629037}
+  - {fileID: 836128958}
+  - {fileID: 1281819540}
   boxColliders: []
   circleColliders: []
   sourceObjects:
@@ -2149,108 +2013,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &489172451
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 489172455}
-  - component: {fileID: 489172454}
-  - component: {fileID: 489172452}
-  m_Layer: 0
-  m_Name: SimulationAoSCounting w SinglePass Shader
-  m_TagString: Simulation
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &489172452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489172451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: bfa6cbae1ccaae443a7d284803c09d26, type: 3}
-  gradientResolution: 64
---- !u!114 &489172454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489172451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb390a7444a5bbd43a3bc3567cc5a726, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeScale: 1
-  fixedTimeStep: 0
-  maxParticles: 16000
-  scanForObstaclesOnStart: 1
-  scanForParticleSpawnersOnStart: 1
-  iterationsPerFrame: 3
-  globalEntropyRate: 1
-  roomTemperature: 25
-  boundsSize: {x: 34.2, y: 18.6}
-  obstacleSize: {x: 0, y: 0}
-  obstacleCentre: {x: 0, y: 0}
-  edgeType: 0
-  gravityMode: 0
-  maxSourceSpawnRate: 20
-  maxMouseSpawnRate: 20
-  selectedFluid: 0
-  brushState: 1
-  interactionRadius: 3
-  minRadius: 0.25
-  maxRadius: 24
-  interactionStrength: 360
-  minStrength: 36
-  maxStrength: 720
-  smoothingTime: 0.04
-  enableScrolling: 1
-  enableHotkeys: 1
-  manuallySelectFluidTypes: 1
-  updateFluidsEveryFrame: 0
-  fluidDataArray:
-  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
-  - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
-  - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
-  compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawners:
-  - {fileID: 0}
-  - {fileID: 0}
-  boxColliders: []
-  circleColliders: []
-  sourceObjects: []
-  drainObjects: []
-  thermalBoxes: []
---- !u!4 &489172455
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489172451}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &496582491
 GameObject:
   m_ObjectHideFlags: 0
@@ -8256,54 +8018,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 737302799}
   m_CullTransparentMesh: 1
---- !u!1 &738685443
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 738685445}
-  - component: {fileID: 738685444}
-  m_Layer: 0
-  m_Name: Benchmark
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &738685444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 738685443}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2766ddcf012b3194594f288c30336db9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  benchmarkDuration: 10
-  logDetailedStats: 1
-  visualizeInEditor: 1
-  startBenchmarkKey: 98
---- !u!4 &738685445
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 738685443}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &756066428
 GameObject:
   m_ObjectHideFlags: 0
@@ -10334,109 +10048,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &981710266
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 981710270}
-  - component: {fileID: 981710269}
-  - component: {fileID: 981710271}
-  m_Layer: 0
-  m_Name: SimulationAoSCounting with CPU
-  m_TagString: Simulation
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &981710269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981710266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1843c627eed05cd46b946938ea28065d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeScale: 1
-  fixedTimeStep: 1
-  maxParticles: 16000
-  scanForObstaclesOnStart: 1
-  scanForParticleSpawnersOnStart: 1
-  iterationsPerFrame: 3
-  globalEntropyRate: 1
-  roomTemperature: 22
-  boundsSize: {x: 34.2, y: 18.6}
-  obstacleSize: {x: 0, y: 0}
-  obstacleCentre: {x: 0, y: 0}
-  edgeType: 0
-  spawnRate: 20
-  selectedFluid: 0
-  brushState: 1
-  interactionRadius: 3
-  minRadius: 0.25
-  maxRadius: 24
-  interactionStrength: 360
-  minStrength: 36
-  maxStrength: 720
-  smoothingTime: 0.04
-  enableScrolling: 1
-  enableHotkeys: 1
-  manuallySelectFluidTypes: 1
-  fluidDataArray:
-  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
-  - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
-  - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
-  - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
-  compute: {fileID: 7200000, guid: a8dae9eb32a1ce146ad1ac2313a057c1, type: 3}
-  spawners:
-  - {fileID: 0}
-  - {fileID: 0}
-  boxColliders: []
-  circleColliders: []
-  sourceObjects: []
-  drainObjects: []
-  thermalBoxes: []
-  toggleCPUComputing: 0
-  runCPUGPUEveryFrame: 0
-  numCPUKeys: 5
---- !u!4 &981710270
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981710266}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &981710271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981710266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
-  gradientResolution: 64
 --- !u!1 &982552500
 GameObject:
   m_ObjectHideFlags: 0
@@ -10883,152 +10494,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1079069926}
   m_CullTransparentMesh: 1
---- !u!1 &1080519534
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1080519538}
-  - component: {fileID: 1080519537}
-  - component: {fileID: 1080519536}
-  - component: {fileID: 1080519535}
-  m_Layer: 0
-  m_Name: SimulationAoS
-  m_TagString: Simulation
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1080519535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080519534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b090cee05a6cd0e4291a0e02381231c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 2bbf926de3a6aa449a7803e9b686de14, type: 3}
-  scale: 0.2
-  colourMap:
-    serializedVersion: 2
-    key0: {r: 0.13363299, g: 0.34235913, b: 0.7264151, a: 1}
-    key1: {r: 0, g: 0.7901604, b: 1, a: 1}
-    key2: {r: 0.48584908, g: 0.96951246, b: 1, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 4064
-    ctime1: 33191
-    ctime2: 46738
-    ctime3: 65535
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 2
-    m_ColorSpace: -1
-    m_NumColorKeys: 4
-    m_NumAlphaKeys: 2
-  gradientResolution: 64
-  velocityDisplayMax: 6.5
---- !u!114 &1080519536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080519534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895837b52d5fc53409ded3589d4da696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  particleCount: 10000
-  initialVelocity: {x: 0, y: 0}
-  spawnCentre: {x: 3.35, y: 0.51}
-  spawnSize: {x: 7, y: 7}
-  jitterStr: 0.025
-  temperature: 0
-  showSpawnBoundsGizmos: 1
-  wireFrameColor: {r: 1, g: 1, b: 0, a: 0.5}
---- !u!114 &1080519537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080519534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e93bd3ee5cf24cb44934a2ddefef4901, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeScale: 1
-  fixedTimeStep: 0
-  enableHotkeys: 1
-  iterationsPerFrame: 3
-  boundsSize: {x: 34.2, y: 18.6}
-  obstacleSize: {x: 0, y: 0}
-  obstacleCentre: {x: 0, y: 0}
-  edgeType: 0
-  selectedFluid: 0
-  brushState: 1
-  interactionRadius: 3
-  minRadius: 0.25
-  maxRadius: 24
-  interactionStrength: 360
-  minStrength: 36
-  maxStrength: 720
-  spawnRate: 20
-  manuallySelectFluidTypes: 1
-  fluidDataArray:
-  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  compute: {fileID: 7200000, guid: c4e04fbd8b42e9e49be8bbd01966b4da, type: 3}
-  spawner: {fileID: 1080519536}
-  display: {fileID: 1080519535}
-  boxColliders: []
-  circleColliders: []
-  sourceObjects: []
-  sourceObjectsWIP: []
-  drainObjects: []
-  isCPUComputingEnabled: 1
-  toggleCPUComputing: 1
-  ThreadBatchSize: 1000
-  numCPUKeys: 5
---- !u!4 &1080519538
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080519534}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1083535262
 GameObject:
   m_ObjectHideFlags: 0
@@ -11217,6 +10682,9 @@ MonoBehaviour:
   densityThreshold: 0.5
   checkInterval: 0.5
   detectionRadius: 8.5
+  typeDiscrimination: 0
+  typeToDetect: 0
+  purityPercentThreshold: 0.75
   showDebugGizmos: 0
   showDebugLogs: 0
   showDensityValue: 0
@@ -12531,7 +11999,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1280, y: 720}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 1
+  m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -13065,120 +12533,6 @@ Transform:
   - {fileID: 1878462205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1430943820
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1430943824}
-  - component: {fileID: 1430943825}
-  - component: {fileID: 1430943826}
-  m_Layer: 0
-  m_Name: SimulationAoSCounting
-  m_TagString: Simulation
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1430943824
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1430943825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb390a7444a5bbd43a3bc3567cc5a726, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeScale: 1
-  fixedTimeStep: 0
-  maxParticles: 16000
-  scanForObstaclesOnStart: 1
-  scanForParticleSpawnersOnStart: 1
-  iterationsPerFrame: 3
-  globalEntropyRate: 1
-  roomTemperature: 22
-  boundsSize: {x: 34.9, y: 19.6}
-  obstacleSize: {x: 0, y: 0}
-  obstacleCentre: {x: 0, y: 0}
-  edgeType: 0
-  gravityMode: 0
-  maxSourceSpawnRate: 20
-  maxMouseSpawnRate: 40
-  selectedFluid: 0
-  brushState: 1
-  interactionRadius: 3
-  minRadius: 0.25
-  maxRadius: 24
-  interactionStrength: 360
-  minStrength: 16
-  maxStrength: 720
-  smoothingTime: 0.04
-  enableScrolling: 1
-  enableHotkeys: 1
-  manuallySelectFluidTypes: 1
-  updateFluidsEveryFrame: 0
-  fluidDataArray:
-  - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
-  - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
-  - {fileID: 11400000, guid: 4155bda3e8ce04741a5ac0b11a37e7e8, type: 2}
-  - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
-  - {fileID: 11400000, guid: f24359e82133950498e8c474b135750d, type: 2}
-  - {fileID: 11400000, guid: bb7d520fb6254e54f984d59408001bed, type: 2}
-  - {fileID: 11400000, guid: 1183732acd43a2d4b8664f9524fc7eec, type: 2}
-  - {fileID: 11400000, guid: 533c703a025120e49b9958b72efb1b24, type: 2}
-  - {fileID: 11400000, guid: a2265c7b3b1e4de41b8527f0eae8e8e4, type: 2}
-  - {fileID: 11400000, guid: d2c5d728bfbc762488dfec45a0cb4f1f, type: 2}
-  - {fileID: 11400000, guid: 43826162adaa5b9428c27e25092546a9, type: 2}
-  - {fileID: 11400000, guid: 7be9d18a448d11e49a0719bb3db60b94, type: 2}
-  - {fileID: 11400000, guid: b80a88647f973af4192ef836d0c4d993, type: 2}
-  - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba077, type: 2}
-  - {fileID: 11400000, guid: 5a7b9e3c063da7442bbf0a39f9cba088, type: 2}
-  - {fileID: 11400000, guid: 094ea74afe77c5a40b808eac7ee4a009, type: 2}
-  - {fileID: 11400000, guid: 7417d855012149445a9a40fa6702a95e, type: 2}
-  - {fileID: 11400000, guid: 3abaec57267de4b44bf70d704651ea47, type: 2}
-  compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawners: []
-  boxColliders: []
-  circleColliders: []
-  sourceObjects: []
-  drainObjects: []
-  thermalBoxes: []
---- !u!114 &1430943826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1430943820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
-  gradientResolution: 64
 --- !u!114 &1445332549 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6807568125591068179, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
@@ -16955,7 +16309,14 @@ PrefabInstance:
     - target: {fileID: 5114309396737260792, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: benchmarkObject
       value: 
-      objectReference: {fileID: 738685443}
+      objectReference: {fileID: 0}
+    - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_text
+      value: 'Use the weapons to destroy the planet!
+
+        <color=orange>Select
+        a weapon on the right'
+      objectReference: {fileID: 0}
     - target: {fileID: 5197445563104319141, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -291
@@ -17254,6 +16615,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 7723421981990690167, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8044162319986093918, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -17462,6 +16827,9 @@ PrefabInstance:
     - {fileID: 1653844333052701440, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
     - {fileID: 3603377962633428222, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
     - {fileID: 3909825200648359924, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+    - {fileID: 3923889873302679198, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+    - {fileID: 7559064831784343819, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+    - {fileID: 1968829054998872099, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
@@ -17474,13 +16842,7 @@ SceneRoots:
   - {fileID: 1419749884}
   - {fileID: 5944562705301707792}
   - {fileID: 963194228}
-  - {fileID: 271053318}
-  - {fileID: 1080519538}
-  - {fileID: 1430943824}
   - {fileID: 455925646}
-  - {fileID: 489172455}
-  - {fileID: 981710270}
-  - {fileID: 738685445}
   - {fileID: 2107056133}
   - {fileID: 88739506}
   - {fileID: 1497315419}

@@ -35,6 +35,20 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     public uint maxSourceSpawnRate = 20; // How many particles that can spawn via source per frame
     public uint maxMouseSpawnRate = 40; // The maximum number of particles that can spawn via mouse per frame, the real number is controlled by the interaction strength percent
 
+    /* Couldn't get this to look right
+    [Header("Platform Scaling Settings")]
+    // This is for scaling the same simulation to different platforms. 
+    // The max maxParticles for the scene is multiplied by this value. 
+    // If it lowers the particle count, then it will increase the size of the particles accordingly. 
+    // (0.5 means half the particle count but double in size) 
+    // (-1 is the default value, which will just use platform specific ratios, settimg this to anything else will override the platform defaults
+    // (this is a private variable controlled through the settings)
+    [SerializeField] private float ParticleCountScalingRatio = 1f;
+    public bool Disable_ParticleCountScalingRatio = false;
+    public float Apple_ParticleCountScalingRatio = 0.66f;
+    public float Android_ParticleCountScalingRatio = 0.85f;
+    */
+
     [Header("Selected Fluid Type")] // This is used for the draw brush
     [SerializeField] private int selectedFluid;
 
@@ -151,6 +165,8 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         currentStrengthPercent = (interactionStrength - minStrength) / (maxStrength - minStrength);
         numParticles = maxParticles;
 
+        //iterationsPerFrame = Mathf.RoundToInt(Mathf.Lerp(4f, 3f, (Application.targetFrameRate - 60f) / 60f)); // This makes lava and honey stable on 60Hz screens but makes it much slower
+
         if (scanForParticleSpawnersOnStart){
             spawners = FindObjectsByType<ParticleSpawner>(FindObjectsSortMode.None);
         }
@@ -226,8 +242,6 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
-        compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
@@ -475,7 +489,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     {
         compute.SetFloat("deltaTime", deltaTime);
         compute.SetVector("boundsSize", boundsSize);
-        compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
+        //compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
@@ -968,7 +982,6 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     }
     public ComputeBuffer GetParticleBuffer()
     {
-
         return particleBuffer;
     }
     public float[] GetParticleTemps()
@@ -1071,5 +1084,21 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     public void setMaxParticles(int newMaxParticles)
     {
         maxParticles = newMaxParticles;
+    }
+
+    public Transform[] GetCurrentColliders()
+    {
+        return boxColliders;
+    }
+
+    public void SetColliders(Transform[] colliders)
+    {
+        boxColliders = colliders;
+        boxColliderData = new OrientedBox[boxColliders.Length];
+
+        ComputeHelper.Release(boxCollidersBuffer);
+        boxCollidersBuffer = ComputeHelper.CreateStructuredBuffer<OrientedBox>(Mathf.Max(boxColliders.Length, 1));
+        UpdateBoxColliderData();
+        ComputeHelper.SetBuffer(compute, boxCollidersBuffer, "BoxColliders", updatePositionKernel);
     }
 }

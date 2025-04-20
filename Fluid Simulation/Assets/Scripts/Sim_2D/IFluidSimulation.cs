@@ -38,6 +38,8 @@ public interface IFluidSimulation
     void UpdateSourceObjects();
     void UpdateDrainObjects();
     void UpdateThermalBoxes();
+    Transform[] GetCurrentColliders();
+    void SetColliders(Transform[] colliders);
     SourceObjectInitializer GetFirstSourceObject();
     void SetFirstSourceObject(SourceObjectInitializer source);
 

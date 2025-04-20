@@ -8,6 +8,7 @@ using TMPro;
 public class PlatformWarningMessage : MonoBehaviour
 {
     public GameObject backgroundImage;
+    public bool usePlatformOverOS = true; // Uses the build platform check over the operating system check at runtime
 
     [Header("Platform-Specific Messages")]
     [TextArea(3, 5)]
@@ -33,6 +34,11 @@ public class PlatformWarningMessage : MonoBehaviour
     [TextArea(3, 5)]
     [Tooltip("Fallback message for other platforms")]
     public string defaultMessage = "";
+
+    [Header("OS-Specific Messages")]
+    [TextArea(3, 5)]
+    [Tooltip("Warning message for iPhone/iPad OS")]
+    public string iOS_OSMessage = "<color=red>WARNING:</color> Game progress is not saved between sessions.";
     
     [Header("Settings")]
     [Tooltip("If true, warning will be displayed in the Unity Editor")]
@@ -54,8 +60,14 @@ public class PlatformWarningMessage : MonoBehaviour
             return;
         }
         
-
-        SetAppropriateMessage();
+        if (usePlatformOverOS)
+        {
+            SetAppropriateMessage();
+        }
+        else
+        {
+            SetOSAppropriateMessage();
+        }
     }
     
     void SetAppropriateMessage()
@@ -90,4 +102,16 @@ public class PlatformWarningMessage : MonoBehaviour
             if (backgroundImage != null) backgroundImage.SetActive(false);
         }
     }
+
+    void SetOSAppropriateMessage()
+    {
+        if (SystemInfo.operatingSystem.ToLower().Contains("iphone os") || SystemInfo.operatingSystem.ToLower().Contains("ipad os") || SystemInfo.operatingSystem.ToLower().Contains("macos"))
+        {
+            textComponent.text = iOS_OSMessage;
+            return;
+        }
+        // Call the platform-based message setting if not using iOS
+        SetAppropriateMessage();
+    }
+
 }

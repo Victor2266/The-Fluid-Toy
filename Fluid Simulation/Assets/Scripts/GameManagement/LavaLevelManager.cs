@@ -64,6 +64,7 @@ public class LavaLevelManager : LevelManager
             if (!isHolding) // This is used to show the holding timer at the top once temperature threshold is met
             {
                 isHolding = true;
+                HoldTimerObject.SetActive(true);
                 holdTimer = 0f;
                 Debug.Log("Temperature threshold met, starting hold timer");
             }
@@ -93,6 +94,8 @@ public class LavaLevelManager : LevelManager
         {
             ResetHoldTimer();
         }
+
+        UpdateHoldTimerText();
     }
     
     // Override OnGUI to add temperature debug info

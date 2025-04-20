@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CupFactory : MonoBehaviour
@@ -6,12 +7,15 @@ public class CupFactory : MonoBehaviour
     [System.Serializable]
     public class CupInstance
     {
+        public DrinkLevelManager.CupSize size;
         public GameObject cupObject;
         public string uniqueID;
         public System.DateTime spawnTime;
+        public Transform[] cupColliders;
     }
 
     [Header("Cloning Settings")]
+    [SerializeField] private DrinkLevelManager.CupSize cupSize;
     [SerializeField] private GameObject cupPrefab; // Obj to clone
     [SerializeField] private Vector2 spawnPosition = Vector2.zero;
     [SerializeField] private int maxClones = 5;
@@ -56,24 +60,38 @@ public class CupFactory : MonoBehaviour
             return null;
         }
 
+        // Store prefab state; change prefab state to active
+        bool cupActive = cupPrefab.activeSelf;
+        cupPrefab.SetActive(true);
+
         // Instantiate the new cup
         GameObject newCup = Instantiate(cupPrefab, spawnPosition, Quaternion.identity);
+
+        // Restore original cup state (if inactive, disable again)
+        cupPrefab.SetActive(cupActive);
 
         // Generate and assign unique ID
         string id = GenerateUniqueID();
         newCup.name = $"CupClone_{id}";
 
+        // Find & tag colliders
+        var colliders = newCup.GetComponentsInChildren<Transform>()
+            .Where(t => t.CompareTag("BoxCollider") || t.CompareTag("SolidThermalBox"))
+            .ToArray();
+
         // Record the instance
         CupInstance instance = new CupInstance
         {
+            size = cupSize,
             cupObject = newCup,
             uniqueID = id,
-            spawnTime = System.DateTime.Now
+            spawnTime = System.DateTime.Now,
+            cupColliders = colliders
         };
         activeClones.Add(instance);
 
         // Update collider and sensor lists
-        sim.UpdateBoxColliders(); // This is costly but necessary
+        AddCollidersToSimulation(colliders);
         if (useSensorManager)
         {
             sensorManager.scanForSensors(); // Likewise
@@ -102,9 +120,12 @@ public class CupFactory : MonoBehaviour
         {
             if (activeClones[i].uniqueID == id)
             {
+                // Remove colliders from sim
+                RemoveCollidersFromSimulation(activeClones[i].cupColliders);
+
+                // Delete obj
                 Destroy(activeClones[i].cupObject);
                 activeClones.RemoveAt(i);
-                sim.UpdateBoxColliders(); // This is costly but necessary
 
                 if (showDebugLogs) Debug.Log($"Deleted cup with ID: {id}. Remaining clones: {activeClones.Count}");
                 return true;
@@ -198,5 +219,29 @@ public class CupFactory : MonoBehaviour
     public List<CupInstance> GetCups()
     {
         return activeClones;
+    }
+
+    private void AddCollidersToSimulation(Transform[] colliders)
+    {
+        // Get current colliders from simulation
+        var currentColliders = sim.GetCurrentColliders().ToList();
+
+        // Add new colliders
+        currentColliders.AddRange(colliders);
+
+        // Update simulation
+        sim.SetColliders(currentColliders.ToArray());
+    }
+
+    private void RemoveCollidersFromSimulation(Transform[] colliders)
+    {
+        // Get current colliders from simulation
+        var currentColliders = sim.GetCurrentColliders().ToList();
+
+        // Remove specific colliders
+        currentColliders.RemoveAll(c => colliders.Contains(c));
+
+        // Update simulation
+        sim.SetColliders(currentColliders.ToArray());
     }
 }

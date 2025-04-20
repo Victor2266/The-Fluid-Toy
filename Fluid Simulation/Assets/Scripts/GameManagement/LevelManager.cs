@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class LevelManager : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip winSound;
     public AudioSource backgroundMusic;
+    public GameObject HoldTimerObject;
+    public TextMeshProUGUI HoldTimerText;
     
     [Header("Audio Settings")]
     [SerializeField] protected float initialMusicVolume = 0.5f;
@@ -64,6 +67,7 @@ public class LevelManager : MonoBehaviour
     {
         holdTimer = 0f;
         isHolding = false;
+        if (HoldTimerObject != null) HoldTimerObject.SetActive(false);
         
         // Reset background music volume
         if (backgroundMusic != null)
@@ -75,6 +79,8 @@ public class LevelManager : MonoBehaviour
     protected void TriggerWin()
     {
         if (hasWon) return;
+
+        if (HoldTimerObject != null) HoldTimerObject.SetActive(false);
         
         hasWon = true;
 
@@ -145,6 +151,13 @@ public class LevelManager : MonoBehaviour
             float remainingTime = requiredHoldTime - holdTimer;
             string timerText = $"Wait for: {remainingTime:F1}s";
             GUI.Label(new Rect(Screen.width / 2 - 50, 20, 100, 20), timerText);
+        }
+    }
+
+    protected virtual void UpdateHoldTimerText(){
+        if(isHolding && HoldTimerText != null)
+        {
+            HoldTimerText.text = $"<color=green>Wait for:</color> {requiredHoldTime - holdTimer:F1}s";
         }
     }
 }

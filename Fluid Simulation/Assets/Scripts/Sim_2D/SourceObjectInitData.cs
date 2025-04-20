@@ -22,7 +22,7 @@ public class SourceObjectInitData : MonoBehaviour
         }
     }
 
-    public int fluidType{
+    public FluidType fluidType{
         get{
             return sourceInitData.fluidType;
         }

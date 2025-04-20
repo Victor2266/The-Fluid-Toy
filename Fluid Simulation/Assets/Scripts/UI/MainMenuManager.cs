@@ -182,6 +182,8 @@ public class MainMenuManager : MonoBehaviour
         PlayButtonSound();
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
+        #elif UNITY_WEBGL
+            Application.OpenURL("javascript:window.close();");
         #else
             Application.Quit();
         #endif
