@@ -242,8 +242,6 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
         compute.SetInt("numFluidTypes", fluidDataArray.Length);
         compute.SetFloat("maxSmoothingRadius", maxSmoothingRadius);
-        compute.SetInt("maxSourceSpawnRate", (int)(maxSourceSpawnRate * Time.deltaTime * 120f));
-        compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
 
@@ -491,7 +489,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     {
         compute.SetFloat("deltaTime", deltaTime);
         compute.SetVector("boundsSize", boundsSize);
-        compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
+        //compute.SetBool("evenlyDistributedSpawns", evenlyDistributeParticleSpawns);
         compute.SetInt("numBoxColliders", boxColliders.Length);
         compute.SetInt("numCircleColliders", circleColliders.Length);
         compute.SetInt("numSourceObjs", sourceObjects.Length);
