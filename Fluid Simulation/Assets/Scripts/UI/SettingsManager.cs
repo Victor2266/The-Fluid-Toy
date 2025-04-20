@@ -128,7 +128,7 @@ public class SettingsManager : MonoBehaviour
         resolutionDropdown.RefreshShownValue();
 
         // Load and apply target FPS
-        int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, (int)resolutions[savedResolutionIndex].refreshRateRatio.value); // The Default FPS is the refresh rate of the selected resolution
+        int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, -1); // The Default FPS is the refresh rate of the selected resolution
         uncappedFpsToggle.isOn = savedTargetFPS == -1;
     }
 
@@ -151,7 +151,7 @@ public class SettingsManager : MonoBehaviour
         #endif
 
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
-        if (PlayerPrefs.GetInt("TargetFPS", (int) resolution.refreshRateRatio.value) != -1){
+        if (PlayerPrefs.GetInt(TARGET_FPS_KEY, -1) != -1){
             SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
         }
         PlayerPrefs.Save();

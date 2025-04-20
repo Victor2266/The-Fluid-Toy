@@ -7,7 +7,7 @@ public class SandboxInitializer : MonoBehaviour
     private string[] sandboxSubtitles = {"4k", "8k", "16k", "32k", "64k"};
     public TMP_Text sandboxTitleText;
     private float[] cameraSizes = { 5.03f, 7.05f, 9.87f, 13.82f, 19.35f};
-    public new Camera camera;
+    public Camera Camera;
 
     // private Vector2[] simulationBounds = {new Vector2(17.81f, 10f), new Vector2(24.93f, 14f), new Vector2(34.9f, 19.6f), new Vector2(48.86f, 27.44f), new Vector2(68.40f, 38.42f)};
     private int[] simulationMaxParticles = {4000, 8000, 16000, 32000, 64000};
@@ -40,9 +40,9 @@ public class SandboxInitializer : MonoBehaviour
 
     private void UpdateBoundsSizes(int presetIndex){
         // Set up camera
-        camera.orthographicSize = cameraSizes[presetIndex];
-        float boundsWidth = camera.orthographicSize * 2f * Screen.width / Screen.height;
-        float boundsHeight = camera.orthographicSize * 2f;
+        Camera.orthographicSize = cameraSizes[presetIndex];
+        float boundsWidth = Camera.orthographicSize * 2f * Screen.width / Screen.height;
+        float boundsHeight = Camera.orthographicSize * 2f;
 
         // Set up Obstacle Boundary colliders positions
         obstacleBoundarys[0].transform.localPosition = new Vector3(0, (boundsHeight + 15f)/2f, 0);
