@@ -165,6 +165,8 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         currentStrengthPercent = (interactionStrength - minStrength) / (maxStrength - minStrength);
         numParticles = maxParticles;
 
+        //iterationsPerFrame = Mathf.RoundToInt(Mathf.Lerp(4f, 3f, (Application.targetFrameRate - 60f) / 60f)); // This makes lava and honey stable on 60Hz screens but makes it much slower
+
         if (scanForParticleSpawnersOnStart){
             spawners = FindObjectsByType<ParticleSpawner>(FindObjectsSortMode.None);
         }

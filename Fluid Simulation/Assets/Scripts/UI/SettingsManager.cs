@@ -128,7 +128,12 @@ public class SettingsManager : MonoBehaviour
         resolutionDropdown.RefreshShownValue();
 
         // Load and apply target FPS
-        int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, -1); // The Default FPS is the refresh rate of the selected resolution
+        #if UNITY_ANDROID
+            // Android devices do not support uncapped FPS, so we set it to the screen's refresh rate
+             int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, (int)resolutions[savedResolutionIndex].refreshRateRatio.value); // The Default FPS is the refresh rate of the selected resolution
+        #else
+            int savedTargetFPS = PlayerPrefs.GetInt(TARGET_FPS_KEY, -1); // The Default FPS is the refresh rate of the selected resolution
+        #endif
         uncappedFpsToggle.isOn = savedTargetFPS == -1;
     }
 
@@ -146,14 +151,20 @@ public class SettingsManager : MonoBehaviour
             {
                 Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
             }
+
+            // Android devices do not support uncapped FPS, so we set it to the screen's refresh rate
+            if (PlayerPrefs.GetInt(TARGET_FPS_KEY, (int) resolution.refreshRateRatio.value) != -1){
+                SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
+            }
         #else
             Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+
+            if (PlayerPrefs.GetInt(TARGET_FPS_KEY, -1) != -1){
+                SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
+            }
         #endif
 
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
-        if (PlayerPrefs.GetInt(TARGET_FPS_KEY, -1) != -1){
-            SetAndApplyTargetFPS((int) resolution.refreshRateRatio.value);
-        }
         PlayerPrefs.Save();
     }
 
