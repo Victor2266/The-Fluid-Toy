@@ -984,7 +984,6 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     }
     public ComputeBuffer GetParticleBuffer()
     {
-
         return particleBuffer;
     }
     public float[] GetParticleTemps()
