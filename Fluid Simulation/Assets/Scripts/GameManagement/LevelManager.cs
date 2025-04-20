@@ -153,4 +153,11 @@ public class LevelManager : MonoBehaviour
             GUI.Label(new Rect(Screen.width / 2 - 50, 20, 100, 20), timerText);
         }
     }
+
+    protected virtual void UpdateHoldTimerText(){
+        if(isHolding && HoldTimerText != null)
+        {
+            HoldTimerText.text = $"<color=green>Wait for:</color> {requiredHoldTime - holdTimer:F1}s";
+        }
+    }
 }

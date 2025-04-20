@@ -80,10 +80,6 @@ public class Level1Manager : LevelManager
             ResetHoldTimer();
         }
 
-        if(isHolding && HoldTimerText != null)
-        {
-            HoldTimerText.text = $"<color=green>Wait for:</color> {requiredHoldTime - holdTimer:F1}s";
-            
-        }
+        UpdateHoldTimerText();
     }
 }
