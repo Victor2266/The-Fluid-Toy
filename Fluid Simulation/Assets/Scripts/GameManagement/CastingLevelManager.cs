@@ -17,6 +17,8 @@ public class CastingLevelManager : LevelManager
     public float steamSoundVolume = 0.5F;
     public float tempSoundThreshold = 40;
 
+    public GameObject swordHaloEffect;
+
     [Header("Public Variables")]
     public bool fall = false;
     public float winDelay = 3F;
@@ -78,6 +80,7 @@ public class CastingLevelManager : LevelManager
         if(fall && swordDetector.metThreshold && !finishedCooling)
         {
             evaluateScore();
+            DOTween.Sequence().PrependInterval(3).OnComplete(() => swordHaloEffect.SetActive(true)); // Show the halo effect after 3s
             finishedCooling = true;
         }
     }
