@@ -16,7 +16,7 @@ public class CastingLevelManager : LevelManager
     public AudioSource steamSound;
     public float steamSoundVolume = 0.5F;
     public float tempSoundThreshold = 40;
-
+    public OrthographicCameraAdjuster cameraAdjuster;
     public GameObject swordHaloEffect;
 
     [Header("Public Variables")]
@@ -53,16 +53,6 @@ public class CastingLevelManager : LevelManager
             return;
         }
 
-        if(castSwitch.isFlipped && !hasFailed && !fall)
-        {
-            if(crucibleFailSensor != null && crucibleFailSensor.currentDensity > 0)
-            {
-                //TriggerLose();
-                Debug.Log("Trigger Lose");
-                hasFailed = true;
-            }
-            
-        }
         if(castLeft.isOpened && !fall)
         {
             // evaluateScore();
@@ -79,9 +69,16 @@ public class CastingLevelManager : LevelManager
         }
         if(fall && swordDetector.metThreshold && !finishedCooling)
         {
-            evaluateScore();
-            DOTween.Sequence().PrependInterval(3).OnComplete(() => swordHaloEffect.SetActive(true)); // Show the halo effect after 3s
             finishedCooling = true;
+
+            DOTween.Sequence().PrependInterval(3).OnComplete(() => {
+                swordHaloEffect.SetActive(true);
+                cameraAdjuster.enabled = false;
+                Sequence cameraSequence = DOTween.Sequence();
+                cameraSequence.Append(Camera.main.transform.DORotate(new Vector3(0, 0, 180+360), 2f, RotateMode.WorldAxisAdd).SetEase(Ease.InOutQuad));
+                cameraSequence.Join(Camera.main.DOOrthoSize(6, 2f).SetEase(Ease.InOutBack));
+                evaluateScore();
+                }); // Show the halo effect after 3s
         }
     }
 

@@ -142,8 +142,8 @@ public class CastLevelSwitch : MonoBehaviour
     void OnLeverRotationComplete()
     {
         // Optional: Additional logic when rotation is complete
-        
         Debug.Log($"Lever flipped: {isFlipped}");
+        DOTween.Sequence().Append(Camera.main.transform.DOShakePosition(0.5f, 0.5f));
         flippedAnimComplete = true;
         
     }
@@ -175,6 +175,9 @@ public class CastLevelSwitch : MonoBehaviour
     {
         // Ensure any active tweens are killed when object is destroyed
         currentRotationTween?.Kill();
+        // Kill all animations on the main camera
+        DOTween.Kill(Camera.main);
+
     }
 
     // Optional method for external scripts to check lever state

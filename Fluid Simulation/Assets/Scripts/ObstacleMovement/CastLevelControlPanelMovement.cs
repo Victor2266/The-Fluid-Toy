@@ -39,6 +39,7 @@ public class CastLevelControlPanelMovement : MonoBehaviour
             if(moved && controlSwitch != null){
                 if(controlSwitch.flippedAnimComplete)
                 {
+                    controlSwitch.flippedAnimComplete = false;
                     currentTween?.Kill();
                     Vector3 openPosition = transform.position;
                     openPosition.x -= moveDistance;

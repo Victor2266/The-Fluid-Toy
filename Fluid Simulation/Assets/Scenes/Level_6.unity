@@ -1076,8 +1076,8 @@ MonoBehaviour:
   showDebugTimer: 1
   levelCompleteAnim: {fileID: 105816477}
   timer: 0
-  threeStarTime: 32.5
-  twoStarTime: 33
+  threeStarTime: 35
+  twoStarTime: 46.9
   castSwitch: {fileID: 24892573}
   crucibleFailSensor: {fileID: 495381971}
   castLeft: {fileID: 1688704070}
@@ -1091,6 +1091,7 @@ MonoBehaviour:
   steamSound: {fileID: 105816483}
   steamSoundVolume: 0.5
   tempSoundThreshold: 100
+  cameraAdjuster: {fileID: 963194230}
   swordHaloEffect: {fileID: 1806478704}
   fall: 0
   winDelay: 3
@@ -2476,6 +2477,7 @@ Transform:
   - {fileID: 1209153566}
   - {fileID: 574043824}
   - {fileID: 1298412706}
+  - {fileID: 1483323239}
   - {fileID: 1905294819}
   - {fileID: 1806478706}
   m_Father: {fileID: 185208643}
@@ -3362,8 +3364,8 @@ Transform:
   m_GameObject: {fileID: 483481929}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.15670013, y: -24.2646, z: 1}
-  m_LocalScale: {x: 3.3028107, y: 2.0000174, z: 1}
+  m_LocalPosition: {x: -0.15670013, y: -28.9, z: 1}
+  m_LocalScale: {x: 3.3028107, y: 2.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -5376,7 +5378,7 @@ Transform:
   m_GameObject: {fileID: 828282113}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0019, y: 0.007, z: 0}
+  m_LocalPosition: {x: 0.0019, y: 0.007, z: -1}
   m_LocalScale: {x: 0.24663888, y: 0.36377802, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11445,7 +11447,7 @@ Transform:
   m_GameObject: {fileID: 1125673391}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.81, y: -0.26, z: 0}
+  m_LocalPosition: {x: -1.5, y: -0.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12551,7 +12553,7 @@ Transform:
   m_GameObject: {fileID: 1303727250}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.81, y: -0.26, z: 0}
+  m_LocalPosition: {x: 1.5, y: -0.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13407,11 +13409,11 @@ Transform:
   m_GameObject: {fileID: 1483323238}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.13, z: 0}
+  m_LocalPosition: {x: 0, y: -0.12999916, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1905294819}
+  m_Father: {fileID: 325235667}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1483323240
 MonoBehaviour:
@@ -13924,13 +13926,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: 'Move the green water gates and red levers
+      value: 'Line up the <color=lightblue>sword mold</color> with the <color=yellow>crucible,</color>
+        then
 
-        to fill the left
-        exhaust pipe with fumes.
-
-
-        Hint: Even heating is the key!'
+        Pour in the <color=orange>molten iron!</color> '
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontAsset
@@ -17265,11 +17264,10 @@ Transform:
   m_GameObject: {fileID: 1905294818}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 13.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1483323239}
   - {fileID: 870196314}
   m_Father: {fileID: 325235667}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
