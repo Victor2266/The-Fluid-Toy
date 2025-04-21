@@ -25,4 +25,9 @@ public class BoundaryRestriction : MonoBehaviour
         // Update the position of the game object
         transform.position = position;
     }
+
+    public void setStartingPosition(Vector3 pos)
+    {
+        startingPosition = pos;
+    }
 }

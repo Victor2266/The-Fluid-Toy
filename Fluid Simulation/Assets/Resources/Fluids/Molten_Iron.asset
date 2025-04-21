@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
+  m_Name: Molten_Iron
+  m_EditorClassIdentifier: 
+  fluidType: 27
+  gravity: -12
+  collisionDamping: 0.2
+  smoothingRadius: 0.35
+  targetDensity: 200
+  pressureMultiplier: 1000
+  nearPressureMultiplier: 50
+  viscosityStrength: 0.06
+  startTemperature: 1200
+  thermalDiffusivity: 0.572
+  boilState: 27
+  boilTemp: 5000
+  freezeState: 26
+  freezeTemp: 700
+  friction: 0
+  entropyTarget: 11111
+  visualParams:
+    style: 1
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 0.4245283, g: 0.17227234, b: 0, a: 1}
+      key1: {r: 0.77254903, g: 0.25991434, b: 0.0039215903, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 7903
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 2
+      m_ColorSpace: -1
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    visualScale: 0.32
+    baseOpacity: 1
+    noiseScale: 0
+    timeScale: 1
+    glowIntensity: 32
+    glowFalloff: 32
+    minPropertyValue: 800
+    maxPropertyValue: 1200
+    densityScaleFactor: 0

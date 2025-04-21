@@ -32,6 +32,8 @@ public enum FluidType {
     Neutron,
     Plutonium,
     Sediment,
+    Hot_Iron,
+    Molten_Iron,
     Ion_Blast,
     Death_Ray,
     Whiskey,
