@@ -70,8 +70,9 @@ public class CastingLevelManager : LevelManager
         if(fall && swordDetector.metThreshold && !finishedCooling)
         {
             finishedCooling = true;
+            Sequence sequence = DOTween.Sequence();
 
-            DOTween.Sequence().PrependInterval(3).OnComplete(() => {
+            sequence.PrependInterval(3).OnComplete(() => {
                 swordHaloEffect.SetActive(true);
                 cameraAdjuster.enabled = false;
                 Sequence cameraSequence = DOTween.Sequence();
