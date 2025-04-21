@@ -1853,15 +1853,15 @@ MonoBehaviour:
   - transform: {fileID: 184678794}
     velo: {x: 48, y: 24}
     spawnRate: 0
-    fluidType: 26
+    fluidType: 28
   - transform: {fileID: 1457186310}
     velo: {x: -48, y: 24}
     spawnRate: 0
-    fluidType: 26
+    fluidType: 28
   - transform: {fileID: 542835044}
     velo: {x: 0, y: 64}
     spawnRate: 0
-    fluidType: 27
+    fluidType: 29
   - transform: {fileID: 476382477}
     velo: {x: 0, y: 0}
     spawnRate: 0
@@ -8274,6 +8274,8 @@ MonoBehaviour:
   audioSource: {fileID: 813745487}
   winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
   backgroundMusic: {fileID: 1497315418}
+  HoldTimerObject: {fileID: 0}
+  HoldTimerText: {fileID: 0}
   initialMusicVolume: 1
   fadeOutStartTime: 0
   showDebugTimer: 1
