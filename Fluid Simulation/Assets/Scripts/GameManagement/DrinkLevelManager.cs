@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
-using Random = UnityEngine.Random;
-
+using TMPro;
 
 public class DrinkLevelManager : LevelManager
 {
@@ -74,6 +72,7 @@ public class DrinkLevelManager : LevelManager
     public CupFactory smallCupFactory;
     public GameObject orderZoneObj;
     public GameObject incomingOrderZoneObj;
+    public GameObject orderPrefab;
 
     [Header("Order Timing")]
     public float defaultTimeLimit = 20f; // Default time limit in seconds
@@ -95,6 +94,7 @@ public class DrinkLevelManager : LevelManager
     private Transform incomingOrderZone;
     private Bounds _zoneBounds;
     private Bounds _incomingOrderBounds;
+    private List<GameObject> _orderUIs = new List<GameObject>();
     private List<CupFactory.CupInstance> _allCups;
     private IFluidSimulation sim;
 
@@ -114,7 +114,7 @@ public class DrinkLevelManager : LevelManager
         // Get bounds of order zone transforms
         orderZone = orderZoneObj.transform;
         incomingOrderZone = incomingOrderZoneObj.transform;
-        _zoneBounds = new Bounds(incomingOrderZone.position, incomingOrderZone.localScale);
+        _zoneBounds = new Bounds(orderZone.position, orderZone.localScale);
         _incomingOrderBounds = new Bounds(incomingOrderZone.position, incomingOrderZone.localScale);
 
         // Generate order list (no timers)
@@ -238,16 +238,17 @@ public class DrinkLevelManager : LevelManager
 
     private void AddOrder(FluidType drink, CupSize size, float timeLimit = -1f)
     {
+        DrinkOrder newOrder;
         if (timeLimit > 0)
         {
-            orders.Add(new DrinkOrder(drink, size, timeLimit));
-            //orderUIManager.CreateOrderUI(drink, size, timeLimit);
+            newOrder = new DrinkOrder(drink, size, timeLimit);
         }
         else
         {
-            orders.Add(new DrinkOrder(drink, size)); // No timer
-            //orderUIManager.CreateOrderUI(drink, size, float.PositiveInfinity);
+            newOrder = new DrinkOrder(drink, size); // No timer
         }
+        orders.Add(newOrder);
+        CreateOrderUI(newOrder);
     }
 
     void CheckOrderTimeouts()
@@ -275,11 +276,18 @@ public class DrinkLevelManager : LevelManager
 
     void CompleteOrder(DrinkOrder order)
     {
+        // Find and remove the corresponding UI
+        string orderID = $"Order_{order.drinkType}_{order.size}_{order.uniqueID}";
+        GameObject uiToRemove = _orderUIs.Find(ui => ui != null && ui.name == orderID);
+
+        if (uiToRemove != null)
+        {
+            _orderUIs.Remove(uiToRemove);
+            Destroy(uiToRemove);
+        }
+
         orders.Remove(order);
-        //if (orderUIManager != null)
-        //{
-            //orderUIManager.RemoveOrderUI($"Order_{order.drinkType}_{order.size}");
-        //}
+        PositionOrderUIs();
     }
 
     private void CheckOrderFulfillment(CupFactory.CupInstance cup, CupSize cupSize, FluidType fluidType)
@@ -297,6 +305,69 @@ public class DrinkLevelManager : LevelManager
             CompleteOrder(fulfilledOrder);
 
             Debug.Log($"Order fulfilled! {cupSize} {fluidType}");
+        }
+    }
+
+    private void CreateOrderUI(DrinkOrder order)
+    {
+        if (!orderPrefab || !incomingOrderZoneObj) return;
+
+        // Instantiate the order UI
+        GameObject orderUI = Instantiate(orderPrefab, incomingOrderZoneObj.transform);
+        orderUI.name = $"Order_{order.drinkType}_{order.size}_{order.uniqueID}";
+
+        // Set drink name and size
+        Transform drinkNameText = orderUI.transform.Find("DrinkName");
+        Transform drinkSizeText = orderUI.transform.Find("DrinkSize");
+
+        if (drinkNameText != null)
+        {
+            TextMeshPro tmp = drinkNameText.GetComponent<TextMeshPro>();
+            if (tmp != null) tmp.text = order.drinkType.ToString();
+        }
+
+        if (drinkSizeText != null)
+        {
+            TextMeshPro tmp = drinkSizeText.GetComponent<TextMeshPro>();
+            if (tmp != null)
+            {
+                tmp.text = order.size switch
+                {
+                    CupSize.Small => "S",
+                    CupSize.Medium => "M",
+                    CupSize.Large => "L",
+                    _ => "?"
+                };
+            }
+        }
+
+        _orderUIs.Add(orderUI);
+        PositionOrderUIs();
+    }
+
+    private void PositionOrderUIs()
+    {
+        if (_orderUIs.Count == 0 || orderPrefab == null) return;
+
+        // Get the sprite renderer to determine the actual width of the prefab
+        SpriteRenderer prefabRenderer = orderPrefab.GetComponent<SpriteRenderer>();
+        if (prefabRenderer == null) return;
+
+        float orderWidth = prefabRenderer.bounds.size.x; // Use actual rendered width
+        float zoneWidth = 25f; // FIXME
+        float totalWidthNeeded = _orderUIs.Count * orderWidth;
+        float spacing = (zoneWidth - totalWidthNeeded) / (_orderUIs.Count + 1);
+
+        // Position each order UI without changing scale
+        float startX = -16f + spacing + (orderWidth / 2);
+        for (int i = 0; i < _orderUIs.Count; i++)
+        {
+            if (_orderUIs[i] == null) continue;
+
+            Vector3 pos = _incomingOrderBounds.center;
+            pos.x = startX + i * (orderWidth + spacing);
+            pos.z = 0;
+            _orderUIs[i].transform.position = pos;
         }
     }
 

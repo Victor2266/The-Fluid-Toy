@@ -1377,7 +1377,7 @@ MonoBehaviour:
   - transform: {fileID: 1750291864}
     velo: {x: 0, y: 0}
     spawnRate: 0
-    fluidType: 29
+    fluidType: 31
   drainObjects: []
   thermalBoxes: []
 --- !u!4 &828682584
@@ -1690,7 +1690,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.4, y: 6.8, z: -1.1618807}
-  m_LocalScale: {x: 25, y: 5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2141936662}
@@ -2832,7 +2832,8 @@ MonoBehaviour:
   mediumCupFactory: {fileID: 44533488}
   smallCupFactory: {fileID: 131409223}
   orderZoneObj: {fileID: 1973538775}
-  incomingOrderZoneObj: {fileID: 0}
+  incomingOrderZoneObj: {fileID: 957740704}
+  orderPrefab: {fileID: 1351860505}
   defaultTimeLimit: 20
   normalOrderColor: {r: 1, g: 1, b: 1, a: 1}
   warningOrderColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -3233,7 +3234,7 @@ Transform:
   m_GameObject: {fileID: 1351860505}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.9, y: 6.8, z: 0}
+  m_LocalPosition: {x: -4.3, y: 20.6, z: 0}
   m_LocalScale: {x: 5, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5767,7 +5768,7 @@ GameObject:
   - component: {fileID: 2141936662}
   - component: {fileID: 2141936663}
   m_Layer: 0
-  m_Name: Incoming Orders Box
+  m_Name: IncomingOrdersArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5783,7 +5784,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 25, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 957740705}
