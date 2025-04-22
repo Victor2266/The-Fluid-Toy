@@ -73,7 +73,7 @@ public class DrinkLevelManager : LevelManager
     public CupFactory mediumCupFactory;
     public CupFactory smallCupFactory;
     public GameObject orderZoneObj;
-    public DrinkLevelUIManager orderUIManager;
+    public GameObject incomingOrderZoneObj;
 
     [Header("Order Timing")]
     public float defaultTimeLimit = 20f; // Default time limit in seconds
@@ -92,7 +92,9 @@ public class DrinkLevelManager : LevelManager
 
     // Private references
     private Transform orderZone;
+    private Transform incomingOrderZone;
     private Bounds _zoneBounds;
+    private Bounds _incomingOrderBounds;
     private List<CupFactory.CupInstance> _allCups;
     private IFluidSimulation sim;
 
@@ -102,16 +104,18 @@ public class DrinkLevelManager : LevelManager
         GameObject simObject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simObject.GetComponent<IFluidSimulation>();
 
-        if (!orderZoneObj || !largeCupFactory || !mediumCupFactory || !smallCupFactory)
+        if (!incomingOrderZoneObj || !orderZoneObj || !largeCupFactory || !mediumCupFactory || !smallCupFactory)
         {
             Debug.LogError("Error! One or more null level references!");
             return;
         }
         _lastCheckTime = Time.time;
 
-        // Get bounds of order zone transform
+        // Get bounds of order zone transforms
         orderZone = orderZoneObj.transform;
-        _zoneBounds = new Bounds(orderZone.position, orderZone.localScale);
+        incomingOrderZone = incomingOrderZoneObj.transform;
+        _zoneBounds = new Bounds(incomingOrderZone.position, incomingOrderZone.localScale);
+        _incomingOrderBounds = new Bounds(incomingOrderZone.position, incomingOrderZone.localScale);
 
         // Generate order list (no timers)
         AddOrder(FluidType.Beer, CupSize.Medium);
@@ -237,12 +241,12 @@ public class DrinkLevelManager : LevelManager
         if (timeLimit > 0)
         {
             orders.Add(new DrinkOrder(drink, size, timeLimit));
-            orderUIManager.CreateOrderUI(drink, size, timeLimit);
+            //orderUIManager.CreateOrderUI(drink, size, timeLimit);
         }
         else
         {
             orders.Add(new DrinkOrder(drink, size)); // No timer
-            orderUIManager.CreateOrderUI(drink, size, float.PositiveInfinity);
+            //orderUIManager.CreateOrderUI(drink, size, float.PositiveInfinity);
         }
     }
 
@@ -272,10 +276,10 @@ public class DrinkLevelManager : LevelManager
     void CompleteOrder(DrinkOrder order)
     {
         orders.Remove(order);
-        if (orderUIManager != null)
-        {
-            orderUIManager.RemoveOrderUI($"Order_{order.drinkType}_{order.size}");
-        }
+        //if (orderUIManager != null)
+        //{
+            //orderUIManager.RemoveOrderUI($"Order_{order.drinkType}_{order.size}");
+        //}
     }
 
     private void CheckOrderFulfillment(CupFactory.CupInstance cup, CupSize cupSize, FluidType fluidType)
