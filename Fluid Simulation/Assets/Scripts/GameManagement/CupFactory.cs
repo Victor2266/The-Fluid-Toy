@@ -25,10 +25,10 @@ public class CupFactory : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
+    [SerializeField] private List<CupInstance> activeClones = new List<CupInstance>();
 
     private IFluidSimulation sim;
     private SensorManager sensorManager; // If it exists
-    private List<CupInstance> activeClones = new List<CupInstance>();
 
     private void Start()
     {
