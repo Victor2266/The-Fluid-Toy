@@ -1,115 +1,150 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class DrinkLevelUIManager : MonoBehaviour
 {
-    [Header("References")]
-    public Transform incomingOrdersContainer; // Assign your "Incoming Orders" GameObject here
-    public GameObject orderUIPrefab; // Assign your "Order" prefab here
+    [Header("UI References")]
+    public GameObject orderBoxPrefab; // Sprite-based prefab with SpriteRenderer
+    public Transform orderZone; // Reference to the Order Zone transform
+    public float horizontalSpacing = 0.5f; // Space between order boxes in world units
 
-    [Header("UI Settings")]
-    public Vector2 orderElementSize = new Vector2(100, 100);
-    public float spacing = 10f;
-    public Color beerColor = new Color(0.95f, 0.65f, 0.21f); // Amber
-    public Color alcoholColor = new Color(0.75f, 0.11f, 0.11f); // Red
-    public Color colaColor = new Color(0.2f, 0.1f, 0f); // Brown
-    public Color smallSizeColor = Color.white;
-    public Color mediumSizeColor = Color.blue;
-    public Color largeSizeColor = Color.red;
+    [Header("Appearance Settings")]
+    public Color normalTextColor = Color.black;
+    public Color warningTextColor = Color.yellow;
+    public Color criticalTextColor = Color.red;
+    public Font textFont;
+    public int fontSize = 14;
+    public Color boxColor = new Color(1f, 1f, 1f, 0.8f); // Semi-transparent white
 
-    private List<GameObject> activeOrderUIElements = new List<GameObject>();
+    private List<GameObject> activeOrderBoxes = new List<GameObject>();
+    private Bounds zoneBounds;
+    private float boxWidth;
+    private Dictionary<string, TextMesh> orderTextMeshes = new Dictionary<string, TextMesh>();
+
+    void Start()
+    {
+        if (orderZone == null)
+        {
+            Debug.LogError("Order Zone reference not set in DrinkLevelUIManager!");
+            return;
+        }
+
+        // Calculate zone bounds
+        zoneBounds = new Bounds(orderZone.position, orderZone.localScale);
+
+        // Calculate box dimensions (1/6 of order zone width, full height)
+        boxWidth = zoneBounds.size.x / 6f;
+    }
 
     public void CreateOrderUI(FluidType drinkType, DrinkLevelManager.CupSize size, float timeLimit)
     {
-        // Instantiate new order UI element
-        GameObject newOrder = Instantiate(orderUIPrefab, incomingOrdersContainer);
-        newOrder.name = $"Order_{drinkType}_{size}";
-        activeOrderUIElements.Add(newOrder);
-
-        // Set size and position
-        RectTransform rt = newOrder.GetComponent<RectTransform>();
-        rt.sizeDelta = orderElementSize;
-        PositionOrderElements();
-
-        // Set up components
-        Image bgImage = newOrder.GetComponent<Image>();
-        Text orderText = newOrder.GetComponentInChildren<Text>();
-        OrderTimerUI timerUI = newOrder.GetComponent<OrderTimerUI>();
-
-        // Customize appearance based on order
-        switch (drinkType)
+        if (orderBoxPrefab == null)
         {
-            case FluidType.Beer:
-                bgImage.color = beerColor;
-                break;
-            case FluidType.Alcohol:
-                bgImage.color = alcoholColor;
-                break;
-            case FluidType.Cola:
-                bgImage.color = colaColor;
-                break;
+            Debug.LogError("Order Box Prefab not set!");
+            return;
         }
 
-        // Add size indicator
-        GameObject sizeIndicator = new GameObject("SizeIndicator");
-        sizeIndicator.transform.SetParent(newOrder.transform);
-        Image sizeImage = sizeIndicator.AddComponent<Image>();
-        sizeImage.rectTransform.sizeDelta = new Vector2(20, 20);
-        sizeImage.rectTransform.anchoredPosition = new Vector2(-orderElementSize.x / 2 + 15, orderElementSize.y / 2 - 15);
+        // Create new order box
+        GameObject newOrderBox = Instantiate(orderBoxPrefab, orderZone);
+        newOrderBox.name = $"Order_{drinkType}_{size}";
 
-        switch (size)
+        // Position the box (world space)
+        float xPos = zoneBounds.min.x + (boxWidth / 2f) + ((boxWidth + horizontalSpacing) * activeOrderBoxes.Count);
+        float yPos = zoneBounds.center.y;
+        newOrderBox.transform.position = new Vector3(xPos, yPos, orderZone.position.z);
+
+        // Scale the box to full height and 1/6 width of zone
+        Vector3 boxScale = new Vector3(
+            boxWidth,
+            zoneBounds.size.y * 0.9f, // 90% of height to leave some margin
+            1f
+        );
+        newOrderBox.transform.localScale = boxScale;
+
+        // Set box color
+        SpriteRenderer boxRenderer = newOrderBox.GetComponent<SpriteRenderer>();
+        if (boxRenderer != null)
         {
-            case DrinkLevelManager.CupSize.Small:
-                sizeImage.color = smallSizeColor;
-                break;
-            case DrinkLevelManager.CupSize.Medium:
-                sizeImage.color = mediumSizeColor;
-                break;
-            case DrinkLevelManager.CupSize.Large:
-                sizeImage.color = largeSizeColor;
-                break;
+            boxRenderer.color = boxColor;
         }
 
-        // Set order text
-        orderText.text = $"{drinkType}\n{size}";
-        orderText.alignment = TextAnchor.MiddleCenter;
-        orderText.color = Color.white;
+        // Create text display
+        GameObject textObj = new GameObject("OrderText");
+        textObj.transform.SetParent(newOrderBox.transform);
+        textObj.transform.localPosition = Vector3.zero;
 
-        // Initialize timer if component exists
-        if (timerUI != null)
+        TextMesh textMesh = textObj.AddComponent<TextMesh>();
+        textMesh.text = $"{size}\n{drinkType}";
+        if (!float.IsPositiveInfinity(timeLimit))
         {
-            timerUI.Initialize(timeLimit);
+            textMesh.text += $"\n00:{timeLimit:00}";
         }
+
+        // Configure text appearance
+        textMesh.characterSize = 0.1f;
+        textMesh.fontSize = fontSize;
+        textMesh.anchor = TextAnchor.MiddleCenter;
+        textMesh.alignment = TextAlignment.Center;
+        textMesh.color = normalTextColor;
+        textMesh.font = textFont;
+
+        // Center the text in the box
+        textObj.transform.localPosition = new Vector3(0, 0, -0.1f); // Slightly in front of box
+
+        // Store reference to the text mesh for updates
+        orderTextMeshes.Add(newOrderBox.name, textMesh);
+
+        // Add to active list
+        activeOrderBoxes.Add(newOrderBox);
     }
 
     public void RemoveOrderUI(string orderID)
     {
-        GameObject orderToRemove = activeOrderUIElements.Find(o => o.name == orderID);
-        if (orderToRemove != null)
+        // Find and remove the order box
+        for (int i = 0; i < activeOrderBoxes.Count; i++)
         {
-            activeOrderUIElements.Remove(orderToRemove);
-            Destroy(orderToRemove);
-            PositionOrderElements();
+            if (activeOrderBoxes[i].name == orderID)
+            {
+                // Remove from dictionary first
+                if (orderTextMeshes.ContainsKey(orderID))
+                {
+                    orderTextMeshes.Remove(orderID);
+                }
+
+                Destroy(activeOrderBoxes[i]);
+                activeOrderBoxes.RemoveAt(i);
+                RePositionOrderBoxes(); // Reorganize remaining orders
+                break;
+            }
         }
     }
 
-    private void PositionOrderElements()
+    public void UpdateOrderTimer(string orderID, string formattedTime, Color timeColor)
     {
-        for (int i = 0; i < activeOrderUIElements.Count; i++)
+        if (orderTextMeshes.TryGetValue(orderID, out TextMesh textMesh))
         {
-            RectTransform rt = activeOrderUIElements[i].GetComponent<RectTransform>();
-            float xPos = i * (orderElementSize.x + spacing);
-            rt.anchoredPosition = new Vector2(xPos, 0);
+            // Extract the base order text (first two lines)
+            string[] lines = textMesh.text.Split('\n');
+            if (lines.Length >= 2)
+            {
+                // Convert color to hex for TextMesh (which doesn't support rich text)
+                // For actual color changing, we'll modify the whole text color
+                textMesh.text = $"{lines[0]}\n{lines[1]}\n{formattedTime}";
+                textMesh.color = timeColor; // This changes all text color
+            }
         }
     }
 
-    public void ClearAllOrders()
+    private void RePositionOrderBoxes()
     {
-        foreach (GameObject order in activeOrderUIElements)
+        // Reposition all order boxes to account for removed ones
+        for (int i = 0; i < activeOrderBoxes.Count; i++)
         {
-            Destroy(order);
+            float xPos = zoneBounds.min.x + (boxWidth / 2f) + ((boxWidth + horizontalSpacing) * i);
+            float yPos = zoneBounds.center.y;
+            activeOrderBoxes[i].transform.position = new Vector3(xPos, yPos, orderZone.position.z);
         }
-        activeOrderUIElements.Clear();
     }
 }

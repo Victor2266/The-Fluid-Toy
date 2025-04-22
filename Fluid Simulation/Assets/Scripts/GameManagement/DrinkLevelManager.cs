@@ -117,6 +117,7 @@ public class DrinkLevelManager : LevelManager
         AddOrder(FluidType.Beer, CupSize.Medium);
         AddOrder(FluidType.Alcohol, CupSize.Small);
         AddOrder(FluidType.Beer, CupSize.Large);
+        AddOrder(FluidType.Cola, CupSize.Large);
     }
 
     // Update is called once per frame
