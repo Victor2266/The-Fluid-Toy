@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b9e3c063da7442bbf0a39f9cba066, type: 3}
-  m_Name: Fire_Blue
+  m_Name: Red_Kamehameha
   m_EditorClassIdentifier: 
-  fluidType: 30
+  fluidType: 33
   gravity: 11
   collisionDamping: 0.5
   smoothingRadius: 0.35
@@ -22,9 +22,9 @@ MonoBehaviour:
   viscosityStrength: 0.1
   startTemperature: 960
   thermalDiffusivity: 10
-  boilState: 30
+  boilState: 33
   boilTemp: 1000
-  freezeState: 11
+  freezeState: 0
   freezeTemp: 745
   friction: 0
   entropyTarget: 645
@@ -33,17 +33,17 @@ MonoBehaviour:
     colorGradient:
       serializedVersion: 2
       key0: {r: 0, g: 0, b: 0, a: 1}
-      key1: {r: 0, g: 0.09379864, b: 1, a: 1}
-      key2: {r: 0, g: 0.26948547, b: 1, a: 0}
-      key3: {r: 0, g: 0.45490196, b: 1, a: 0}
-      key4: {r: 0.23113209, g: 0.910991, b: 1, a: 0}
+      key1: {r: 0.5566038, g: 0.102394104, b: 0.19912401, a: 1}
+      key2: {r: 0.9339623, g: 0.5467327, b: 0.5154415, a: 0}
+      key3: {r: 1, g: 0.5707547, b: 0.7448521, a: 0}
+      key4: {r: 0.754717, g: 0.24852593, b: 0.23851903, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
-      ctime1: 5243
-      ctime2: 20971
-      ctime3: 43908
+      ctime1: 20239
+      ctime2: 40092
+      ctime3: 55127
       ctime4: 65150
       ctime5: 0
       ctime6: 0

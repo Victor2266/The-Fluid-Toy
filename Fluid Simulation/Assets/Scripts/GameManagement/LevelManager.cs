@@ -35,7 +35,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] protected float threeStarTime = 0;
     [SerializeField] protected float twoStarTime = 0;
 
-    void Start()
+    protected void Start()
     {
         // Store initial background music volume
         if (backgroundMusic != null)
