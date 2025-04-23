@@ -90,6 +90,7 @@ public class DrinkLevelManager : LevelManager
     private float _lastCheckTime;
 
     // Private references
+    private bool setWin = false;
     private Transform orderZone;
     private Transform incomingOrderZone;
     private Bounds _zoneBounds;
@@ -127,14 +128,19 @@ public class DrinkLevelManager : LevelManager
     // Update is called once per frame
     // This script will check for the win conditions
     // this can be customized for each level
-    void Update()
+    void FixedUpdate()
     {
-        if (hasWon) TriggerWin();
+        if (hasWon) return;
+        if (setWin)
+        {
+            TriggerWin();
+            return;
+        }
 
         if (Time.time - _lastCheckTime < checkInterval) return;
         _lastCheckTime = Time.time;
 
-        CheckOrderTimeouts();
+        //CheckOrderTimeouts(); // Functional but not used to simplify the level
         CheckOrderZone();
     }
 
@@ -152,9 +158,13 @@ public class DrinkLevelManager : LevelManager
         {
             if (IsCupCompletelyContained(cup))
             {
-                ProcessCupContents(cup, out FluidType majorityType, out float fluidPercent, out bool isFluidPresent);
-                Debug.Log($"Order complete - Cup {cup.uniqueID} | FluidPercent: {fluidPercent}% | Present: {isFluidPresent} | MajorityFluid: {Enum.GetName(typeof(FluidType), majorityType)}");
-                cupsToRemove.Add(cup);
+                bool scoredCup = ProcessCupContents(cup, out FluidType majorityType, out float fluidPercent, out bool isFluidPresent);
+                if (scoredCup)
+                {
+                    Debug.Log($"Order complete - Cup {cup.uniqueID} | FluidPercent: {fluidPercent}% | Present: {isFluidPresent} | MajorityFluid: {Enum.GetName(typeof(FluidType), majorityType)}");
+                    cupsToRemove.Add(cup);
+                    TriggerDrain(0.001f);
+                }
             }
         }
 
@@ -163,7 +173,6 @@ public class DrinkLevelManager : LevelManager
             if (smallCupFactory.GetCloneByID(cup.uniqueID) != null) smallCupFactory.DeleteCloneByID(cup.uniqueID);
             if (mediumCupFactory.GetCloneByID(cup.uniqueID) != null) mediumCupFactory.DeleteCloneByID(cup.uniqueID);
             if (largeCupFactory.GetCloneByID(cup.uniqueID) != null) largeCupFactory.DeleteCloneByID(cup.uniqueID);
-            TriggerDrain(0.001f);
         }
     }
 
@@ -186,7 +195,7 @@ public class DrinkLevelManager : LevelManager
         return true;
     }
 
-    void ProcessCupContents(CupFactory.CupInstance cup, out FluidType majorityType, out float fluidPercent, out bool isFluidPresent)
+    bool ProcessCupContents(CupFactory.CupInstance cup, out FluidType majorityType, out float fluidPercent, out bool isFluidPresent)
     {
         FluidDetector[] detectors = cup.cupObject.GetComponentsInChildren<FluidDetector>();
         majorityType = FluidType.Disabled;
@@ -215,7 +224,10 @@ public class DrinkLevelManager : LevelManager
 
         if (isFluidPresent && majorityType != FluidType.Disabled)
         {
-            CheckOrderFulfillment(cup, cup.size, majorityType);
+            return CheckOrderFulfillment(cup, cup.size, majorityType);
+        } else
+        {
+            return false;
         }
     }
 
@@ -252,7 +264,7 @@ public class DrinkLevelManager : LevelManager
         CreateOrderUI(newOrder);
     }
 
-    void CheckOrderTimeouts()
+    void CheckOrderTimeouts() // NOT USED
     {
         for (int i = orders.Count - 1; i >= 0; i--)
         {
@@ -289,9 +301,13 @@ public class DrinkLevelManager : LevelManager
 
         orders.Remove(order);
         PositionOrderUIs();
+
+        Debug.Log($"Orders left: {orders.Count}");
+        if (orders.Count == 0) setWin = true;
+        Debug.Log($"Win state: {setWin}");
     }
 
-    private void CheckOrderFulfillment(CupFactory.CupInstance cup, CupSize cupSize, FluidType fluidType)
+    private bool CheckOrderFulfillment(CupFactory.CupInstance cup, CupSize cupSize, FluidType fluidType)
     {
         // Find all matching orders
         List<DrinkOrder> matchingOrders = orders.FindAll(order =>
@@ -306,6 +322,11 @@ public class DrinkLevelManager : LevelManager
             CompleteOrder(fulfilledOrder);
 
             Debug.Log($"Order fulfilled! {cupSize} {fluidType}");
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -360,7 +381,7 @@ public class DrinkLevelManager : LevelManager
         float spacing = (zoneWidth - totalWidthNeeded) / (_orderUIs.Count + 1);
 
         // Position each order UI without changing scale
-        float startX = -16f + spacing + (orderWidth / 2);
+        float startX = -16.5f + spacing + (orderWidth / 2);
         for (int i = 0; i < _orderUIs.Count; i++)
         {
             if (_orderUIs[i] == null) continue;
