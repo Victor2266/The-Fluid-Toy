@@ -259,11 +259,15 @@ public class DBZLevelManager : LevelManager
     
     private void PlayNextSyllable()
     {
-        string[] syllables = new string[] { "KA", "ME", "HA", "ME", "HA" };
+        string[] syllables = new string[] { "KA", "ME", "HA", "ME", "HA!!!" };
         
         // Show the current syllable
         if (syllableText != null)
         {
+            // Clear Current Animation on previous syllable
+            syllableText.transform.DOKill();
+            syllableText.DOKill();
+
             syllableText.text = syllables[syllableCount - 1];
             syllableText.alpha = 1f;
             
