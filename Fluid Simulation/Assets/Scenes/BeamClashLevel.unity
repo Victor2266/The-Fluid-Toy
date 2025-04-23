@@ -325,12 +325,12 @@ MonoBehaviour:
   playerWinSound: {fileID: 0}
   playerLoseSound: {fileID: 0}
   powerUpSounds: []
-  mainCameraTransform: {fileID: 0}
-  playerCameraPosition: {x: 0, y: 0, z: 0}
-  antagonistCameraPosition: {x: 0, y: 0, z: 0}
-  clashCameraPosition: {x: 0, y: 0, z: 0}
-  cameraZoomSpeed: 2
-  cameraPanSpeed: 3
+  mainCameraTransform: {fileID: 963194228}
+  cameraAdjuster: {fileID: 963194230}
+  playerCameraPosition: {x: -10, y: 0, z: -10}
+  antagonistCameraPosition: {x: 10, y: 0, z: -10}
+  clashCameraPosition: {x: 0, y: 0, z: -10}
+  cameraPanSpeed: 1.5
   maxBeamPower: 100
   powerDecayRate: 5
   powerIncreasePerPress: 2
@@ -582,7 +582,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -5412,7 +5412,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -10627,6 +10627,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4017030253322422152, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5638517010663381850, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.2
@@ -10735,6 +10739,10 @@ PrefabInstance:
     - target: {fileID: 3042164185103391995, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017030253322422152, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5638517010663381850, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -10945,7 +10953,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -15855,6 +15863,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7213906341575685947, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 7765405816558062241, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.1
@@ -15980,7 +15992,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -20825,7 +20837,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -22133,7 +22145,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.7971698, g: 0.9504948, b: 1, a: 0}
+        key0: {r: 1, g: 0.81956756, b: 0.79607844, a: 0}
         key1: {r: 1, g: 0.43137255, b: 0.34509805, a: 1}
         key2: {r: 1, g: 1, b: 1, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -25654,7 +25666,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 143.6
   orthographic: 1
   orthographic size: 9.87
   m_Depth: -1
@@ -25700,8 +25712,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bloomThreshold: 0.5
-  bloomIntensity: 1.5
-  blurSize: 3
+  bloomIntensity: 0.5
+  blurSize: 2.5
   softness: 1
   postProcessShader: {fileID: 0}
 --- !u!114 &963194230
@@ -25775,7 +25787,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: KA!
+  m_text: HA!!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 301d1c6477eb8ee4aa995edfc7c86680, type: 2}
   m_sharedMaterial: {fileID: 3303376031612326287, guid: 301d1c6477eb8ee4aa995edfc7c86680, type: 2}
@@ -25786,8 +25798,8 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
+  m_enableVertexGradient: 1
+  m_colorMode: 2
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
     topRight: {r: 1, g: 1, b: 1, a: 1}
@@ -26298,6 +26310,10 @@ PrefabInstance:
     - target: {fileID: 6122764113698778849, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7213906341575685947, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7765405816558062241, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -27553,7 +27569,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -28861,7 +28877,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.7971698, g: 0.9504948, b: 1, a: 0}
+        key0: {r: 1, g: 0.82682234, b: 0.79607844, a: 0}
         key1: {r: 1, g: 1, b: 1, a: 1}
         key2: {r: 1, g: 0.43137255, b: 0.34509805, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -32522,7 +32538,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -37628,7 +37644,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -42816,7 +42832,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -47736,7 +47752,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0

@@ -52,4 +52,9 @@ public class OrthographicCameraAdjuster : MonoBehaviour
             cam.orthographicSize = orthographicWidth / currentAspectRatio;
         }
     }
+
+    public void SetReferenceSizes(float orthographicSize) {
+        referenceHeight = orthographicSize * 2f;
+        referenceWidth = referenceHeight * (16f / 9f);
+    }
 }

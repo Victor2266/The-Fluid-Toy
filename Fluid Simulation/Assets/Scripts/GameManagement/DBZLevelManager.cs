@@ -42,10 +42,12 @@ public class DBZLevelManager : LevelManager
     
     [Header("Camera Effects")]
     public Transform mainCameraTransform;
+    public OrthographicCameraAdjuster cameraAdjuster;
     public Vector3 playerCameraPosition;
     public Vector3 antagonistCameraPosition;
     public Vector3 clashCameraPosition;
-    public float cameraZoomSpeed = 2f;
+    private float cameraZoomLevel = 9.87f;
+    private float zoomLevelTarget = 9.87f;
     public float cameraPanSpeed = 3f;
     
     [Header("Battle Parameters")]
@@ -174,10 +176,25 @@ public class DBZLevelManager : LevelManager
                 }
             }
         }
+        // Zoom camera
+        if (syllableCount == 1 || syllableCount == 2){
+            zoomLevelTarget = 3.81f;
+        } else if (syllableCount == 3 || syllableCount == 4){
+            zoomLevelTarget = 6f; 
+        }
+        // Gradually zoom out
+        cameraZoomLevel = Mathf.Lerp(cameraZoomLevel, zoomLevelTarget, Time.deltaTime * 2.5f);
+        cameraAdjuster.SetReferenceSizes(cameraZoomLevel);
+        
     }
     
     private void HandleChargingState()
     {
+        // Gradually zoom out
+        zoomLevelTarget = 9.87f; 
+        cameraZoomLevel = Mathf.Lerp(cameraZoomLevel, zoomLevelTarget, Time.deltaTime * 5f);
+        cameraAdjuster.SetReferenceSizes(cameraZoomLevel);
+
         // Show charging animation
         // Automatically transitions to BeamClash after a short delay via coroutine
     }
@@ -273,6 +290,18 @@ public class DBZLevelManager : LevelManager
 
             syllableText.text = syllables[syllableCount - 1];
             syllableText.alpha = 1f;
+
+            if (syllableCount % 2 == 1)
+            {
+                syllableText.color = playerBeamColor;
+            } else
+            {
+                syllableText.color = antagonistBeamColor;
+            }
+            if (syllableCount == 5){
+                syllableText.color = Color.white;
+                syllableText.colorGradient = new VertexGradient(playerBeamColor, playerBeamColor, antagonistBeamColor, antagonistBeamColor);
+            }
             
             // Fade and scale animation
             syllableText.transform.localScale = Vector3.one * 0.5f;
@@ -291,10 +320,10 @@ public class DBZLevelManager : LevelManager
         {
             // Alternate between focusing on player and antagonist
             Vector3 targetPos = (syllableCount % 2 == 1) ? playerCameraPosition : antagonistCameraPosition;
-            float zoomLevel = Mathf.Lerp(60f, 30f, syllableCount / 5f); // Gradually zoom in
-            
             mainCameraTransform.DOMove(targetPos, 0.5f).SetEase(Ease.InOutQuad);
-            Camera.main.DOFieldOfView(zoomLevel, 0.5f);
+            
+            //Camera.main.DOOrthoSize(zoomLevel, 0.5f);
+            //Camera.main.DOFieldOfView(zoomLevel, 0.5f);
         }
     }
     
@@ -405,7 +434,7 @@ public class DBZLevelManager : LevelManager
         // Update UI
         if (instructionText != null)
         {
-            instructionText.text = "DEFEATED!";
+            instructionText.text = "<color=red>DEFEAT!";
             instructionText.DOKill();
             instructionText.transform.DOScale(Vector3.one * 2f, 0.5f).SetEase(Ease.OutBack);
         }
@@ -462,7 +491,7 @@ public class DBZLevelManager : LevelManager
         // Update player beam strength based on power level
         SourceObjectInitializer playerBeam = sim.GetSourceObject(playerBeamSourceIndex);
         float playerPowerRatio = currentBeamPower / maxBeamPower;
-        playerBeam.spawnRate = Mathf.Lerp(0.2f, 1.8f, playerPowerRatio);
+        playerBeam.spawnRate = Mathf.Lerp(0f, 1.8f, playerPowerRatio);
         //playerBeam.radius = Mathf.Lerp(1f, 3f, playerPowerRatio);
         //playerBeam.lifetime = Mathf.Lerp(2f, 5f, playerPowerRatio);
         sim.SetSourceObject(playerBeam, playerBeamSourceIndex);
@@ -470,7 +499,7 @@ public class DBZLevelManager : LevelManager
         // Update antagonist beam (inverse of player power)
         SourceObjectInitializer antagonistBeam = sim.GetSourceObject(antagonistBeamSourceIndex);
         float antagonistPowerRatio = 1f - playerPowerRatio;
-        antagonistBeam.spawnRate = Mathf.Lerp(0.2f, 1.8f, antagonistPowerRatio);
+        antagonistBeam.spawnRate = Mathf.Lerp(0.1f, 1.8f, antagonistPowerRatio);
         //antagonistBeam.radius = Mathf.Lerp(1f, 3f, antagonistPowerRatio);
         //antagonistBeam.lifetime = Mathf.Lerp(2f, 5f, antagonistPowerRatio);
         sim.SetSourceObject(antagonistBeam, antagonistBeamSourceIndex);
@@ -521,8 +550,10 @@ public class DBZLevelManager : LevelManager
     {
         // Clean up DOTween animations
         if (syllableText != null) DOTween.Kill(syllableText);
-        DOTween.Kill(instructionText?.transform);
-        if (instructionText != null) DOTween.Kill(instructionText);
+       
+        if (instructionText != null) {
+            DOTween.Kill(instructionText);
+        }
         DOTween.Kill(powerLevelText);
         DOTween.Kill(mainCameraTransform);
         DOTween.Kill(playerPowerAura);
