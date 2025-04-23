@@ -141,9 +141,10 @@ public class DrinkLevelManager : LevelManager
     void CheckOrderZone()
     {
         List<CupFactory.CupInstance> cupsToRemove = new List<CupFactory.CupInstance>();
+        _allCups = new List<CupFactory.CupInstance>();
 
         // Get cups from factories
-        _allCups = smallCupFactory.GetCups();
+        _allCups.AddRange(smallCupFactory.GetCups());
         _allCups.AddRange(mediumCupFactory.GetCups());
         _allCups.AddRange(largeCupFactory.GetCups());
 
