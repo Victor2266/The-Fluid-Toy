@@ -32,15 +32,18 @@ public class SandboxInitializer : MonoBehaviour
         GameObject simulationGameobject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simulationGameobject.GetComponent<IFluidSimulation>();
 
-        UpdateBoundsSizes(presetIndex);
+        // Set up camera
+        sceneCamera.orthographicSize = cameraSizes[presetIndex];
+
+        // Set up Max Particles
+        sim.setMaxParticles(simulationMaxParticles[presetIndex]);
 
         // Destroy the sandbox initializer on complete
         // Destroy(gameObject);
     }
 
-    private void UpdateBoundsSizes(int presetIndex){
+    private void UpdateBoundsSizes(){
         // Set up camera
-        sceneCamera.orthographicSize = cameraSizes[presetIndex];
         float boundsWidth = sceneCamera.orthographicSize * 2f * Screen.width / Screen.height;
         float boundsHeight = sceneCamera.orthographicSize * 2f;
 
@@ -58,7 +61,6 @@ public class SandboxInitializer : MonoBehaviour
 
         // Update simulation settings
         sim.setBounds(new Vector2(boundsWidth, boundsHeight));   
-        sim.setMaxParticles(simulationMaxParticles[presetIndex]);
     }
 
     void Update()
@@ -66,7 +68,7 @@ public class SandboxInitializer : MonoBehaviour
         // Check if resolution has changed
         if (Screen.width != lastWidth || Screen.height != lastHeight)
         {
-            UpdateBoundsSizes(PlayerPrefs.GetInt("SandboxPreset", 2));
+            UpdateBoundsSizes();
             // Update the stored resolution
             lastWidth = Screen.width;
             lastHeight = Screen.height;
