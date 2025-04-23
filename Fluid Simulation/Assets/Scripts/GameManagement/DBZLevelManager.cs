@@ -68,6 +68,7 @@ public class DBZLevelManager : LevelManager
     private float spaceBarPressCooldown = 0.05f; // Minimum time between space presses
     private float lastPowerDecayTime;
     private bool beamSoundPlaying = false;
+    Color orange = new Color(1f, 0.5f, 0f);
     
     new void Start()
     {
@@ -164,6 +165,9 @@ public class DBZLevelManager : LevelManager
             {
                 syllableCount++;
                 PlayNextSyllable();
+                if (syllableCount == 1){
+                    instructionText.DOFade(0f, 0.25f);
+                }
                 if (syllableCount >= 5)
                 {
                     StartCoroutine(StartBeamClash());
@@ -210,16 +214,13 @@ public class DBZLevelManager : LevelManager
         // Update power level text
         if (powerLevelText != null)
         {
-            int displayPower = Mathf.RoundToInt(currentBeamPower);
-            powerLevelText.text = $"POWER: {displayPower}%";
+            int displayPower = Mathf.RoundToInt(Mathf.Lerp(0, 9999, currentBeamPower / maxBeamPower));
+
+            powerLevelText.text = $"POWER LEVEL: {displayPower}";
             
             // Change color based on power level
-            if (displayPower > 75)
-                powerLevelText.color = Color.green;
-            else if (displayPower > 40)
-                powerLevelText.color = Color.yellow;
-            else
-                powerLevelText.color = Color.red;
+            powerLevelText.color = Color.Lerp(Color.red, Color.blue, Mathf.InverseLerp(40f, 75f, currentBeamPower));
+            powerLevelText.color = Color.Lerp(powerLevelText.color, Color.white, Mathf.InverseLerp(75f, 100f, currentBeamPower));
         }
         
         // Check for win/lose conditions
@@ -227,12 +228,14 @@ public class DBZLevelManager : LevelManager
         {
             // Player wins!
             currentState = BattleState.Victory;
+            powerLevelText.text = $"OVER 9000!";
             StartCoroutine(HandleVictory());
         }
         else if (currentBeamPower <= loseThreshold)
         {
             // Player loses!
             currentState = BattleState.Defeat;
+            powerLevelText.text = $"0";
             StartCoroutine(HandleDefeat());
         }
 
@@ -302,7 +305,8 @@ public class DBZLevelManager : LevelManager
         // Update instruction text
         if (instructionText != null)
         {
-            instructionText.text = "CHARGING...";
+            instructionText.alpha = 1f;
+            instructionText.text = "AAAAAAHHHHHHHHHHHHHH...";
         }
         
         // Move camera to clash position
@@ -334,7 +338,7 @@ public class DBZLevelManager : LevelManager
         if (instructionText != null)
         {
             instructionText.text = "MASH SPACE TO INCREASE BEAM POWER!";
-            instructionText.transform.DOScale(Vector3.one * 1.2f, 0.5f).SetLoops(-1, LoopType.Yoyo);
+            instructionText.transform.DOScale(Vector3.one * 1.2f, 0.25f).SetLoops(-1, LoopType.Yoyo);
         }
         
         // Initialize beams
@@ -405,6 +409,8 @@ public class DBZLevelManager : LevelManager
             instructionText.DOKill();
             instructionText.transform.DOScale(Vector3.one * 2f, 0.5f).SetEase(Ease.OutBack);
         }
+
+        powerLevelText.DOFade(0f, 0.5f);
         
         // Stop beam sounds
         StopAllCoroutines();
@@ -514,8 +520,10 @@ public class DBZLevelManager : LevelManager
     void OnDestroy()
     {
         // Clean up DOTween animations
-        DOTween.Kill(syllableText);
+        if (syllableText != null) DOTween.Kill(syllableText);
         DOTween.Kill(instructionText?.transform);
+        if (instructionText != null) DOTween.Kill(instructionText);
+        DOTween.Kill(powerLevelText);
         DOTween.Kill(mainCameraTransform);
         DOTween.Kill(playerPowerAura);
         DOTween.Kill(antagonistPowerAura);
