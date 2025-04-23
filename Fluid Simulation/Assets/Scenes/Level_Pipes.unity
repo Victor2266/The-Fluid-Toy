@@ -1845,8 +1845,8 @@ MonoBehaviour:
   timer: 0
   threeStarTime: 30
   twoStarTime: 50
-  tankFluidDetector1: {fileID: 1469586958}
-  tankFluidDetector2: {fileID: 1585098540}
+  tankFluidDetector1: {fileID: 0}
+  tankFluidDetector2: {fileID: 0}
 --- !u!1 &124822668
 GameObject:
   m_ObjectHideFlags: 0
@@ -11848,13 +11848,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: 'Move the green water gates and red levers
-
-        to fill the left
-        exhaust pipe with fumes.
+      value: 'Get the water from the green pipe on the left into the yellow pipes
+        on the right to fill up the tanks.
 
 
-        Hint: Even heating is the key!'
+        Move the disconnected pipe segments
+        by holding the mouse button while dragging (touch while dragging on a touchscreen).'
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontAsset
@@ -17049,7 +17048,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 8300000, guid: a95fd58176b9e5b4a934ae087c344cc8, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: a95fd58176b9e5b4a934ae087c344cc8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
