@@ -180,10 +180,10 @@ public class DBZLevelManager : LevelManager
         if (syllableCount == 1 || syllableCount == 2){
             zoomLevelTarget = 3.81f;
         } else if (syllableCount == 3 || syllableCount == 4){
-            zoomLevelTarget = 6f; 
+            zoomLevelTarget = 4.5f; 
         }
         // Gradually zoom out
-        cameraZoomLevel = Mathf.Lerp(cameraZoomLevel, zoomLevelTarget, Time.deltaTime * 2.5f);
+        cameraZoomLevel = Mathf.Lerp(cameraZoomLevel, zoomLevelTarget, Time.deltaTime * 1.5f);
         cameraAdjuster.SetReferenceSizes(cameraZoomLevel);
         
     }
