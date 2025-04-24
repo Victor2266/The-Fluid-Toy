@@ -33,11 +33,15 @@ public class DBZLevelManager : LevelManager
     
     [Header("Sound Effects")]
     public AudioClip[] kamehamehaClips; // 5 clips for ka-me-ha-me-ha
+    public AudioClip KA_Sound;
+    public AudioClip ME_Sound;
+    public AudioClip HA_Sound;
+    public AudioClip ME_Sound2;
+    public AudioClip GokuScreamSound;
     public AudioClip beamStartSound;
-    public AudioClip beamOngoingSound;
-    public AudioClip beamClashSound;
-    public AudioClip playerWinSound;
-    public AudioClip playerLoseSound;
+    public GameObject BeamClashSound;
+    public AudioSource playerWinSound;
+    public AudioSource playerLoseSound;
     public AudioClip[] powerUpSounds;
     
     [Header("Camera Effects")]
@@ -169,12 +173,24 @@ public class DBZLevelManager : LevelManager
                 PlayNextSyllable();
                 if (syllableCount == 1){
                     instructionText.DOFade(0f, 0.25f);
+                    for (int i = 0; i < 6; i++){
+                        PlayerBeamEffects[i].SetActive(true);
+                        AntagonistBeamEffects[i].SetActive(true);
+                    }
+                    audioSource.PlayOneShot(KA_Sound);
                 }
-                if (syllableCount == 3){
+                else if (syllableCount == 2){
+                    audioSource.PlayOneShot(ME_Sound);
+                }
+                else if (syllableCount == 3){
                     PlayerBeamEffects[6].SetActive(true);
                     AntagonistBeamEffects[6].SetActive(true);
+                    audioSource.PlayOneShot(HA_Sound);
                 }
-                if (syllableCount >= 5)
+                else if (syllableCount == 4){
+                    audioSource.PlayOneShot(ME_Sound2);
+                }
+                else if (syllableCount >= 5)
                 {
                     StartCoroutine(StartBeamClash());
                 }
@@ -359,7 +375,15 @@ public class DBZLevelManager : LevelManager
         {
             antagonistPowerAura.DOFade(0.8f, 1f).SetLoops(2, LoopType.Yoyo);
         }
-        
+
+        backgroundMusic.Play();
+
+        // Play beam start sound
+        if (GokuScreamSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(GokuScreamSound, 0.6f);
+        }
+
         // Wait for charging
         yield return new WaitForSeconds(2f);
         
@@ -380,11 +404,11 @@ public class DBZLevelManager : LevelManager
         // Play beam start sound
         if (beamStartSound != null && audioSource != null)
         {
-            audioSource.PlayOneShot(beamStartSound);
+            audioSource.PlayOneShot(beamStartSound, 0.25f);
         }
         
         // Start ongoing beam sound
-        StartCoroutine(PlayBeamSounds());
+        BeamClashSound.SetActive(true);
         
         // Set battle state
         currentState = BattleState.BeamClash;
@@ -408,9 +432,9 @@ public class DBZLevelManager : LevelManager
         StopAllCoroutines();
         
         // Play win sound
-        if (playerWinSound != null && audioSource != null)
+        if (playerWinSound)
         {
-            audioSource.PlayOneShot(playerWinSound);
+            playerWinSound.Play();
         }
         
         // Final camera shake
@@ -449,11 +473,15 @@ public class DBZLevelManager : LevelManager
         StopAllCoroutines();
         
         // Play lose sound
-        if (playerLoseSound != null && audioSource != null)
+        if (playerLoseSound != null)
         {
-            audioSource.PlayOneShot(playerLoseSound);
+            playerLoseSound.Play();
         }
-        
+        PlayerBeamEffects[6].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
+        {
+            Destroy(PlayerBeamEffects[6]);
+        });
+
         // Final camera shake
         ShakeCamera(1.0f, 1.0f);
         
@@ -509,20 +537,6 @@ public class DBZLevelManager : LevelManager
         sim.SetSourceObject(antagonistBeam, antagonistBeamSourceIndex);
     }
     
-    private IEnumerator PlayBeamSounds()
-    {
-        // Play ongoing beam clash sound in a loop
-        while (currentState == BattleState.BeamClash)
-        {
-            if (beamClashSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(beamClashSound, 0.5f);
-            }
-            
-            yield return new WaitForSeconds(1.0f);
-        }
-    }
-    
     private Vector3 originalPosition;
     private Sequence shakeSequence;
     public void ShakeCamera(float duration, float strength)
@@ -562,6 +576,10 @@ public class DBZLevelManager : LevelManager
         DOTween.Kill(mainCameraTransform);
         DOTween.Kill(playerPowerAura);
         DOTween.Kill(antagonistPowerAura);
+
+        if (PlayerBeamEffects[6] != null){
+            DOTween.Kill(PlayerBeamEffects[6].transform);
+        }
         
         // Clean up camera shake
         if (shakeSequence != null && shakeSequence.IsActive())
