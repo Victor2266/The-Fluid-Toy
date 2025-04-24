@@ -19,8 +19,10 @@ public class PuzzleLevelManager : LevelManager
     private float smokeDetectedTime;
     private bool smokeDetected;
 
-    void Start()
+    new void Start()
     {
+        base.Start();
+
         if(smokeAlarm == null || smokeAlarmSound == null){
             soundDisabled = true;
         }

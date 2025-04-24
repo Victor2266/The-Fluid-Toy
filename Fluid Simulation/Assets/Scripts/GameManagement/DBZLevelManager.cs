@@ -19,8 +19,8 @@ public class DBZLevelManager : LevelManager
     [Header("Beam Sources")]
     public int playerBeamSourceIndex = 0;
     public int antagonistBeamSourceIndex = 1;
-    public float playerBeamMaxVelocity = 54f;
-    public float antagonistBeamMaxVelocity = 54f;
+    public GameObject[] PlayerBeamEffects;
+    public GameObject[] AntagonistBeamEffects;
     public Color playerBeamColor = Color.blue;
     public Color antagonistBeamColor = Color.red;
     
@@ -169,6 +169,10 @@ public class DBZLevelManager : LevelManager
                 PlayNextSyllable();
                 if (syllableCount == 1){
                     instructionText.DOFade(0f, 0.25f);
+                }
+                if (syllableCount == 3){
+                    PlayerBeamEffects[6].SetActive(true);
+                    AntagonistBeamEffects[6].SetActive(true);
                 }
                 if (syllableCount >= 5)
                 {

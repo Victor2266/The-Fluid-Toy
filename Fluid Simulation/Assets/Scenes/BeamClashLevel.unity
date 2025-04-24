@@ -309,8 +309,22 @@ MonoBehaviour:
   antagonistPowerAura: {fileID: 0}
   playerBeamSourceIndex: 0
   antagonistBeamSourceIndex: 1
-  playerBeamMaxVelocity: 54
-  antagonistBeamMaxVelocity: 54
+  PlayerBeamEffects:
+  - {fileID: 450902123}
+  - {fileID: 1103583122}
+  - {fileID: 2090911254}
+  - {fileID: 518873678}
+  - {fileID: 332252216}
+  - {fileID: 685654240}
+  - {fileID: 1774286826}
+  AntagonistBeamEffects:
+  - {fileID: 456417569}
+  - {fileID: 653120584}
+  - {fileID: 1860557736}
+  - {fileID: 291331744}
+  - {fileID: 702148125}
+  - {fileID: 1641961860}
+  - {fileID: 2112138633}
   playerBeamColor: {r: 0, g: 0.7882353, b: 1, a: 1}
   antagonistBeamColor: {r: 1, g: 0.20000345, b: 0, a: 1}
   syllableText: {fileID: 963810558}
@@ -522,7 +536,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &291331745
 Transform:
   m_ObjectHideFlags: 0
@@ -5350,53 +5364,6 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!1 &304123143
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 304123145}
-  - component: {fileID: 304123144}
-  m_Layer: 0
-  m_Name: Fluid Counter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &304123144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304123143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51961ad5c9fbfc2498970e261e013c8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  checkInterval: 0.2
-  showCountOnGUI: 1
-  _totalActiveParticles: 0
---- !u!4 &304123145
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304123143}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &332252216
 GameObject:
   m_ObjectHideFlags: 0
@@ -5414,7 +5381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &332252217
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -10621,11 +10588,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Outwards Blue Particle System
       objectReference: {fileID: 0}
+    - target: {fileID: 7566475943265542046, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
+--- !u!1 &450902123 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7566475943265542046, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
+  m_PrefabInstance: {fileID: 450902122}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &456417567
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10734,6 +10710,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Outwards Blue Particle System
       objectReference: {fileID: 0}
+    - target: {fileID: 7566475943265542046, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10742,6 +10722,11 @@ PrefabInstance:
 --- !u!4 &456417568 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3042164185103391995, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
+  m_PrefabInstance: {fileID: 456417567}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &456417569 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7566475943265542046, guid: d5b34b9f62dd3ae4d9591f499430d069, type: 3}
   m_PrefabInstance: {fileID: 456417567}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &479108409 stripped
@@ -10771,7 +10756,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &518873679
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -15686,6 +15671,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inwards Blue Particle System
       objectReference: {fileID: 0}
+    - target: {fileID: 3384403536382418699, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6122764113698778849, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -15756,6 +15745,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6122764113698778849, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
   m_PrefabInstance: {fileID: 653120582}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &653120584 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3384403536382418699, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
+  m_PrefabInstance: {fileID: 653120582}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &674052236 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1308933147680943915, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
@@ -15795,7 +15789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &685654241
 Transform:
   m_ObjectHideFlags: 0
@@ -20640,7 +20634,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &702148126
 Transform:
   m_ObjectHideFlags: 0
@@ -25923,6 +25917,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inwards Blue Particle System
       objectReference: {fileID: 0}
+    - target: {fileID: 3384403536382418699, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6122764113698778849, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -25984,6 +25982,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
+--- !u!1 &1103583122 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3384403536382418699, guid: 47adf1218b189824f988140839c0c0ae, type: 3}
+  m_PrefabInstance: {fileID: 1103583121}
+  m_PrefabAsset: {fileID: 0}
 --- !u!225 &1127829677 stripped
 CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 1511865850944546621, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
@@ -26149,7 +26152,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1384628647
 Transform:
   m_ObjectHideFlags: 0
@@ -27098,7 +27101,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1641961861
 Transform:
   m_ObjectHideFlags: 0
@@ -32081,7 +32084,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &1774286827
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -37173,7 +37176,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1860557737
 Transform:
   m_ObjectHideFlags: 0
@@ -42016,7 +42019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1995519136
 Transform:
   m_ObjectHideFlags: 0
@@ -42217,7 +42220,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &2090911255
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -47108,7 +47111,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2112138634
 Transform:
   m_ObjectHideFlags: 0
@@ -51956,4 +51959,3 @@ SceneRoots:
   - {fileID: 168916478}
   - {fileID: 1395268011}
   - {fileID: 2038487268}
-  - {fileID: 304123145}

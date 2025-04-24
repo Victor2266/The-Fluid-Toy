@@ -103,8 +103,10 @@ public class DrinkLevelManager : LevelManager
     private IFluidSimulation sim;
 
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
+        base.Start();
+        
         GameObject simObject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simObject.GetComponent<IFluidSimulation>();
 

@@ -9,8 +9,10 @@ public class Level1Manager : LevelManager
     public FluidDetector fluidDetector;
 
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
+        base.Start();
+        
         if (fluidDetector == null) // Auto-find references if not assigned in inspector on start
         {
             fluidDetector = FindFirstObjectByType<FluidDetector>();

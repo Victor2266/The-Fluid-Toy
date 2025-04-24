@@ -72,8 +72,10 @@ public class Level2Manager : LevelManager
 
 
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
+        base.Start();
+        
         simObject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simObject.GetComponent<IFluidSimulation>();
         if (fluidDetector == null) // Auto-find references if not assigned in inspector on start
