@@ -3595,7 +3595,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevel: 7
   requiredHoldTime: 0
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 1150886131}
   winSound: {fileID: 8300000, guid: caf16949b62a668419789edf051904a6, type: 3}
   backgroundMusic: {fileID: 335403542}
   HoldTimerObject: {fileID: 0}
@@ -3620,6 +3620,7 @@ MonoBehaviour:
   warningThreshold: 0.3
   criticalThreshold: 0.1
   checkInterval: 0.2
+  orderAccept: {fileID: 8300000, guid: b1aacfdf6dd214745900304b3940a122, type: 3}
 --- !u!82 &1150886131
 AudioSource:
   m_ObjectHideFlags: 0
