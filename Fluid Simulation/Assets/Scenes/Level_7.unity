@@ -630,7 +630,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.65999997, y: 0.65999997, z: 0.65999997}
+  m_LocalScale: {x: 0.66, y: 0.66, z: 0.66}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1485577811}
@@ -1773,7 +1773,7 @@ MonoBehaviour:
   maxMouseSpawnRate: 40
   selectedFluid: 0
   brushState: 2
-  interactionRadius: 3
+  interactionRadius: 0.5
   minRadius: 0.25
   maxRadius: 24
   interactionStrength: 360
@@ -3727,6 +3727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1283715218}
   - component: {fileID: 1283715219}
+  - component: {fileID: 1283715220}
   m_Layer: 0
   m_Name: Small Label
   m_TagString: Untagged
@@ -3805,6 +3806,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1283715220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283715217}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7379d937456cb24084373ee3b3947f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originalColor: {r: 0.9568628, g: 0.45882356, b: 0, a: 1}
+  pulseColor: {r: 0.9622642, g: 0.6494838, b: 0.38430038, a: 0.6509804}
+  pulseDuration: 1.25
+  stopAfterFirstTouch: 1
+  enableHoverDetection: 1
+  hoverScaleMultiplier: 1.1
+  spriteRenderer: {fileID: 1283715219}
 --- !u!1 &1299636483
 GameObject:
   m_ObjectHideFlags: 0
@@ -4119,6 +4139,7 @@ GameObject:
   - component: {fileID: 1413552194}
   - component: {fileID: 1413552192}
   - component: {fileID: 1413552196}
+  - component: {fileID: 1413552197}
   m_Layer: 0
   m_Name: DrinkButtonAlcohol
   m_TagString: Untagged
@@ -4178,6 +4199,7 @@ MonoBehaviour:
   fixedDispenseQuantity: 0.2
   dispenseDuration: 0.5
   fixedVelocity: {x: 0, y: -15}
+  keepDispensingWhilePressed: 1
   buttonRenderer: {fileID: 0}
   unpressedSprite: {fileID: 0}
   pressedSprite: {fileID: 0}
@@ -4298,6 +4320,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1413552197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413552191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7379d937456cb24084373ee3b3947f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originalColor: {r: 1, g: 0, b: 0, a: 1}
+  pulseColor: {r: 1, g: 1, b: 1, a: 0.6509804}
+  pulseDuration: 1.25
+  stopAfterFirstTouch: 1
+  enableHoverDetection: 1
+  hoverScaleMultiplier: 1.1
+  spriteRenderer: {fileID: 609005472}
 --- !u!1 &1439088630
 GameObject:
   m_ObjectHideFlags: 0
@@ -4310,6 +4351,7 @@ GameObject:
   - component: {fileID: 1439088637}
   - component: {fileID: 1439088639}
   - component: {fileID: 1439088640}
+  - component: {fileID: 1439088641}
   m_Layer: 0
   m_Name: DrinkButtonBeer
   m_TagString: Untagged
@@ -4349,6 +4391,7 @@ MonoBehaviour:
   fixedDispenseQuantity: 0.2
   dispenseDuration: 0.5
   fixedVelocity: {x: 0, y: -15}
+  keepDispensingWhilePressed: 1
   buttonRenderer: {fileID: 0}
   unpressedSprite: {fileID: 0}
   pressedSprite: {fileID: 0}
@@ -4489,6 +4532,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1439088641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439088630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7379d937456cb24084373ee3b3947f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originalColor: {r: 1, g: 0, b: 0, a: 1}
+  pulseColor: {r: 1, g: 1, b: 1, a: 0.6509804}
+  pulseDuration: 1.25
+  stopAfterFirstTouch: 1
+  enableHoverDetection: 1
+  hoverScaleMultiplier: 1.1
+  spriteRenderer: {fileID: 933578614}
 --- !u!1 &1485577810
 GameObject:
   m_ObjectHideFlags: 0
@@ -5738,7 +5800,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.65999997, y: 0.65999997, z: 0.65999997}
+  m_LocalScale: {x: 0.66, y: 0.66, z: 0.66}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 843180238}
@@ -5898,6 +5960,7 @@ GameObject:
   - component: {fileID: 1750291863}
   - component: {fileID: 1750291861}
   - component: {fileID: 1750291865}
+  - component: {fileID: 1750291866}
   m_Layer: 0
   m_Name: DrinkButtonCola
   m_TagString: Untagged
@@ -5957,6 +6020,7 @@ MonoBehaviour:
   fixedDispenseQuantity: 0.2
   dispenseDuration: 0.5
   fixedVelocity: {x: 0, y: -15}
+  keepDispensingWhilePressed: 1
   buttonRenderer: {fileID: 0}
   unpressedSprite: {fileID: 0}
   pressedSprite: {fileID: 0}
@@ -6077,6 +6141,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1750291866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750291860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7379d937456cb24084373ee3b3947f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originalColor: {r: 1, g: 0, b: 0, a: 1}
+  pulseColor: {r: 1, g: 1, b: 1, a: 0.6509804}
+  pulseDuration: 1.25
+  stopAfterFirstTouch: 1
+  enableHoverDetection: 1
+  hoverScaleMultiplier: 1.1
+  spriteRenderer: {fileID: 1345423298}
 --- !u!1 &1854668167
 GameObject:
   m_ObjectHideFlags: 0
