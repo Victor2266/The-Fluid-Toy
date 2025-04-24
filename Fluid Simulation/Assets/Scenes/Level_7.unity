@@ -4117,8 +4117,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1413552195}
   - component: {fileID: 1413552194}
-  - component: {fileID: 1413552193}
   - component: {fileID: 1413552192}
+  - component: {fileID: 1413552196}
   m_Layer: 0
   m_Name: DrinkButtonAlcohol
   m_TagString: Untagged
@@ -4162,103 +4162,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.2
---- !u!82 &1413552193
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1413552191}
-  m_Enabled: 0
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
-  m_Resource: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &1413552194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4279,9 +4182,9 @@ MonoBehaviour:
   unpressedSprite: {fileID: 0}
   pressedSprite: {fileID: 0}
   stayPressedWhileDispensing: 0
-  audioSource: {fileID: 0}
-  pressSound: {fileID: 0}
-  releaseSound: {fileID: 0}
+  audioSource: {fileID: 1413552196}
+  pressSound: {fileID: 8300000, guid: dcc18f9e5c998a744918952ac038a414, type: 3}
+  releaseSound: {fileID: 8300000, guid: 26d41ce79c0125043b266a3142e5ecfd, type: 3}
 --- !u!4 &1413552195
 Transform:
   m_ObjectHideFlags: 0
@@ -4298,41 +4201,22 @@ Transform:
   - {fileID: 609005471}
   m_Father: {fileID: 1347525716}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1439088630
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1439088636}
-  - component: {fileID: 1439088637}
-  - component: {fileID: 1439088632}
-  - component: {fileID: 1439088639}
-  m_Layer: 0
-  m_Name: DrinkButtonBeer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!82 &1439088632
+--- !u!82 &1413552196
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1439088630}
-  m_Enabled: 0
+  m_GameObject: {fileID: 1413552191}
+  m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
-  m_Resource: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
-  m_PlayOnAwake: 0
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -4414,6 +4298,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1439088630
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1439088636}
+  - component: {fileID: 1439088637}
+  - component: {fileID: 1439088639}
+  - component: {fileID: 1439088640}
+  m_Layer: 0
+  m_Name: DrinkButtonBeer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &1439088636
 Transform:
   m_ObjectHideFlags: 0
@@ -4450,9 +4353,9 @@ MonoBehaviour:
   unpressedSprite: {fileID: 0}
   pressedSprite: {fileID: 0}
   stayPressedWhileDispensing: 0
-  audioSource: {fileID: 0}
-  pressSound: {fileID: 0}
-  releaseSound: {fileID: 0}
+  audioSource: {fileID: 1439088640}
+  pressSound: {fileID: 8300000, guid: dcc18f9e5c998a744918952ac038a414, type: 3}
+  releaseSound: {fileID: 8300000, guid: 26d41ce79c0125043b266a3142e5ecfd, type: 3}
 --- !u!58 &1439088639
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -4489,6 +4392,103 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.2
+--- !u!82 &1439088640
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439088630}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1485577810
 GameObject:
   m_ObjectHideFlags: 0
@@ -5896,8 +5896,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1750291864}
   - component: {fileID: 1750291863}
-  - component: {fileID: 1750291862}
   - component: {fileID: 1750291861}
+  - component: {fileID: 1750291865}
   m_Layer: 0
   m_Name: DrinkButtonCola
   m_TagString: Untagged
@@ -5941,22 +5941,61 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.2
---- !u!82 &1750291862
+--- !u!114 &1750291863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750291860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd0f9595ab94b142912b5ef6cfcd381, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceIndex: 2
+  fixedDispenseQuantity: 0.2
+  dispenseDuration: 0.5
+  fixedVelocity: {x: 0, y: -15}
+  buttonRenderer: {fileID: 0}
+  unpressedSprite: {fileID: 0}
+  pressedSprite: {fileID: 0}
+  stayPressedWhileDispensing: 0
+  audioSource: {fileID: 1750291865}
+  pressSound: {fileID: 8300000, guid: dcc18f9e5c998a744918952ac038a414, type: 3}
+  releaseSound: {fileID: 8300000, guid: 26d41ce79c0125043b266a3142e5ecfd, type: 3}
+--- !u!4 &1750291864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750291860}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.75, y: 0.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1345423297}
+  m_Father: {fileID: 1347525716}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1750291865
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1750291860}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
-  m_Resource: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
-  m_PlayOnAwake: 0
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -6038,45 +6077,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1750291863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1750291860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dd0f9595ab94b142912b5ef6cfcd381, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sourceIndex: 2
-  fixedDispenseQuantity: 0.2
-  dispenseDuration: 0.5
-  fixedVelocity: {x: 0, y: -15}
-  buttonRenderer: {fileID: 0}
-  unpressedSprite: {fileID: 0}
-  pressedSprite: {fileID: 0}
-  stayPressedWhileDispensing: 0
-  audioSource: {fileID: 0}
-  pressSound: {fileID: 0}
-  releaseSound: {fileID: 0}
---- !u!4 &1750291864
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1750291860}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.75, y: 0.3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1345423297}
-  m_Father: {fileID: 1347525716}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1854668167
 GameObject:
   m_ObjectHideFlags: 0
