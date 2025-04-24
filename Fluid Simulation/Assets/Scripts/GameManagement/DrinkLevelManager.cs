@@ -137,6 +137,7 @@ public class DrinkLevelManager : LevelManager
             return;
         }
 
+        timer += Time.deltaTime;
         if (Time.time - _lastCheckTime < checkInterval) return;
         _lastCheckTime = Time.time;
 
