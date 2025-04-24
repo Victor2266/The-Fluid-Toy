@@ -89,6 +89,9 @@ public class DrinkLevelManager : LevelManager
     public float checkInterval = 0.2f; // Optimize performance by not checking every frame
     private float _lastCheckTime;
 
+    [Header("Sound Effects")]
+    public AudioClip orderAccept;
+
     // Private references
     private bool setWin = false;
     private Transform orderZone;
@@ -302,6 +305,11 @@ public class DrinkLevelManager : LevelManager
 
         orders.Remove(order);
         PositionOrderUIs();
+
+        if (audioSource != null && orderAccept != null)
+        {
+            audioSource.PlayOneShot(orderAccept);
+        }
 
         Debug.Log($"Orders left: {orders.Count}");
         if (orders.Count == 0) setWin = true;
