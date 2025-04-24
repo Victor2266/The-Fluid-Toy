@@ -23,17 +23,20 @@ public class SimulationBoundsFitter : MonoBehaviour
         float boundsWidth = sceneCamera.orthographicSize * 2f * Screen.width / Screen.height;
         float boundsHeight = sceneCamera.orthographicSize * 2f;
 
-        // Set up Obstacle Boundary colliders positions
-        obstacleBoundarys[0].transform.localPosition = new Vector3(0, (boundsHeight + 15f)/2f, 0);
-        obstacleBoundarys[1].transform.localPosition = new Vector3(0, -(boundsHeight + 15f)/2f, 0);
-        obstacleBoundarys[2].transform.localPosition = new Vector3(-(boundsWidth + 15f)/2f, 0, 0);
-        obstacleBoundarys[3].transform.localPosition = new Vector3((boundsWidth + 15f)/2f, 0, 0);
+        if (obstacleBoundarys.Length > 0)
+        {
+            // Set up Obstacle Boundary colliders positions
+            obstacleBoundarys[0].transform.localPosition = new Vector3(0, (boundsHeight + 15f)/2f, 0);
+            obstacleBoundarys[1].transform.localPosition = new Vector3(0, -(boundsHeight + 15f)/2f, 0);
+            obstacleBoundarys[2].transform.localPosition = new Vector3(-(boundsWidth + 15f)/2f, 0, 0);
+            obstacleBoundarys[3].transform.localPosition = new Vector3((boundsWidth + 15f)/2f, 0, 0);
 
-        // Set up Obstacle Boundary colliders sizes
-        obstacleBoundarys[0].GetComponent<BoxCollider2D>().size = new Vector2((boundsHeight + 15f)/2f * 3.5f, 15f);
-        obstacleBoundarys[1].GetComponent<BoxCollider2D>().size = new Vector2((boundsHeight + 15f)/2f * 3.5f, 15f);
-        obstacleBoundarys[2].GetComponent<BoxCollider2D>().size = new Vector2(15f, (boundsWidth + 15f)/2f * 2f);
-        obstacleBoundarys[3].GetComponent<BoxCollider2D>().size = new Vector2(15f, (boundsWidth + 15f)/2f * 2f);
+            // Set up Obstacle Boundary colliders sizes
+            obstacleBoundarys[0].GetComponent<BoxCollider2D>().size = new Vector2((boundsHeight + 15f)/2f * 3.5f, 15f);
+            obstacleBoundarys[1].GetComponent<BoxCollider2D>().size = new Vector2((boundsHeight + 15f)/2f * 3.5f, 15f);
+            obstacleBoundarys[2].GetComponent<BoxCollider2D>().size = new Vector2(15f, (boundsWidth + 15f)/2f * 2f);
+            obstacleBoundarys[3].GetComponent<BoxCollider2D>().size = new Vector2(15f, (boundsWidth + 15f)/2f * 2f);
+        }
 
         // Update simulation settings
         sim.setBounds(new Vector2(boundsWidth, boundsHeight));   
