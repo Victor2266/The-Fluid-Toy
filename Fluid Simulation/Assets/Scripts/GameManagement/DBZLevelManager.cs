@@ -161,7 +161,7 @@ public class DBZLevelManager : LevelManager
     private void HandleIntroState()
     {
         // Process space bar presses for kamehameha syllables
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
             if (syllableCount < 5)
             {
@@ -202,7 +202,7 @@ public class DBZLevelManager : LevelManager
     private void HandleBeamClashState()
     {
         // Process space bar spam
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time - lastSpacePressTime > spaceBarPressCooldown)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && Time.time - lastSpacePressTime > spaceBarPressCooldown)
         {
             lastSpacePressTime = Time.time;
             spaceBarPressCount++;
@@ -335,7 +335,7 @@ public class DBZLevelManager : LevelManager
         if (instructionText != null)
         {
             instructionText.alpha = 1f;
-            instructionText.text = "AAAAAAHHHHHHHHHHHHHH...";
+            instructionText.text = "HAAAAAAAAAAAAAAAAAAAA...";
         }
         
         // Move camera to clash position
