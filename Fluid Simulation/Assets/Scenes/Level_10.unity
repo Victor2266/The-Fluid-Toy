@@ -1819,7 +1819,7 @@ MonoBehaviour:
   fixedTimeStep: 0
   maxParticles: 10000
   scanForObstaclesOnStart: 0
-  scanForParticleSpawnersOnStart: 1
+  scanForParticleSpawnersOnStart: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -1846,16 +1846,8 @@ MonoBehaviour:
   fluidDataArray:
   - {fileID: 11400000, guid: 423f11e3028cd9f41a43da9a7715b357, type: 2}
   compute: {fileID: 7200000, guid: 1b27e55b66edb094bbb191e63a6a5359, type: 3}
-  spawners:
-  - {fileID: 0}
-  boxColliders:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  spawners: []
+  boxColliders: []
   circleColliders: []
   sourceObjects: []
   drainObjects: []
