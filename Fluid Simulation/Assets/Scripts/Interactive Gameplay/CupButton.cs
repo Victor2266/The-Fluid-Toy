@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class CupButton : MonoBehaviour
 {
-    [SerializeField] CupFactory factory;
-    [SerializeField] Vector2 spawnPoint;
+    [SerializeField] private CupFactory factory;
+    [SerializeField] private Vector2 spawnPoint;
 
     void OnMouseDown()
     {

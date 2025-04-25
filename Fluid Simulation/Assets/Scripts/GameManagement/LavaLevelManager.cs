@@ -13,8 +13,10 @@ public class LavaLevelManager : LevelManager
     public KeyCode winKey = KeyCode.F5;
 
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {        
+        base.Start();
+        
         if (thermalSensor == null) // Auto-find references if not assigned in inspector on start
         {
             thermalSensor = FindFirstObjectByType<ThermalSensor>();

@@ -25,10 +25,10 @@ public class CupFactory : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
+    [SerializeField] private List<CupInstance> activeClones = new List<CupInstance>();
 
     private IFluidSimulation sim;
     private SensorManager sensorManager; // If it exists
-    private List<CupInstance> activeClones = new List<CupInstance>();
 
     private void Start()
     {
@@ -46,7 +46,7 @@ public class CupFactory : MonoBehaviour
         return System.Guid.NewGuid().ToString();
     }
 
-    public GameObject SpawnCupClone()
+    private GameObject SpawnCupClone()
     {
         if (activeClones.Count >= maxClones)
         {
@@ -60,15 +60,9 @@ public class CupFactory : MonoBehaviour
             return null;
         }
 
-        // Store prefab state; change prefab state to active
-        bool cupActive = cupPrefab.activeSelf;
-        cupPrefab.SetActive(true);
-
         // Instantiate the new cup
         GameObject newCup = Instantiate(cupPrefab, spawnPosition, Quaternion.identity);
 
-        // Restore original cup state (if inactive, disable again)
-        cupPrefab.SetActive(cupActive);
 
         // Generate and assign unique ID
         string id = GenerateUniqueID();
@@ -88,7 +82,7 @@ public class CupFactory : MonoBehaviour
             spawnTime = System.DateTime.Now,
             cupColliders = colliders
         };
-        activeClones.Add(instance);
+        this.activeClones.Add(instance);
 
         // Update collider and sensor lists
         AddCollidersToSimulation(colliders);
@@ -105,7 +99,7 @@ public class CupFactory : MonoBehaviour
     // Spawn a new clone at a specific position
     public GameObject SpawnCupCloneAtPosition(Vector2 position)
     {
-        GameObject cup = SpawnCupClone();
+        GameObject cup = this.SpawnCupClone();
         if (cup != null)
         {
             cup.transform.position = position;
@@ -137,7 +131,7 @@ public class CupFactory : MonoBehaviour
     }
 
     // Delete the oldest clone
-    public bool DeleteOldestClone()
+    private bool DeleteOldestClone()
     {
         if (activeClones.Count == 0) return false;
 
@@ -196,7 +190,7 @@ public class CupFactory : MonoBehaviour
     public List<string> GetAllCloneIDs()
     {
         List<string> ids = new List<string>();
-        foreach (var instance in activeClones)
+        foreach (var instance in this.activeClones)
         {
             ids.Add(instance.uniqueID);
         }
@@ -206,7 +200,7 @@ public class CupFactory : MonoBehaviour
     // Get a clone by ID
     public GameObject GetCloneByID(string id)
     {
-        foreach (var instance in activeClones)
+        foreach (var instance in this.activeClones)
         {
             if (instance.uniqueID == id)
             {
@@ -218,7 +212,7 @@ public class CupFactory : MonoBehaviour
 
     public List<CupInstance> GetCups()
     {
-        return activeClones;
+        return this.activeClones;
     }
 
     private void AddCollidersToSimulation(Transform[] colliders)

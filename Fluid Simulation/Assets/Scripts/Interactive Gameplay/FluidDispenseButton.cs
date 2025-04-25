@@ -7,6 +7,7 @@ public class FluidDispenseButton : MonoBehaviour
     public float fixedDispenseQuantity = 0.5f;
     public float dispenseDuration = 0.5f;
     public Vector2 fixedVelocity = new Vector2(0, 1f);
+    public bool keepDispensingWhilePressed = false;
 
     [Header("Button Visuals")]
     public SpriteRenderer buttonRenderer;
@@ -44,7 +45,14 @@ public class FluidDispenseButton : MonoBehaviour
     void Update()
     {
         // Stop dispensing after duration elapses
-        if (isDispensing && Time.time > dispenseEndTime)
+        if (keepDispensingWhilePressed)
+        {
+            if (isPressed == false)
+            {
+                StopDispensing();
+            }
+        }
+        else if (isDispensing && Time.time > dispenseEndTime)
         {
             StopDispensing();
         }

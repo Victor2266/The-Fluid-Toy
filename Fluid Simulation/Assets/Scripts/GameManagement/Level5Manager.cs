@@ -81,8 +81,10 @@ public class Level5Manager : LevelManager
 
     private bool PlanetDetected = true;
 
-    void Start()
+    new void Start()
     {
+        base.Start();
+        
         Cursor.visible = false;
         interactionRadiusVisualizer.hideLineRenderer = true;
 

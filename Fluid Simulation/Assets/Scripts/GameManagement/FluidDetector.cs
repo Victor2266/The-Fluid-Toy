@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 public class FluidDetector : FluidSensor
-// This only works for the regular simulation and not the AoS version right now because it accesses the buffers like positionBuffer,
-// which we replaced with the particle struct buffer
 {
     [Header("Detection Settings")]
     [Tooltip("The density threshold above which fluid is considered present")]
