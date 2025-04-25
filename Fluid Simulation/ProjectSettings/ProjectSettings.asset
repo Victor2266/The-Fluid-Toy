@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: The Fluid Toy Prototype
-  productName: The Fluid Toy Prototype
+  companyName: The Fluid Toy
+  productName: The Fluid Toy
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -140,8 +140,10 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.5
-  preloadedAssets: []
+  bundleVersion: 0.9
+  preloadedAssets:
+  - {fileID: 11400000, guid: 524aea0a76496cf43aca317b3a9bcbd3, type: 2}
+  - {fileID: 6654883077767455056, guid: 829ae07d8ffff7b429f19f2f698c1b92, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
