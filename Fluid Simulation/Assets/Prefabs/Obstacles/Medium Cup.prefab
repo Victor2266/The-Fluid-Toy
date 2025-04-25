@@ -256,6 +256,8 @@ GameObject:
   - component: {fileID: 8655524319573946218}
   - component: {fileID: 4357143932444015160}
   - component: {fileID: 4957522149877465389}
+  - component: {fileID: -7478721026206008828}
+  - component: {fileID: -609461340070968450}
   m_Layer: 0
   m_Name: Medium Cup
   m_TagString: Untagged
@@ -336,6 +338,36 @@ MonoBehaviour:
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
+--- !u!114 &-7478721026206008828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2949037432530332599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5
+--- !u!114 &-609461340070968450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2949037432530332599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 3565508520698697714, guid: 9331f1f4c1c0e5c459a53cbdcea3cd38, type: 3}
+  contextMenuHeading: Edit Object
+  childObjectType: 1
 --- !u!1 &4773830984046440315
 GameObject:
   m_ObjectHideFlags: 0

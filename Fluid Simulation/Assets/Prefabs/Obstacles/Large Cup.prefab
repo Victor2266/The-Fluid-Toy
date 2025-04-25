@@ -611,6 +611,8 @@ GameObject:
   - component: {fileID: 8129066666076013502}
   - component: {fileID: 171839453107028080}
   - component: {fileID: 652486233953864105}
+  - component: {fileID: 9205992153011275962}
+  - component: {fileID: 8926225627470056824}
   m_Layer: 0
   m_Name: Large Cup
   m_TagString: Untagged
@@ -691,6 +693,36 @@ MonoBehaviour:
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 1, y: 1, z: 1}
+--- !u!114 &9205992153011275962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4993855558580682782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5
+--- !u!114 &8926225627470056824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4993855558580682782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 3565508520698697714, guid: 9331f1f4c1c0e5c459a53cbdcea3cd38, type: 3}
+  contextMenuHeading: Edit Object
+  childObjectType: 1
 --- !u!1 &5031364160700282049
 GameObject:
   m_ObjectHideFlags: 0

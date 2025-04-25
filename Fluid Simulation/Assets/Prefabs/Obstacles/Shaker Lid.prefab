@@ -432,6 +432,8 @@ GameObject:
   - component: {fileID: 8224005858861242044}
   - component: {fileID: 5865508497186667788}
   - component: {fileID: 4560259074468210708}
+  - component: {fileID: 336877679790532624}
+  - component: {fileID: 2111649011904213498}
   m_Layer: 0
   m_Name: Shaker Lid
   m_TagString: Untagged
@@ -544,6 +546,36 @@ MonoBehaviour:
   delay: 0.5
   maxAngularVelocity: 50
   rotationDamping: 2
+--- !u!114 &336877679790532624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4764608903436190272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8cf88c18463984298fad692e310e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationTag: Simulation
+  boundsBuffer: 0.05
+  checkInterval: 5
+--- !u!114 &2111649011904213498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4764608903436190272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a06b0c60816874db630ec019025764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuPrefab: {fileID: 3565508520698697714, guid: 9331f1f4c1c0e5c459a53cbdcea3cd38, type: 3}
+  contextMenuHeading: Edit Object
+  childObjectType: 1
 --- !u!1 &6056457372669671197
 GameObject:
   m_ObjectHideFlags: 0
