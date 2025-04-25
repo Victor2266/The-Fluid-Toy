@@ -11,10 +11,12 @@ public class DBZLevelManager : LevelManager
     private IFluidSimulation sim;
     
     [Header("Characters")]
-    public Transform playerCharacter;
-    public Transform antagonistCharacter;
-    public Image playerPowerAura;
-    public Image antagonistPowerAura;
+    public GameObject playerCharacter1;
+    public GameObject playerCharacter2;
+    public GameObject antagonistCharacter;
+    public GameObject antagonistCharacter2;
+    public ParticleSystem playerPowerAura;
+    public ParticleSystem antagonistPowerAura;
     
     [Header("Beam Sources")]
     public int playerBeamSourceIndex = 0;
@@ -72,8 +74,6 @@ public class DBZLevelManager : LevelManager
     private int spaceBarPressCount = 0;
     private float lastSpacePressTime;
     private float spaceBarPressCooldown = 0.05f; // Minimum time between space presses
-    private float lastPowerDecayTime;
-    private bool beamSoundPlaying = false;
     Color orange = new Color(1f, 0.5f, 0f);
     
     new void Start()
@@ -101,7 +101,7 @@ public class DBZLevelManager : LevelManager
             
         // Display initial instruction
         if (instructionText != null)
-            instructionText.text = "Press SPACE to begin Kamehameha";
+            instructionText.text = "Press SPACE/LMB to begin Kamehameha";
             
         // Set up camera
         if (mainCameraTransform == null)
@@ -109,13 +109,6 @@ public class DBZLevelManager : LevelManager
             
         // Initialize sources but turn them off
         InitializeBeamSources(false);
-        
-        // Set initial player auras
-        if (playerPowerAura != null)
-            playerPowerAura.color = new Color(playerBeamColor.r, playerBeamColor.g, playerBeamColor.b, 0);
-            
-        if (antagonistPowerAura != null)
-            antagonistPowerAura.color = new Color(antagonistBeamColor.r, antagonistBeamColor.g, antagonistBeamColor.b, 0.5f);
     }
     
     void Update()
@@ -283,18 +276,6 @@ public class DBZLevelManager : LevelManager
             ShakeCamera(0.2f, shakeStrength);
         }
         
-        // Update character auras
-        if (playerPowerAura != null)
-        {
-            float playerAuraIntensity = Mathf.Lerp(0.2f, 0.8f, currentBeamPower / maxBeamPower);
-            playerPowerAura.color = new Color(playerBeamColor.r, playerBeamColor.g, playerBeamColor.b, playerAuraIntensity);
-        }
-        
-        if (antagonistPowerAura != null)
-        {
-            float antagonistAuraIntensity = Mathf.Lerp(0.8f, 0.2f, currentBeamPower / maxBeamPower);
-            antagonistPowerAura.color = new Color(antagonistBeamColor.r, antagonistBeamColor.g, antagonistBeamColor.b, antagonistAuraIntensity);
-        }
     }
     
     private void PlayNextSyllable()
@@ -366,15 +347,10 @@ public class DBZLevelManager : LevelManager
         }
         
         // Charging animation/effects
-        if (playerPowerAura != null)
-        {
-            playerPowerAura.DOFade(0.4f, 1f).SetLoops(2, LoopType.Yoyo);
-        }
-        
-        if (antagonistPowerAura != null)
-        {
-            antagonistPowerAura.DOFade(0.8f, 1f).SetLoops(2, LoopType.Yoyo);
-        }
+        playerCharacter1.SetActive(false);
+        playerCharacter2.SetActive(true);
+        antagonistCharacter.SetActive(false);
+        antagonistCharacter2.SetActive(true);
 
         backgroundMusic.Play();
 
@@ -394,7 +370,7 @@ public class DBZLevelManager : LevelManager
         // Update instruction text
         if (instructionText != null)
         {
-            instructionText.text = "MASH SPACE TO INCREASE BEAM POWER!";
+            instructionText.text = "MASH SPACE/LMB TO INCREASE BEAM POWER!";
             instructionText.transform.DOScale(Vector3.one * 1.2f, 0.25f).SetLoops(-1, LoopType.Yoyo);
         }
         
@@ -436,6 +412,16 @@ public class DBZLevelManager : LevelManager
         {
             playerWinSound.Play();
         }
+
+        // Hide beams
+        for(int i = 0; i < AntagonistBeamEffects.Length - 1; i++)
+        {
+            AntagonistBeamEffects[i].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
+            {
+                Destroy(AntagonistBeamEffects[i]);
+            });
+        }
+        antagonistCharacter2.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f);
         
         // Final camera shake
         ShakeCamera(1.5f, 1.2f);
@@ -477,10 +463,16 @@ public class DBZLevelManager : LevelManager
         {
             playerLoseSound.Play();
         }
-        PlayerBeamEffects[6].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
+
+        // Hide beams
+        for(int i = 0; i < PlayerBeamEffects.Length - 1; i++)
         {
-            Destroy(PlayerBeamEffects[6]);
-        });
+            PlayerBeamEffects[i].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
+            {
+                Destroy(PlayerBeamEffects[i]);
+            });
+        }
+        playerCharacter2.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f);
 
         // Final camera shake
         ShakeCamera(1.0f, 1.0f);
@@ -577,10 +569,14 @@ public class DBZLevelManager : LevelManager
         DOTween.Kill(playerPowerAura);
         DOTween.Kill(antagonistPowerAura);
 
-        if (PlayerBeamEffects[6] != null){
-            DOTween.Kill(PlayerBeamEffects[6].transform);
+        for(int i = 0; i < PlayerBeamEffects.Length - 1; i++)
+        {
+            if (PlayerBeamEffects[i] != null) DOTween.Kill(PlayerBeamEffects[i]);
+            if (AntagonistBeamEffects[i] != null) DOTween.Kill(AntagonistBeamEffects[i]);
         }
-        
+        if (playerCharacter2 != null) DOTween.Kill(playerCharacter2.GetComponent<SpriteRenderer>());
+        if (antagonistCharacter2 != null) DOTween.Kill(antagonistCharacter2.GetComponent<SpriteRenderer>());
+
         // Clean up camera shake
         if (shakeSequence != null && shakeSequence.IsActive())
         {
