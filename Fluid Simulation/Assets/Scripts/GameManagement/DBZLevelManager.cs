@@ -356,6 +356,12 @@ public class DBZLevelManager : LevelManager
         antagonistCharacter.SetActive(false);
         antagonistCharacter2.SetActive(true);
 
+        // Disable power aura particles
+        ParticleSystem.EmissionModule emissionModule = playerPowerAura.emission;
+        emissionModule.enabled = false;
+        emissionModule = antagonistPowerAura.emission;
+        emissionModule.enabled = false;
+
         backgroundMusic.Play();
 
         // Play beam start sound
@@ -441,7 +447,7 @@ public class DBZLevelManager : LevelManager
         sim.SetSourceObject(antagonistBeam, antagonistBeamSourceIndex);
         
         // Wait for animation
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         
         // Trigger level completion
         TriggerWin();
@@ -492,7 +498,7 @@ public class DBZLevelManager : LevelManager
         sim.SetSourceObject(antagonistBeam, antagonistBeamSourceIndex);
         
         // Wait for animation
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         
         // Restart level
         UnityEngine.SceneManagement.SceneManager.LoadScene(
