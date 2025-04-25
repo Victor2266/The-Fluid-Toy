@@ -12,6 +12,7 @@ public class PipesLevelManager : LevelManager
     void FixedUpdate()
     {
         if(hasWon) return;
+        timer += Time.deltaTime;
 
         if(tankFluidDetector1 != null && tankFluidDetector2 != null){
             if(tankFluidDetector1.isFluidPresent && tankFluidDetector2.isFluidPresent){
