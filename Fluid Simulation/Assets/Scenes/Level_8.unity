@@ -6219,7 +6219,7 @@ MonoBehaviour:
   sourceInitData:
     transform: {fileID: 748289325}
     velo: {x: 10, y: 0}
-    spawnRate: 0.2
+    spawnRate: 1
     fluidType: 1
 --- !u!1 &758440905
 GameObject:
@@ -12388,7 +12388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 1
-  fixedTimeStep: 0
+  fixedTimeStep: 1
   maxParticles: 10000
   scanForObstaclesOnStart: 1
   scanForParticleSpawnersOnStart: 1
@@ -12401,7 +12401,7 @@ MonoBehaviour:
   edgeType: 1
   gravityMode: 0
   evenlyDistributeParticleSpawns: 1
-  maxSourceSpawnRate: 20
+  maxSourceSpawnRate: 9
   maxMouseSpawnRate: 40
   selectedFluid: 0
   brushState: 2
