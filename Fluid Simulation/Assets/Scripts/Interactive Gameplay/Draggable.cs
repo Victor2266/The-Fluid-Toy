@@ -24,6 +24,7 @@ public class Draggable : MonoBehaviour
 
     [Tooltip("Max Speed Settings")]
     public float maxDragSpeed = Mathf.Infinity; // Maximum dragging speed (units per second)
+    public bool maintainMomentum = true; // Maintain momentum when thrown
     private float currentSpeed;
 
     public float minScale = 0.1f; // Minimum scale limit
@@ -64,7 +65,7 @@ public class Draggable : MonoBehaviour
         if (rb2d != null) {
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             rb2d.freezeRotation = false;
-            rb2d.AddForce(currentVelocity, ForceMode2D.Impulse);
+            if (maintainMomentum) rb2d.AddForce(currentVelocity, ForceMode2D.Impulse);
         }
         
     }
