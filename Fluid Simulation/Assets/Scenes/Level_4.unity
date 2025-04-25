@@ -343,6 +343,7 @@ MonoBehaviour:
   rotatable: 0
   rotationSpeed: 10
   maxDragSpeed: Infinity
+  maintainMomentum: 1
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -570,7 +571,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: c9f69d07989120945bdc8e7b6a2a2b07, type: 3}
   m_Resource: {fileID: 8300000, guid: c9f69d07989120945bdc8e7b6a2a2b07, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -1307,7 +1308,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
   m_Resource: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -2870,7 +2871,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 898d802f0b44a8a408b148cc043987d9, type: 3}
   m_Resource: {fileID: 8300000, guid: 898d802f0b44a8a408b148cc043987d9, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -4159,7 +4160,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
   m_Resource: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -4754,7 +4755,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
   m_Resource: {fileID: 8300000, guid: 0c959f23dcfe15641ad491766e000954, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -6656,7 +6657,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: b0a1338cc161c274f89bbff856f4fa1a, type: 3}
   m_Resource: {fileID: 8300000, guid: b0a1338cc161c274f89bbff856f4fa1a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -8577,7 +8578,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 30fd05a88777048d49f7fa5914e2fa9b, type: 3}
   m_Resource: {fileID: 8300000, guid: 30fd05a88777048d49f7fa5914e2fa9b, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -9421,6 +9422,7 @@ MonoBehaviour:
   rotatable: 0
   rotationSpeed: 10
   maxDragSpeed: Infinity
+  maintainMomentum: 1
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -10046,8 +10048,8 @@ Transform:
   m_GameObject: {fileID: 1180007889}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.4, y: -10.4267, z: 0}
-  m_LocalScale: {x: 1, y: 1.035, z: 1}
+  m_LocalPosition: {x: -3.6399999, y: -10.4267, z: 0}
+  m_LocalScale: {x: 0.64, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504945028}
@@ -10505,7 +10507,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: be8f11d4f9c74e4469b4750803f3a708, type: 3}
   m_Resource: {fileID: 8300000, guid: be8f11d4f9c74e4469b4750803f3a708, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -15125,7 +15127,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: b0a1338cc161c274f89bbff856f4fa1a, type: 3}
   m_Resource: {fileID: 8300000, guid: b0a1338cc161c274f89bbff856f4fa1a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -15279,8 +15281,8 @@ Transform:
   m_GameObject: {fileID: 1608589569}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.5, y: -10.4267, z: 0}
-  m_LocalScale: {x: 1, y: 1.035, z: 1}
+  m_LocalPosition: {x: -11.74, y: -10.4267, z: 0}
+  m_LocalScale: {x: 0.64, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504945028}
@@ -16115,8 +16117,8 @@ Transform:
   m_GameObject: {fileID: 1814887125}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: -10.4267, z: 0}
-  m_LocalScale: {x: 1, y: 1.035, z: 1}
+  m_LocalPosition: {x: 4.76, y: -10.4267, z: 0}
+  m_LocalScale: {x: 0.64, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504945028}
@@ -16455,6 +16457,7 @@ MonoBehaviour:
   rightClickMaxPitch: 1.05
   rightClickVolume: 0.3
   enableRightClickHoldSound: 0
+  enableSpaceSound: 0
 --- !u!82 &1854668170
 AudioSource:
   m_ObjectHideFlags: 0
@@ -17019,7 +17022,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 05f3bfe96cd1e2840b0da269a5e028c3, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: b0a1338cc161c274f89bbff856f4fa1a, type: 3}
   m_Resource: {fileID: 8300000, guid: b0a1338cc161c274f89bbff856f4fa1a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -17680,7 +17683,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: a95fd58176b9e5b4a934ae087c344cc8, type: 3}
   m_Resource: {fileID: 8300000, guid: a95fd58176b9e5b4a934ae087c344cc8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
