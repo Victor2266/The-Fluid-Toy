@@ -11848,12 +11848,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: 'Get the water from the green pipe on the left into the yellow pipes
-        on the right to fill up the tanks.
+      value: 'Get the water from the <color=green>green pipe</color> on the left
+        into the <color=yellow>yellow pipes</color> on the right to fill up the tanks.
 
 
-        Move the disconnected pipe segments
-        by holding the mouse button while dragging (touch while dragging on a touchscreen).'
+        Drag
+        the pipe segments to move them around.'
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontAsset
@@ -12007,7 +12007,7 @@ PrefabInstance:
       propertyPath: m_text
       value: '
 
-        Fix the leak and fill up the tanks!'
+        Fix the leak, fill the tanks!'
       objectReference: {fileID: 0}
     - target: {fileID: 6805873491615882965, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_fontSize
@@ -17048,7 +17048,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: a95fd58176b9e5b4a934ae087c344cc8, type: 3}
   m_Resource: {fileID: 8300000, guid: a95fd58176b9e5b4a934ae087c344cc8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
