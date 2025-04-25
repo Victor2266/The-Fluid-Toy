@@ -90,6 +90,7 @@ public class DrinkLevelManager : LevelManager
     private float _lastCheckTime;
 
     [Header("Sound Effects")]
+    public AudioSource SFXAudioSource;
     public AudioClip orderAccept;
 
     // Private references
@@ -308,9 +309,10 @@ public class DrinkLevelManager : LevelManager
         orders.Remove(order);
         PositionOrderUIs();
 
-        if (audioSource != null && orderAccept != null)
+        if (SFXAudioSource != null && orderAccept != null)
         {
-            audioSource.PlayOneShot(orderAccept);
+            SFXAudioSource.pitch = UnityEngine.Random.Range(1.1f, 1.5f);
+            SFXAudioSource.PlayOneShot(orderAccept);
         }
 
         Debug.Log($"Orders left: {orders.Count}");

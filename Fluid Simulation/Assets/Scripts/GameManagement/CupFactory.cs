@@ -30,8 +30,11 @@ public class CupFactory : MonoBehaviour
     private IFluidSimulation sim;
     private SensorManager sensorManager; // If it exists
 
+    public AudioSource audioSource;
+
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         GameObject simObject = GameObject.FindGameObjectWithTag("Simulation");
         sim = simObject.GetComponent<IFluidSimulation>();
 
@@ -63,6 +66,8 @@ public class CupFactory : MonoBehaviour
         // Instantiate the new cup
         GameObject newCup = Instantiate(cupPrefab, spawnPosition, Quaternion.identity);
 
+        // play sound effect
+        audioSource.Play();
 
         // Generate and assign unique ID
         string id = GenerateUniqueID();
