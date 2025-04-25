@@ -1211,10 +1211,10 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4422db8b8da098447a93c42e27e1c857, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 6249d6e06d674bf4b8cbb5e70643fe56, type: 3}
-  m_Resource: {fileID: 8300000, guid: 6249d6e06d674bf4b8cbb5e70643fe56, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ef748cf0451e40b479ab5972f2184afc, type: 3}
+  m_Resource: {fileID: 8300000, guid: ef748cf0451e40b479ab5972f2184afc, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.2
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -9141,7 +9141,7 @@ MonoBehaviour:
   backgroundMusic: {fileID: 335403542}
   HoldTimerObject: {fileID: 0}
   HoldTimerText: {fileID: 0}
-  initialMusicVolume: 0.5
+  initialMusicVolume: 0.1
   fadeOutStartTime: 0
   showDebugTimer: 1
   levelCompleteAnim: {fileID: 1150886127}

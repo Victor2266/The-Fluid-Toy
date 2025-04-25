@@ -498,10 +498,10 @@ public class DBZLevelManager : LevelManager
         sim.SetSourceObject(antagonistBeam, antagonistBeamSourceIndex);
         
         // Wait for animation
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(4f);
         
         // Restart level
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
     
