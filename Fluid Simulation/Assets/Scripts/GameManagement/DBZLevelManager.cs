@@ -257,16 +257,20 @@ public class DBZLevelManager : LevelManager
         if (currentBeamPower >= winThreshold)
         {
             // Player wins!
-            currentState = BattleState.Victory;
             powerLevelText.text = $"OVER 9000!";
-            StartCoroutine(HandleVictory());
+            if (currentState != BattleState.Victory){
+                currentState = BattleState.Victory;
+                StartCoroutine(HandleVictory());
+            }
         }
         else if (currentBeamPower <= loseThreshold)
         {
             // Player loses!
-            currentState = BattleState.Defeat;
             powerLevelText.text = $"0";
-            StartCoroutine(HandleDefeat());
+            if (currentState != BattleState.Defeat){
+                currentState = BattleState.Defeat;
+                StartCoroutine(HandleDefeat());
+            }
         }
 
         // Adjust screen shake based on beam power
@@ -404,9 +408,6 @@ public class DBZLevelManager : LevelManager
             instructionText.transform.DOScale(Vector3.one * 2f, 0.5f).SetEase(Ease.OutBack);
         }
         
-        // Stop beam sounds
-        StopAllCoroutines();
-        
         // Play win sound
         if (playerWinSound)
         {
@@ -414,11 +415,14 @@ public class DBZLevelManager : LevelManager
         }
 
         // Hide beams
-        for(int i = 0; i < AntagonistBeamEffects.Length - 1; i++)
+        for(int i = 0; i < AntagonistBeamEffects.Length; i++)
         {
             AntagonistBeamEffects[i].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
             {
-                AntagonistBeamEffects[i].SetActive(false);
+                for (int i = 0; i < AntagonistBeamEffects.Length; i++)
+                {
+                    Destroy(AntagonistBeamEffects[i]);
+                }
             });
         }
         antagonistCharacter2.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f);
@@ -455,9 +459,6 @@ public class DBZLevelManager : LevelManager
 
         powerLevelText.DOFade(0f, 0.5f);
         
-        // Stop beam sounds
-        StopAllCoroutines();
-        
         // Play lose sound
         if (playerLoseSound != null)
         {
@@ -465,11 +466,14 @@ public class DBZLevelManager : LevelManager
         }
 
         // Hide beams
-        for(int i = 0; i < PlayerBeamEffects.Length - 1; i++)
+        for (int i = 0; i < PlayerBeamEffects.Length; i++)
         {
-            PlayerBeamEffects[i].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
+            PlayerBeamEffects[i].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() =>
             {
-                PlayerBeamEffects[i].SetActive(false);
+                for (int i = 0; i < PlayerBeamEffects.Length; i++)
+                {
+                    Destroy(PlayerBeamEffects[i]);
+                }
             });
         }
         playerCharacter2.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f);
@@ -569,7 +573,7 @@ public class DBZLevelManager : LevelManager
         DOTween.Kill(playerPowerAura);
         DOTween.Kill(antagonistPowerAura);
 
-        for(int i = 0; i < PlayerBeamEffects.Length - 1; i++)
+        for(int i = 0; i < PlayerBeamEffects.Length; i++)
         {
             if (PlayerBeamEffects[i] != null) DOTween.Kill(PlayerBeamEffects[i]);
             if (AntagonistBeamEffects[i] != null) DOTween.Kill(AntagonistBeamEffects[i]);

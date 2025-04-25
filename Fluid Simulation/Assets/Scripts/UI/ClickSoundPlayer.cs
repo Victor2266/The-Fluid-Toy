@@ -23,6 +23,8 @@ public class ClickSoundPlayer : MonoBehaviour
     private AudioClip currentLeftClickSound;
     private AudioClip currentRightClickSound;
 
+    public bool enableSpaceSound = false;
+
     private void Start()
     {
         // If no audio source assigned, try to get or add one
@@ -42,7 +44,7 @@ public class ClickSoundPlayer : MonoBehaviour
     private void Update()
     {
         // Handle left click
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || (enableSpaceSound? Input.GetKeyDown(KeyCode.Space) : false))
         {
             if (enableLeftClickHoldSound)
             {
