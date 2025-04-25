@@ -418,7 +418,7 @@ public class DBZLevelManager : LevelManager
         {
             AntagonistBeamEffects[i].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
             {
-                Destroy(AntagonistBeamEffects[i]);
+                AntagonistBeamEffects[i].SetActive(false);
             });
         }
         antagonistCharacter2.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f);
@@ -469,7 +469,7 @@ public class DBZLevelManager : LevelManager
         {
             PlayerBeamEffects[i].transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => 
             {
-                Destroy(PlayerBeamEffects[i]);
+                PlayerBeamEffects[i].SetActive(false);
             });
         }
         playerCharacter2.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f);
