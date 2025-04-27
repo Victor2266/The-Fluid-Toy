@@ -10858,15 +10858,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: 'Hint:
+      value: 'Dispense drinks to fulfill the orders at the <color=yellow>top of the
+        screen.</color>
 
-        Use the left and right mouse buttons
-
-        to move
-        the fluid around
+        Press the <color=orange>orange</color> buttons to
+        get more cups.
 
 
-        Try to fill up the cup!'
+        Place completed orders in the <color=red>order zone</color>
+        on the right.'
       objectReference: {fileID: 0}
     - target: {fileID: 5388665203690673518, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11113,6 +11113,10 @@ PrefabInstance:
     - target: {fileID: 7694538204002005048, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7723421981990690167, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7740778838992167872, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchoredPosition.y
