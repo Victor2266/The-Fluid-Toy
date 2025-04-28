@@ -15,7 +15,10 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
 
     [Header("Simulation Settings")]
     public float timeScale = 1;
-    public bool fixedTimeStep; // Enable for consistent simulation steps across different framerates, (limits smoothness to 120fps)
+    [Tooltip("Enable for consistent simulation steps across different framerates, (maintains 120fps equivalent simulaiton steps) (Can reduce workload on high end systems, but increases it for low ends)")]
+    public bool fixedTimeStep; 
+    [Tooltip("Enable for consistent source output across different framerates (basically fixed timestep but only for source objects, which can be more efficient for low end systems VS FTS)")]
+    public bool fixedSourceOutput = false;
     public int maxParticles;
     [Tooltip("Disable this to manually add obstacles to the simulation. If enabled, the obstacles will scanned via tags")]
     public bool scanForObstaclesOnStart = true;
@@ -498,7 +501,12 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         compute.SetInt("selectedFluidType", selectedFluid);
         compute.SetInt("edgeType", (int)edgeType);
         compute.SetInt("gravityMode", (int)gravityMode);
-        compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
+        if (!fixedSourceOutput) {
+            compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
+        }
+        else {
+            compute.SetInt("maxSourceSpawnRate", (int)(maxSourceSpawnRate * Time.deltaTime * 130f));
+        }
         compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
         compute.SetFloat("globalEntropyRate", globalEntropyRate);
