@@ -505,7 +505,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
             compute.SetInt("maxSourceSpawnRate", (int)maxSourceSpawnRate);
         }
         else {
-            compute.SetInt("maxSourceSpawnRate", (int)(maxSourceSpawnRate * Time.deltaTime * 130f));
+            compute.SetInt("maxSourceSpawnRate", Mathf.CeilToInt(maxSourceSpawnRate * Time.deltaTime * 130f));
         }
         compute.SetInt("maxMouseSpawnRate", (int)Math.Ceiling(currentStrengthPercent * maxMouseSpawnRate));
         compute.SetFloat("roomTemperature", roomTemperature);
