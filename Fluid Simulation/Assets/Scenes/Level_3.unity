@@ -2799,6 +2799,126 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 753684013}
   m_CullTransparentMesh: 1
+--- !u!1 &762318753
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 762318756}
+  - component: {fileID: 762318755}
+  - component: {fileID: 762318754}
+  m_Layer: 0
+  m_Name: SimulationAoSCounting UNIFIED NN
+  m_TagString: Simulation
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &762318754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762318753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63fe9244dd3cf724b8a07deb8a57f325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  shader: {fileID: 4800000, guid: 4b0674bfb9b0d56469ec1da938d50476, type: 3}
+  gradientResolution: 64
+--- !u!114 &762318755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762318753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a854985f392bc7f49a6eeaa1d49e704d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeScale: 1
+  fixedTimeStep: 0
+  fixedSourceOutput: 0
+  maxParticles: 9000
+  scanForObstaclesOnStart: 0
+  scanForParticleSpawnersOnStart: 0
+  iterationsPerFrame: 3
+  globalEntropyRate: 1
+  roomTemperature: 22
+  boundsSize: {x: 34.2, y: 19.6}
+  obstacleSize: {x: 0, y: 0}
+  obstacleCentre: {x: 0, y: 0}
+  edgeType: 0
+  gravityMode: 0
+  evenlyDistributeParticleSpawns: 0
+  maxSourceSpawnRate: 20
+  maxMouseSpawnRate: 40
+  selectedFluid: 0
+  brushState: 1
+  interactionRadius: 3
+  minRadius: 0.25
+  maxRadius: 5
+  interactionStrength: 360
+  minStrength: 36
+  maxStrength: 720
+  smoothingTime: 0.04
+  enableScrolling: 1
+  enableHotkeys: 0
+  manuallySelectFluidTypes: 1
+  updateFluidsEveryFrame: 0
+  fluidDataArray:
+  - {fileID: 11400000, guid: ddd95d8ea0710794d95d7071c2c28a3e, type: 2}
+  - {fileID: 11400000, guid: 094ea74afe77c5a40b808eac7ee4a009, type: 2}
+  compute: {fileID: 7200000, guid: 5153d1e4fc4b4204bae3cf5df6749c6d, type: 3}
+  spawners:
+  - {fileID: 2117895685}
+  - {fileID: 1934476691}
+  - {fileID: 638240468}
+  boxColliders:
+  - {fileID: 1388144724}
+  - {fileID: 1496515010}
+  - {fileID: 740266130}
+  - {fileID: 79229018}
+  - {fileID: 415843311}
+  - {fileID: 703274162}
+  - {fileID: 826695361}
+  - {fileID: 796229353}
+  - {fileID: 613334982}
+  - {fileID: 116946633}
+  - {fileID: 16355262}
+  - {fileID: 2108633164}
+  - {fileID: 308746581}
+  - {fileID: 963455856}
+  - {fileID: 667251684}
+  - {fileID: 1553712699}
+  circleColliders: []
+  sourceObjects: []
+  drainObjects:
+  - {fileID: 2044106173}
+  thermalBoxes: []
+--- !u!4 &762318756
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762318753}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &796229352
 GameObject:
   m_ObjectHideFlags: 0
@@ -4220,7 +4340,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1396291941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6482,6 +6602,7 @@ MonoBehaviour:
   rightClickMaxPitch: 0.525
   rightClickVolume: 0.3
   enableRightClickHoldSound: 0
+  enableSpaceSound: 0
 --- !u!82 &1854668170
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7660,6 +7781,7 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 1514508575}
   - {fileID: 1396291944}
+  - {fileID: 762318756}
   - {fileID: 2107056133}
   - {fileID: 2035263641}
   - {fileID: 1223321597}
