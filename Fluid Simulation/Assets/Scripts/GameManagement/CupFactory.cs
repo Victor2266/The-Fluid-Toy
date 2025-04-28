@@ -51,6 +51,16 @@ public class CupFactory : MonoBehaviour
 
     private GameObject SpawnCupClone()
     {
+        // Update Active Clones List
+        for (int i = 0; i < activeClones.Count; i++)
+        {
+            if (activeClones[i].cupObject == null)
+            {
+                activeClones.RemoveAt(i);
+                i--; // Decrement i to account for the removed element
+            }
+        }
+
         if (activeClones.Count >= maxClones)
         {
             if (showDebugLogs) Debug.LogWarning("Max clones reached. Cannot spawn more cups.");

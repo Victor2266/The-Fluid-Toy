@@ -143,7 +143,7 @@ public class EditableObject : MonoBehaviour
         // Add event listeners
         closeButton.GetComponent<Button>().onClick.AddListener(CloseContextMenu);
         deleteButton.GetComponent<Button>().onClick.AddListener(DeleteObject);
-        duplicateButton.GetComponent<Button>().onClick.AddListener(DuplicateObject);
+        if (duplicateButton != null) duplicateButton.GetComponent<Button>().onClick.AddListener(DuplicateObject);
 
         // Initialize input fields with current values
         if (xScaleInput != null)
