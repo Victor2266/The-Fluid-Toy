@@ -3128,7 +3128,7 @@ MonoBehaviour:
   fixedTimeStep: 0
   maxParticles: 10000
   scanForObstaclesOnStart: 0
-  scanForParticleSpawnersOnStart: 1
+  scanForParticleSpawnersOnStart: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -4486,6 +4486,7 @@ MonoBehaviour:
   rightClickMaxPitch: 1.05
   rightClickVolume: 0.3
   enableRightClickHoldSound: 0
+  enableSpaceSound: 0
 --- !u!82 &1854668170
 AudioSource:
   m_ObjectHideFlags: 0

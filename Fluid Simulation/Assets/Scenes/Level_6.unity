@@ -1668,6 +1668,7 @@ MonoBehaviour:
   rotatable: 0
   rotationSpeed: 10
   maxDragSpeed: Infinity
+  maintainMomentum: 1
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -4716,6 +4717,7 @@ MonoBehaviour:
   rotatable: 0
   rotationSpeed: 10
   maxDragSpeed: Infinity
+  maintainMomentum: 1
   minScale: 0.1
   maxScale: 5
   targetScale: {x: 0, y: 0, z: 0}
@@ -14767,9 +14769,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
+  fixedSourceOutput: 0
   maxParticles: 5800
   scanForObstaclesOnStart: 1
-  scanForParticleSpawnersOnStart: 1
+  scanForParticleSpawnersOnStart: 0
   iterationsPerFrame: 3
   globalEntropyRate: 1
   roomTemperature: 22
@@ -14800,7 +14803,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fd36f3ca91602a445a598b2e944c73e5, type: 2}
   - {fileID: 11400000, guid: f7113febd10d2f748a6e2d000b363911, type: 2}
   compute: {fileID: 7200000, guid: 5153d1e4fc4b4204bae3cf5df6749c6d, type: 3}
-  spawners: []
+  spawners:
+  - {fileID: 1540588521}
+  - {fileID: 1931743729}
   boxColliders:
   - {fileID: 691692353}
   circleColliders: []
@@ -16762,6 +16767,7 @@ MonoBehaviour:
   rightClickMaxPitch: 1.05
   rightClickVolume: 0.3
   enableRightClickHoldSound: 0
+  enableSpaceSound: 0
 --- !u!82 &1854668170
 AudioSource:
   m_ObjectHideFlags: 0
