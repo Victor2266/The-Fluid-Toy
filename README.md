@@ -32,14 +32,19 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 ## 🚀 Key Features  
 
 ### 🧊 Collision Systems  
-- **Box Colliders**: Combine multiple static or dynamic oriented boxes to create complex shapes (e.g., pinwheels)  
-- **Hybrid Circle Colliders**:  
-  - Small colliders: GPU-accelerated using spatial hashing grids  
+Integrates with Unity's GameObject and Rigidbody systems.
+- **Box Colliders**:
+  - Combine multiple static or dynamic oriented boxes to create complex shapes (e.g., pinwheels)
+  - These are controlled by the CPU and sent to the GPU for particle-obstacle interactions
+- **Circle Colliders**:  
+  - Small colliders for particles: GPU-accelerated using uniform spatial subdivision hashing grids  
   - Large colliders: CPU-managed to prevent GPU performance degradation  
-- **Complex Colliders**:  
+- **Complex Colliders (Not Implemented)**:  
   - Texture-based density maps for complex shapes  
   - Runtime-alterable collider geometry via alpha threshold sampling  
-  - Player-editable collider deformation through brush tools  
+  - Player-editable collider deformation through brush tools
+- **Dynamically changing boundary size**:
+  - Capability to resize the simulation boundary for any window size at any time
 
 ### ⚡ Dynamic Particle Management  
 - **Activation/Deactivation**:  
@@ -60,7 +65,8 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 - **All States of Matter**:
   - *Gasses*
   - *Liquids*
-  - *Powders*  
+  - *Powders*
+  - *Solids*
 - **Edge Behavior Modes**:  
   - *Solid*: Acts as immovable wall (default)  
   - *Void*: Disables particles and randomizes positions
@@ -99,7 +105,7 @@ https://github.com/user-attachments/assets/d0044c6f-0194-4cee-95ac-1c2d5e176ef4
 - **Menu System**:  
   - Main menu with Play, Sandbox, Settings, and Quit  
   - Level selection screen with progress visualization  
-  - Pause menu with real-time settings adjustment  
+  - Pause menu with settings adjustments for resolution, framerate and sound  
 - **Contextual Tooltips**:  
   - Hover-sensitive help system  
   - Mobile-optimized touch-and-hold activation  
