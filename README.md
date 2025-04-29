@@ -188,9 +188,10 @@ Integrates with Unity's GameObject and Rigidbody systems.
   - Position randomization seed generated using frame number and atomic counter value  
     
 ### Visual Pipeline  
-- Dual-pass rendering with custom alpha blending  
-- Vertex/fragment shaders using fluid-type flags  
-- Dynamic texture atlas for fluid gradients  
+- Dual-pass rendering with custom alpha blending
+- Branching Vertex/fragment shaders for each visual-type (Velocity Coloured, Fuzzy Outline, Temperture Coloured, Glowing, etc)  
+- Precomputed texture atlas for fluid colour gradients
+- Custom Post Processing Effects for Additional Bloom and Screen Distortion Effects
 
 ### Hybrid Workload Distribution  
 - **CPU Responsibilities**:  
