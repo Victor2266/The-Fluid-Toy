@@ -220,4 +220,6 @@ Integrates with Unity's GameObject and Rigidbody systems.
 - **Testing**: Validated through family/friend playtests  
 ---
 
-*Note: Screenshots referenced in original document have been omitted for brevity. Full visual documentation available in development whitepapers.*
+*Note: Screenshots have been omitted for brevity. More visual documentation is available in development whitepapers.*
+
+[See Development Papers Here](https://github.com/Victor2266/The-Fluid-Toy/tree/main/Documents)
