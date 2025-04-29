@@ -130,48 +130,39 @@ Integrates with Unity's GameObject and Rigidbody systems.
 - **Each level is a demonstration of a different mechanic:**
   
   #### 1. Tavern Trouble  
-  - **Objective**: Fill a beer mug using gravity manipulation  
-  - **Tech Stack**:  
+  - **Objective**: Fill a beer mug using gravity manipulation
     - Async particle position readback for level completion detection
  
   #### 2. Carnival Chaos  
   - **Objective**: Shoot a moving target with a water gun
-  - **Tech Stack**:  
     - Introduction to source objects
       
   #### 3. Lava Logic  
   - **Objective**: Mix lava to reach desire temperture
-  - **Tech Stack**:  
     - Introduction to Temperture Simulation
    
   #### 4. Factory Fun
   - **Objective**: Open gates and gas valves to move water through pipes
-  - **Tech Stack**:  
     - Introduction to Thermal Boxes and obstacle movement
    
   #### 5. Planetary Devastation 
   - **Objective**: Activate Laser Weapons to Destroy Planet
-  - **Tech Stack**:  
     - Introduction to Radial Gravity, Laser Beams, and Volatile Particles
    
   #### 6. Forged in Fire
   - **Objective**: Activate pour molten lava to cast a sword
-  - **Tech Stack**:  
     - Introduction to State Changes
    
   #### 7. Bartending Simulator
   - **Objective**: Fulfill orders as a bartender
-  - **Tech Stack**:  
     - Introduction to fluid containers / composite colliders
    
   #### 8. Pipes Puzzle
   - **Objective**: Rearrange the pipes to fill containers with water
-  - **Tech Stack**:  
     - Introduction to pressure and flow as game mechanics
    
   #### 9. Ultimate Battle
   - **Objective**: Defeat Opponent in a Clash of Power
-  - **Tech Stack**:  
     - Introduction to particle collisions as a game mechanic
       
 ---
@@ -203,14 +194,14 @@ Integrates with Unity's GameObject and Rigidbody systems.
 
 ### Hybrid Workload Distribution  
 - **CPU Responsibilities**:  
-  - Large collider transformations  
+  - Large obstacle collider transformations  
   - Game state management  
   - UI/input processing  
 - **GPU Pipeline**:  
   - SPH fluid solver (with density/pressure/viscosity/friction/temperture kernels)
   - Spatial hashing for neighbor detection  
-  - Collision resolution using boundary textures
-  - Async particle position feedback for fluid property sensors 
+  - Collision resolution for fluid particles
+  - Async particle buffer feedback for fluid property sensors 
 
 ---
 
