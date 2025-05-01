@@ -26641,6 +26641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
+  fixedSourceOutput: 0
   maxParticles: 16000
   scanForObstaclesOnStart: 0
   scanForParticleSpawnersOnStart: 0
@@ -27696,15 +27697,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5169386690687758443, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_text
-      value: 'Hint:
+      value: 'Rapidly Press
 
-        Use the left and right mouse buttons
+        [<color=#00C9FF>Space</color>] or [<color=#00C9FF>Left
+        Mouse Button</color>]
 
-        to move
-        the fluid around
-
-
-        Try to fill up the cup!'
+        to increase your <color=red>POWER!'
       objectReference: {fileID: 0}
     - target: {fileID: 5388665203690673518, guid: dd46875c7ac63d84e8674c7e5fd021bd, type: 3}
       propertyPath: m_AnchorMax.y
