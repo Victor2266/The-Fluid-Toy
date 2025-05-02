@@ -980,7 +980,8 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         // Reset positions, the run single frame to get density etc (for debug purposes) and then reset positions again
         SetInitialBufferData(spawnDataArr);
         RunSimulationStep();
-        SetInitialBufferData(spawnDataArr);
+        UpdateSideBarIcons();
+        //SetInitialBufferData(spawnDataArr);
     }
 
     // These functions are for the fluid detector

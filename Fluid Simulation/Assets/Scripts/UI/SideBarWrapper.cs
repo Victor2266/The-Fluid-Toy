@@ -97,8 +97,6 @@ public class SideBarWrapper : MonoBehaviour
     public void resetFluidSimulation()
     {
         simulation2DScript.resetSimulation();
-        audioSource.Play();
-        UpdatePauseIcon();
     }
     public void ShowInformationPanel()
     {
