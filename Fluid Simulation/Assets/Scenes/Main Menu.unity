@@ -1903,6 +1903,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
+  fixedSourceOutput: 0
+  variableTimeScale: 0
   maxParticles: 10000
   scanForObstaclesOnStart: 1
   scanForParticleSpawnersOnStart: 1
@@ -4408,8 +4410,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f4181482423bc149a999f056d794527, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  webGPUFallbackSceneName: WebGPUInstructions
-  debugMode: 0
 --- !u!4 &1665933503
 Transform:
   m_ObjectHideFlags: 0
@@ -7150,6 +7150,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sandboxSettingSlider: {fileID: 5829688347284709295}
   sandboxSettingText: {fileID: 497452935}
+  audioSource: {fileID: 7452510517123386696}
+  showHiddenMenuSound: {fileID: 8300000, guid: f82a2e7ef8b30cd4cb3b4ded59c95143, type: 3}
+  subtitle1Text: {fileID: 598018185}
+  subtitle2Text: {fileID: 387866921}
 --- !u!82 &7452510517123386696
 AudioSource:
   m_ObjectHideFlags: 0
