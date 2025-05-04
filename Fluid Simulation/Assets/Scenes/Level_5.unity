@@ -805,6 +805,7 @@ MonoBehaviour:
   rightClickMaxPitch: 1.05
   rightClickVolume: 1
   enableRightClickHoldSound: 0
+  enableSpaceSound: 0
 --- !u!4 &147476941
 Transform:
   m_ObjectHideFlags: 0
@@ -1800,6 +1801,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   fixedTimeStep: 0
+  fixedSourceOutput: 0
+  variableTimeScale: 1
   maxParticles: 16000
   scanForObstaclesOnStart: 0
   scanForParticleSpawnersOnStart: 0
