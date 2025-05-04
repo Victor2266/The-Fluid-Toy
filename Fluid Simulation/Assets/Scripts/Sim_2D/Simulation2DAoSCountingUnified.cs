@@ -15,7 +15,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     public bool fixedTimeStep; 
     [Tooltip("Enable for consistent source output across different framerates (basically fixed timestep but only for source objects, which can be more efficient for low end systems compared to Full FTS)")]
     public bool fixedSourceOutput = false;
-    [Tooltip("Enable for slowmo during lower framerates which can increase stability on low end systems (without tanking FPS like FTS does)")]
+    [Tooltip("Enable for slowmo during lower framerates which can increase stability on low end systems (without tanking FPS as much as FTS does)")]
     public bool variableTimeScale = false;
     public int maxParticles;
     [Tooltip("Disable this to manually add obstacles to the simulation. If enabled, the obstacles will scanned via tags")]
