@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class FPSDisplay : MonoBehaviour
 {
@@ -78,13 +77,6 @@ public class FPSDisplay : MonoBehaviour
         
         // Set the panel size to match the text size plus padding
         panelRectTransform.sizeDelta = newSize;
-        
-        // If needed, you can also reposition the text within the panel
-        RectTransform textRectTransform = fpsText.GetComponent<RectTransform>();
-        if (textRectTransform != null)
-        {
-            textRectTransform.anchoredPosition = new Vector2(padding.x, -padding.y);
-        }
     }
     
     // This can be called from the Unity Inspector to test the sizing

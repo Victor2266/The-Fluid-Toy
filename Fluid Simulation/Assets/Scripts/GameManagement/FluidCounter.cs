@@ -1,4 +1,3 @@
-using System;
 using System.Linq; // Needed for LINQ Count()
 using UnityEngine;
 using UnityEngine.Rendering; // Needed for AsyncGPUReadback
@@ -23,9 +22,8 @@ public class FluidCounter : MonoBehaviour
     private IFluidSimulation fluidSimulation;
     private float nextCheckTime;
     private bool isRequestMade = false;
-    private bool simulationChecked = false; // To prevent spamming errors if not found
 
-    void Start()
+    protected virtual void Start()
     {
         // Find the simulation component in the scene
         FindSimulation();
@@ -42,31 +40,20 @@ public class FluidCounter : MonoBehaviour
             fluidSimulation = simObject.GetComponent<IFluidSimulation>();
             if (fluidSimulation == null)
             {
-                Debug.LogError($"[{nameof(FluidCounter)}]: GameObject '{simObject.name}' with tag 'Simulation' found, but it doesn't have an IFluidSimulation component.", this);
+                //Debug.LogError($"[{nameof(FluidCounter)}]: GameObject '{simObject.name}' with tag 'Simulation' found, but it doesn't have an IFluidSimulation component.", this);
             }
             else {
-                 Debug.Log($"[{nameof(FluidCounter)}]: Found simulation component on '{simObject.name}'.", this);
+                //Debug.Log($"[{nameof(FluidCounter)}]: Found simulation component on '{simObject.name}'.", this);
             }
         }
         else
         {
-            Debug.LogError($"[{nameof(FluidCounter)}]: Could not find GameObject with tag 'Simulation'. Make sure one exists and is tagged.", this);
+            //Debug.LogError($"[{nameof(FluidCounter)}]: Could not find GameObject with tag 'Simulation'. Make sure one exists and is tagged.", this);
         }
-        simulationChecked = true; // Mark that we've attempted to find it
     }
 
-    void Update()
+    protected virtual void Update()
     {
-        // If simulation wasn't found initially, maybe retry or just stop
-        if (fluidSimulation == null)
-        {
-            if (!simulationChecked) // Optional: Keep checking if it might appear later
-            {
-               FindSimulation();
-            }
-            if (fluidSimulation == null) return; // Still not found, do nothing this frame
-        }
-
         // Is it time to perform a check and no request is currently pending?
         if (Time.time >= nextCheckTime && !isRequestMade)
         {

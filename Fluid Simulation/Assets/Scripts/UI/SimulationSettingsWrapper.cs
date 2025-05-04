@@ -15,10 +15,12 @@ public class SimulationSettingsWrapper : MonoBehaviour
 
     [Header("UI Settings")]
     [SerializeField] private TMP_Dropdown HideFPSDropdown;
+    [SerializeField] private TMP_Dropdown HideParticleCountDropdown;
     [SerializeField] private TMP_Dropdown HideMouseCircleDropdown;
     [SerializeField] private TMP_Dropdown HideBenchmarkDropdown;
 
     private GameObject fpsDisplayObject;
+    [SerializeField] private GameObject particleCountDisplayObject;
     private GameObject mouseCircleObject;
     [SerializeField] private GameObject benchmarkObject;
 
@@ -60,6 +62,9 @@ public class SimulationSettingsWrapper : MonoBehaviour
         HideFPSDropdown.onValueChanged.AddListener(setHideFPS);
         fpsDisplayObject = FindFirstObjectByType<FPSDisplay>().gameObject;
 
+        // Particle Count Display
+        HideParticleCountDropdown.onValueChanged.AddListener(setHideParticleCount);
+
         // Mouse Circle
         HideMouseCircleDropdown.onValueChanged.AddListener(setHideMouseCircle);
         mouseCircleObject = FindFirstObjectByType<InteractionRadiusVisualizer>().gameObject;
@@ -82,6 +87,11 @@ public class SimulationSettingsWrapper : MonoBehaviour
     public void setHideFPS(int hideFPSIndex)
     {
         fpsDisplayObject.SetActive(hideFPSIndex == 0);
+    }
+
+    public void setHideParticleCount(int hideParticleCountIndex)
+    {
+        particleCountDisplayObject.SetActive(hideParticleCountIndex == 1);
     }
 
     public void setHideMouseCircle(int hideMouseCircleIndex)
