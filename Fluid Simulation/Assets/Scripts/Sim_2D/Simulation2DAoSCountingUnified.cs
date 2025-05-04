@@ -522,6 +522,8 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     {
         ApplySmoothing();
 
+        if (isDraggingObject) return;
+
         float scrollDelta = Input.mouseScrollDelta.y;
 
         if (scrollDelta != 0)
@@ -588,6 +590,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         
         if (Input.GetMouseButtonUp(0) && isDraggingObject) //Restore Prevous Brush Type when mouse button is released
         {
+            isDraggingObject = false;
             brushState = lastBrushState;
         }
 
