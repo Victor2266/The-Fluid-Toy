@@ -1,12 +1,8 @@
 using UnityEngine;
 using Unity.Mathematics;
-using System.Runtime.InteropServices;
 using System;
-using UnityEngine.UIElements;
 using System.Linq;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
-using Unity.VisualScripting;
 
 
 public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
@@ -58,6 +54,8 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     [Header("Brush Type")]
 
     [SerializeField] private BrushType brushState = BrushType.Gravity;
+    private BrushType lastBrushState = BrushType.Nothing;
+    private bool isDraggingObject = false;
 
     [Header("Interaction Settings")]
     public float interactionRadius;
@@ -572,15 +570,25 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         bool isPullInteraction = false;
         bool isPushInteraction = Input.GetMouseButton(1);
 
-        if (!EventSystem.current.IsPointerOverGameObject())
-        { // Checks for mouse click over UI
-
+        if (!EventSystem.current.IsPointerOverGameObject()) // Checks for mouse click over UI
+        {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit.collider == null) // Click wasn't over any game objects
             {
                 // Click wasn't over any UI or game objects
                 isPullInteraction = Input.GetMouseButton(0);
             }
+            else if (Input.GetMouseButtonDown(0)) // Click was over a game object
+            {
+                lastBrushState = brushState;
+                isDraggingObject = true;
+                brushState = BrushType.Nothing;
+            }
+        }
+        
+        if (Input.GetMouseButtonUp(0) && isDraggingObject) //Restore Prevous Brush Type when mouse button is released
+        {
+            brushState = lastBrushState;
         }
 
         float currInteractStrength = 0;
