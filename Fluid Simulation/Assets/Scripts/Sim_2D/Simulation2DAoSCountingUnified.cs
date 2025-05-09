@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using System;
 using System.Linq;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 
 public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
@@ -158,6 +159,10 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
     private const float MAX_DELTA_TIME = 1f / 30f; // Maximum allowed delta time
     private const float FIXED_TIME_STEP = 1f / 120f; // Your desired fixed time step
 
+    // For Mouse and Touch Inputs
+    private PointerEventData _cachedEventData;
+    private List<RaycastResult> _cachedResults = new List<RaycastResult>();
+
     void Start()
     {
         // Debug.Log(System.Runtime.InteropServices.Marshal.SizeOf(typeof(SourceObjectInitializer))); //This prints the size of the typeof(struct)
@@ -255,6 +260,9 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         display = GetComponent<IParticleDisplay>();
         display.Init(this);
         if (scanForObstaclesOnStart) ScanForAllObstaclesLists();
+
+        _cachedEventData = new PointerEventData(EventSystem.current);
+
     }
 
     private void SetupFluidTypeList(){
@@ -580,7 +588,7 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         bool isPullInteraction = false;
         bool isPushInteraction = Input.GetMouseButton(1);
 
-        if (!EventSystem.current.IsPointerOverGameObject()) // Checks for mouse click over UI
+        if (!IsPointerOverUIObject()) // Checks for mouse click over UI
         {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit.collider == null) // Click wasn't over any game objects
@@ -633,6 +641,20 @@ public class Simulation2DAoSCountingUnified : MonoBehaviour, IFluidSimulation
         compute.SetVector("interactionInputPoint", mousePos);
         compute.SetFloat("interactionInputStrength", currInteractStrength);
         compute.SetFloat("interactionInputRadius", interactionRadius);
+    }
+
+    private bool IsPointerOverUIObject()
+    {
+        // Reuse the cached event data
+        _cachedEventData.position = Input.mousePosition;
+
+        // Clear and reuse the cached results list
+        _cachedResults.Clear();
+
+        // Perform the raycast using cached objects
+        EventSystem.current.RaycastAll(_cachedEventData, _cachedResults);
+
+        return _cachedResults.Count > 0;
     }
 
     void SetInitialBufferData(ParticleSpawner.ParticleSpawnData[] spawnData)
