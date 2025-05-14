@@ -40,7 +40,10 @@ public enum FluidType {
     Cola,
     Blue_Kamehameha,
     Red_Kamehameha,
-    Wood
+    Wood,
+    Metal,
+    Molten_Metal,
+    Hot_Metal
 }
 
 public enum VisualStyle
