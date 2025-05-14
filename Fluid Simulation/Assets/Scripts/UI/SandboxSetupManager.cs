@@ -39,8 +39,8 @@ public class SandboxSetupManager : MonoBehaviour
         int savedSandboxPreset = PlayerPrefs.GetInt("SandboxPreset", 2);
         if (savedSandboxPreset >= 5)
         {
-            ToggleHighParticleCounts();
             sandboxSettingSlider.value = savedSandboxPreset - 5;
+            ToggleHighParticleCounts();
         }
         else
         {
